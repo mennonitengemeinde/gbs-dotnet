@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .validation-message {
+        @apply text-error text-sm pt-1;
+    }
+}

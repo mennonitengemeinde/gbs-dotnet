@@ -1,0 +1,38 @@
+@page "/login"
+@layout AuthLayout
+
+<h1 class="card-title text-3xl">Login</h1>
+
+<AuthTabNav/>
+
+<EditForm Model="_loginDto">
+    <DataAnnotationsValidator/>
+    <TextInput Id="email"
+               @ref="_emailInput"
+               Label="Email" 
+               InputType="email" 
+               @bind-Value="_loginDto.Email" 
+               For="() => _loginDto.Email"/>
+    <TextInput Id="password" 
+               Label="Password" 
+               InputType="password" 
+               @bind-Value="_loginDto.Password" 
+               For="() => _loginDto.Password"/>
+
+    <div class="flex justify-end pt-4">
+        <button class="btn btn-primary">Create Account</button>
+    </div>
+</EditForm>
+
+@code {
+    LoginDto _loginDto = new LoginDto();
+    private TextInput? _emailInput;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && _emailInput != null)
+        {
+            await _emailInput.FocusAsync();
+        }
+    }
+}
