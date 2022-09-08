@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using gbs_dotnet.Shared;
+using gbs.Shared;
 
-namespace gbs_dotnet.Server.Controllers;
+namespace gbs.Server.Controllers;
 
 [ApiController]
 [Route("[controller]")]

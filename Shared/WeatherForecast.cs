@@ -1,4 +1,4 @@
-namespace gbs_dotnet.Shared;
+namespace gbs.Shared;
 
 public class WeatherForecast
 {

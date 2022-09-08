@@ -2,11 +2,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.0.0
 MinimumVisualStudioVersion = 16.0.0.0
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "gbs-dotnet.Server", "Server\gbs-dotnet.Server.csproj", "{9AA20860-D4A7-4A49-82AA-FD0D5F87031A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "gbs.Server", "Server\gbs.Server.csproj", "{9AA20860-D4A7-4A49-82AA-FD0D5F87031A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "gbs-dotnet.Client", "Client\gbs-dotnet.Client.csproj", "{F939FC2C-B6DD-4788-B1BF-8951F43E6F81}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "gbs.Client", "Client\gbs.Client.csproj", "{F939FC2C-B6DD-4788-B1BF-8951F43E6F81}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "gbs-dotnet.Shared", "Shared\gbs-dotnet.Shared.csproj", "{30F4DA52-E17C-4594-8454-9B8B0A9C99B6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "gbs.Shared", "Shared\gbs.Shared.csproj", "{30F4DA52-E17C-4594-8454-9B8B0A9C99B6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
