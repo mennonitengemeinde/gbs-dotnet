@@ -1,43 +1,74 @@
 @page "/register"
 @layout AuthLayout
+@inject IAuthService AuthService
+@inject NavigationManager NavigationManager
 
 <h1 class="card-title text-3xl">Sign Up</h1>
 
 <AuthTabNav/>
 
-<EditForm Model="_registerDto">
+<EditForm Model="_registerDto" OnValidSubmit="HandleRegistration">
     <DataAnnotationsValidator/>
+    <TextInput Id="firstName"
+               @ref="_firstNameInput"
+               Label="First Name"
+               @bind-Value="_registerDto.FirstName"
+               For="() => _registerDto.FirstName"/>
+    <TextInput Id="lastName"
+               Label="Last Name"
+               @bind-Value="_registerDto.LastName"
+               For="() => _registerDto.LastName"/>
     <TextInput Id="email"
-               @ref="_emailInput"
-               Label="Email" 
-               InputType="email" 
-               @bind-Value="_registerDto.Email" 
+               Label="Email"
+               InputType="email"
+               @bind-Value="_registerDto.Email"
                For="() => _registerDto.Email"/>
-    <TextInput Id="password" 
-               Label="Password" 
-               InputType="password" 
-               @bind-Value="_registerDto.Password" 
+    <TextInput Id="password"
+               Label="Password"
+               InputType="password"
+               @bind-Value="_registerDto.Password"
                For="() => _registerDto.Password"/>
-    <TextInput Id="confirmPassword" 
-               Label="Confirm Password" 
-               InputType="password" 
-               @bind-Value="_registerDto.ConfirmPassword" 
+    <TextInput Id="confirmPassword"
+               Label="Confirm Password"
+               InputType="password"
+               @bind-Value="_registerDto.ConfirmPassword"
                For="() => _registerDto.ConfirmPassword"/>
 
     <div class="flex justify-end pt-4">
         <button class="btn btn-primary">Create Account</button>
     </div>
+
+    <div class="@_messageCssClass py-4">
+        <span>@_message</span>
+    </div>
 </EditForm>
 
 @code {
     RegisterDto _registerDto = new RegisterDto();
-    private TextInput? _emailInput;
+    string _message = string.Empty;
+    string _messageCssClass = string.Empty;
+    private TextInput? _firstNameInput;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender && _emailInput != null)
+        if (firstRender && _firstNameInput != null)
         {
-            await _emailInput.FocusAsync();
+            await _firstNameInput.FocusAsync();
         }
     }
+
+    async Task HandleRegistration()
+    {
+        var result = await AuthService.Register(_registerDto);
+        if (result.Success)
+        {
+            NavigationManager.NavigateTo("login");
+        }
+        else
+        {
+            _message = result.Message;
+            _messageCssClass = result.Success ? "text-success" : "text-error";
+        }
+    }
+
 }

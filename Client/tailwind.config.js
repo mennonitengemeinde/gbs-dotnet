@@ -4,6 +4,9 @@ module.exports = {
     safelist: [
         "validation-message",
         "tab-active",
+        'text-success',
+        'text-error',
+        'active',
     ],
     theme: {
         extend: {},

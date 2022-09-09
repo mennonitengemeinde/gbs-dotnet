@@ -1,0 +1,70 @@
+﻿@inject ILocalStorageService LocalStorage
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+
+<header class="w-full">
+    <div class="navbar bg-base-100">
+        @* Mobile *@
+        <div class="">
+            <div class="dropdown">
+                <label tabindex="0" class="btn btn-ghost lg:hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                         stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16"/>
+                    </svg>
+                </label>
+                <ul tabindex="0" class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
+                    <li>
+                        <a>Item 1</a>
+                    </li>
+                    <li>
+                        <a>Item 3</a>
+                    </li>
+                </ul>
+            </div>
+            <a class="btn btn-ghost normal-case text-xl">GBS</a>
+        </div>
+        @* Web *@
+        <div class="hidden lg:flex">
+            <ul class="menu menu-horizontal p-0">
+                <li>
+                    <NavLink Href="/" ActiveClass="active">Home</NavLink>
+                </li>
+                <li>
+                    <a>Q&A</a>
+                </li>
+            </ul>
+        </div>
+
+        <ul class="ml-auto menu menu-horizontal p-0">
+            <li>
+                <a href="#" class="py-1">
+                    <i class="oi oi-envelope-closed text-lg"></i>
+                </a>
+            </li>
+            <li>
+                <AuthorizeView>
+                    <Authorized>
+                        <button @onclick="Logout">
+                            Logout
+                        </button>
+                    </Authorized>
+                    <NotAuthorized>
+                        <NavLink Href="login" ActiveClass="active">
+                            Login
+                        </NavLink>
+                    </NotAuthorized>
+                </AuthorizeView>
+            </li>
+        </ul>
+    </div>
+</header>
+
+@code {
+    private async Task Logout()
+    {
+        await LocalStorage.RemoveItemAsync("authToken");
+        await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        NavigationManager.NavigateTo("");
+    }
+}
