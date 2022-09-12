@@ -18,4 +18,8 @@
     <ProjectReference Include="..\Shared\gbs.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Pages\Admin\Streaming\StreamsList.razor" />
+  </ItemGroup>
+
 </Project>
