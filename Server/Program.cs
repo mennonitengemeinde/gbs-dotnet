@@ -1,9 +1,13 @@
 global using Microsoft.EntityFrameworkCore;
 global using gbs.Server.Data;
 global using gbs.Shared.Entities;
+global using gbs.Shared.Const;
 global using gbs.Shared.Dtos;
 global using gbs.Shared.Dtos.Auth;
+global using gbs.Shared.Dtos.Generation;
 global using gbs.Server.Services.AuthService;
+global using gbs.Server.Services.UserService;
+global using gbs.Server.Services.GenerationService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.IdentityModel.Tokens;
@@ -20,6 +24,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IGenerationService, GenerationService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

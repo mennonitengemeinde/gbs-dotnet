@@ -28,7 +28,7 @@
         <div class="hidden lg:flex">
             <ul class="menu menu-horizontal p-0">
                 <li>
-                    <NavLink Href="/" ActiveClass="active">Home</NavLink>
+                    <NavLink Href="school" ActiveClass="active">Home</NavLink>
                 </li>
                 <li>
                     <a>Q&A</a>
@@ -37,11 +37,20 @@
         </div>
 
         <ul class="ml-auto menu menu-horizontal p-0">
-            <li>
-                <a href="#" class="py-1">
-                    <i class="oi oi-envelope-closed text-lg"></i>
-                </a>
-            </li>
+            <AuthorizeView Roles="@($"{Roles.SuperAdmin}, {Roles.Admin}")">
+                <Authorized>
+                    <li>
+                        <NavLink Href="admin" ActiveClass="active" class="py-2">
+                            <i class="oi oi-wrench text-lg"></i>
+                        </NavLink>
+                    </li>
+                </Authorized>
+            </AuthorizeView>
+            @* <li> *@
+            @*     <a href="#" class="py-1"> *@
+            @*         <i class="oi oi-envelope-closed text-lg"></i> *@
+            @*     </a> *@
+            @* </li> *@
             <li>
                 <AuthorizeView>
                     <Authorized>
