@@ -1,4 +1,4 @@
-using gbs.Shared.Const;
+using gbs.Shared.Enums;
 
 namespace gbs.Shared.Dtos.Ui;
 

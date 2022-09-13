@@ -1,7 +1,8 @@
 @using System.Timers
 @inject IUiService UiService
+@implements IDisposable
 
-<div class="alert @_alertBgColor shadow-lg w-full max-w-sm transition-transform ease-in-out @_animateClass">
+<div class="alert @AlertDetails.Type.ToDescriptionString() shadow-lg w-full max-w-sm transition-all duration-300 ease-in-out @_animateClass">
     <div>
         @switch (AlertDetails.Type)
         {
@@ -29,36 +30,17 @@
     [Parameter]
     public AlertDto AlertDetails { get; set; } = null!;
 
-    string _alertBgColor = string.Empty;
     string _animateClass = "translate-x-full opacity-0";
     Timer? _timer;
-    Timer? _killTimer;
-    
 
-    protected override void OnInitialized()
-    {
-        SetAlertBgColor();
-        if (AlertDetails.AutoDismiss)
-            StartTimer();
-    }
-    
-    protected override void OnAfterRender(bool firstRender)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender) return;
-        _animateClass = "delay-100 translate-x-0 opacity-100";
+        await Task.Delay(200);
+        _animateClass = "translate-x-0 opacity-100";
         StateHasChanged();
-    }
-
-    void SetAlertBgColor()
-    {
-        _alertBgColor = AlertDetails.Type switch
-        {
-            AlertType.Info => "alert-info",
-            AlertType.Success => "alert-success",
-            AlertType.Warning => "alert-warning",
-            AlertType.Error => "alert-error",
-            _ => "alert-info"
-            };
+        if (AlertDetails.AutoDismiss)
+            StartTimer();
     }
 
     void StartTimer()
@@ -68,18 +50,18 @@
         _timer.Enabled = true;
     }
 
-    private void OnTimedEvent(object? source, ElapsedEventArgs e)
+    private async void OnTimedEvent(object? source, ElapsedEventArgs e)
     {
-        if (_timer != null) _timer.Enabled = false;
+        _timer?.Stop();
+        _animateClass = "translate-x-full opacity-0";
+        StateHasChanged();
+        await Task.Delay(300);
         UiService.RemoveAlert(AlertDetails.Id);
-        // _killTimer = new Timer(1000);
     }
-    
-    private void OnKillTimedEvent(object? source, ElapsedEventArgs e)
+
+    public void Dispose()
     {
-        Console.WriteLine($"Timer elapsed {AlertDetails.Id}");
-        if (_killTimer != null) _killTimer.Enabled = false;
-        UiService.RemoveAlert(AlertDetails.Id);
+        _timer?.Dispose();
     }
 
 }

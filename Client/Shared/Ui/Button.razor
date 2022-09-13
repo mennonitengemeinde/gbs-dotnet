@@ -1,0 +1,20 @@
+﻿<button class="btn @BtnColor.ToDescriptionString()" disabled="@IsLoading">
+    @if (IsLoading)
+    {
+        <InfinitLoading Class="-ml-1 mr-3"/>
+    }
+    @ChildContent
+</button>
+
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+    
+    [Parameter]
+    public BtnColor BtnColor { get; set; } = BtnColor.Primary;
+    
+    [Parameter]
+    public bool IsLoading { get; set; } = false;
+    
+    
+}

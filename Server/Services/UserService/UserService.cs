@@ -19,7 +19,7 @@ public class UserService : IUserService
             Email = u.Email,
             EmailVerified = u.EmailVerified,
             Role = u.Role,
-        }).ToListAsync();
+        }).OrderBy(u => u.FirstName).ToListAsync();
 
         return new ServiceResponse<List<UserDto>> {Data = users};
     }

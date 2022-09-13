@@ -11,6 +11,13 @@
 
 <EditForm Model="_loginDto" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator/>
+    @if (_message.Length > 0)
+        {
+            <div class="text-error py-4">
+                <span>@_message</span>
+            </div>
+        }
+    
     <TextInput Id="email"
                @ref="_emailInput"
                Label="Email" 
@@ -24,18 +31,17 @@
                For="() => _loginDto.Password"/>
 
     <div class="flex justify-end pt-4">
-        <button class="btn btn-primary">Create Account</button>
+        <Button IsLoading="_loading">Login</Button>
     </div>
     
-    <div class="text-error py-4">
-            <span>@_message</span>
-        </div>
+    
 </EditForm>
 
 @code {
     LoginDto _loginDto = new LoginDto();
     private TextInput? _emailInput;
     string _message = string.Empty;
+    bool _loading = false;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -47,16 +53,19 @@
     
     private async Task HandleValidSubmit()
     {
+        _loading = true;
         var result = await AuthService.Login(_loginDto);
         if (result.Success)
         {
             await LocalStorage.SetItemAsync("authToken", result.Data);
             await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            _loading = false;
             NavigationManager.NavigateTo("school");
         }
         else
         {
             _message = result.Message;
+            _loading = false;
         }
     }
 }

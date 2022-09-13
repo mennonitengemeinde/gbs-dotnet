@@ -7,6 +7,13 @@
 
 <AuthTabNav/>
 
+@if (_message.Length > 0)
+{
+    <div class="@_messageCssClass py-4">
+        <span>@_message</span>
+    </div>
+}
+
 <EditForm Model="_registerDto" OnValidSubmit="HandleRegistration">
     <DataAnnotationsValidator/>
     <TextInput Id="firstName"
@@ -35,11 +42,7 @@
                For="() => _registerDto.ConfirmPassword"/>
 
     <div class="flex justify-end pt-4">
-        <button class="btn btn-primary">Create Account</button>
-    </div>
-
-    <div class="@_messageCssClass py-4">
-        <span>@_message</span>
+        <Button IsLoading="_loading">Create Account</Button>
     </div>
 </EditForm>
 
@@ -48,6 +51,7 @@
     string _message = string.Empty;
     string _messageCssClass = string.Empty;
     private TextInput? _firstNameInput;
+    bool _loading = false;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -59,15 +63,18 @@
 
     async Task HandleRegistration()
     {
+        _loading = true;
         var result = await AuthService.Register(_registerDto);
         if (result.Success)
         {
+            _loading = false;
             NavigationManager.NavigateTo("login");
         }
         else
         {
             _message = result.Message;
             _messageCssClass = result.Success ? "text-success" : "text-error";
+            _loading = false;
         }
     }
 

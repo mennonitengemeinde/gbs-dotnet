@@ -6,51 +6,63 @@
 
 <H3>Users</H3>
 
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 pt-4">
-    @foreach (var user in UserService.Users)
-    {
-        <div @key="user.Id" class="card bg-base-100 shadow-xl">
-            <div class="card-body">
-                <p>
-                    <span class="font-semibold">First Name:</span> @user.FirstName
-                </p>
-                <p>
-                    <span class="font-semibold">Last Name:</span> @user.LastName
-                </p>
-                <p>
-                    <span class="font-semibold">Email:</span> @user.Email
-                </p>
-                <p>
-                    <span class="font-semibold">Verified:</span> @user.EmailVerified
-                </p>
-                <div class="form-control w-full max-w-xs">
-                    <label class="label">
-                        <span class="label-text">Role</span>
-                    </label>
-                    <select @onchange="e => HandleRoleChange(e, user.Id)" class="select select-bordered">
-                        @foreach (var role in Roles.AllRoles)
-                        {
-                            @if (role == user.Role)
+@if (_loading)
+{
+    <div class="flex justify-center pt-8">
+        <InfinitLoading Height="10" Width="10"/>
+    </div>
+}
+else
+{
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 pt-4">
+        @foreach (var user in UserService.Users)
+        {
+            <div @key="user.Id" class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <p>
+                        <span class="font-semibold">First Name:</span> @user.FirstName
+                    </p>
+                    <p>
+                        <span class="font-semibold">Last Name:</span> @user.LastName
+                    </p>
+                    <p>
+                        <span class="font-semibold">Email:</span> @user.Email
+                    </p>
+                    <p>
+                        <span class="font-semibold">Verified:</span> @user.EmailVerified
+                    </p>
+                    <div class="form-control w-full max-w-xs">
+                        <label class="label">
+                            <span class="label-text">Role</span>
+                        </label>
+                        <select @onchange="e => HandleRoleChange(e, user.Id)" class="select select-bordered">
+                            @foreach (var role in Roles.AllRoles)
                             {
-                                <option selected value="@role">@role</option>
+                                @if (role == user.Role)
+                                {
+                                    <option selected value="@role">@role</option>
+                                }
+                                else
+                                {
+                                    <option value="@role">@role</option>
+                                }
                             }
-                            else
-                            {
-                                <option value="@role">@role</option>
-                            }
-                        }
-                    </select>
+                        </select>
+                    </div>
                 </div>
             </div>
-        </div>
-    }
-</div>
+        }
+    </div>
+}
 
 @code {
+    bool _loading = false;
 
     protected override async Task OnInitializedAsync()
     {
+        _loading = true;
         await UserService.GetUsers();
+        _loading = false;
         UserService.UsersChanged += StateHasChanged;
     }
 

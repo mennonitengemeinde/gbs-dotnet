@@ -2,7 +2,6 @@ using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text.Json;
 using Blazored.LocalStorage;
-using Microsoft.AspNetCore.Components.Authorization;
 
 namespace gbs.Client;
 
@@ -33,7 +32,6 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
                 {
                     identity = new ClaimsIdentity();
                     await _localStorageService.RemoveItemAsync("authToken");
-                    authToken = string.Empty;
                 }
                 else
                 {
@@ -41,7 +39,7 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
                         new AuthenticationHeaderValue("Bearer", authToken.Replace("\"", ""));
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 await _localStorageService.RemoveItemAsync("authToken");
                 identity = new ClaimsIdentity();
