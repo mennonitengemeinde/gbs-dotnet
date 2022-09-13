@@ -1,15 +1,26 @@
 ﻿@inherits LayoutComponentBase
 @inject NavigationManager NavigationManager
 
-<NavMenu/>
+<div class="relative">
+    <NavMenu/>
 
-@if (NavigationManager.Uri.Contains("/admin"))
-{
-    <AdminMenu/>
+    @if (NavigationManager.Uri.Contains("/admin"))
+    {
+        <AdminMenu/>
+    }
+
+    <main class="flex justify-center p-4 md:p-8 relative">
+
+        <div class="w-full max-w-7xl">
+            @Body
+        </div>
+    </main>
+
+    <AlertList/>
+</div>
+
+@code {
+
+
+
 }
-
-<main class="flex justify-center p-4 md:p-8">
-    <div class="w-full max-w-7xl">
-        @Body
-    </div>
-</main>

@@ -1,0 +1,21 @@
+@implements IDisposable
+@inject IUiService UiService
+
+<div class="absolute top-2 right-0 space-y-2 px-2 z-50">
+    @foreach (var alert in UiService.Alerts)
+    {
+        <Alert @key="alert.Id" AlertDetails="alert" />
+    }
+</div>
+
+@code {
+    protected override void OnInitialized()
+    {
+        UiService.AlertsChanged += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        UiService.AlertsChanged -= StateHasChanged;
+    }
+}
