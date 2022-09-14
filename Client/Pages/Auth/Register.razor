@@ -1,4 +1,5 @@
 @page "/register"
+@using gbs.Client.Enums.Button
 @layout AuthLayout
 @inject IAuthService AuthService
 @inject NavigationManager NavigationManager
@@ -42,7 +43,7 @@
                For="() => _registerDto.ConfirmPassword"/>
 
     <div class="flex justify-end pt-4">
-        <Button IsLoading="_loading">Create Account</Button>
+        <Button Type="submit" Color="BtnColor.Primary" IsLoading="_loading">Create Account</Button>
     </div>
 </EditForm>
 
@@ -63,16 +64,16 @@
 
     async Task HandleRegistration()
     {
-        try
+        _loading = true;
+        var response = await AuthService.Register(_registerDto);
+        if (response.Success)
         {
-            _loading = true;
-            await AuthService.Register(_registerDto);
             _loading = false;
             NavigationManager.NavigateTo("login");
         }
-        catch (Exception e)
+        else
         {
-            _message = e.Message;
+            _message = response.Message;
             _messageCssClass = "text-error";
             _loading = false;
         }

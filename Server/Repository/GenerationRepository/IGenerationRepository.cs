@@ -1,6 +1,6 @@
-﻿namespace gbs.Server.Services.GenerationService;
+﻿namespace gbs.Server.Repository.GenerationRepository;
 
-public interface IGenerationService
+public interface IGenerationRepository
 {
     Task<ServiceResponse<List<Generation>>> GetAllGenerations();
     Task<ServiceResponse<Generation>> GetGenerationById(int id);

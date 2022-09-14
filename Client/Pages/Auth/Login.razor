@@ -1,4 +1,5 @@
 @page "/login"
+@using gbs.Client.Enums.Button
 @layout AuthLayout
 @inject IAuthService AuthService
 @inject NavigationManager NavigationManager
@@ -31,7 +32,7 @@
                For="() => _loginDto.Password"/>
 
     <div class="flex justify-end pt-4">
-        <Button IsLoading="_loading">Login</Button>
+        <Button Type="submit" Color="BtnColor.Primary" IsLoading="_loading">Login</Button>
     </div>
 
 
@@ -54,20 +55,17 @@
     private async Task HandleValidSubmit()
     {
         _loading = true;
-        try
+        var result = await AuthService.Login(_loginDto);
+        if (result.Success == false)
         {
-            var result = await AuthService.Login(_loginDto);
-            await LocalStorage.SetItemAsync("authToken", result);
-            await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            _message = result.Message;
             _loading = false;
-            NavigationManager.NavigateTo("school");
+            return;
         }
-        catch (Exception e)
-        {
-            _message = e.Message;
-            _loading = false;
-            StateHasChanged();
-        }
+        await LocalStorage.SetItemAsync("authToken", result.Data);
+        await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        _loading = false;
+        NavigationManager.NavigateTo("school");
     }
 
 }

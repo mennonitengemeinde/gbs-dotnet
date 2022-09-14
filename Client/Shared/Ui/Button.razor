@@ -1,17 +1,33 @@
-﻿<button type="@Type" class="btn @BtnColor.ToDescriptionString() @Size.ToDescriptionString()" disabled="@IsLoading">
-    @if (IsLoading)
-    {
-        <InfinitLoading Class="-ml-1 mr-3"/>
-    }
-    @ChildContent
-</button>
+﻿@using gbs.Client.Enums.Button
+@if (Href != null)
+{
+    <NavLink Href="@Href" class="@GetClass()">
+        @ChildContent
+    </NavLink>
+}
+else
+{
+    <button type="@Type" class="@GetClass()" disabled="@IsLoading">
+        @if (IsLoading)
+        {
+            <InfinitLoading Class="-ml-1 mr-3"/>
+        }
+        @ChildContent
+    </button>
+}
 
 @code {
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
     
     [Parameter]
-    public BtnColor BtnColor { get; set; } = BtnColor.Primary;
+    public BtnColor? Color { get; set; }
+    
+    [Parameter]
+    public BtnShape? Shape { get; set; }
+
+    [Parameter]
+    public bool Outline { get; set; } = false;
     
     [Parameter]
     public bool IsLoading { get; set; } = false;
@@ -21,4 +37,30 @@
     
     [Parameter]
     public string Type { get; set; } = "button";
+    
+    [Parameter]
+    public string? Href { get; set; }
+    
+    private string GetClass()
+    {
+        var classes = new List<string>();
+        classes.Add("btn");
+        if (Color != null)
+        {
+            classes.Add(Color.ToDescriptionString());
+        }
+        if (Size != BtnSize.Medium)
+        {
+            classes.Add(Size.ToDescriptionString());
+        }
+        if (Shape != null)
+        {
+            classes.Add(Shape.ToDescriptionString());
+        }
+        if (Outline)
+        {
+            classes.Add("btn-outline");
+        }
+        return string.Join(" ", classes);
+    }
 }

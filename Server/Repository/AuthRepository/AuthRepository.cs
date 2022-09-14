@@ -2,15 +2,15 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 
-namespace gbs.Server.Services.AuthService;
+namespace gbs.Server.Repository.AuthRepository;
 
-public class AuthService : IAuthService
+public class AuthRepository : IAuthRepository
 {
     private readonly DataContext _context;
     private readonly IConfiguration _configuration;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public AuthService(DataContext context, IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
+    public AuthRepository(DataContext context, IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
     {
         _context = context;
         _configuration = configuration;

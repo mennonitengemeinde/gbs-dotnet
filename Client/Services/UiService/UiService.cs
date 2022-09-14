@@ -5,10 +5,23 @@ public class UiService : IUiService
     public List<AlertDto> Alerts { get; set; } = new List<AlertDto>();
     public event Action? AlertsChanged;
 
-    public void AddAlert(AlertDto alert)
+    public void AddErrorAlert(string message)
     {
-        Console.WriteLine($"Adding alert {alert.Id} type {alert.Type}");
-        Alerts.Add(alert);
+        Alerts.Add(new AlertDto
+        {
+            Message = message,
+            Type = AlertType.Error
+        });
+        AlertsChanged?.Invoke();
+    }
+    
+    public void AddSuccessAlert(string message)
+    {
+        Alerts.Add(new AlertDto
+        {
+            Message = message,
+            Type = AlertType.Success
+        });
         AlertsChanged?.Invoke();
     }
 

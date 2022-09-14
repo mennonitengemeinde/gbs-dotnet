@@ -13,17 +13,17 @@ namespace gbs.Server.Controllers
     [Authorize(Roles = $"{Roles.Admin}, {Roles.SuperAdmin}")]
     public class UsersController : ControllerBase
     {
-        private readonly IUserService _userService;
+        private readonly IUserRepository _userRepo;
 
-        public UsersController(IUserService userService)
+        public UsersController(IUserRepository userRepo)
         {
-            _userService = userService;
+            _userRepo = userRepo;
         }
 
         [HttpGet]
         public async Task<ActionResult<ServiceResponse<List<UserDto>>>> GetUsers()
         {
-            var users = await _userService.GetUsers();
+            var users = await _userRepo.GetUsers();
             return Ok(users);
         }
 
@@ -31,7 +31,7 @@ namespace gbs.Server.Controllers
         public async Task<ActionResult<ServiceResponse<UserDto>>> UpdateUserRole(int userId,
             [FromBody] UserUpdateRoleDto updateRoleDto)
         {
-            var user = await _userService.UpdateUserRole(userId, updateRoleDto.Role);
+            var user = await _userRepo.UpdateUserRole(userId, updateRoleDto.Role);
             return Ok(user);
         }
     }

@@ -11,17 +11,17 @@ namespace gbs.Server.Controllers;
 [ApiController]
 public class AuthController : ControllerBase
 {
-    private readonly IAuthService _authService;
+    private readonly IAuthRepository _authRepo;
 
-    public AuthController(IAuthService authService)
+    public AuthController(IAuthRepository authRepo)
     {
-        _authService = authService;
+        _authRepo = authRepo;
     }
 
     [HttpPost("register")]
     public async Task<ActionResult<ServiceResponse<int>>> RegisterUser(RegisterDto request)
     {
-        var result = await _authService.Register(request);
+        var result = await _authRepo.Register(request);
         if (!result.Success)
         {
             return BadRequest(result);
@@ -32,7 +32,7 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<ActionResult<ServiceResponse<int>>> Login(LoginDto request)
     {
-        var result = await _authService.Login(request.Email, request.Password);
+        var result = await _authRepo.Login(request.Email, request.Password);
         if (!result.Success)
         {
             return BadRequest(result);

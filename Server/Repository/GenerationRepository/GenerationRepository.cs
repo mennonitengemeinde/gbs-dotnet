@@ -1,10 +1,10 @@
-﻿namespace gbs.Server.Services.GenerationService;
+﻿namespace gbs.Server.Repository.GenerationRepository;
 
-public class GenerationService : IGenerationService
+public class GenerationRepository : IGenerationRepository
 {
     private readonly DataContext _context;
 
-    public GenerationService(DataContext context)
+    public GenerationRepository(DataContext context)
     {
         _context = context;
     }
@@ -38,6 +38,14 @@ public class GenerationService : IGenerationService
 
     public async Task<ServiceResponse<Generation>> AddGeneration(CreateGenerationDto generation)
     {
+        if (await _context.Generations.AnyAsync(g => g.Name == generation.Name))
+        {
+            return new ServiceResponse<Generation>
+            {
+                Success = false,
+                Message = "Generation already exists."
+            };
+        }
         var newGeneration = new Generation
         {
             Name = generation.Name
@@ -52,6 +60,14 @@ public class GenerationService : IGenerationService
 
     public async Task<ServiceResponse<Generation>> UpdateGeneration(int generationId, UpdateGenerationDto generation)
     {
+        if (await _context.Generations.AnyAsync(g => g.Name == generation.Name && g.Id != generationId))
+        {
+            return new ServiceResponse<Generation>
+            {
+                Success = false,
+                Message = "Generation already exists."
+            };
+        }
         var dbGeneration = await _context.Generations.FirstOrDefaultAsync(u => u.Id == generationId);
         if (dbGeneration == null)
         {

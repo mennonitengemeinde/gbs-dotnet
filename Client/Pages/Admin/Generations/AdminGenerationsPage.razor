@@ -1,12 +1,22 @@
 ﻿@page "/admin/generations"
+@inject IGenerationService GenerationService
 @inject IUiService UiService
+@implements IDisposable
 
 <H3>Generations</H3>
 
-<GenerationsTable/>
+<GenerationsTable Generations="GenerationService.Generations"/>
 
 @code {
-    bool _tableView = true;
-    bool _createView = false;
-    bool _editView = false;
+    protected override async Task OnInitializedAsync()
+    {
+        await GenerationService.LoadGenerations();
+        GenerationService.GenerationsChanged += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        GenerationService.GenerationsChanged -= StateHasChanged;
+    }
+
 }

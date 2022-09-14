@@ -1,64 +1,53 @@
 ﻿namespace gbs.Client.Services.Api.GenerationService;
 
-public class GenerationService : IGenerationService
+public class GenerationApiService : BaseApiService, IGenerationService
 {
     private readonly HttpClient _http;
+    private readonly IUiService _uiService;
     public List<Generation> Generations { get; set; } = new List<Generation>();
     public event Action? GenerationsChanged;
 
-    public GenerationService(HttpClient http)
+    public GenerationApiService(HttpClient http, IUiService uiService)
     {
         _http = http;
+        _uiService = uiService;
     }
     
     public async Task LoadGenerations()
     {
-        Generations = await GetGenerations();
+        var result = await GetGenerations();
+        if (result.Success == false)
+        {
+            _uiService.AddErrorAlert(result.Message);
+            Generations = new List<Generation>();
+            return;;
+        }
+        Generations = result.Data!;
+        Console.WriteLine($"Loaded {Generations.Count} generations");
         GenerationsChanged?.Invoke();
     }
 
-    public async Task<List<Generation>> GetGenerations()
+    public async Task<ServiceResponse<List<Generation>>> GetGenerations()
     {
-        var result = await _http.GetFromJsonAsync<ServiceResponse<List<Generation>>>("api/generations");
-        if (result?.Data == null)
-        {
-            throw new Exception(result?.Message);
-        }
-
-        return result.Data;
+        var response = await _http.GetAsync("api/generations");
+        return await EnsureSuccess<List<Generation>>(response);
     }
 
-    public async Task<Generation> AddGeneration(CreateGenerationDto generation)
+    public async Task<ServiceResponse<Generation>> AddGeneration(CreateGenerationDto generation)
     {
         var response = await _http.PostAsJsonAsync("api/generations", generation);
-        var result = await response.Content.ReadFromJsonAsync<ServiceResponse<Generation>>();
-        if (result?.Data == null)
-        {
-            throw new Exception(result?.Message);
-        }
-
-        return result.Data;
+        return await EnsureSuccess<Generation>(response);
     }
 
-    public async Task<Generation> UpdateGeneration(int generationId, UpdateGenerationDto generation)
+    public async Task<ServiceResponse<Generation>> UpdateGeneration(int generationId, UpdateGenerationDto generation)
     {
         var response = await _http.PutAsJsonAsync($"api/generations/{generationId}", generation);
-        var result = await response.Content.ReadFromJsonAsync<ServiceResponse<Generation>>();
-        if (result?.Data == null)
-        {
-            throw new Exception(result?.Message);
-        }
-        
-        return result.Data;
+        return await EnsureSuccess<Generation>(response);
     }
 
-    public async Task DeleteGeneration(int generationId)
+    public async Task<ServiceResponse<bool>> DeleteGeneration(int generationId)
     {
         var response = await _http.DeleteAsync($"api/generations/{generationId}");
-        var result = await response.Content.ReadFromJsonAsync<ServiceResponse<Generation>>();
-        if (result?.Data == null)
-        {
-            throw new Exception(result?.Message);
-        }
+        return await EnsureSuccess<bool>(response);
     }
 }

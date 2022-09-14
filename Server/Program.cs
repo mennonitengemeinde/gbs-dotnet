@@ -5,9 +5,10 @@ global using gbs.Shared.Const;
 global using gbs.Shared.Dtos;
 global using gbs.Shared.Dtos.Auth;
 global using gbs.Shared.Dtos.Generation;
-global using gbs.Server.Services.AuthService;
-global using gbs.Server.Services.UserService;
-global using gbs.Server.Services.GenerationService;
+global using gbs.Shared.Dtos.LiveStream;
+global using gbs.Server.Repository.AuthRepository;
+global using gbs.Server.Repository.GenerationRepository;
+global using gbs.Server.Repository.UserRepository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.IdentityModel.Tokens;
@@ -23,9 +24,9 @@ builder.Services.AddDbContext<DataContext>(options =>
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IGenerationService, GenerationService>();
+builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IGenerationRepository, GenerationRepository>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

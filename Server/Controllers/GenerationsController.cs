@@ -12,18 +12,18 @@ namespace gbs.Server.Controllers
     [ApiController]
     public class GenerationsController : ControllerBase
     {
-        private readonly IGenerationService _generationService;
+        private readonly IGenerationRepository _generationRepo;
 
-        public GenerationsController(IGenerationService generationService)
+        public GenerationsController(IGenerationRepository generationRepo)
         {
-            _generationService = generationService;
+            _generationRepo = generationRepo;
         }
         
         [HttpGet]
         [Authorize(Roles = $"{Roles.SuperAdmin}, {Roles.Admin}, {Roles.Teacher}")]
         public async Task<ActionResult<ServiceResponse<List<Generation>>>> GetGenerations()
         {
-            var result = await _generationService.GetAllGenerations();
+            var result = await _generationRepo.GetAllGenerations();
             return Ok(result);
         }
         
@@ -31,7 +31,11 @@ namespace gbs.Server.Controllers
         [Authorize(Roles = $"{Roles.SuperAdmin}, {Roles.Admin}, {Roles.Teacher}")]
         public async Task<ActionResult<ServiceResponse<Generation>>> GetGenerationById(int id)
         {
-            var result = await _generationService.GetGenerationById(id);
+            var result = await _generationRepo.GetGenerationById(id);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
             return Ok(result);
         }
         
@@ -39,7 +43,11 @@ namespace gbs.Server.Controllers
         [Authorize(Roles = $"{Roles.SuperAdmin}, {Roles.Admin}, {Roles.Teacher}")]
         public async Task<ActionResult<ServiceResponse<Generation>>> AddGeneration(CreateGenerationDto request)
         {
-            var result = await _generationService.AddGeneration(request);
+            var result = await _generationRepo.AddGeneration(request);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
             return Ok(result);
         }
         
@@ -47,7 +55,11 @@ namespace gbs.Server.Controllers
         [Authorize(Roles = $"{Roles.SuperAdmin}, {Roles.Admin}, {Roles.Teacher}")]
         public async Task<ActionResult<ServiceResponse<Generation>>> UpdateGeneration(int generationId, UpdateGenerationDto generation)
         {
-            var result = await _generationService.UpdateGeneration(generationId, generation);
+            var result = await _generationRepo.UpdateGeneration(generationId, generation);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
             return Ok(result);
         }
         
@@ -55,7 +67,11 @@ namespace gbs.Server.Controllers
         [Authorize(Roles = $"{Roles.SuperAdmin}")]
         public async Task<ActionResult<ServiceResponse<Generation>>> DeleteGeneration(int id)
         {
-            var result = await _generationService.DeleteGeneration(id);
+            var result = await _generationRepo.DeleteGeneration(id);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
             return Ok(result);
         }
     }

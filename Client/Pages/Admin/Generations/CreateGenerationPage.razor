@@ -1,10 +1,13 @@
 @page "/admin/generations/create"
+@using gbs.Client.Enums.Button
+@inject NavigationManager NavigationManager
 @inject IGenerationService GenerationService
+@inject IUiService UiService
 
 <H3>Create Generation</H3>
 
 <div class="flex justify-center pt-4">
-    <div class="card w-96 bg-base-100 shadow-lg">
+    <div class="card w-96 bg-base-200 shadow-lg">
         <div class="card-body">
             <EditForm Model="_newGeneration" OnValidSubmit="HandleValidSubmit">
                 <DataAnnotationsValidator/>
@@ -13,8 +16,9 @@
                            Label="Name"
                            @bind-Value="_newGeneration.Name"
                            For="() => _newGeneration.Name"/>
-                <div class="flex justify-end pt-4">
-                    <Button Type="submit" IsLoading="_isLoading">Add</Button>
+                <div class="flex justify-end pt-4 space-x-2">
+                    <Button Href="admin/generations">Cancel</Button>
+                    <Button Type="submit" Color="BtnColor.Primary" IsLoading="_isLoading">Add</Button>
                 </div>
             </EditForm>
         </div>
@@ -37,6 +41,17 @@
     async Task HandleValidSubmit()
     {
         _isLoading = true;
-        // var response = await GenerationService.AddGeneration(_newGeneration);
+        var response = await GenerationService.AddGeneration(_newGeneration);
+        if (response.Success)
+        {
+            UiService.AddSuccessAlert("Generation added successfully");
+            NavigationManager.NavigateTo("admin/generations");
+        }
+        else
+        {
+            _isLoading = false;
+            UiService.AddErrorAlert(response.Message);
+            await _nameInput.FocusAsync();
+        }
     }
 }

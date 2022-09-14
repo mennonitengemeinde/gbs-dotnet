@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace gbs.Client.Enums;
+namespace gbs.Client.Enums.Button;
 
 public enum BtnColor
 {

@@ -1,5 +1,4 @@
-﻿@page "/admin"
-@page "/admin/users"
+﻿@page "/admin/users"
 @implements IDisposable
 @attribute [Authorize(Roles = $"{Roles.Admin}, {Roles.SuperAdmin}")]
 @inject IUserService UserService
