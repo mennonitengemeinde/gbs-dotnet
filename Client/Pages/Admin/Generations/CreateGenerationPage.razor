@@ -1,0 +1,42 @@
+@page "/admin/generations/create"
+@inject IGenerationService GenerationService
+
+<H3>Create Generation</H3>
+
+<div class="flex justify-center pt-4">
+    <div class="card w-96 bg-base-100 shadow-lg">
+        <div class="card-body">
+            <EditForm Model="_newGeneration" OnValidSubmit="HandleValidSubmit">
+                <DataAnnotationsValidator/>
+                <TextInput Id="name"
+                           @ref="_nameInput"
+                           Label="Name"
+                           @bind-Value="_newGeneration.Name"
+                           For="() => _newGeneration.Name"/>
+                <div class="flex justify-end pt-4">
+                    <Button Type="submit" IsLoading="_isLoading">Add</Button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+@code {
+    TextInput _nameInput = null!;
+    CreateGenerationDto _newGeneration = new CreateGenerationDto();
+    bool _isLoading = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await _nameInput.FocusAsync();
+        }
+    }
+
+    async Task HandleValidSubmit()
+    {
+        _isLoading = true;
+        // var response = await GenerationService.AddGeneration(_newGeneration);
+    }
+}

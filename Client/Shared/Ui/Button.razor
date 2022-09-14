@@ -1,4 +1,4 @@
-﻿<button class="btn @BtnColor.ToDescriptionString()" disabled="@IsLoading">
+﻿<button type="@Type" class="btn @BtnColor.ToDescriptionString() @Size.ToDescriptionString()" disabled="@IsLoading">
     @if (IsLoading)
     {
         <InfinitLoading Class="-ml-1 mr-3"/>
@@ -16,5 +16,9 @@
     [Parameter]
     public bool IsLoading { get; set; } = false;
     
+    [Parameter]
+    public BtnSize Size { get; set; } = BtnSize.Medium;
     
+    [Parameter]
+    public string Type { get; set; } = "button";
 }

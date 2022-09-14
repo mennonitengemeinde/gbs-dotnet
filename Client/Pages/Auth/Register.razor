@@ -63,17 +63,17 @@
 
     async Task HandleRegistration()
     {
-        _loading = true;
-        var result = await AuthService.Register(_registerDto);
-        if (result.Success)
+        try
         {
+            _loading = true;
+            await AuthService.Register(_registerDto);
             _loading = false;
             NavigationManager.NavigateTo("login");
         }
-        else
+        catch (Exception e)
         {
-            _message = result.Message;
-            _messageCssClass = result.Success ? "text-success" : "text-error";
+            _message = e.Message;
+            _messageCssClass = "text-error";
             _loading = false;
         }
     }

@@ -1,19 +1,19 @@
 global using System.Net.Http.Json;
 global using Microsoft.AspNetCore.Components.Authorization;
-global using gbs.Client.Services.AuthService;
 global using gbs.Client.Services.UiService;
-global using gbs.Client.Services.UserService;
-global using gbs.Client.Services.GenerationService;
+global using gbs.Client.Services.Api.AuthService;
+global using gbs.Client.Services.Api.UserService;
+global using gbs.Client.Services.Api.GenerationService;
 global using gbs.Shared.Dtos;
 global using gbs.Shared.Dtos.Auth;
 global using gbs.Shared.Dtos.Generation;
 global using gbs.Shared.Dtos.Ui;
+global using gbs.Shared.Enums;
 global using gbs.Shared.Entities;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Blazored.LocalStorage;
 using gbs.Client;
-
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");

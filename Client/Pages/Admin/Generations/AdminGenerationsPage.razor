@@ -1,0 +1,12 @@
+﻿@page "/admin/generations"
+@inject IUiService UiService
+
+<H3>Generations</H3>
+
+<GenerationsTable/>
+
+@code {
+    bool _tableView = true;
+    bool _createView = false;
+    bool _editView = false;
+}

@@ -1,4 +1,4 @@
-﻿namespace gbs.Client.Services.UserService;
+﻿namespace gbs.Client.Services.Api.UserService;
 
 public class UserService : IUserService
 {

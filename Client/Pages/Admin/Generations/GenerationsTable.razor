@@ -1,0 +1,32 @@
+<div class="overflow-x-auto">
+    <table class="table w-full">
+        <!-- head -->
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th class="text-end">
+                <NavLink Href="admin/generations/create"
+                         class="btn btn-primary btn-xs"><i class="oi oi-plus"></i></NavLink>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var generation in Generations)
+        {
+            <tr>
+                <th>@generation.Name</th>
+                <td></td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+@code {
+
+    [Parameter]
+    public List<Generation> Generations { get; set; } = new List<Generation>();
+    
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+}

@@ -12,29 +12,29 @@
 <EditForm Model="_loginDto" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator/>
     @if (_message.Length > 0)
-        {
-            <div class="text-error py-4">
-                <span>@_message</span>
-            </div>
-        }
-    
+    {
+        <div class="text-error py-4">
+            <span>@_message</span>
+        </div>
+    }
+
     <TextInput Id="email"
                @ref="_emailInput"
-               Label="Email" 
-               InputType="email" 
-               @bind-Value="_loginDto.Email" 
+               Label="Email"
+               InputType="email"
+               @bind-Value="_loginDto.Email"
                For="() => _loginDto.Email"/>
-    <TextInput Id="password" 
-               Label="Password" 
-               InputType="password" 
-               @bind-Value="_loginDto.Password" 
+    <TextInput Id="password"
+               Label="Password"
+               InputType="password"
+               @bind-Value="_loginDto.Password"
                For="() => _loginDto.Password"/>
 
     <div class="flex justify-end pt-4">
         <Button IsLoading="_loading">Login</Button>
     </div>
-    
-    
+
+
 </EditForm>
 
 @code {
@@ -50,22 +50,24 @@
             await _emailInput.FocusAsync();
         }
     }
-    
+
     private async Task HandleValidSubmit()
     {
         _loading = true;
-        var result = await AuthService.Login(_loginDto);
-        if (result.Success)
+        try
         {
-            await LocalStorage.SetItemAsync("authToken", result.Data);
+            var result = await AuthService.Login(_loginDto);
+            await LocalStorage.SetItemAsync("authToken", result);
             await AuthenticationStateProvider.GetAuthenticationStateAsync();
             _loading = false;
             NavigationManager.NavigateTo("school");
         }
-        else
+        catch (Exception e)
         {
-            _message = result.Message;
+            _message = e.Message;
             _loading = false;
+            StateHasChanged();
         }
     }
+
 }

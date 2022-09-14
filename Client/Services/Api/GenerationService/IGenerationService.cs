@@ -1,6 +1,6 @@
 ﻿using gbs.Shared.Dtos.Generation;
 
-namespace gbs.Client.Services.GenerationService;
+namespace gbs.Client.Services.Api.GenerationService;
 
 public interface IGenerationService
 {

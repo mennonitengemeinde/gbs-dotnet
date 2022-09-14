@@ -1,4 +1,4 @@
-﻿namespace gbs.Client.Services.GenerationService;
+﻿namespace gbs.Client.Services.Api.GenerationService;
 
 public class GenerationService : IGenerationService
 {

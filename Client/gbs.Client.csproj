@@ -22,4 +22,8 @@
     <_ContentIncludedByDefault Remove="Pages\Admin\Streaming\StreamsList.razor" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Services\Api" />
+  </ItemGroup>
+
 </Project>

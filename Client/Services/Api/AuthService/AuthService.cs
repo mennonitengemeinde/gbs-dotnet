@@ -1,4 +1,4 @@
-namespace gbs.Client.Services.AuthService;
+namespace gbs.Client.Services.Api.AuthService;
 
 public class AuthService : IAuthService
 {
@@ -11,37 +11,27 @@ public class AuthService : IAuthService
         _authStateProvider = authStateProvider;
     }
     
-    public async Task<ServiceResponse<int>> Register(RegisterDto userRegister)
+    public async Task<int> Register(RegisterDto userRegister)
     {
         var response = await _http.PostAsJsonAsync("api/auth/register", userRegister);
         var result = await response.Content.ReadFromJsonAsync<ServiceResponse<int>>();
-        if (result == null)
+        if (result?.Data == null || result.Success == false)
         {
-            return new ServiceResponse<int>
-            {
-                Data = 0,
-                Success = false,
-                Message = "Something went wrong"
-            };
+            throw new Exception(result?.Message);
         }
-        return result;
+        return result.Data;
     }
 
-    public async Task<ServiceResponse<string>> Login(LoginDto userLogin)
+    public async Task<string> Login(LoginDto userLogin)
     {
         var response = await _http.PostAsJsonAsync("api/auth/login", userLogin);
         var result = await response.Content.ReadFromJsonAsync<ServiceResponse<string>>();
-        if (result == null)
+        if (result?.Data == null || result.Success == false)
         {
-            return new ServiceResponse<string>
-            {
-                Data = null,
-                Success = false,
-                Message = "Something went wrong"
-            };
+            throw new Exception(result?.Message);
         }
 
-        return result;
+        return result.Data;
     }
 
     public async Task<bool> IsUserAuthenticated()
