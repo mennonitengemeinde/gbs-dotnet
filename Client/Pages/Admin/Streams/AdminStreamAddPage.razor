@@ -1,4 +1,5 @@
 @page "/admin/streams/create"
+@attribute [Authorize(Roles = $"{Roles.Admin}, {Roles.SuperAdmin}, {Roles.Teacher}")]
 @implements IDisposable
 @inject ITeacherService TeacherService
 @inject IGenerationService GenerationService
@@ -25,37 +26,10 @@
                 <SelectInput Id="generation"
                              Label="Generation"
                              Items="_generationSelectItems"
-                             @bind-Value="SelectedGeneration"/>
+                             For="@(() => _newStream.GenerationId)"
+                             @bind-Value="_newStream.GenerationId"/>
+                <TeacherComboBox @bind-Teachers="SelectedTeachers"/>
 
-                <div class="form-control w-full max-w-xs">
-                    <label class="label">
-                        <span class="label-text">Teachers</span>
-                    </label>
-                    <div class="input-group">
-                        <input type="text" 
-                               @bind="_selectedTeacher"
-                               list="teacher_elements" 
-                               placeholder="Type here" 
-                               class="input input-bordered w-full max-w-xs"/>
-                        <Button OnClick="HandleAddTeacher">Add</Button>
-                        <datalist id="teacher_elements">
-                            @foreach (var teacher in TeacherService.Teachers)
-                            {
-                                @if (_newStream.Teachers.Exists(t => t.Id == teacher.Id))
-                                {
-                                    continue;
-                                }
-                                <option value="@teacher.Name"></option>
-                            }
-                        </datalist>
-                    </div>
-                </div>
-
-                @foreach (var teacher in _newStream.Teachers)
-                {
-                    <p>@teacher.Name</p>
-                }
-                
                 <div class="flex justify-end pt-4 space-x-2">
                     <Button Href="admin/teachers">Cancel</Button>
                     <Button Type="submit" Color="BtnColor.Primary" IsLoading="_isLoading">Add</Button>
@@ -69,20 +43,31 @@
     StreamCreateDto _newStream = new StreamCreateDto();
     TextInput _titleInput = null!;
     bool _isLoading = false;
-    string _selectedTeacher = string.Empty;
-    string _selectedGeneration = string.Empty;
 
-    string SelectedGeneration
+    int _selectedGeneration;
+    List<Teacher> _selectedTeachers = new List<Teacher>();
+
+    int SelectedGeneration
     {
         get => _selectedGeneration;
         set
         {
-            _newStream.GenerationId = int.Parse(value);
             _selectedGeneration = value;
+            _newStream.GenerationId = value;
         }
     }
 
-    Dictionary<string, string> _generationSelectItems = new Dictionary<string, string>();
+    List<Teacher> SelectedTeachers
+    {
+        get => _selectedTeachers;
+        set
+        {
+            _selectedTeachers = value;
+            _newStream.Teachers = value.Select(t => t.Id).ToList();
+        }
+    }
+
+    Dictionary<int, string> _generationSelectItems = new Dictionary<int, string>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -90,20 +75,13 @@
         await TeacherService.LoadTeachers();
         TeacherService.TeachersChanged += StateHasChanged;
         GenerationService.GenerationsChanged += StateHasChanged;
-        _generationSelectItems = GenerationService.Generations.ToDictionary(g => g.Id.ToString(), g => g.Name);
+        _generationSelectItems = GenerationService.Generations.ToDictionary(g => g.Id, g => g.Name);
     }
 
     async Task HandleValidSubmit()
     {
     }
 
-    void HandleAddTeacher()
-    {
-        var teacher = TeacherService.Teachers.FirstOrDefault(t => t.Name == _selectedTeacher);
-        if (teacher == null) return;
-        _newStream.Teachers.Add(teacher);
-        _selectedTeacher = string.Empty;
-    }
 
     public void Dispose()
     {

@@ -6,6 +6,10 @@ public enum BtnColor
 {
     [Description("btn-primary")]
     Primary,
+    [Description("btn-secondary")]
+    Secondary,
+    [Description("btn-accent")]
+    Accent,
     [Description("btn-success")]
     Success,
     [Description("btn-error")]
@@ -14,4 +18,8 @@ public enum BtnColor
     Warning,
     [Description("btn-info")]
     Info,
+    [Description("btn-ghost")]
+    Ghost,
+    [Description("btn-link")]
+    Link,
 }

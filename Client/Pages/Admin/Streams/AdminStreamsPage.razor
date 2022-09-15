@@ -1,5 +1,6 @@
 ﻿@page "/admin"
 @page "/admin/streams"
+@attribute [Authorize(Roles = $"{Roles.Admin}, {Roles.SuperAdmin}, {Roles.Teacher}")]
 
 
 <div class="flex justify-between items-center">

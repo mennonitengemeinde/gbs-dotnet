@@ -25,13 +25,25 @@ public class StreamRepository : IStreamRepository
             response.Message = "Stream already exists";
             return response;
         }
+
+        var generation = await _context.Generations.FirstOrDefaultAsync(g => g.Id == streamCreateDto.GenerationId);
+        if (generation == null)
+        {
+            response.Success = false;
+            response.Message = "Generation not found";
+            return response;
+        }
         var stream = new LiveStream
         {
             Title = streamCreateDto.Title,
             Url = streamCreateDto.Url,
             IsLive = streamCreateDto.IsLive,
-            GenerationId = streamCreateDto.GenerationId
+            Generation = generation
         };
+        var teachers = await _context.Teachers
+            .Where(t => streamCreateDto.Teachers.Contains(t.Id))
+            .ToListAsync();
+        stream.Teachers.AddRange(teachers);
         _context.Streams.Add(stream);
         await _context.SaveChangesAsync();
         response.Data = stream;

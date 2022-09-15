@@ -59,6 +59,11 @@ public class BaseApiService
             result.Message = "Internal server error";
             return result;
         }
+
+        if (response.StatusCode == HttpStatusCode.Unauthorized)
+        {
+            
+        }
         
         var responseData = await response.Content.ReadFromJsonAsync<ServiceResponse<T>>();
         result.Message = responseData?.Message ?? "Something went wrong";

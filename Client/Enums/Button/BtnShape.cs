@@ -6,9 +6,9 @@ public enum BtnShape
 {
     [Description("btn-block")]
     Block,
-    [Description("btn-wide")]
-    Circle,
     [Description("btn-circle")]
+    Circle,
+    [Description("btn-square")]
     Square,
     [Description("btn-wide")]
     Wide,

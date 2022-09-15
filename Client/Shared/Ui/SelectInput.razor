@@ -1,3 +1,7 @@
+@typeparam TKey
+@typeparam TValue
+@using System.Linq.Expressions
+
 <div class="form-control w-full max-w-md">
     @if (Label != null)
     {
@@ -6,11 +10,20 @@
         </label>
     }
     <select id="@Id" class="select select-bordered" @onchange="HandleChange">
-        @foreach(var item in Items)
+        @if (Value == null || (Value is string && string.IsNullOrEmpty(Value.ToString())))
         {
-            <option value="@item.Key" selected="@(item.Key == Value)">@item.Value</option>
+            <option value="" selected disabled>Select @Label</option>
+        }
+        @foreach (var item in Items)
+        {
+            <option value="@item.Key" selected="@(item.Key?.Equals(Value))">@item.Value</option>
         }
     </select>
+    @if (For != null)
+    {
+        <p>Test</p>
+        <ValidationMessage For="@For"/>
+    }
 </div>
 
 @code {
@@ -19,20 +32,26 @@
     public string Id { get; set; } = string.Empty;
     
     [Parameter]
-    public string Value { get; set; } = string.Empty;
+    public TKey Value { get; set; }
     
     [Parameter]
-    public EventCallback<string> ValueChanged { get; set; }
+    public EventCallback<TKey> ValueChanged { get; set; }
     
     [Parameter]
     public string? Label { get; set; }
     
     [Parameter]
-    public Dictionary<string, string> Items { get; set; }
+    public Dictionary<TKey, TValue> Items { get; set; }
+    
+    [Parameter]
+    public Expression<Func<TKey>>? For { get; set; }
     
     async Task HandleChange(ChangeEventArgs args)
     {
-        Value = args.Value?.ToString() ?? string.Empty;
-        await ValueChanged.InvokeAsync(Value);
+        if (args.Value is TKey value)
+        {
+            Value = value;
+            await ValueChanged.InvokeAsync(value);
+        }
     }
 }
