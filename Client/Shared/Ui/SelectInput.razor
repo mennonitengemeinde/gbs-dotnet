@@ -1,0 +1,38 @@
+<div class="form-control w-full max-w-md">
+    @if (Label != null)
+    {
+        <label class="label">
+            <span class="label-text">@Label</span>
+        </label>
+    }
+    <select id="@Id" class="select select-bordered" @onchange="HandleChange">
+        @foreach(var item in Items)
+        {
+            <option value="@item.Key" selected="@(item.Key == Value)">@item.Value</option>
+        }
+    </select>
+</div>
+
+@code {
+
+    [Parameter]
+    public string Id { get; set; } = string.Empty;
+    
+    [Parameter]
+    public string Value { get; set; } = string.Empty;
+    
+    [Parameter]
+    public EventCallback<string> ValueChanged { get; set; }
+    
+    [Parameter]
+    public string? Label { get; set; }
+    
+    [Parameter]
+    public Dictionary<string, string> Items { get; set; }
+    
+    async Task HandleChange(ChangeEventArgs args)
+    {
+        Value = args.Value?.ToString() ?? string.Empty;
+        await ValueChanged.InvokeAsync(Value);
+    }
+}

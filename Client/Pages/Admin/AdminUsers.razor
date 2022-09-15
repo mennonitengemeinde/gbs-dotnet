@@ -16,7 +16,7 @@ else
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 pt-4">
         @foreach (var user in UserService.Users)
         {
-            <div @key="user.Id" class="card bg-base-100 shadow-xl">
+            <div @key="user.Id" class="card bg-base-200 shadow-xl">
                 <div class="card-body">
                     <p>
                         <span class="font-semibold">First Name:</span> @user.FirstName

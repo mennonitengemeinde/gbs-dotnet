@@ -1,4 +1,4 @@
-﻿namespace gbs.Shared.Dtos.Auth;
+﻿namespace gbs.Shared.Dtos;
 
 public class UserUpdateRoleDto
 {

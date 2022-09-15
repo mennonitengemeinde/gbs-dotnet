@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace gbs.Shared.Dtos.Auth;
+namespace gbs.Shared.Dtos;
 
 public class RegisterDto
 {

@@ -1,22 +1,23 @@
-@page "/admin/generations/create"
+@page "/admin/teachers/create"
+@using Microsoft.AspNetCore.Components
 @inject NavigationManager NavigationManager
-@inject IGenerationService GenerationService
+@inject ITeacherService TeacherService
 @inject IUiService UiService
 
-<H3>Create Generation</H3>
+<H3>Create Teacher</H3>
 
 <div class="flex justify-center pt-4">
     <div class="card w-96 bg-base-200 shadow-lg">
         <div class="card-body">
-            <EditForm Model="_new" OnValidSubmit="HandleValidSubmit">
+            <EditForm Model="_newTeacher" OnValidSubmit="HandleValidSubmit">
                 <DataAnnotationsValidator/>
                 <TextInput Id="name"
                            @ref="_nameInput"
                            Label="Name"
-                           @bind-Value="_new.Name"
-                           For="() => _new.Name"/>
+                           @bind-Value="_newTeacher.Name"
+                           For="() => _newTeacher.Name"/>
                 <div class="flex justify-end pt-4 space-x-2">
-                    <Button Href="admin/generations">Cancel</Button>
+                    <Button Href="admin/teachers">Cancel</Button>
                     <Button Type="submit" Color="BtnColor.Primary" IsLoading="_isLoading">Add</Button>
                 </div>
             </EditForm>
@@ -25,10 +26,10 @@
 </div>
 
 @code {
-    TextInput _nameInput = null!;
-    GenerationCreateDto _new = new GenerationCreateDto();
+    TeacherCreateDto _newTeacher = new TeacherCreateDto();
     bool _isLoading = false;
-
+    TextInput _nameInput = null!;
+    
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -40,12 +41,12 @@
     async Task HandleValidSubmit()
     {
         _isLoading = true;
-        var response = await GenerationService.AddGeneration(_new);
+        var response = await TeacherService.AddTeacher(_newTeacher);
         if (response.Success)
         {
             _isLoading = false;
-            UiService.AddSuccessAlert("Generation added successfully");
-            NavigationManager.NavigateTo("admin/generations");
+            UiService.AddSuccessAlert("Teacher added successfully");
+            NavigationManager.NavigateTo("admin/teachers");
         }
         else
         {

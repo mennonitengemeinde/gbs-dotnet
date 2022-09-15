@@ -36,7 +36,7 @@ public class GenerationRepository : IGenerationRepository
         };
     }
 
-    public async Task<ServiceResponse<Generation>> AddGeneration(CreateGenerationDto generation)
+    public async Task<ServiceResponse<Generation>> AddGeneration(GenerationCreateDto generation)
     {
         if (await _context.Generations.AnyAsync(g => g.Name == generation.Name))
         {
@@ -58,7 +58,7 @@ public class GenerationRepository : IGenerationRepository
         };
     }
 
-    public async Task<ServiceResponse<Generation>> UpdateGeneration(int generationId, UpdateGenerationDto generation)
+    public async Task<ServiceResponse<Generation>> UpdateGeneration(int generationId, GenerationUpdateDto generation)
     {
         if (await _context.Generations.AnyAsync(g => g.Name == generation.Name && g.Id != generationId))
         {

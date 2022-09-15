@@ -41,7 +41,7 @@ namespace gbs.Server.Controllers
         
         [HttpPost]
         [Authorize(Roles = $"{Roles.SuperAdmin}, {Roles.Admin}, {Roles.Teacher}")]
-        public async Task<ActionResult<ServiceResponse<Generation>>> AddGeneration(CreateGenerationDto request)
+        public async Task<ActionResult<ServiceResponse<Generation>>> AddGeneration(GenerationCreateDto request)
         {
             var result = await _generationRepo.AddGeneration(request);
             if (!result.Success)
@@ -53,7 +53,7 @@ namespace gbs.Server.Controllers
         
         [HttpPut("{generationId:int}")]
         [Authorize(Roles = $"{Roles.SuperAdmin}, {Roles.Admin}, {Roles.Teacher}")]
-        public async Task<ActionResult<ServiceResponse<Generation>>> UpdateGeneration(int generationId, UpdateGenerationDto generation)
+        public async Task<ActionResult<ServiceResponse<Generation>>> UpdateGeneration(int generationId, GenerationUpdateDto generation)
         {
             var result = await _generationRepo.UpdateGeneration(generationId, generation);
             if (!result.Success)

@@ -1,0 +1,46 @@
+@page "/admin/teachers"
+@implements IDisposable
+@inject ITeacherService TeacherService
+
+<H3>Teachers</H3>
+
+<div class="overflow-x-auto shadow-lg mt-4">
+    <table class="table w-full">
+        <!-- head -->
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th class="text-end py-0">
+                <NavLink Href="/admin/teachers/create"
+                         class="btn btn-primary btn-sm">
+                    <i class="oi oi-plus"></i>
+                </NavLink>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var teacher in TeacherService.Teachers)
+        {
+            <tr>
+                <th>@teacher.Name</th>
+                <td></td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        await TeacherService.LoadTeachers();
+        TeacherService.TeachersChanged += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        TeacherService.TeachersChanged -= StateHasChanged;
+    }
+
+}

@@ -1,6 +1,4 @@
-﻿using gbs.Shared.Dtos.Generation;
-
-namespace gbs.Client.Services.Api.GenerationService;
+﻿namespace gbs.Client.Services.Api.GenerationService;
 
 public interface IGenerationService
 {
@@ -8,7 +6,7 @@ public interface IGenerationService
     event Action GenerationsChanged;
     Task LoadGenerations();
     Task<ServiceResponse<List<Generation>>> GetGenerations();
-    Task<ServiceResponse<Generation>> AddGeneration(CreateGenerationDto generation);
-    Task<ServiceResponse<Generation>> UpdateGeneration(int generationId, UpdateGenerationDto generation);
+    Task<ServiceResponse<Generation>> AddGeneration(GenerationCreateDto generation);
+    Task<ServiceResponse<Generation>> UpdateGeneration(int generationId, GenerationUpdateDto generation);
     Task<ServiceResponse<bool>> DeleteGeneration(int generationId);
 }

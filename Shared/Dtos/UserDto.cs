@@ -1,6 +1,6 @@
 ﻿using gbs.Shared.Const;
 
-namespace gbs.Shared.Dtos.Auth;
+namespace gbs.Shared.Dtos;
 
 public class UserDto
 {

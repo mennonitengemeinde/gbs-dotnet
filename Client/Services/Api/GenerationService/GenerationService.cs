@@ -1,13 +1,13 @@
 ﻿namespace gbs.Client.Services.Api.GenerationService;
 
-public class GenerationApiService : BaseApiService, IGenerationService
+public class GenerationService : BaseApiService, IGenerationService
 {
     private readonly HttpClient _http;
     private readonly IUiService _uiService;
     public List<Generation> Generations { get; set; } = new List<Generation>();
     public event Action? GenerationsChanged;
 
-    public GenerationApiService(HttpClient http, IUiService uiService)
+    public GenerationService(HttpClient http, IUiService uiService)
     {
         _http = http;
         _uiService = uiService;
@@ -23,7 +23,6 @@ public class GenerationApiService : BaseApiService, IGenerationService
             return;;
         }
         Generations = result.Data!;
-        Console.WriteLine($"Loaded {Generations.Count} generations");
         GenerationsChanged?.Invoke();
     }
 
@@ -33,13 +32,13 @@ public class GenerationApiService : BaseApiService, IGenerationService
         return await EnsureSuccess<List<Generation>>(response);
     }
 
-    public async Task<ServiceResponse<Generation>> AddGeneration(CreateGenerationDto generation)
+    public async Task<ServiceResponse<Generation>> AddGeneration(GenerationCreateDto generation)
     {
         var response = await _http.PostAsJsonAsync("api/generations", generation);
         return await EnsureSuccess<Generation>(response);
     }
 
-    public async Task<ServiceResponse<Generation>> UpdateGeneration(int generationId, UpdateGenerationDto generation)
+    public async Task<ServiceResponse<Generation>> UpdateGeneration(int generationId, GenerationUpdateDto generation)
     {
         var response = await _http.PutAsJsonAsync($"api/generations/{generationId}", generation);
         return await EnsureSuccess<Generation>(response);

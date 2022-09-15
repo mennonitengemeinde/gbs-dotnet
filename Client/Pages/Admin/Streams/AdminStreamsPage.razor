@@ -1,11 +1,10 @@
 ﻿@page "/admin"
 @page "/admin/streams"
-@using gbs.Client.Enums.Button
 
 
 <div class="flex justify-between items-center">
     <H3>Streams</H3>
-    <Button Color="BtnColor.Primary"><i class="oi oi-plus"></i></Button>
+    <Button Href="/admin/streams/create" Color="BtnColor.Primary"><i class="oi oi-plus"></i></Button>
 </div>
 
 <div id="streams-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pt-4">

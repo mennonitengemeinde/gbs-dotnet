@@ -4,9 +4,8 @@ global using gbs.Client.Services.UiService;
 global using gbs.Client.Services.Api.AuthService;
 global using gbs.Client.Services.Api.UserService;
 global using gbs.Client.Services.Api.GenerationService;
+global using gbs.Client.Services.Api.TeacherService;
 global using gbs.Shared.Dtos;
-global using gbs.Shared.Dtos.Auth;
-global using gbs.Shared.Dtos.Generation;
 global using gbs.Shared.Dtos.Ui;
 global using gbs.Shared.Enums;
 global using gbs.Shared.Entities;
@@ -24,7 +23,8 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 builder.Services.AddScoped<IAuthService, AuthApiService>();
 builder.Services.AddScoped<IUiService, UiService>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IGenerationService, GenerationApiService>();
+builder.Services.AddScoped<IGenerationService, GenerationService>();
+builder.Services.AddScoped<ITeacherService, TeacherService>();
 
 builder.Services.AddOptions();
 builder.Services.AddAuthorizationCore();

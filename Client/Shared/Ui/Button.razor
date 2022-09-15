@@ -7,7 +7,7 @@
 }
 else
 {
-    <button type="@Type" class="@GetClass()" disabled="@IsLoading">
+    <button type="@Type" class="@GetClass()" disabled="@IsLoading" @onclick="OnClick">
         @if (IsLoading)
         {
             <InfinitLoading Class="-ml-1 mr-3"/>
@@ -40,6 +40,9 @@ else
     
     [Parameter]
     public string? Href { get; set; }
+    
+    [Parameter]
+    public EventCallback OnClick { get; set; }
     
     private string GetClass()
     {

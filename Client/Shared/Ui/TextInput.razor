@@ -1,14 +1,14 @@
 @using System.Linq.Expressions
+
 <div class="form-control w-full max-w-md">
     <label for="@Id" class="label">
         <span class="label-text">@Label</span>
     </label>
-    <input @ref="_inputRef" id="@Id" type="@InputType" @oninput="OnInputHandler" class="input input-bordered"/>
+    <input @ref="_inputRef" id="@Id" type="@InputType" value="@Value" @oninput="OnInputHandler" class="input input-bordered"/>
     <ValidationMessage For="@For"/>
 </div>
 
 @code {
-    private string? _value;
     private ElementReference _inputRef;
 
     [Parameter]
@@ -33,10 +33,10 @@
     public Expression<Func<string>>? For { get; set; }
 
 
-    private void OnInputHandler(ChangeEventArgs args)
+    private async Task OnInputHandler(ChangeEventArgs args)
     {
-        _value = args.Value?.ToString() ?? string.Empty;
-        ValueChanged.InvokeAsync(_value);
+        var value = args.Value?.ToString() ?? string.Empty;
+        await ValueChanged.InvokeAsync(value);
     }
 
     public async Task FocusAsync()

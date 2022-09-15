@@ -1,8 +1,8 @@
 ﻿using gbs.Shared.Entities;
 
-namespace gbs.Shared.Dtos.LiveStream;
+namespace gbs.Shared.Dtos;
 
-public class CreateStreamDto
+public class StreamCreateDto
 {
     public string Title { get; set; } = string.Empty;
     public string Url { get; set; } = string.Empty;

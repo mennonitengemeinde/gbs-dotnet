@@ -16,10 +16,10 @@ public class StreamRepository : IStreamRepository
         return response;
     }
 
-    public async Task<ServiceResponse<LiveStream>> CreateLiveStream(CreateStreamDto createStreamDto)
+    public async Task<ServiceResponse<LiveStream>> CreateLiveStream(StreamCreateDto streamCreateDto)
     {
         var response = new ServiceResponse<LiveStream>();
-        if (await _context.Streams.AnyAsync(s => s.Title == createStreamDto.Title))
+        if (await _context.Streams.AnyAsync(s => s.Title == streamCreateDto.Title))
         {
             response.Success = false;
             response.Message = "Stream already exists";
@@ -27,13 +27,12 @@ public class StreamRepository : IStreamRepository
         }
         var stream = new LiveStream
         {
-            Title = createStreamDto.Title,
-            Url = createStreamDto.Url,
-            IsLive = createStreamDto.IsLive,
-            GenerationId = createStreamDto.GenerationId
+            Title = streamCreateDto.Title,
+            Url = streamCreateDto.Url,
+            IsLive = streamCreateDto.IsLive,
+            GenerationId = streamCreateDto.GenerationId
         };
         _context.Streams.Add(stream);
-        stream.Teachers.AddRange(createStreamDto.Teachers);
         await _context.SaveChangesAsync();
         response.Data = stream;
         return response;

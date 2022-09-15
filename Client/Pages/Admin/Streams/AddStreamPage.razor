@@ -1,0 +1,114 @@
+@page "/admin/streams/create"
+@implements IDisposable
+@inject ITeacherService TeacherService
+@inject IGenerationService GenerationService
+
+<H3>Create Streams</H3>
+
+<div class="flex justify-center pt-4">
+    <div class="card w-96 bg-base-200 shadow-lg">
+        <div class="card-body">
+            <EditForm Model="_newStream" OnValidSubmit="HandleValidSubmit">
+                <DataAnnotationsValidator/>
+                <TextInput Id="title"
+                           @ref="_titleInput"
+                           Label="Title"
+                           @bind-Value="_newStream.Title"
+                           For="() => _newStream.Title"/>
+                <TextInput Id="url"
+                           Label="Url"
+                           @bind-Value="_newStream.Url"
+                           For="() => _newStream.Url"/>
+                <ToggleInput Id="isLive"
+                             Label="Live"
+                             @bind-Checked="_newStream.IsLive"/>
+                <SelectInput Id="generation"
+                             Label="Generation"
+                             Items="_generationSelectItems"
+                             @bind-Value="SelectedGeneration"/>
+
+                <div class="form-control w-full max-w-xs">
+                    <label class="label">
+                        <span class="label-text">Teachers</span>
+                    </label>
+                    <div class="input-group">
+                        <input type="text" 
+                               @bind="_selectedTeacher"
+                               list="teacher_elements" 
+                               placeholder="Type here" 
+                               class="input input-bordered w-full max-w-xs"/>
+                        <Button OnClick="HandleAddTeacher">Add</Button>
+                        <datalist id="teacher_elements">
+                            @foreach (var teacher in TeacherService.Teachers)
+                            {
+                                @if (_newStream.Teachers.Exists(t => t.Id == teacher.Id))
+                                {
+                                    continue;
+                                }
+                                <option value="@teacher.Name"></option>
+                            }
+                        </datalist>
+                    </div>
+                </div>
+
+                @foreach (var teacher in _newStream.Teachers)
+                {
+                    <p>@teacher.Name</p>
+                }
+                
+                <div class="flex justify-end pt-4 space-x-2">
+                    <Button Href="admin/teachers">Cancel</Button>
+                    <Button Type="submit" Color="BtnColor.Primary" IsLoading="_isLoading">Add</Button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+@code {
+    StreamCreateDto _newStream = new StreamCreateDto();
+    TextInput _titleInput = null!;
+    bool _isLoading = false;
+    string _selectedTeacher = string.Empty;
+    string _selectedGeneration = string.Empty;
+
+    string SelectedGeneration
+    {
+        get => _selectedGeneration;
+        set
+        {
+            _newStream.GenerationId = int.Parse(value);
+            _selectedGeneration = value;
+        }
+    }
+
+    Dictionary<string, string> _generationSelectItems = new Dictionary<string, string>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GenerationService.LoadGenerations();
+        await TeacherService.LoadTeachers();
+        TeacherService.TeachersChanged += StateHasChanged;
+        GenerationService.GenerationsChanged += StateHasChanged;
+        _generationSelectItems = GenerationService.Generations.ToDictionary(g => g.Id.ToString(), g => g.Name);
+    }
+
+    async Task HandleValidSubmit()
+    {
+    }
+
+    void HandleAddTeacher()
+    {
+        var teacher = TeacherService.Teachers.FirstOrDefault(t => t.Name == _selectedTeacher);
+        if (teacher == null) return;
+        _newStream.Teachers.Add(teacher);
+        _selectedTeacher = string.Empty;
+    }
+
+    public void Dispose()
+    {
+        TeacherService.TeachersChanged -= StateHasChanged;
+        GenerationService.GenerationsChanged -= StateHasChanged;
+    }
+
+}
