@@ -1,0 +1,30 @@
+﻿@page "/school/{Id:int}/live"
+@inject IStreamService StreamService
+@inject NavigationManager NavigationManager
+
+@if (LiveStream != null)
+{
+    <LiveVideoPlayer LiveStream="@LiveStream"/>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    
+    [Parameter]
+    public LiveStream? LiveStream { get; set; } = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        var liveStream = await StreamService.GetOnlineLiveStreamById(Id);
+        if (!liveStream.Success)
+        {
+            NavigationManager.NavigateTo("school");
+        }
+        else
+        {
+            LiveStream = liveStream.Data;
+        }
+    }
+}

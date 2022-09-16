@@ -1,10 +1,20 @@
 @page "/admin/teachers/create"
+@page "/admin/teachers/{Id:int}/edit"
 @using Microsoft.AspNetCore.Components
 @inject NavigationManager NavigationManager
 @inject ITeacherService TeacherService
 @inject IUiService UiService
 
-<H3>Create Teacher</H3>
+<H3>
+    @if (_isEdit)
+    {
+        <span>Edit Teacher</span>
+    }
+    else
+    {
+        <span>Create Teacher</span>
+    }
+</H3>
 
 <div class="flex justify-center pt-4">
     <div class="card w-96 bg-base-200 shadow-lg">
@@ -18,7 +28,7 @@
                            For="() => _newTeacher.Name"/>
                 <div class="flex justify-end pt-4 space-x-2">
                     <Button Href="admin/teachers">Cancel</Button>
-                    <Button Type="submit" Color="BtnColor.Primary" IsLoading="_isLoading">Add</Button>
+                    <Button Type="submit" Color="BtnColor.Success" IsLoading="_isLoading">Save</Button>
                 </div>
             </EditForm>
         </div>
@@ -28,8 +38,25 @@
 @code {
     TeacherCreateDto _newTeacher = new TeacherCreateDto();
     bool _isLoading = false;
+    bool _isEdit = false;
     TextInput _nameInput = null!;
-    
+
+    [Parameter]
+    public int? Id { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id != null)
+        {
+            _isEdit = true;
+            var teacher = await TeacherService.FetchTeacher(Id.Value);
+            _newTeacher = new TeacherCreateDto
+            {
+                Name = teacher.Data.Name
+            };
+        }
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -41,11 +68,20 @@
     async Task HandleValidSubmit()
     {
         _isLoading = true;
-        var response = await TeacherService.AddTeacher(_newTeacher);
+        ServiceResponse<Teacher> response;
+        if (_isEdit == false)
+        {
+            response = await TeacherService.AddTeacher(_newTeacher);
+        }
+        else
+        {
+            response = await TeacherService.UpdateTeacher(Id!.Value, _newTeacher);
+        }
+
         if (response.Success)
         {
             _isLoading = false;
-            UiService.AddSuccessAlert("Teacher added successfully");
+            UiService.AddSuccessAlert(_isEdit ? "Teacher updated successfully" : "Teacher added successfully");
             NavigationManager.NavigateTo("admin/teachers");
         }
         else
@@ -55,4 +91,5 @@
             await _nameInput.FocusAsync();
         }
     }
+
 }

@@ -1,5 +1,6 @@
-<div class="card card-side bg-base-200 shadow-xl max-h-40">
-    <figure class="py-4 pl-4">
+<div class="card flex-row bg-base-200 shadow-xl h-44">
+    <a class="flex w-40 py-4 px-4 hover:scale-90" href="@($"school/{LiveStream.Id}/live")">
+        @* <figure class="py-4 pl-4"> *@
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 318 318">
             <g id="Ellipse_3" data-name="Ellipse 3" fill="#f3f3f3" stroke="#707070" stroke-width="1">
                 <circle cx="159" cy="159" r="159" stroke="none"/>
@@ -24,22 +25,28 @@
                     stroke="none" fill="#707070"/>
             </g>
         </svg>
-    </figure>
-    <div class="card-body">
+        @* </figure> *@
+    </a>
+    <div class="card-body pl-4">
         <div>
             <h2 class="card-title">@LiveStream.Title</h2>
             <h3 class="text-sm font-mono">@LiveStream.Generation.Name</h3>
         </div>
         <ul class="text-gray-500">
-            @foreach(var teacher in LiveStream.Teachers)
+            @foreach (var teacher in LiveStream.Teachers)
             {
-                <li><i class="oi oi-microphone"></i> @teacher.Name</li>
+                <li>
+                    <i class="oi oi-microphone"></i> @teacher.Name
+                </li>
             }
         </ul>
     </div>
+
+
 </div>
 
 @code {
+
     [Parameter]
     public LiveStream LiveStream { get; set; } = null!;
 

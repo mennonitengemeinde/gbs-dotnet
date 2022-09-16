@@ -23,7 +23,11 @@
         {
             <tr>
                 <th>@teacher.Name</th>
-                <td></td>
+                <td class="text-end">
+                    <Button Href="@($"admin/teachers/{teacher.Id}/edit")" Color="BtnColor.Warning" Size="BtnSize.Small">
+                        <i class="oi oi-pencil"></i>
+                    </Button>
+                </td>
             </tr>
         }
         </tbody>
@@ -31,7 +35,7 @@
 </div>
 
 @code {
-
+    
     protected override async Task OnInitializedAsync()
     {
         await TeacherService.LoadTeachers();

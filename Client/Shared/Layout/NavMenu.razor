@@ -3,7 +3,7 @@
 @inject NavigationManager NavigationManager
 
 <header class="w-full">
-    <div class="navbar bg-base-100">
+    <div class="navbar bg-base-100 shadow-xl">
         @* Mobile *@
         <div class="">
             <div class="dropdown">
@@ -28,7 +28,7 @@
         <div class="hidden lg:flex">
             <ul class="menu menu-horizontal p-0">
                 <li>
-                    <NavLink Href="school" ActiveClass="active">Home</NavLink>
+                    <NavLink Href="school" ActiveClass="active" Match="NavLinkMatch.All">School</NavLink>
                 </li>
                 <li>
                     <a>Q&A</a>

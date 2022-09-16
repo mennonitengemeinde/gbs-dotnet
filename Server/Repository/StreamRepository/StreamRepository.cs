@@ -11,11 +11,86 @@ public class StreamRepository : IStreamRepository
 
     public async Task<ServiceResponse<List<LiveStream>>> GetLiveStreams()
     {
-        ServiceResponse<List<LiveStream>> response = new ServiceResponse<List<LiveStream>>();
+        var response = new ServiceResponse<List<LiveStream>>();
         response.Data = await _context.Streams
-            .Include(s => s.Generation)
-            .Include(s => s.Teachers)
+            .Select(s => new LiveStream
+            {
+                Id = s.Id,
+                Title = s.Title,
+                Url = s.Url,
+                IsLive = s.IsLive,
+                GenerationId = s.GenerationId,
+                Generation = s.Generation,
+                Teachers = s.Teachers.Select(t => new Teacher
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                }).ToList()
+            })
             .ToListAsync();
+        return response;
+    }
+
+    public async Task<ServiceResponse<LiveStream>> GetLiveStreamById(int id)
+    {
+        var response = new ServiceResponse<LiveStream>();
+        var liveStream = await _context.Streams
+            .Where(s => s.Id == id)
+            .Select(s => new LiveStream
+            {
+                Id = s.Id,
+                Title = s.Title,
+                Url = s.Url,
+                IsLive = s.IsLive,
+                GenerationId = s.GenerationId,
+                Generation = s.Generation,
+                Teachers = s.Teachers.Select(t => new Teacher
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                }).ToList()
+            })
+            .FirstOrDefaultAsync();
+        if (liveStream == null)
+        {
+            response.Success = false;
+            response.Message = "Stream not found.";
+        }
+        else
+        {
+            response.Data = liveStream;
+        }
+        return response;
+    }
+    
+    public async Task<ServiceResponse<LiveStream>> GetOnlineLiveStreamById(int id)
+    {
+        var response = new ServiceResponse<LiveStream>();
+        var liveStream = await _context.Streams
+            .Select(s => new LiveStream
+            {
+                Id = s.Id,
+                Title = s.Title,
+                Url = s.Url,
+                IsLive = s.IsLive,
+                GenerationId = s.GenerationId,
+                Generation = s.Generation,
+                Teachers = s.Teachers.Select(t => new Teacher
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                }).ToList()
+            })
+            .FirstOrDefaultAsync(s => s.Id == id && s.IsLive == true);
+        if (liveStream == null)
+        {
+            response.Success = false;
+            response.Message = "Stream not found.";
+        }
+        else
+        {
+            response.Data = liveStream;
+        }
         return response;
     }
 
@@ -50,8 +125,7 @@ public class StreamRepository : IStreamRepository
         stream.Teachers.AddRange(teachers);
         _context.Streams.Add(stream);
         await _context.SaveChangesAsync();
-        response.Data = stream;
-        return response;
+        return await GetLiveStreamById(stream.Id);
     }
 
     public async Task<ServiceResponse<LiveStream>> UpdateStreamLiveStatus(int streamId, StreamUpdateLiveDto liveDto)
@@ -68,6 +142,6 @@ public class StreamRepository : IStreamRepository
 
         dbStream.IsLive = liveDto.IsLive;
         await _context.SaveChangesAsync();
-        return new ServiceResponse<LiveStream> { Data = dbStream };
+        return new ServiceResponse<LiveStream> {Data = dbStream};
     }
 }

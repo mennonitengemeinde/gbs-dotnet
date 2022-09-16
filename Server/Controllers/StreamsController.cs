@@ -21,10 +21,22 @@ namespace gbs.Server.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = $"{Roles.SuperAdmin}, {Roles.Admin}, {Roles.Teacher}")]
         public async Task<ActionResult<ServiceResponse<List<LiveStream>>>> GetStreams()
         {
             var response = await _streamRepo.GetLiveStreams();
+            if (!response.Success)
+            {
+                return BadRequest(response);
+            }
+
+            return Ok(response);
+        }
+        
+        [HttpGet("{id:int}/live")]
+        [Authorize]
+        public async Task<ActionResult<ServiceResponse<LiveStream>>> GetStream(int id)
+        {
+            var response = await _streamRepo.GetOnlineLiveStreamById(id);
             if (!response.Success)
             {
                 return BadRequest(response);

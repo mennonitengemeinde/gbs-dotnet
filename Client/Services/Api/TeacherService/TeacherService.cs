@@ -1,6 +1,6 @@
 namespace gbs.Client.Services.Api.TeacherService;
 
-public class TeacherService : BaseApiService, ITeacherService
+public class TeacherService : ITeacherService
 {
     private readonly HttpClient _http;
     private readonly IUiService _uiService;
@@ -12,29 +12,42 @@ public class TeacherService : BaseApiService, ITeacherService
         _http = http;
         _uiService = uiService;
     }
-    
+
     public async Task LoadTeachers()
     {
-        var result = await GetTeachers();
-        if (result.Success == false || result.Data == null)
+        var result = await FetchTeachers();
+        if (!result.Success)
         {
             _uiService.AddErrorAlert(result.Message);
             Teachers = new List<Teacher>();
             return;
         }
+
         Teachers = result.Data;
         TeachersChanged?.Invoke();
     }
 
-    public async Task<ServiceResponse<List<Teacher>>> GetTeachers()
+    public async Task<ServiceResponse<List<Teacher>>> FetchTeachers()
     {
-        var response = await _http.GetAsync("api/teachers");
-        return await EnsureSuccess<List<Teacher>>(response);
+        return await _http.GetAsync("api/teachers")
+            .EnsureSuccess<List<Teacher>>();
+    }
+
+    public async Task<ServiceResponse<Teacher>> FetchTeacher(int id)
+    {
+        return await _http.GetAsync($"api/teachers/{id}")
+            .EnsureSuccess<Teacher>();
     }
 
     public async Task<ServiceResponse<Teacher>> AddTeacher(TeacherCreateDto teacher)
     {
-        var response = await _http.PostAsJsonAsync("api/teachers", teacher);
-        return await EnsureSuccess<Teacher>(response);
+        return await _http.PostAsJsonAsync("api/teachers", teacher)
+            .EnsureSuccess<Teacher>();
+    }
+
+    public async Task<ServiceResponse<Teacher>> UpdateTeacher(int teacherId, TeacherCreateDto teacher)
+    {
+        return await _http.PutAsJsonAsync($"api/teachers/{teacherId}", teacher)
+            .EnsureSuccess<Teacher>();
     }
 }

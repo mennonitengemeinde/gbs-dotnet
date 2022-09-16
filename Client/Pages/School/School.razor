@@ -27,7 +27,7 @@
 }
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-    @foreach (var liveStream in StreamService.Streams)
+    @foreach (var liveStream in StreamService.Streams.Where(s => s.IsLive == true))
     {
         <LiveStreamCard LiveStream="@liveStream"/>
     }

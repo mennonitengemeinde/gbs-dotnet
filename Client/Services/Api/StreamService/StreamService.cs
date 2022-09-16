@@ -16,7 +16,7 @@ public class StreamService : IStreamService
     public async Task LoadStreams()
     {
         var result = await GetLiveStreams();
-        if (!result.Success || result.Data == null)
+        if (!result.Success)
         {
             _uiService.AddErrorAlert(result.Message);
             Streams = new List<LiveStream>();
@@ -27,11 +27,38 @@ public class StreamService : IStreamService
         StreamsChanged?.Invoke();
     }
 
+    public async Task<ServiceResponse<LiveStream>> GetOnlineLiveStreamById(int streamId)
+    {
+        var response = new ServiceResponse<LiveStream>();
+        if (Streams.Count == 0)
+        {
+            await LoadStreams();
+            StreamsChanged?.Invoke();
+        }
+
+        var stream = Streams.FirstOrDefault(x => x.Id == streamId && x.IsLive == true);
+        if (stream == null)
+        {
+            response.Success = false;
+            response.Message = "Stream not found";
+            return response;
+        }
+        response.Data = stream;
+        return response;
+    }
+
     public async Task<ServiceResponse<List<LiveStream>>> GetLiveStreams()
     {
         return await _http
             .GetAsync("api/streams")
             .EnsureSuccess<List<LiveStream>>();
+    }
+
+    public async Task<ServiceResponse<LiveStream>> FetchLiveOnlyLiveStreamById(int streamId)
+    {
+        return await _http
+            .GetAsync($"api/streams/{streamId}/live")
+            .EnsureSuccess<LiveStream>();
     }
 
     public async Task<ServiceResponse<LiveStream>> AddLiveStream(StreamCreateDto createDto)
@@ -53,7 +80,7 @@ public class StreamService : IStreamService
             };
         }
 
-        var streamDto = new StreamUpdateLiveDto { IsLive = !liveStream.IsLive };
+        var streamDto = new StreamUpdateLiveDto {IsLive = !liveStream.IsLive};
         return await _http
             .PutAsJsonAsync($"api/streams/{id}/live", streamDto)
             .EnsureSuccess<LiveStream>();

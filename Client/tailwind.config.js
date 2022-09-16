@@ -36,6 +36,7 @@ module.exports = {
         'opacity-0',
         'delay-100',
         'animate-spin',
+        'modal-open',
         '-ml-1',
         'mr-3',
         'h-5',

@@ -1,5 +1,4 @@
-﻿@page "/admin"
-@page "/admin/streams"
+﻿@page "/admin/streams"
 @attribute [Authorize(Roles = $"{Roles.Admin}, {Roles.SuperAdmin}, {Roles.Teacher}")]
 @implements IDisposable
 @inject IStreamService StreamService
