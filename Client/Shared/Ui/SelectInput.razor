@@ -10,9 +10,9 @@
         </label>
     }
     <select id="@Id" class="select select-bordered" @onchange="HandleChange">
-        @if (Value == null || (Value is string && string.IsNullOrEmpty(Value.ToString())))
+        @if (Placeholder != null)
         {
-            <option value="" selected disabled>Select @Label</option>
+            <option value="" selected disabled>@Placeholder</option>
         }
         @foreach (var item in Items)
         {
@@ -21,7 +21,6 @@
     </select>
     @if (For != null)
     {
-        <p>Test</p>
         <ValidationMessage For="@For"/>
     }
 </div>
@@ -41,6 +40,9 @@
     public string? Label { get; set; }
     
     [Parameter]
+    public string? Placeholder { get; set; }
+    
+    [Parameter]
     public Dictionary<TKey, TValue> Items { get; set; }
     
     [Parameter]
@@ -48,10 +50,16 @@
     
     async Task HandleChange(ChangeEventArgs args)
     {
-        if (args.Value is TKey value)
+        if (args.Value == null) return;
+        var value = args.Value;
+        if (value is string stringValue)
         {
-            Value = value;
-            await ValueChanged.InvokeAsync(value);
+            if (typeof(TKey) == typeof(int))
+            {
+                value = int.Parse(stringValue);
+            }
         }
+        Value = (TKey)value;
+        await ValueChanged.InvokeAsync(Value);
     }
 }

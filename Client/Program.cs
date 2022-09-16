@@ -1,9 +1,11 @@
 global using System.Net.Http.Json;
 global using Microsoft.AspNetCore.Components.Authorization;
+global using gbs.Client.Extensions;
 global using gbs.Client.Services.UiService;
 global using gbs.Client.Services.Api.AuthService;
 global using gbs.Client.Services.Api.UserService;
 global using gbs.Client.Services.Api.GenerationService;
+global using gbs.Client.Services.Api.StreamService;
 global using gbs.Client.Services.Api.TeacherService;
 global using gbs.Shared.Dtos;
 global using gbs.Shared.Dtos.Ui;
@@ -24,6 +26,7 @@ builder.Services.AddScoped<IAuthService, AuthApiService>();
 builder.Services.AddScoped<IUiService, UiService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IGenerationService, GenerationService>();
+builder.Services.AddScoped<IStreamService, StreamService>();
 builder.Services.AddScoped<ITeacherService, TeacherService>();
 
 builder.Services.AddOptions();

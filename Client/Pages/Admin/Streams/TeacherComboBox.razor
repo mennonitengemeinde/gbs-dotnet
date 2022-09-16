@@ -1,4 +1,5 @@
-﻿@inject ITeacherService TeacherService
+﻿@using System.Linq.Expressions
+@inject ITeacherService TeacherService
 
 <div class="form-control w-full max-w-xs">
     <label class="label">
@@ -18,6 +19,10 @@
             }
         </datalist>
     </div>
+    @if (For != null)
+    {
+        <ValidationMessage For="@For"/>
+    }
 </div>
 
 @foreach (var teacher in Teachers)
@@ -43,6 +48,9 @@
     [Parameter]
     public EventCallback<List<Teacher>> TeachersChanged { get; set; }
 
+    [Parameter]
+    public Expression<Func<List<int>>>? For { get; set; }
+
     async Task HandleAddTeacher()
     {
         var teacher = TeacherService.Teachers.FirstOrDefault(t => t.Name == _selectedTeacher);
@@ -59,4 +67,5 @@
         Teachers.Remove(teacher);
         await TeachersChanged.InvokeAsync(Teachers);
     }
+
 }

@@ -1,8 +1,11 @@
 @page "/admin/streams/create"
 @attribute [Authorize(Roles = $"{Roles.Admin}, {Roles.SuperAdmin}, {Roles.Teacher}")]
 @implements IDisposable
+@inject IStreamService StreamService
 @inject ITeacherService TeacherService
 @inject IGenerationService GenerationService
+@inject IUiService UiService
+@inject NavigationManager NavigationManager
 
 <H3>Create Streams</H3>
 
@@ -25,11 +28,13 @@
                              @bind-Checked="_newStream.IsLive"/>
                 <SelectInput Id="generation"
                              Label="Generation"
+                             Placeholder="Select a generation"
                              Items="_generationSelectItems"
                              For="@(() => _newStream.GenerationId)"
                              @bind-Value="_newStream.GenerationId"/>
-                <TeacherComboBox @bind-Teachers="SelectedTeachers"/>
-
+                <TeacherComboBox @bind-Teachers="SelectedTeachers"
+                                 For="() => _newStream.Teachers"/>
+                
                 <div class="flex justify-end pt-4 space-x-2">
                     <Button Href="admin/teachers">Cancel</Button>
                     <Button Type="submit" Color="BtnColor.Primary" IsLoading="_isLoading">Add</Button>
@@ -43,19 +48,8 @@
     StreamCreateDto _newStream = new StreamCreateDto();
     TextInput _titleInput = null!;
     bool _isLoading = false;
-
-    int _selectedGeneration;
+    Dictionary<int, string> _generationSelectItems = new Dictionary<int, string>();
     List<Teacher> _selectedTeachers = new List<Teacher>();
-
-    int SelectedGeneration
-    {
-        get => _selectedGeneration;
-        set
-        {
-            _selectedGeneration = value;
-            _newStream.GenerationId = value;
-        }
-    }
 
     List<Teacher> SelectedTeachers
     {
@@ -66,9 +60,7 @@
             _newStream.Teachers = value.Select(t => t.Id).ToList();
         }
     }
-
-    Dictionary<int, string> _generationSelectItems = new Dictionary<int, string>();
-
+    
     protected override async Task OnInitializedAsync()
     {
         await GenerationService.LoadGenerations();
@@ -77,9 +69,31 @@
         GenerationService.GenerationsChanged += StateHasChanged;
         _generationSelectItems = GenerationService.Generations.ToDictionary(g => g.Id, g => g.Name);
     }
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await _titleInput.FocusAsync();
+        }
+    }
 
     async Task HandleValidSubmit()
     {
+        _isLoading = true;
+        var response = await StreamService.AddLiveStream(_newStream);
+        if (response.Success)
+        {
+            _isLoading = false;
+            UiService.AddSuccessAlert("Stream added successfully");
+            NavigationManager.NavigateTo("admin/streams");
+        }
+        else
+        {
+            _isLoading = false;
+            UiService.AddErrorAlert(response.Message);
+            await _titleInput.FocusAsync();
+        }
     }
 
 

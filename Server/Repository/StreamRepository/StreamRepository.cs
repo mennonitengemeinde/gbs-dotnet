@@ -8,11 +8,14 @@ public class StreamRepository : IStreamRepository
     {
         _context = context;
     }
-    
+
     public async Task<ServiceResponse<List<LiveStream>>> GetLiveStreams()
     {
         ServiceResponse<List<LiveStream>> response = new ServiceResponse<List<LiveStream>>();
-        response.Data = await _context.Streams.ToListAsync();
+        response.Data = await _context.Streams
+            .Include(s => s.Generation)
+            .Include(s => s.Teachers)
+            .ToListAsync();
         return response;
     }
 
@@ -33,6 +36,7 @@ public class StreamRepository : IStreamRepository
             response.Message = "Generation not found";
             return response;
         }
+
         var stream = new LiveStream
         {
             Title = streamCreateDto.Title,
@@ -48,5 +52,22 @@ public class StreamRepository : IStreamRepository
         await _context.SaveChangesAsync();
         response.Data = stream;
         return response;
+    }
+
+    public async Task<ServiceResponse<LiveStream>> UpdateStreamLiveStatus(int streamId, StreamUpdateLiveDto liveDto)
+    {
+        var dbStream = await _context.Streams.FirstOrDefaultAsync(s => s.Id == streamId);
+        if (dbStream == null)
+        {
+            return new ServiceResponse<LiveStream>
+            {
+                Success = false,
+                Message = "Stream not found"
+            };
+        }
+
+        dbStream.IsLive = liveDto.IsLive;
+        await _context.SaveChangesAsync();
+        return new ServiceResponse<LiveStream> { Data = dbStream };
     }
 }

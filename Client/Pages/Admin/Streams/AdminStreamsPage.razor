@@ -1,6 +1,9 @@
 ﻿@page "/admin"
 @page "/admin/streams"
 @attribute [Authorize(Roles = $"{Roles.Admin}, {Roles.SuperAdmin}, {Roles.Teacher}")]
+@implements IDisposable
+@inject IStreamService StreamService
+@inject IUiService UiService
 
 
 <div class="flex justify-between items-center">
@@ -9,9 +12,36 @@
 </div>
 
 <div id="streams-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pt-4">
-    <AdminStreamCard/>
+    @foreach (var liveStream in StreamService.Streams)
+    {
+        <AdminStreamCard LiveStream="@liveStream"
+                         OnToggleLive="@ToggleLive"/>
+    }
 </div>
 
 @code {
+    protected override async Task OnInitializedAsync()
+    {
+        await StreamService.LoadStreams();
+        StreamService.StreamsChanged += StateHasChanged;
+    }
     
+    async Task ToggleLive(int id)
+    {
+        var result = await StreamService.ToggleLive(id);
+        if (result.Success)
+        {
+            await StreamService.LoadStreams();
+        }
+        else
+        {
+            UiService.AddErrorAlert(result.Message);
+        }
+    }
+
+    public void Dispose()
+    {
+        StreamService.StreamsChanged -= StateHasChanged;
+    }
+
 }
