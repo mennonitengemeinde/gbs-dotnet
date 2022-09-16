@@ -1,4 +1,4 @@
-<div class="card card-side bg-base-100 shadow-xl max-h-40">
+<div class="card card-side bg-base-200 shadow-xl max-h-40">
     <figure class="py-4 pl-4">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 318 318">
             <g id="Ellipse_3" data-name="Ellipse 3" fill="#f3f3f3" stroke="#707070" stroke-width="1">
@@ -27,11 +27,14 @@
     </figure>
     <div class="card-body">
         <div>
-            <h2 class="card-title">Gebet</h2>
-            <h3 class="text-sm font-mono">Generation 2022</h3>
+            <h2 class="card-title">@LiveStream.Title</h2>
+            <h3 class="text-sm font-mono">@LiveStream.Generation.Name</h3>
         </div>
         <ul class="text-gray-500">
-            <li><i class="oi oi-microphone"></i> Ricky Wall</li>
+            @foreach(var teacher in LiveStream.Teachers)
+            {
+                <li><i class="oi oi-microphone"></i> @teacher.Name</li>
+            }
         </ul>
     </div>
 </div>
