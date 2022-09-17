@@ -10,4 +10,5 @@ public class UserDto
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
     public string Role { get; set; } = Roles.User;
+    public bool IsActive { get; set; } = false;
 }

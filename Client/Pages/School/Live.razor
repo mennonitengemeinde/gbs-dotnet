@@ -1,5 +1,6 @@
 ﻿@page "/school/{Id:int}/live"
 @attribute [Authorize]
+@using gbs.Client.Pages.School.Components
 @inject IStreamService StreamService
 @inject NavigationManager NavigationManager
 
@@ -13,12 +14,12 @@
     public int Id { get; set; }
     
     [Parameter]
-    public LiveStream? LiveStream { get; set; } = null!;
+    public StreamGetDto? LiveStream { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
 
-        var liveStream = await StreamService.GetOnlineLiveStreamById(Id);
+        var liveStream = await StreamService.GetStreamById(Id, true);
         if (!liveStream.Success)
         {
             NavigationManager.NavigateTo("school");

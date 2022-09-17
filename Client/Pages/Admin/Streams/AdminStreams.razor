@@ -1,0 +1,72 @@
+﻿@page "/admin/streams"
+@attribute [Authorize(Roles = $"{Roles.Admin}, {Roles.SuperAdmin}, {Roles.Teacher}")]
+@implements IDisposable
+@using gbs.Client.Pages.Admin.Streams.Components
+@inject IStreamService StreamService
+@inject IUiService UiService
+
+
+<div class="flex justify-between items-center">
+    <H3>Streams</H3>
+    <Button Href="/admin/streams/create" Color="BtnColor.Primary"><i class="oi oi-plus"></i></Button>
+</div>
+
+<div id="streams-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pt-4">
+    @foreach (var liveStream in StreamService.Streams)
+    {
+        <AdminStreamCard LiveStream="@liveStream" OnDelete="HandleDelete"/>
+    }
+</div>
+
+@if (_isModalOpen && deleteStream != null)
+{
+    <ConfirmModal Title="@($"Delete {deleteStream.Title}?")" 
+                  Message="Are you sure you want to continue"
+                  Color="BtnColor.Error"
+                  OnCancel="() => _isModalOpen = false"
+                  ConfirmText="Delete"
+                  OnConfirm="DeleteStream"/>
+}
+
+@code {
+    bool _isModalOpen = false;
+    StreamGetDto? deleteStream = null;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await StreamService.LoadStreams();
+        StreamService.StreamsChanged += StateHasChanged;
+    }
+    
+    void HandleDelete(StreamGetDto stream)
+    {
+        deleteStream = stream;
+        _isModalOpen = true;
+    }
+    
+    async Task DeleteStream()
+    {
+        if (deleteStream != null)
+        {
+            var result = await StreamService.DeleteById(deleteStream.Id);
+            if (result.Success)
+            {
+                _isModalOpen = false;
+                await StreamService.LoadStreams();
+                UiService.AddSuccessAlert(result.Message);
+            }
+            else
+            {
+                _isModalOpen = false;
+                await StreamService.LoadStreams();
+                UiService.AddErrorAlert(result.Message);
+            }
+        }
+    }
+
+    public void Dispose()
+    {
+        StreamService.StreamsChanged -= StateHasChanged;
+    }
+
+}

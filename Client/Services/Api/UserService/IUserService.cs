@@ -7,4 +7,5 @@ public interface IUserService
     Task GetUsers();
     Task<ServiceResponse<List<UserDto>>> FetchUsers();
     Task UpdateRole(int userId, UserUpdateRoleDto userUpdateRoleDto);
+    Task UpdateActiveState(int userId, UserUpdateActiveStateDto userUpdateActiveDto);
 }

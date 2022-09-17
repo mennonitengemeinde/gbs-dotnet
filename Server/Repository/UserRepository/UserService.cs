@@ -19,9 +19,28 @@ public class UserRepository : IUserRepository
             Email = u.Email,
             EmailVerified = u.EmailVerified,
             Role = u.Role,
+            IsActive = u.IsActive,
         }).OrderBy(u => u.FirstName).ToListAsync();
 
         return new ServiceResponse<List<UserDto>> {Data = users};
+    }
+
+    public async Task<ServiceResponse<UserDto>> GetUserById(int userId)
+    {
+        var user = await _context.Users.Select(u => new UserDto
+        {
+            Id = u.Id,
+            FirstName = u.FirstName,
+            LastName = u.LastName,
+            Email = u.Email,
+            EmailVerified = u.EmailVerified,
+            Role = u.Role,
+            IsActive = u.IsActive,
+        }).FirstOrDefaultAsync(u => u.Id == userId);
+
+        return user == null
+            ? new ServiceResponse<UserDto> {Success = false, Message = "User not found"}
+            : new ServiceResponse<UserDto> {Data = user};
     }
 
     public async Task<ServiceResponse<UserDto>> UpdateUserRole(int userId, string newRole)
@@ -35,6 +54,24 @@ public class UserRepository : IUserRepository
         user.Role = newRole;
         await _context.SaveChangesAsync();
 
+        return CreateUserDto(user);
+    }
+
+    public async Task<ServiceResponse<UserDto>> UpdateUserActiveState(int userId, bool newActiveState)
+    {
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+        if (user == null)
+        {
+            return new ServiceResponse<UserDto> {Success = false, Message = "User not found"};
+        }
+
+        user.IsActive = newActiveState;
+        await _context.SaveChangesAsync();
+        return CreateUserDto(user);
+    }
+
+    private static ServiceResponse<UserDto> CreateUserDto(User user)
+    {
         return new ServiceResponse<UserDto>
         {
             Data = new UserDto
@@ -45,6 +82,7 @@ public class UserRepository : IUserRepository
                 Email = user.Email,
                 EmailVerified = user.EmailVerified,
                 Role = user.Role,
+                IsActive = user.IsActive,
             }
         };
     }

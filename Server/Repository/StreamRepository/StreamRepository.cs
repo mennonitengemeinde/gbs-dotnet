@@ -9,108 +9,52 @@ public class StreamRepository : IStreamRepository
         _context = context;
     }
 
-    public async Task<ServiceResponse<List<LiveStream>>> GetLiveStreams()
+    public async Task<ServiceResponse<List<StreamGetDto>>> GetLiveStreams()
     {
-        var response = new ServiceResponse<List<LiveStream>>();
-        response.Data = await _context.Streams
-            .Select(s => new LiveStream
+        var result = await _context.Streams
+            .Select(s => new StreamGetDto
             {
                 Id = s.Id,
                 Title = s.Title,
                 Url = s.Url,
-                IsLive = s.IsLive,
                 GenerationId = s.GenerationId,
+                IsLive = s.IsLive,
                 Generation = s.Generation,
-                Teachers = s.Teachers.Select(t => new Teacher
-                {
-                    Id = t.Id,
-                    Name = t.Name,
-                }).ToList()
+                Teachers = s.StreamTeachers.Select(st => st.Teacher).ToList()
             })
             .ToListAsync();
-        return response;
+        return new ServiceResponse<List<StreamGetDto>> {Data = result};
     }
 
-    public async Task<ServiceResponse<LiveStream>> GetLiveStreamById(int id)
+    public async Task<ServiceResponse<StreamGetDto>> GetLiveStreamById(int id, bool onlyLive = false)
     {
-        var response = new ServiceResponse<LiveStream>();
         var liveStream = await _context.Streams
             .Where(s => s.Id == id)
-            .Select(s => new LiveStream
+            .Select(s => new StreamGetDto
             {
                 Id = s.Id,
                 Title = s.Title,
                 Url = s.Url,
-                IsLive = s.IsLive,
                 GenerationId = s.GenerationId,
+                IsLive = s.IsLive,
                 Generation = s.Generation,
-                Teachers = s.Teachers.Select(t => new Teacher
-                {
-                    Id = t.Id,
-                    Name = t.Name,
-                }).ToList()
+                Teachers = s.StreamTeachers.Select(st => st.Teacher).ToList()
             })
             .FirstOrDefaultAsync();
-        if (liveStream == null)
-        {
-            response.Success = false;
-            response.Message = "Stream not found.";
-        }
-        else
-        {
-            response.Data = liveStream;
-        }
-        return response;
-    }
-    
-    public async Task<ServiceResponse<LiveStream>> GetOnlineLiveStreamById(int id)
-    {
-        var response = new ServiceResponse<LiveStream>();
-        var liveStream = await _context.Streams
-            .Select(s => new LiveStream
-            {
-                Id = s.Id,
-                Title = s.Title,
-                Url = s.Url,
-                IsLive = s.IsLive,
-                GenerationId = s.GenerationId,
-                Generation = s.Generation,
-                Teachers = s.Teachers.Select(t => new Teacher
-                {
-                    Id = t.Id,
-                    Name = t.Name,
-                }).ToList()
-            })
-            .FirstOrDefaultAsync(s => s.Id == id && s.IsLive == true);
-        if (liveStream == null)
-        {
-            response.Success = false;
-            response.Message = "Stream not found.";
-        }
-        else
-        {
-            response.Data = liveStream;
-        }
-        return response;
+        return liveStream == null || (onlyLive && !liveStream.IsLive)
+            ? new ServiceResponse<StreamGetDto> {Success = false, Message = "Stream not found"}
+            : new ServiceResponse<StreamGetDto> {Data = liveStream};
     }
 
-    public async Task<ServiceResponse<LiveStream>> CreateLiveStream(StreamCreateDto streamCreateDto)
+    public async Task<ServiceResponse<StreamGetDto>> CreateLiveStream(StreamCreateDto streamCreateDto)
     {
-        var response = new ServiceResponse<LiveStream>();
-        if (await _context.Streams.AnyAsync(s => s.Title == streamCreateDto.Title))
-        {
-            response.Success = false;
-            response.Message = "Stream already exists";
-            return response;
-        }
+        var titleIsValid = await TitleIsValid<StreamGetDto>(streamCreateDto.Title);
+        if (!titleIsValid.Success)
+            return titleIsValid;
 
         var generation = await _context.Generations.FirstOrDefaultAsync(g => g.Id == streamCreateDto.GenerationId);
         if (generation == null)
-        {
-            response.Success = false;
-            response.Message = "Generation not found";
-            return response;
-        }
+            return new ServiceResponse<StreamGetDto> {Success = false, Message = "Generation not found."};
 
         var stream = new LiveStream
         {
@@ -119,21 +63,62 @@ public class StreamRepository : IStreamRepository
             IsLive = streamCreateDto.IsLive,
             Generation = generation
         };
-        var teachers = await _context.Teachers
-            .Where(t => streamCreateDto.Teachers.Contains(t.Id))
-            .ToListAsync();
-        stream.Teachers.AddRange(teachers);
+
+        stream.StreamTeachers.Clear();
+
+        var streamTeachers = streamCreateDto.Teachers
+            .Select(teacherId => new LiveStreamTeacher {TeacherId = teacherId, LiveStreamId = stream.Id})
+            .ToList();
+        stream.StreamTeachers.AddRange(streamTeachers);
         _context.Streams.Add(stream);
         await _context.SaveChangesAsync();
         return await GetLiveStreamById(stream.Id);
     }
 
-    public async Task<ServiceResponse<LiveStream>> UpdateStreamLiveStatus(int streamId, StreamUpdateLiveDto liveDto)
+    public async Task<ServiceResponse<StreamGetDto>> UpdateStream(int streamId, StreamCreateDto liveDto)
+    {
+        var stream = await _context.Streams
+            .Include(s => s.StreamTeachers)
+            .FirstOrDefaultAsync(s => s.Id == streamId);
+
+        if (stream == null)
+            return new ServiceResponse<StreamGetDto> {Success = false, Message = "Stream not found."};
+
+        var titleIsValid = await TitleIsValid<StreamGetDto>(liveDto.Title, streamId);
+        if (!titleIsValid.Success)
+            return titleIsValid;
+
+        var generation = await _context.Generations.FirstOrDefaultAsync(g => g.Id == liveDto.GenerationId);
+        if (generation == null)
+            return new ServiceResponse<StreamGetDto> {Success = false, Message = "Generation not found."};
+
+        foreach (var streamTeacher in stream.StreamTeachers
+                     .Where(streamTeacher => !liveDto.Teachers.Contains(streamTeacher.TeacherId)))
+        {
+            _context.StreamTeachers.Remove(streamTeacher);
+        }
+
+        foreach (var teacherId in liveDto.Teachers
+                     .Where(teacherId => stream.StreamTeachers.All(st => st.TeacherId != teacherId)))
+        {
+            stream.StreamTeachers.Add(new LiveStreamTeacher {TeacherId = teacherId, LiveStreamId = stream.Id});
+        }
+
+        stream.Title = liveDto.Title;
+        stream.Url = liveDto.Url;
+        stream.IsLive = liveDto.IsLive;
+        stream.Generation = generation;
+        _context.Streams.Update(stream);
+        await _context.SaveChangesAsync();
+        return await GetLiveStreamById(stream.Id);
+    }
+
+    public async Task<ServiceResponse<StreamGetDto>> UpdateStreamLiveStatus(int streamId, StreamUpdateLiveDto liveDto)
     {
         var dbStream = await _context.Streams.FirstOrDefaultAsync(s => s.Id == streamId);
         if (dbStream == null)
         {
-            return new ServiceResponse<LiveStream>
+            return new ServiceResponse<StreamGetDto>
             {
                 Success = false,
                 Message = "Stream not found"
@@ -142,6 +127,32 @@ public class StreamRepository : IStreamRepository
 
         dbStream.IsLive = liveDto.IsLive;
         await _context.SaveChangesAsync();
-        return new ServiceResponse<LiveStream> {Data = dbStream};
+        return await GetLiveStreamById(dbStream.Id);
+    }
+
+    public async Task<ServiceResponse<bool>> DeleteStream(int streamId)
+    {
+        var stream = await _context.Streams.FirstOrDefaultAsync(s => s.Id == streamId);
+        if (stream == null)
+            return new ServiceResponse<bool> {Success = false, Message = "Stream not found."};
+        _context.Streams.Remove(stream);
+        await _context.SaveChangesAsync();
+        return new ServiceResponse<bool> {Data = true, Message = "Stream deleted."};
+    }
+
+    private async Task<ServiceResponse<T>> TitleIsValid<T>(string title, int? streamId = null)
+    {
+        if (streamId == null)
+        {
+            if (await _context.Streams.AnyAsync(s => s.Title.ToLower().Equals(title.ToLower())))
+                return new ServiceResponse<T> {Success = false, Message = "Title already exists."};
+        }
+        else
+        {
+            if (await _context.Streams.AnyAsync(s => s.Title.ToLower().Equals(title.ToLower()) && s.Id != streamId))
+                return new ServiceResponse<T> {Success = false, Message = "Title already exists."};
+        }
+
+        return new ServiceResponse<T>();
     }
 }

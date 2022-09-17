@@ -32,6 +32,22 @@ namespace gbs.Server.Controllers
             [FromBody] UserUpdateRoleDto updateRoleDto)
         {
             var user = await _userRepo.UpdateUserRole(userId, updateRoleDto.Role);
+            if (!user.Success)
+            {
+                return BadRequest(user);
+            }
+            return Ok(user);
+        }
+        
+        [HttpPut("{userId:int}/active")]
+        public async Task<ActionResult<ServiceResponse<UserDto>>> UpdateUserActiveState(int userId,
+            UserUpdateActiveStateDto updateActiveStateDto)
+        {
+            var user = await _userRepo.UpdateUserActiveState(userId, updateActiveStateDto.IsActive);
+            if (!user.Success)
+            {
+                return BadRequest(user);
+            }
             return Ok(user);
         }
     }

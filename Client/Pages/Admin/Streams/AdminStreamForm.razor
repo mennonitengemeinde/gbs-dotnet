@@ -1,6 +1,8 @@
 @page "/admin/streams/create"
+@page "/admin/streams/{Id:int}/edit"
 @attribute [Authorize(Roles = $"{Roles.Admin}, {Roles.SuperAdmin}, {Roles.Teacher}")]
 @implements IDisposable
+@using gbs.Client.Pages.Admin.Streams.Components
 @inject IStreamService StreamService
 @inject ITeacherService TeacherService
 @inject IGenerationService GenerationService
@@ -36,8 +38,8 @@
                                  For="() => _newStream.Teachers"/>
                 
                 <div class="flex justify-end pt-4 space-x-2">
-                    <Button Href="admin/teachers">Cancel</Button>
-                    <Button Type="submit" Color="BtnColor.Primary" IsLoading="_isLoading">Add</Button>
+                    <Button Href="admin/streams">Cancel</Button>
+                    <Button Type="submit" Color="BtnColor.Primary" IsLoading="_isLoading">Save</Button>
                 </div>
             </EditForm>
         </div>
@@ -48,8 +50,12 @@
     StreamCreateDto _newStream = new StreamCreateDto();
     TextInput _titleInput = null!;
     bool _isLoading;
+    bool _isEditMode = false;
     Dictionary<int, string> _generationSelectItems = new Dictionary<int, string>();
     List<Teacher> _selectedTeachers = new List<Teacher>();
+    
+    [Parameter]
+    public int? Id { get; set; }
 
     List<Teacher> SelectedTeachers
     {
@@ -63,6 +69,28 @@
     
     protected override async Task OnInitializedAsync()
     {
+        if (Id != null)
+        {
+            _isEditMode = true;
+            var stream = await StreamService.GetStreamById(Id.Value);
+            if (!stream.Success)
+            {
+                UiService.AddErrorAlert("Stream not found");
+                NavigationManager.NavigateTo("/admin/streams");
+            }
+            else
+            {
+                _newStream = new StreamCreateDto
+                {
+                    Title = stream.Data.Title,
+                    Url = stream.Data.Url,
+                    IsLive = stream.Data.IsLive,
+                    GenerationId = stream.Data.GenerationId,
+                    Teachers = stream.Data.Teachers.Select(t => t.Id).ToList()
+                };
+                _selectedTeachers = stream.Data.Teachers;
+            }
+        }
         await GenerationService.LoadGenerations();
         await TeacherService.LoadTeachers();
         TeacherService.TeachersChanged += StateHasChanged;
@@ -81,11 +109,13 @@
     async Task HandleValidSubmit()
     {
         _isLoading = true;
-        var response = await StreamService.AddLiveStream(_newStream);
+        var response = _isEditMode
+            ? await StreamService.UpdateStream(Id.Value, _newStream)
+            : await StreamService.AddLiveStream(_newStream);
         if (response.Success)
         {
             _isLoading = false;
-            UiService.AddSuccessAlert("Stream added successfully");
+            UiService.AddSuccessAlert(_isEditMode ? "Stream updated" : "Stream created");
             NavigationManager.NavigateTo("admin/streams");
         }
         else

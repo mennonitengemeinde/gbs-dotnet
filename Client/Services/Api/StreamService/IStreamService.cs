@@ -2,12 +2,15 @@ namespace gbs.Client.Services.Api.StreamService;
 
 public interface IStreamService
 {
-    List<LiveStream> Streams { get; set; }
+    List<StreamGetDto> Streams { get; set; }
     event Action StreamsChanged;
     Task LoadStreams();
-    Task<ServiceResponse<LiveStream>> GetOnlineLiveStreamById(int streamId);
-    Task<ServiceResponse<List<LiveStream>>> GetLiveStreams();
-    Task<ServiceResponse<LiveStream>> FetchLiveOnlyLiveStreamById(int streamId);
-    Task<ServiceResponse<LiveStream>> AddLiveStream(StreamCreateDto createDto);
-    Task<ServiceResponse<LiveStream>> ToggleLive(int id);
+    Task<ServiceResponse<List<StreamGetDto>>> GetLiveStreams();
+    Task<ServiceResponse<StreamGetDto>> GetStreamById(int streamId, bool isOnline = false);
+    Task<ServiceResponse<StreamGetDto>> FetchStreamById(int streamId);
+    Task<ServiceResponse<StreamGetDto>> FetchLiveOnlyLiveStreamById(int streamId);
+    Task<ServiceResponse<StreamGetDto>> AddLiveStream(StreamCreateDto createDto);
+    Task<ServiceResponse<StreamGetDto>> UpdateStream(int streamId, StreamCreateDto createDto);
+    Task<ServiceResponse<StreamGetDto>> ToggleLive(int id);
+    Task<ServiceResponse<bool>> DeleteById(int id);
 }

@@ -14,6 +14,9 @@ public class DataContext : DbContext
         
         modelBuilder.Entity<Enrolment>()
             .HasKey(e => new { e.StudentId, e.GenerationId });
+        
+        modelBuilder.Entity<LiveStreamTeacher>()
+            .HasKey(lt => new { lt.LiveStreamId, lt.TeacherId });
     }
 
     public DbSet<Generation> Generations { get; set; } = null!;
@@ -23,4 +26,5 @@ public class DataContext : DbContext
     public DbSet<Student> Students { get; set; } = null!;
     public DbSet<Teacher> Teachers { get; set; } = null!;
     public DbSet<LiveStream> Streams { get; set; } = null!;
+    public DbSet<LiveStreamTeacher> StreamTeachers { get; set; } = null!;
 }

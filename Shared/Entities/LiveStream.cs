@@ -17,5 +17,5 @@ public class LiveStream
     public Generation Generation { get; set; } = null!;
 
     [Required, MinLength(1)]
-    public List<Teacher> Teachers { get; set; } = new List<Teacher>();
+    public List<LiveStreamTeacher> StreamTeachers { get; set; } = new List<LiveStreamTeacher>();
 }

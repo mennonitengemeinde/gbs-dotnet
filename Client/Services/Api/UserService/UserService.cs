@@ -37,4 +37,15 @@ public class UserService : IUserService
             UsersChanged?.Invoke();
         }
     }
+
+    public async Task UpdateActiveState(int userId, UserUpdateActiveStateDto userUpdateActiveDto)
+    {
+        var response = await _http.PutAsJsonAsync($"api/users/{userId}/active", userUpdateActiveDto)
+            .EnsureSuccess<UserDto>();
+        if (response.Success)
+        {
+            await GetUsers();
+            UsersChanged?.Invoke();
+        }
+    }
 }

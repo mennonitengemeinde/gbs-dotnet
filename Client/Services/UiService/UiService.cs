@@ -28,9 +28,7 @@ public class UiService : IUiService
     public void RemoveAlert(string alertId)
     {
         var alert = Alerts.Single(a => a.Id == alertId);
-        Console.WriteLine($"Removing alert {alertId} type {alert.Type}");
         Alerts.Remove(alert);
-        Console.WriteLine($"Alert removed {Alerts.Count}");
         AlertsChanged?.Invoke();
     }
 }

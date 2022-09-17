@@ -21,7 +21,7 @@ namespace gbs.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<ServiceResponse<List<LiveStream>>>> GetStreams()
+        public async Task<ActionResult<ServiceResponse<List<StreamGetDto>>>> GetStreams()
         {
             var response = await _streamRepo.GetLiveStreams();
             if (!response.Success)
@@ -32,11 +32,24 @@ namespace gbs.Server.Controllers
             return Ok(response);
         }
         
+        [HttpGet("{id:int}")]
+        [Authorize]
+        public async Task<ActionResult<ServiceResponse<StreamGetDto>>> GetStream(int id)
+        {
+            var response = await _streamRepo.GetLiveStreamById(id);
+            if (!response.Success)
+            {
+                return BadRequest(response);
+            }
+
+            return Ok(response);
+        }
+        
         [HttpGet("{id:int}/live")]
         [Authorize]
-        public async Task<ActionResult<ServiceResponse<LiveStream>>> GetStream(int id)
+        public async Task<ActionResult<ServiceResponse<StreamGetDto>>> GetOnlineStream(int id)
         {
-            var response = await _streamRepo.GetOnlineLiveStreamById(id);
+            var response = await _streamRepo.GetLiveStreamById(id, true);
             if (!response.Success)
             {
                 return BadRequest(response);
@@ -47,9 +60,23 @@ namespace gbs.Server.Controllers
 
         [HttpPost]
         [Authorize(Roles = $"{Roles.SuperAdmin}, {Roles.Admin}")]
-        public async Task<ActionResult<ServiceResponse<LiveStream>>> AddStream(StreamCreateDto streamCreateDto)
+        public async Task<ActionResult<ServiceResponse<StreamGetDto>>> AddStream(StreamCreateDto streamCreateDto)
         {
             var response = await _streamRepo.CreateLiveStream(streamCreateDto);
+            if (!response.Success)
+            {
+                return BadRequest(response);
+            }
+
+            return Ok(response);
+        }
+        
+        [HttpPut("{streamId:int}")]
+        [Authorize(Roles = $"{Roles.SuperAdmin}, {Roles.Admin}")]
+        public async Task<ActionResult<ServiceResponse<StreamGetDto>>> UpdateStream(int streamId,
+            StreamCreateDto liveDto)
+        {
+            var response = await _streamRepo.UpdateStream(streamId, liveDto);
             if (!response.Success)
             {
                 return BadRequest(response);
@@ -60,10 +87,23 @@ namespace gbs.Server.Controllers
 
         [HttpPut("{streamId:int}/live")]
         [Authorize(Roles = $"{Roles.SuperAdmin}, {Roles.Admin}")]
-        public async Task<ActionResult<ServiceResponse<LiveStream>>> UpdateStreamLiveStatus(int streamId,
+        public async Task<ActionResult<ServiceResponse<StreamGetDto>>> UpdateStreamLiveStatus(int streamId,
             StreamUpdateLiveDto liveDto)
         {
             var response = await _streamRepo.UpdateStreamLiveStatus(streamId, liveDto);
+            if (!response.Success)
+            {
+                return BadRequest(response);
+            }
+
+            return Ok(response);
+        }
+        
+        [HttpDelete("{streamId:int}")]
+        [Authorize(Roles = $"{Roles.SuperAdmin}, {Roles.Admin}")]
+        public async Task<ActionResult<ServiceResponse<int>>> DeleteStream(int streamId)
+        {
+            var response = await _streamRepo.DeleteStream(streamId);
             if (!response.Success)
             {
                 return BadRequest(response);

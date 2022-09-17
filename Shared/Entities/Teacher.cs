@@ -10,6 +10,4 @@ public class Teacher
 
     public int? UserId { get; set; }
     public User? User { get; set; }
-    
-    public List<LiveStream> LiveStreams { get; set; } = new List<LiveStream>();
 }

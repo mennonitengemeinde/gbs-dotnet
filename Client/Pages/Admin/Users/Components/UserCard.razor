@@ -1,0 +1,66 @@
+﻿@inject IUserService UserService
+
+<div class="card bg-base-200 shadow-xl">
+    <div class="card-body">
+        <p>
+            <span class="font-semibold">First Name:</span> @User.FirstName
+        </p>
+        <p>
+            <span class="font-semibold">Last Name:</span> @User.LastName
+        </p>
+        <p>
+            <span class="font-semibold">Email:</span> @User.Email
+        </p>
+        <p>
+            <span class="font-semibold">Verified Email:</span> @User.EmailVerified
+        </p>
+        <div class="form-control w-full max-w-xs">
+            <label class="label">
+                <span class="label-text">Role</span>
+            </label>
+            <select @onchange="HandleRoleChange" class="select select-bordered">
+                @foreach (var role in Roles.AllRoles)
+                {
+                    @if (role == User.Role)
+                    {
+                        <option selected value="@role">@role</option>
+                    }
+                    else
+                    {
+                        <option value="@role">@role</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="form-control">
+            <label class="label cursor-pointer">
+                <span class="label-text">Active</span>
+                <input type="checkbox"
+                       class="toggle toggle-primary"
+                       checked="@User.IsActive"
+                       @onchange="HandleActiveChange"/>
+            </label>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    [Parameter, EditorRequired]
+    public UserDto User { get; set; } = null!;
+
+    async Task HandleRoleChange(ChangeEventArgs e)
+    {
+        if (e.Value is not string role) return;
+        var updateRoleDto = new UserUpdateRoleDto {Role = role};
+        await UserService.UpdateRole(User.Id, updateRoleDto);
+    }
+
+    async Task HandleActiveChange(ChangeEventArgs e)
+    {
+        if (e.Value is not bool active) return;
+        var updateActiveDto = new UserUpdateActiveStateDto {IsActive = active};
+        await UserService.UpdateActiveState(User.Id, updateActiveDto);
+    }
+
+}
