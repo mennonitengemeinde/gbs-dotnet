@@ -17,21 +17,13 @@ public class TeacherRepository : ITeacherRepository
 
     public async Task<ServiceResponse<Teacher>> GetTeacherById(int id)
     {
-        var response = new ServiceResponse<Teacher>();
         var teacher = await _context.Teachers.FirstOrDefaultAsync(t => t.Id == id);
-        if (teacher == null)
-        {
-            response.Success = false;
-            response.Message = "Teacher not found.";
-            return response;
-        }
-        response.Data = teacher;
-        return response;
+        return teacher == null ? TeacherNotFound() : new ServiceResponse<Teacher> { Data = teacher };
     }
 
     public async Task<ServiceResponse<Teacher>> AddTeacher(TeacherCreateDto teacherCreateDto)
     {
-        if (await _context.Teachers.AnyAsync(t => t.Name == teacherCreateDto.Name))
+        if (await TeacherNameExists(teacherCreateDto.Name))
         {
             return new ServiceResponse<Teacher> { Success = false, Message = "Teacher already exists" };
         }
@@ -47,17 +39,29 @@ public class TeacherRepository : ITeacherRepository
 
     public async Task<ServiceResponse<Teacher>> UpdateTeacher(int teacherId, TeacherCreateDto teacherDto)
     {
-        var response = new ServiceResponse<Teacher>();
+        if (await TeacherNameExists(teacherDto.Name, teacherId))
+        {
+            return new ServiceResponse<Teacher> { Success = false, Message = "Teacher already exists" };
+        }
+
         var teacher = await _context.Teachers.FirstOrDefaultAsync(t => t.Id == teacherId);
         if (teacher == null)
-        {
-            response.Success = false;
-            response.Message = "Teacher not found.";
-            return response;
-        }
+            return TeacherNotFound();
+
         teacher.Name = teacherDto.Name;
         await _context.SaveChangesAsync();
-        response.Data = teacher;
-        return response;
+        return new ServiceResponse<Teacher> { Data = teacher };
+    }
+
+    private async Task<bool> TeacherNameExists(string name, int? id = null)
+    {
+        return id != null
+            ? await _context.Teachers.AnyAsync(t => t.Name == name && t.Id != id)
+            : await _context.Teachers.AnyAsync(t => t.Name == name);
+    }
+    
+    private static ServiceResponse<Teacher> TeacherNotFound()
+    {
+        return new ServiceResponse<Teacher> { Success = false, Message = "Teacher not found." };
     }
 }

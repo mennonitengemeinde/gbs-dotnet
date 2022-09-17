@@ -1,4 +1,5 @@
 ﻿@page "/school/{Id:int}/live"
+@attribute [Authorize]
 @inject IStreamService StreamService
 @inject NavigationManager NavigationManager
 

@@ -1,8 +1,6 @@
-using System.Net;
-
 namespace gbs.Client.Services.Api.AuthService;
 
-public class AuthApiService : BaseApiService, IAuthService
+public class AuthApiService : IAuthService
 {
     private readonly HttpClient _http;
     private readonly AuthenticationStateProvider _authStateProvider;
@@ -15,14 +13,14 @@ public class AuthApiService : BaseApiService, IAuthService
 
     public async Task<ServiceResponse<int>> Register(RegisterDto userRegister)
     {
-        var response = await _http.PostAsJsonAsync("api/auth/register", userRegister);
-        return await EnsureSuccess<int>(response);
+        return await _http.PostAsJsonAsync("api/auth/register", userRegister)
+            .EnsureSuccess<int>();
     }
 
     public async Task<ServiceResponse<string>> Login(LoginDto userLogin)
     {
-        var response = await _http.PostAsJsonAsync("api/auth/login", userLogin);
-        return await EnsureSuccess<string>(response);
+        return await _http.PostAsJsonAsync("api/auth/login", userLogin)
+            .EnsureSuccess<string>();
     }
 
     public async Task<bool> IsUserAuthenticated()

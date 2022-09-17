@@ -58,6 +58,11 @@ public class AuthRepository : IAuthRepository
             response.Success = false;
             response.Message = "User not found";
         }
+        else if (user.IsActive == false)
+        {
+            response.Success = false;
+            response.Message = "You account needs to be verified. Please come back later.";
+        }
         else if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
         {
             response.Success = false;

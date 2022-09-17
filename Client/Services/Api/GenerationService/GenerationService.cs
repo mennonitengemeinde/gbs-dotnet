@@ -1,6 +1,6 @@
 ﻿namespace gbs.Client.Services.Api.GenerationService;
 
-public class GenerationService : BaseApiService, IGenerationService
+public class GenerationService : IGenerationService
 {
     private readonly HttpClient _http;
     private readonly IUiService _uiService;
@@ -12,7 +12,7 @@ public class GenerationService : BaseApiService, IGenerationService
         _http = http;
         _uiService = uiService;
     }
-    
+
     public async Task LoadGenerations()
     {
         var result = await GetGenerations();
@@ -20,33 +20,35 @@ public class GenerationService : BaseApiService, IGenerationService
         {
             _uiService.AddErrorAlert(result.Message);
             Generations = new List<Generation>();
-            return;;
+            return;
+            ;
         }
+
         Generations = result.Data!;
         GenerationsChanged?.Invoke();
     }
 
     public async Task<ServiceResponse<List<Generation>>> GetGenerations()
     {
-        var response = await _http.GetAsync("api/generations");
-        return await EnsureSuccess<List<Generation>>(response);
+        return await _http.GetAsync("api/generations")
+            .EnsureSuccess<List<Generation>>();
     }
 
     public async Task<ServiceResponse<Generation>> AddGeneration(GenerationCreateDto generation)
     {
-        var response = await _http.PostAsJsonAsync("api/generations", generation);
-        return await EnsureSuccess<Generation>(response);
+        return await _http.PostAsJsonAsync("api/generations", generation)
+            .EnsureSuccess<Generation>();
     }
 
     public async Task<ServiceResponse<Generation>> UpdateGeneration(int generationId, GenerationUpdateDto generation)
     {
-        var response = await _http.PutAsJsonAsync($"api/generations/{generationId}", generation);
-        return await EnsureSuccess<Generation>(response);
+        return await _http.PutAsJsonAsync($"api/generations/{generationId}", generation)
+            .EnsureSuccess<Generation>();
     }
 
     public async Task<ServiceResponse<bool>> DeleteGeneration(int generationId)
     {
-        var response = await _http.DeleteAsync($"api/generations/{generationId}");
-        return await EnsureSuccess<bool>(response);
+        return await _http.DeleteAsync($"api/generations/{generationId}")
+            .EnsureSuccess<bool>();
     }
 }

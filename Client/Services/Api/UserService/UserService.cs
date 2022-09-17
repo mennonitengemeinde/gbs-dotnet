@@ -10,22 +10,28 @@ public class UserService : IUserService
     {
         _http = http;
     }
-    
+
     public async Task GetUsers()
     {
-        var result = await _http.GetFromJsonAsync<ServiceResponse<List<UserDto>>>("api/users");
-        if (result?.Data != null)
-        {
+        var result = await FetchUsers();
+        if (result.Success)
             Users = result.Data;
-        }
+
         UsersChanged?.Invoke();
+    }
+
+    public async Task<ServiceResponse<List<UserDto>>> FetchUsers()
+    {
+        return await _http
+            .GetAsync("api/users")
+            .EnsureSuccess<List<UserDto>>();
     }
 
     public async Task UpdateRole(int userId, UserUpdateRoleDto userUpdateRoleDto)
     {
-        var response = await _http.PutAsJsonAsync($"api/users/{userId}/role", userUpdateRoleDto);
-        var result = await response.Content.ReadFromJsonAsync<ServiceResponse<UserDto>>();
-        if (result?.Success == true)
+        var response = await _http.PutAsJsonAsync($"api/users/{userId}/role", userUpdateRoleDto)
+            .EnsureSuccess<UserDto>();
+        if (response.Success)
         {
             await GetUsers();
             UsersChanged?.Invoke();

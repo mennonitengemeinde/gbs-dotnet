@@ -1,6 +1,6 @@
 @page "/admin/teachers/create"
 @page "/admin/teachers/{Id:int}/edit"
-@using Microsoft.AspNetCore.Components
+@attribute [Authorize(Roles = $"{Roles.Admin}, {Roles.SuperAdmin}, {Roles.Teacher}")]
 @inject NavigationManager NavigationManager
 @inject ITeacherService TeacherService
 @inject IUiService UiService

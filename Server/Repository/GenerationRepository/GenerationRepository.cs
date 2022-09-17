@@ -22,87 +22,67 @@ public class GenerationRepository : IGenerationRepository
     {
         var user = await _context.Generations.FirstOrDefaultAsync(u => u.Id == id);
         if (user == null)
-        {
-            return new ServiceResponse<Generation>
-            {
-                Success = false,
-                Message = "Generation not found."
-            };
-        }
+            return GenerationNotFound<Generation>();
 
-        return new ServiceResponse<Generation>
-        {
-            Data = user
-        };
+        return new ServiceResponse<Generation> { Data = user };
     }
 
     public async Task<ServiceResponse<Generation>> AddGeneration(GenerationCreateDto generation)
     {
-        if (await _context.Generations.AnyAsync(g => g.Name == generation.Name))
+        if (await GenerationNameExists(generation.Name))
         {
-            return new ServiceResponse<Generation>
-            {
-                Success = false,
-                Message = "Generation already exists."
-            };
+            return new ServiceResponse<Generation> { Success = false, Message = "Generation already exists." };
         }
-        var newGeneration = new Generation
-        {
-            Name = generation.Name
-        };
+
+        var newGeneration = new Generation { Name = generation.Name };
         await _context.Generations.AddAsync(newGeneration);
         await _context.SaveChangesAsync();
-        return new ServiceResponse<Generation>
-        {
-            Data = newGeneration
-        };
+        return new ServiceResponse<Generation> { Data = newGeneration };
     }
 
     public async Task<ServiceResponse<Generation>> UpdateGeneration(int generationId, GenerationUpdateDto generation)
     {
-        if (await _context.Generations.AnyAsync(g => g.Name == generation.Name && g.Id != generationId))
+        if (await GenerationNameExists(generation.Name, generationId))
         {
-            return new ServiceResponse<Generation>
-            {
-                Success = false,
-                Message = "Generation already exists."
-            };
+            return new ServiceResponse<Generation> { Success = false, Message = "Generation already exists." };
         }
+
         var dbGeneration = await _context.Generations.FirstOrDefaultAsync(u => u.Id == generationId);
         if (dbGeneration == null)
-        {
-            return new ServiceResponse<Generation>
-            {
-                Success = false,
-                Message = "Generation not found."
-            };
-        }
+            return GenerationNotFound<Generation>();
 
         dbGeneration.Name = generation.Name;
         await _context.SaveChangesAsync();
-        return new ServiceResponse<Generation>
-        {
-            Data = dbGeneration
-        };
+        return new ServiceResponse<Generation> { Data = dbGeneration };
     }
 
     public async Task<ServiceResponse<bool>> DeleteGeneration(int id)
     {
         var dbGeneration = await _context.Generations.FirstOrDefaultAsync(u => u.Id == id);
         if (dbGeneration == null)
-        {
-            return new ServiceResponse<bool>
-            {
-                Success = false,
-                Message = "Generation not found."
-            };
-        }
+            return GenerationNotFound<bool>();
 
         _context.Generations.Remove(dbGeneration);
         await _context.SaveChangesAsync();
         return new ServiceResponse<bool>
         {
             Data = true
+        };
+    }
+
+    private async Task<bool> GenerationNameExists(string name, int? id = null)
+    {
+        return id != null
+            ? await _context.Generations.AnyAsync(g => g.Name == name && g.Id != id)
+            : await _context.Generations.AnyAsync(g => g.Name == name);
+    }
+
+    private static ServiceResponse<T> GenerationNotFound<T>()
+    {
+        return new ServiceResponse<T>
+        {
+            Success = false,
+            Message = $"Generation not found."
         };
     }
 }
