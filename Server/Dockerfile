@@ -11,10 +11,9 @@ COPY ["Server/gbs.Server.csproj", "Server/"]
 COPY ["Client/gbs.Client.csproj", "Client/"]
 COPY ["Shared/gbs.Shared.csproj", "Shared/"]
 RUN dotnet restore "Server/gbs.Server.csproj"
+COPY . .
 WORKDIR "/src/Client"
 RUN npm install && npm run build
-WORKDIR /src
-COPY . .
 WORKDIR "/src/Server"
 RUN dotnet build "gbs.Server.csproj" -c Release -o /app/build
 
