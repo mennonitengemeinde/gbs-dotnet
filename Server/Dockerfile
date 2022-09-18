@@ -4,15 +4,16 @@ EXPOSE 80
 EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
-WORKDIR "/src/Client"
 RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
     apt-get install -y nodejs build-essential
-RUN npm install && npm run build
 WORKDIR /src
 COPY ["Server/gbs.Server.csproj", "Server/"]
 COPY ["Client/gbs.Client.csproj", "Client/"]
 COPY ["Shared/gbs.Shared.csproj", "Shared/"]
 RUN dotnet restore "Server/gbs.Server.csproj"
+WORKDIR "/src/Client"
+RUN npm install && npm run build
+WORKDIR /src
 COPY . .
 WORKDIR "/src/Server"
 RUN dotnet build "gbs.Server.csproj" -c Release -o /app/build
