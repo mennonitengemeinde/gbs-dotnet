@@ -17,7 +17,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddDbContext<DataContext>(options =>
 {
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+    var host = builder.Configuration.GetConnectionString("Host");
+    var db = builder.Configuration.GetConnectionString("Database");
+    var port = builder.Configuration.GetConnectionString("Port");
+    var username = builder.Configuration.GetConnectionString("Username");
+    var password = builder.Configuration.GetConnectionString("Password");
+    // options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseNpgsql($"Host={host}Port={port};Database={db};Username={username};Password={password}");
 });
 
 builder.Services.AddControllersWithViews();
@@ -35,7 +41,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration.GetSection("AppSettings:Secret").Value)),
+            IssuerSigningKey =
+                new SymmetricSecurityKey(
+                    System.Text.Encoding.UTF8.GetBytes(builder.Configuration.GetSection("AppSettings:Secret").Value)),
             ValidateIssuer = false,
             ValidateAudience = false,
             ValidateLifetime = true
