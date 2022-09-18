@@ -396,3 +396,6 @@ FodyWeavers.xsd
 
 # Tailwind CSS
 output.css
+
+# Mac
+.DS_Store
