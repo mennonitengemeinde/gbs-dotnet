@@ -5,6 +5,9 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
+RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
+    apt-get install -y nodejs build-essential
+RUN npm install && npm run build
 COPY ["Server/gbs.Server.csproj", "Server/"]
 COPY ["Client/gbs.Client.csproj", "Client/"]
 COPY ["Shared/gbs.Shared.csproj", "Shared/"]
