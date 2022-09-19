@@ -1,4 +1,5 @@
-﻿using gbs.Shared.Const;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using gbs.Shared.Const;
 
 namespace gbs.Shared.Entities;
 
@@ -13,4 +14,9 @@ public class User
     public string LastName { get; set; } = string.Empty;
     public string Role { get; set; } = Roles.User;
     public bool IsActive { get; set; } = false;
+    public DateTime CreatedAt { get; set; }
+    public DateTime? LastLogin { get; set; }
+
+    public int? TeacherId { get; set; }
+    public Teacher Teacher { get; set; } = null!;
 }

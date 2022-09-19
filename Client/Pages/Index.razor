@@ -27,7 +27,7 @@
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
-        if (user.Identity == null || user.Identity.IsAuthenticated)
+        if (user.Identity is {IsAuthenticated: true })
         {
             NavigationManager.NavigateTo("school");
         }

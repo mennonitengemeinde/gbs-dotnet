@@ -36,7 +36,8 @@ public class AuthRepository : IAuthRepository
             FirstName = request.FirstName,
             LastName = request.LastName,
             PasswordHash = passwordHash,
-            PasswordSalt = passwordSalt
+            PasswordSalt = passwordSalt,
+            CreatedAt = DateTime.UtcNow
         };
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
@@ -70,6 +71,9 @@ public class AuthRepository : IAuthRepository
         }
         else
         {
+            user.LastLogin = DateTime.UtcNow;
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
             response.Data = CreateToken(user);
         }
 

@@ -1,0 +1,166 @@
+classDiagram
+    Church "*" <-- "1" Student
+    Student "1" --> "*" Enrollment
+    Enrollment "1" --> "*" Generation
+    Generation "*" <-- "1" LiveStream
+    Message "1" --> "*" Question
+    MessageType "1" --> "*" Message
+    Subject "*" <-- "1" Lesson
+    Grade "*" <-- "1" Subject
+    Subject "*" <-- "1" SubjectDocument
+    SubjectDocument "*" <-- "1" SubjectDocumentType
+    Question "1" --> "*" Subject
+    Question "1" --> "*" User
+    Question "*" <-- "1" WatchList
+    LiveStream "*" <-- "1" Question
+    LiveStreamTeacher "1" --> "*" Teacher
+    WatchList "*" <-- "1" User
+    Teacher "1" <--> "1" User
+    LiveStream "*" <-- "1" LiveStreamTeacher
+    Enrollment "*" <-- "1" Grade
+
+    class User {
+        +int Id
+        +String Email
+        +String EmailVerified
+        +byte[] PasswordHash
+        +byte[] PasswordSalt
+        +String FirstName
+        +String LastName
+        +String Role
+        +bool IsActive
+        +int? TeacherId
+        +List~Question~ Questions
+        +List~Message~ Messages
+    }
+
+    class Generation {
+        +int Id
+        +String Name
+        +bool IsActive
+    }
+
+    class LiveStream {
+        +int Id
+        +String Title
+        +String Url
+        +bool IsLive
+        +int GenerationId
+        List~LiveStreamTeacher~ StreamTeachers
+    }
+
+    class Teacher {
+        +int Id
+        +String Name
+        +int UserId
+    }
+
+    class LiveStreamTeacher {
+        +int Id
+        +int LiveStreamId
+        +int TeacherId
+    }
+
+    class Church {
+        +int Id
+        +String Name
+        +String Address
+        +String City
+        +String State
+        +String ZipCode
+        +String Country
+        +List~Student~ Students
+    }
+
+    class Student {
+        +int Id
+        +String FirstName
+        +String LastName
+        +int UserId
+        +DateTime DateOfBirth
+        +String Address
+        +String City
+        +String State
+        +String ZipCode
+        +String Country
+        +String MaritalStatus
+        +String PhoneNumber
+        +String Email
+        +int ChurchId
+    }
+    
+    class Enrollment {
+        +int StudentId
+        +int GenerationId
+        +bool IsActive
+        +bool HasCompleted
+        +DateTime EnrollmentDate
+        +DateTime CompletionDate
+        +String Testimony
+        +bool AgreedToGbsConcept
+    }
+
+    class Subject {
+        +int Id
+        +String Name
+    }
+
+    class Lesson {
+        +int Id
+        +String Name
+        +int SubjectId
+    }
+
+    class Question {
+        +int Id
+        +String Title
+        +String Text
+        +DateTime CreatedDate
+        +DateTime ClosedDate
+        +bool IsClosed
+        +int UserId
+        +List ~Message~ Messages
+    }
+
+    class Message {
+        +int Id
+        +MessageType MessageType
+        +String Text
+        +int QuestionId
+        +int UserId
+    }
+
+    class MessageType {
+        <<enumeration>>
+        Comment
+        Answer
+    }
+
+    class WatchList {
+        +int UserId
+        +int QuestionId
+        +bool IsAnswered
+    }
+
+    class Grade {
+        +int EnrollmentId
+        +int SubjectId
+        +DateTime Date
+        +int Percent
+    }
+
+    class SubjectDocument {
+        +int Id
+        +String Name
+        +String Type
+        +bool IsActive
+        +int SubjectId
+    }
+
+    class SubjectDocumentType {
+        <<enumeration>>
+        Notation
+        Presentation
+        Exam
+        Answer
+    }

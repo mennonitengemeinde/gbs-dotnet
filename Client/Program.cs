@@ -33,4 +33,6 @@ builder.Services.AddOptions();
 builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
 
+builder.Logging.AddFilter("Microsoft.AspNetCore.Authorization.*", LogLevel.None);
+
 await builder.Build().RunAsync();
