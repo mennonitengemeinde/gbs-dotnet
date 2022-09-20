@@ -18,7 +18,7 @@ public class TeacherService : ITeacherService
         var result = await FetchTeachers();
         if (!result.Success)
         {
-            _uiService.AddErrorAlert(result.Message);
+            _uiService.ShowErrorAlert(result.Message);
             Teachers = new List<Teacher>();
             return;
         }

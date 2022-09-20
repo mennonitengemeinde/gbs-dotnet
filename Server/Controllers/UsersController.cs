@@ -27,6 +27,18 @@ namespace gbs.Server.Controllers
             return Ok(users);
         }
 
+        [HttpPut("{userId:int}")]
+        public async Task<ActionResult<ServiceResponse<UserDto>>> UpdateUser(int userId, UserUpdateDto updateDto)
+        {
+            var user = await _userRepo.UpdateUser(userId, updateDto);
+            if (!user.Success)
+            {
+                return BadRequest(user);
+            }
+
+            return Ok(user);
+        }
+
         [HttpPut("{userId:int}/role")]
         public async Task<ActionResult<ServiceResponse<UserDto>>> UpdateUserRole(int userId,
             [FromBody] UserUpdateRoleDto updateRoleDto)
@@ -36,9 +48,10 @@ namespace gbs.Server.Controllers
             {
                 return BadRequest(user);
             }
+
             return Ok(user);
         }
-        
+
         [HttpPut("{userId:int}/active")]
         public async Task<ActionResult<ServiceResponse<UserDto>>> UpdateUserActiveState(int userId,
             UserUpdateActiveStateDto updateActiveStateDto)
@@ -48,6 +61,7 @@ namespace gbs.Server.Controllers
             {
                 return BadRequest(user);
             }
+
             return Ok(user);
         }
     }

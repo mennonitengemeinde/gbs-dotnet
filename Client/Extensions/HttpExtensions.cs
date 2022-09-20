@@ -6,9 +6,10 @@ public static class HttpExtensions
 {
     public static async Task<ServiceResponse<T>> EnsureSuccess<T>(this Task<HttpResponseMessage> responseTask)
     {
-        HttpResponseMessage response = await responseTask;
+        HttpResponseMessage? response = null;
         try
         {
+            response = await responseTask;
             if (response.IsSuccessStatusCode == false)
             {
                 return await HandleHttpError<T>(response);
@@ -28,9 +29,30 @@ public static class HttpExtensions
         }
         catch (Exception)
         {
+            if (response == null)
+            {
+                return new ServiceResponse<T>
+                {
+                    Success = false,
+                    Message = "No response from server"
+                };
+            }
+            Console.WriteLine("HandleError: " + response.StatusCode);
             return await HandleHttpError<T>(response);
         }
     }
+
+    // public static async Task HandleErrors<T>(this Task<HttpResponseMessage> task)
+    // {
+    //     try
+    //     {
+    //         await task;
+    //     }
+    //     catch (HttpRequestException ex)
+    //     {
+    //         return CreateResponse
+    //     }
+    // }
 
     private static async Task<ServiceResponse<T>> HandleHttpError<T>(HttpResponseMessage response)
     {
@@ -45,6 +67,8 @@ public static class HttpExtensions
                 result.Message = "Unauthorized";
                 return result;
         }
+
+        Console.WriteLine("HandleHttpError: " + response.StatusCode);
 
         var responseData = await response.Content.ReadFromJsonAsync<ServiceResponse<T>>();
         result.Message = responseData?.Message ?? "Something went wrong";

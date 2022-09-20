@@ -53,13 +53,13 @@
             {
                 _isModalOpen = false;
                 await StreamService.LoadStreams();
-                UiService.AddSuccessAlert(result.Message);
+                UiService.ShowSuccessAlert(result.Message);
             }
             else
             {
                 _isModalOpen = false;
                 await StreamService.LoadStreams();
-                UiService.AddErrorAlert(result.Message);
+                UiService.ShowErrorAlert(result.Message);
             }
         }
     }

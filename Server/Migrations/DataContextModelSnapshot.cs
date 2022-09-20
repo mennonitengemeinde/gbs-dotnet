@@ -422,6 +422,9 @@ namespace gbs.Server.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("ChurchId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -462,6 +465,8 @@ namespace gbs.Server.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ChurchId");
 
                     b.HasIndex("TeacherId")
                         .IsUnique();
@@ -635,9 +640,15 @@ namespace gbs.Server.Migrations
 
             modelBuilder.Entity("gbs.Shared.Entities.User", b =>
                 {
+                    b.HasOne("gbs.Shared.Entities.Church", "Church")
+                        .WithMany("Users")
+                        .HasForeignKey("ChurchId");
+
                     b.HasOne("gbs.Shared.Entities.Teacher", "Teacher")
                         .WithOne()
                         .HasForeignKey("gbs.Shared.Entities.User", "TeacherId");
+
+                    b.Navigation("Church");
 
                     b.Navigation("Teacher");
                 });
@@ -645,6 +656,8 @@ namespace gbs.Server.Migrations
             modelBuilder.Entity("gbs.Shared.Entities.Church", b =>
                 {
                     b.Navigation("Students");
+
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("gbs.Shared.Entities.Enrollment", b =>

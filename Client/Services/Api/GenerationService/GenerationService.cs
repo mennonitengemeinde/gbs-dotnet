@@ -18,7 +18,7 @@ public class GenerationService : IGenerationService
         var result = await GetGenerations();
         if (result.Success == false)
         {
-            _uiService.AddErrorAlert(result.Message);
+            _uiService.ShowErrorAlert(result.Message);
             Generations = new List<Generation>();
             return;
             ;

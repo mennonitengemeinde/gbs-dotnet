@@ -45,13 +45,13 @@
         if (response.Success)
         {
             _isLoading = false;
-            UiService.AddSuccessAlert("Generation added successfully");
+            UiService.ShowSuccessAlert("Generation added successfully");
             NavigationManager.NavigateTo("admin/generations");
         }
         else
         {
             _isLoading = false;
-            UiService.AddErrorAlert(response.Message);
+            UiService.ShowErrorAlert(response.Message);
             await _nameInput.FocusAsync();
         }
     }

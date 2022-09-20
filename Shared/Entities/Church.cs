@@ -11,4 +11,5 @@ public class Church
     public string Country { get; set; } = string.Empty;
 
     public List<Student> Students { get; set; } = new List<Student>();
+    public List<User> Users { get; set; } = new List<User>();
 }

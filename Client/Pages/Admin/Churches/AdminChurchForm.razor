@@ -32,6 +32,7 @@
                     <TextInput Id="name"
                                @ref="_nameInput"
                                Label="Name"
+                               Required
                                @bind-Value="_newChurch.Name"
                                For="() => _newChurch.Name"/>
                     <TextInput Id="address"
@@ -48,6 +49,7 @@
                                For="() => _newChurch.State!"/>
                     <TextInput Id="country"
                                Label="Country"
+                               Required
                                @bind-Value="_newChurch.Country"
                                For="() => _newChurch.Country"/>
                     <TextInput Id="postalCode"
@@ -119,13 +121,13 @@
         if (response.Success)
         {
             _isLoading = false;
-            UiService.AddSuccessAlert(_isEdit ? "Church updated successfully" : "Church added successfully");
+            UiService.ShowSuccessAlert(_isEdit ? "Church updated successfully" : "Church added successfully");
             NavigationManager.NavigateTo("admin/churches");
         }
         else
         {
             _isLoading = false;
-            UiService.AddErrorAlert(response.Message);
+            UiService.ShowErrorAlert(response.Message);
             await _nameInput.FocusAsync();
         }
     }
