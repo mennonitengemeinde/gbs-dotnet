@@ -34,7 +34,7 @@
         </div>
 
         <ul class="ml-auto menu menu-horizontal p-0">
-            <AuthorizeView Roles="@($"{Roles.SuperAdmin}, {Roles.Admin}")">
+            <AuthorizeView Roles="@($"{Roles.SuperAdmin}, {Roles.Admin}, {Roles.Teacher}, {Roles.Sound}")">
                 <Authorized>
                     <li>
                         <NavLink Href="admin" ActiveClass="active" class="py-2">

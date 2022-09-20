@@ -1,7 +1,7 @@
 ﻿@page "/admin/users"
 @using gbs.Client.Pages.Admin.Users.Components
 @implements IDisposable
-@attribute [Authorize(Roles = $"{Roles.Admin}, {Roles.SuperAdmin}")]
+@attribute [Authorize(Roles = $"{Roles.SuperAdmin}, {Roles.Admin}")]
 @inject IUserService UserService
 
 <H3>Users</H3>

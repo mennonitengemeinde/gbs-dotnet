@@ -31,8 +31,8 @@
     public string Id { get; set; } = string.Empty;
     
     [Parameter]
-    public TKey Value { get; set; }
-    
+    public TKey Value { get; set; } = default!;
+
     [Parameter]
     public EventCallback<TKey> ValueChanged { get; set; }
     
@@ -43,8 +43,8 @@
     public string? Placeholder { get; set; }
     
     [Parameter]
-    public Dictionary<TKey, TValue> Items { get; set; }
-    
+    public Dictionary<TKey, TValue> Items { get; set; } = null!;
+
     [Parameter]
     public Expression<Func<TKey>>? For { get; set; }
     

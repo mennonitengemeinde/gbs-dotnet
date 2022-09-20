@@ -26,7 +26,7 @@ public static class HttpExtensions
 
             return result;
         }
-        catch (Exception e)
+        catch (Exception)
         {
             return await HandleHttpError<T>(response);
         }
