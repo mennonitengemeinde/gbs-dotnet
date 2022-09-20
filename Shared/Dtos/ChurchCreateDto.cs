@@ -10,4 +10,6 @@ public class ChurchCreateDto
     public string? City { get; set; }
     public string? State { get; set; }
     public string? PostalCode { get; set; }
+    [Required, StringLength(150, MinimumLength = 3)]
+    public string Country { get; set; } = string.Empty;
 }

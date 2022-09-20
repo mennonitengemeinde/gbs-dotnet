@@ -43,7 +43,7 @@
     string _selectedTeacher = string.Empty;
 
     [Parameter]
-    public List<Teacher> Teachers { get; set; }
+    public List<Teacher> Teachers { get; set; } = null!;
 
     [Parameter]
     public EventCallback<List<Teacher>> TeachersChanged { get; set; }
