@@ -5,7 +5,7 @@ public class UiService : IUiService
     public List<AlertDto> Alerts { get; set; } = new List<AlertDto>();
     public event Action? AlertsChanged;
 
-    public void AddErrorAlert(string message)
+    public void ShowErrorAlert(string message)
     {
         Alerts.Add(new AlertDto
         {
@@ -15,7 +15,7 @@ public class UiService : IUiService
         AlertsChanged?.Invoke();
     }
     
-    public void AddSuccessAlert(string message)
+    public void ShowSuccessAlert(string message)
     {
         Alerts.Add(new AlertDto
         {

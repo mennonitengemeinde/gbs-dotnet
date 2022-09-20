@@ -39,7 +39,7 @@
 </EditForm>
 
 @code {
-    LoginDto _loginDto = new LoginDto();
+    readonly LoginDto _loginDto = new LoginDto();
     private TextInput? _emailInput;
     string _message = string.Empty;
     bool _loading = false;

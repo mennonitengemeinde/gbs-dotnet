@@ -17,7 +17,7 @@ public class ChurchService : IChurchService
     {
         if (!response.Success)
         {
-            _uiService.AddErrorAlert(response.Message);
+            _uiService.ShowErrorAlert(response.Message);
             Churches = new List<Church>();
             return;
         }

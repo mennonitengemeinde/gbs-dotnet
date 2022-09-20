@@ -20,6 +20,8 @@ public class UserRepository : IUserRepository
             EmailVerified = u.EmailVerified,
             Role = u.Role,
             IsActive = u.IsActive,
+            ChurchId = u.ChurchId,
+            Church = u.Church,
         }).OrderBy(u => u.FirstName).ToListAsync();
 
         return new ServiceResponse<List<UserDto>> {Data = users};
@@ -36,11 +38,32 @@ public class UserRepository : IUserRepository
             EmailVerified = u.EmailVerified,
             Role = u.Role,
             IsActive = u.IsActive,
+            ChurchId = u.ChurchId,
+            Church = u.Church,
         }).FirstOrDefaultAsync(u => u.Id == userId);
 
         return user == null
             ? new ServiceResponse<UserDto> {Success = false, Message = "User not found"}
             : new ServiceResponse<UserDto> {Data = user};
+    }
+
+    public async Task<ServiceResponse<UserDto>> UpdateUser(int userId, UserUpdateDto userDto)
+    {
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+
+        if (user == null)
+        {
+            return new ServiceResponse<UserDto> {Success = false, Message = "User not found"};
+        }
+
+        user.Role = userDto.Role;
+        user.IsActive = userDto.IsActive;
+        user.ChurchId = userDto.ChurchId;
+
+        _context.Users.Update(user);
+        await _context.SaveChangesAsync();
+
+        return CreateUserDto(user);
     }
 
     public async Task<ServiceResponse<UserDto>> UpdateUserRole(int userId, string newRole)
@@ -70,6 +93,19 @@ public class UserRepository : IUserRepository
         return CreateUserDto(user);
     }
 
+    public async Task<ServiceResponse<UserDto>> UpdateUserChurch(int userId, int churchId)
+    {
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+        if (user == null)
+        {
+            return new ServiceResponse<UserDto> {Success = false, Message = "User not found"};
+        }
+
+        user.ChurchId = churchId;
+        await _context.SaveChangesAsync();
+        return CreateUserDto(user);
+    }
+
     private static ServiceResponse<UserDto> CreateUserDto(User user)
     {
         return new ServiceResponse<UserDto>
@@ -83,6 +119,8 @@ public class UserRepository : IUserRepository
                 EmailVerified = user.EmailVerified,
                 Role = user.Role,
                 IsActive = user.IsActive,
+                ChurchId = user.ChurchId,
+                Church = user.Church,
             }
         };
     }

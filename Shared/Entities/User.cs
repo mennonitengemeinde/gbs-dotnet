@@ -19,4 +19,7 @@ public class User
 
     public int? TeacherId { get; set; }
     public Teacher Teacher { get; set; } = null!;
+    
+    public int? ChurchId { get; set; }
+    public Church Church { get; set; } = null!;
 }
