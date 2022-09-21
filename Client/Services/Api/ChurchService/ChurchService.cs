@@ -13,11 +13,11 @@ public class ChurchService : IChurchService
         _uiService = uiService;
     }
 
-    private void UpdateChurches(ServiceResponse<List<Church>> response)
+    private async Task UpdateChurches(ServiceResponse<List<Church>> response)
     {
         if (!response.Success)
         {
-            _uiService.ShowErrorAlert(response.Message);
+            await _uiService.ShowErrorAlert(response.Message, response.StatusCode);
             Churches = new List<Church>();
             return;
         }
@@ -30,7 +30,7 @@ public class ChurchService : IChurchService
     {
         var result = await _http.GetAsync("api/churches")
             .EnsureSuccess<List<Church>>();
-        UpdateChurches(result);
+        await UpdateChurches(result);
         return result;
     }
 
@@ -44,7 +44,7 @@ public class ChurchService : IChurchService
     {
         var result = await _http.PostAsJsonAsync("api/churches", church)
             .EnsureSuccess<List<Church>>();
-        UpdateChurches(result);
+        await UpdateChurches(result);
         return result;
     }
 
@@ -52,7 +52,7 @@ public class ChurchService : IChurchService
     {
         var result = await _http.PutAsJsonAsync($"api/churches/{churchId}", church)
             .EnsureSuccess<List<Church>>();
-        UpdateChurches(result);
+        await UpdateChurches(result);
         return result;
     }
 
@@ -60,7 +60,7 @@ public class ChurchService : IChurchService
     {
         var result = await _http.DeleteAsync($"api/churches/{id}")
             .EnsureSuccess<List<Church>>();
-        UpdateChurches(result);
+        await UpdateChurches(result);
         return result;
     }
 }

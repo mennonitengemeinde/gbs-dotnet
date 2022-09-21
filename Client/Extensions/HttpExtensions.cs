@@ -21,7 +21,8 @@ public static class HttpExtensions
                 return new ServiceResponse<T>
                 {
                     Success = false,
-                    Message = "No response from server"
+                    Message = "No response from server",
+                    StatusCode = 404
                 };
             }
 
@@ -34,25 +35,13 @@ public static class HttpExtensions
                 return new ServiceResponse<T>
                 {
                     Success = false,
-                    Message = "No response from server"
+                    Message = "No response from server",
+                    StatusCode = 404
                 };
             }
-            Console.WriteLine("HandleError: " + response.StatusCode);
             return await HandleHttpError<T>(response);
         }
     }
-
-    // public static async Task HandleErrors<T>(this Task<HttpResponseMessage> task)
-    // {
-    //     try
-    //     {
-    //         await task;
-    //     }
-    //     catch (HttpRequestException ex)
-    //     {
-    //         return CreateResponse
-    //     }
-    // }
 
     private static async Task<ServiceResponse<T>> HandleHttpError<T>(HttpResponseMessage response)
     {
@@ -62,13 +51,13 @@ public static class HttpExtensions
         {
             case HttpStatusCode.InternalServerError:
                 result.Message = "Internal server error";
+                result.StatusCode = 500;
                 return result;
             case HttpStatusCode.Unauthorized:
                 result.Message = "Unauthorized";
+                result.StatusCode = 401;
                 return result;
         }
-
-        Console.WriteLine("HandleHttpError: " + response.StatusCode);
 
         var responseData = await response.Content.ReadFromJsonAsync<ServiceResponse<T>>();
         result.Message = responseData?.Message ?? "Something went wrong";

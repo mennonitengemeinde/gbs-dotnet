@@ -13,5 +13,5 @@ public class UserDto
     public string Role { get; set; } = Roles.User;
     public bool IsActive { get; set; } = false;
     public int? ChurchId { get; set; }
-    public Church? Church { get; set; }
+    public string? ChurchName { get; set; }
 }

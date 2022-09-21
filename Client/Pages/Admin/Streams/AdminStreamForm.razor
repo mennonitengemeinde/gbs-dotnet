@@ -50,7 +50,7 @@
     StreamCreateDto _newStream = new StreamCreateDto();
     TextInput _titleInput = null!;
     bool _isLoading;
-    bool _isEditMode = false;
+    bool _isEditMode;
     Dictionary<int, string> _generationSelectItems = new Dictionary<int, string>();
     List<Teacher> _selectedTeachers = new List<Teacher>();
     
@@ -75,7 +75,7 @@
             var stream = await StreamService.GetStreamById(Id.Value);
             if (!stream.Success)
             {
-                UiService.AddErrorAlert("Stream not found");
+                await UiService.ShowErrorAlert(stream.Message, stream.StatusCode);
                 NavigationManager.NavigateTo("/admin/streams");
             }
             else
@@ -117,13 +117,13 @@
             if (response.Success)
             {
                 _isLoading = false;
-                UiService.AddSuccessAlert(_isEditMode ? "Stream updated" : "Stream created");
+                UiService.ShowSuccessAlert(_isEditMode ? "Stream updated" : "Stream created");
                 NavigationManager.NavigateTo("admin/streams");
             }
             else
             {
                 _isLoading = false;
-                UiService.AddErrorAlert(response.Message);
+                await UiService.ShowErrorAlert(response.Message, response.StatusCode);
                 await _titleInput.FocusAsync();
             }
         }

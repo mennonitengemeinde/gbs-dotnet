@@ -22,7 +22,7 @@ public class ChurchRepository : IChurchRepository
     {
         var church = await _context.Churches.FirstOrDefaultAsync(c => c.Id == id);
         return church == null
-            ? new ServiceResponse<Church> { Success = false, Message = "Church not found" }
+            ? ServiceResponse<Church>.BadRequest("Church not found")
             : new ServiceResponse<Church> { Data = church };
     }
 
@@ -30,11 +30,7 @@ public class ChurchRepository : IChurchRepository
     {
         if (await ChurchExists(church.Name))
         {
-            return new ServiceResponse<List<Church>>
-            {
-                Success = false,
-                Message = "A Church with that name already exists"
-            };
+            return ServiceResponse<List<Church>>.BadRequest("A Church with that name already exists");
         }
 
         var newChurch = new Church
@@ -56,16 +52,12 @@ public class ChurchRepository : IChurchRepository
         var dbChurch = await _context.Churches.FirstOrDefaultAsync(c => c.Id == id);
         if (dbChurch == null)
         {
-            return new ServiceResponse<List<Church>> { Success = false, Message = "Church not found" };
+            return ServiceResponse<List<Church>>.BadRequest("Church not found");
         }
 
         if (await ChurchExists(churchDto.Name, id))
         {
-            return new ServiceResponse<List<Church>>
-            {
-                Success = false,
-                Message = "A Church with that name already exists"
-            };
+            return ServiceResponse<List<Church>>.BadRequest("A Church with that name already exists");
         }
 
         dbChurch.Name = churchDto.Name;
@@ -85,7 +77,7 @@ public class ChurchRepository : IChurchRepository
         var dbChurch = await _context.Churches.FirstOrDefaultAsync(c => c.Id == id);
         if (dbChurch == null)
         {
-            return new ServiceResponse<List<Church>> { Success = false, Message = "Church not found" };
+            return ServiceResponse<List<Church>>.BadRequest("Church not found");
         }
 
         _context.Churches.Remove(dbChurch);
