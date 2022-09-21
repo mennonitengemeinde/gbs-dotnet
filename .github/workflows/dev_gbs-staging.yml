@@ -28,7 +28,7 @@ jobs:
           node-version: 16
           
       - name: Build css
-        run: npm i && npm run build
+        run: cd Client && npm i && npm run build
 
       - name: Build with dotnet
         run: dotnet build --configuration Release
