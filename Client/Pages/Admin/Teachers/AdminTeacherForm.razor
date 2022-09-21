@@ -37,8 +37,8 @@
 
 @code {
     TeacherCreateDto _newTeacher = new TeacherCreateDto();
-    bool _isLoading = false;
-    bool _isEdit = false;
+    bool _isLoading;
+    bool _isEdit;
     TextInput _nameInput = null!;
 
     [Parameter]
@@ -87,7 +87,7 @@
         else
         {
             _isLoading = false;
-            UiService.ShowErrorAlert(response.Message);
+            await UiService.ShowErrorAlert(response.Message, response.StatusCode);
             await _nameInput.FocusAsync();
         }
     }

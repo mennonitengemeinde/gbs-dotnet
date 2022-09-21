@@ -21,10 +21,10 @@ public class UserRepository : IUserRepository
             Role = u.Role,
             IsActive = u.IsActive,
             ChurchId = u.ChurchId,
-            Church = u.Church,
+            ChurchName = u.Church.Name,
         }).OrderBy(u => u.FirstName).ToListAsync();
 
-        return new ServiceResponse<List<UserDto>> {Data = users};
+        return new ServiceResponse<List<UserDto>> { Data = users };
     }
 
     public async Task<ServiceResponse<UserDto>> GetUserById(int userId)
@@ -39,89 +39,51 @@ public class UserRepository : IUserRepository
             Role = u.Role,
             IsActive = u.IsActive,
             ChurchId = u.ChurchId,
-            Church = u.Church,
+            ChurchName = u.Church.Name,
         }).FirstOrDefaultAsync(u => u.Id == userId);
 
         return user == null
-            ? new ServiceResponse<UserDto> {Success = false, Message = "User not found"}
-            : new ServiceResponse<UserDto> {Data = user};
+            ? ServiceResponse<UserDto>.BadRequest("User not found")
+            : new ServiceResponse<UserDto> { Data = user };
     }
 
-    public async Task<ServiceResponse<UserDto>> UpdateUser(int userId, UserUpdateDto userDto)
-    {
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
-
-        if (user == null)
-        {
-            return new ServiceResponse<UserDto> {Success = false, Message = "User not found"};
-        }
-
-        user.Role = userDto.Role;
-        user.IsActive = userDto.IsActive;
-        user.ChurchId = userDto.ChurchId;
-
-        _context.Users.Update(user);
-        await _context.SaveChangesAsync();
-
-        return CreateUserDto(user);
-    }
-
-    public async Task<ServiceResponse<UserDto>> UpdateUserRole(int userId, string newRole)
+    public async Task<ServiceResponse<List<UserDto>>> UpdateUserRole(int userId, string newRole)
     {
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
         if (user == null)
         {
-            return new ServiceResponse<UserDto> {Success = false, Message = "User not found"};
+            return ServiceResponse<List<UserDto>>.BadRequest("User not found");
         }
 
         user.Role = newRole;
         await _context.SaveChangesAsync();
 
-        return CreateUserDto(user);
+        return await GetUsers();
     }
 
-    public async Task<ServiceResponse<UserDto>> UpdateUserActiveState(int userId, bool newActiveState)
+    public async Task<ServiceResponse<List<UserDto>>> UpdateUserActiveState(int userId, bool newActiveState)
     {
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
         if (user == null)
         {
-            return new ServiceResponse<UserDto> {Success = false, Message = "User not found"};
+            return ServiceResponse<List<UserDto>>.BadRequest("User not found");
         }
 
         user.IsActive = newActiveState;
         await _context.SaveChangesAsync();
-        return CreateUserDto(user);
+        return await GetUsers();
     }
 
-    public async Task<ServiceResponse<UserDto>> UpdateUserChurch(int userId, int churchId)
+    public async Task<ServiceResponse<List<UserDto>>> UpdateUserChurch(int userId, UserUpdateChurchDto updateDto)
     {
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
         if (user == null)
         {
-            return new ServiceResponse<UserDto> {Success = false, Message = "User not found"};
+            return ServiceResponse<List<UserDto>>.BadRequest("User not found");
         }
 
-        user.ChurchId = churchId;
+        user.ChurchId = updateDto.ChurchId;
         await _context.SaveChangesAsync();
-        return CreateUserDto(user);
-    }
-
-    private static ServiceResponse<UserDto> CreateUserDto(User user)
-    {
-        return new ServiceResponse<UserDto>
-        {
-            Data = new UserDto
-            {
-                Id = user.Id,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Email = user.Email,
-                EmailVerified = user.EmailVerified,
-                Role = user.Role,
-                IsActive = user.IsActive,
-                ChurchId = user.ChurchId,
-                Church = user.Church,
-            }
-        };
+        return await GetUsers();
     }
 }

@@ -32,6 +32,7 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
                 {
                     identity = new ClaimsIdentity();
                     await _localStorageService.RemoveItemAsync("authToken");
+                    authToken = string.Empty;
                 }
                 else
                 {

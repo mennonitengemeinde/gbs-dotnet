@@ -28,7 +28,7 @@
 @code {
     TextInput _nameInput = null!;
     GenerationCreateDto _new = new GenerationCreateDto();
-    bool _isLoading = false;
+    bool _isLoading;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -51,8 +51,9 @@
         else
         {
             _isLoading = false;
-            UiService.ShowErrorAlert(response.Message);
+            await UiService.ShowErrorAlert(response.Message, response.StatusCode);
             await _nameInput.FocusAsync();
         }
     }
+
 }

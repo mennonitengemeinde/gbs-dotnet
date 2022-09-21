@@ -1,0 +1,37 @@
+@inject IUserService UserService
+
+<div class="form-control w-full max-w-sm">
+    <label class="label">
+        <span class="label-text">Role</span>
+    </label>
+    <select @onchange="HandleRoleChange" class="select select-bordered">
+        @foreach (var role in Roles.AllRoles)
+        {
+            if (role == Roles.SuperAdmin && User.Role != Roles.SuperAdmin)
+            {
+                continue;
+            }
+            @if (role == User.Role)
+            {
+                <option selected value="@role">@role</option>
+            }
+            else
+            {
+                <option value="@role">@role</option>
+            }
+        }
+    </select>
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public UserDto User { get; set; } = null!;
+
+    async Task HandleRoleChange(ChangeEventArgs e)
+    {
+        if (e.Value is not string role) return;
+        var updateRoleDto = new UserUpdateRoleDto {Role = role};
+        await UserService.UpdateRole(User.Id, updateRoleDto);
+    }
+    
+}

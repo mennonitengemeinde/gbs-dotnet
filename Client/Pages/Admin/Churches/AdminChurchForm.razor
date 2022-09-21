@@ -69,9 +69,9 @@
 
 @code {
     ChurchCreateDto _newChurch = new ChurchCreateDto();
-    bool _isLoading = false;
-    bool _pageLoading = false;
-    bool _isEdit = false;
+    bool _isLoading;
+    bool _pageLoading;
+    bool _isEdit;
     TextInput? _nameInput;
 
     [Parameter]
@@ -127,7 +127,7 @@
         else
         {
             _isLoading = false;
-            UiService.ShowErrorAlert(response.Message);
+            await UiService.ShowErrorAlert(response.Message, response.StatusCode);
             await _nameInput.FocusAsync();
         }
     }

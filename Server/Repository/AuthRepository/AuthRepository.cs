@@ -21,11 +21,7 @@ public class AuthRepository : IAuthRepository
     {
         if (await UserExists(request.Email))
         {
-            return new ServiceResponse<int>
-            {
-                Message = "User already exists",
-                Success = false
-            };
+            return ServiceResponse<int>.BadRequest("User already exists");
         }
 
         CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
@@ -52,32 +48,28 @@ public class AuthRepository : IAuthRepository
 
     public async Task<ServiceResponse<string>> Login(string email, string password)
     {
-        var response = new ServiceResponse<string>();
         var user = await _context.Users.FirstOrDefaultAsync(x => x.Email.ToLower().Equals(email.ToLower()));
         if (user == null)
         {
-            response.Success = false;
-            response.Message = "User not found";
+            return ServiceResponse<string>.BadRequest("Incorrect email or password");
         }
         else if (user.IsActive == false)
         {
-            response.Success = false;
-            response.Message = "You account needs to be verified. Please come back later.";
+            return ServiceResponse<string>.BadRequest("You account needs to be verified. Please come back later.");
         }
         else if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
         {
-            response.Success = false;
-            response.Message = "Wrong password";
+            return ServiceResponse<string>.BadRequest("Incorrect email or password");
         }
         else
         {
+            var response = new ServiceResponse<string>();
             user.LastLogin = DateTime.UtcNow;
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
             response.Data = CreateToken(user);
+            return response;
         }
-
-        return response;
     }
 
     public async Task<ServiceResponse<bool>> ChangePassword(int userId, string newPassword)
@@ -85,11 +77,7 @@ public class AuthRepository : IAuthRepository
         var user = await _context.Users.FindAsync(userId);
         if (user == null)
         {
-            return new ServiceResponse<bool>
-            {
-                Success = false,
-                Message = "User not found",
-            };
+            return ServiceResponse<bool>.BadRequest("User not found");
         }
 
         CreatePasswordHash(newPassword, out byte[] passwordHash, out byte[] passwordSalt);

@@ -38,7 +38,7 @@
 
     [Parameter, EditorRequired]
     public StreamGetDto LiveStream { get; set; } = null!;
-    
+
     [Parameter]
     public EventCallback<StreamGetDto> OnDelete { get; set; }
 
@@ -51,7 +51,7 @@
         }
         else
         {
-            UiService.ShowErrorAlert(result.Message);
+            await UiService.ShowErrorAlert(result.Message, result.StatusCode);
         }
     }
 

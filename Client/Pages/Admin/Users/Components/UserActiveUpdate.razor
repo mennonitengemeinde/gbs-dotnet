@@ -1,0 +1,24 @@
+@inject IUserService UserService
+
+<div class="form-control">
+    <label class="label cursor-pointer">
+        <span class="label-text">Active</span>
+        <input type="checkbox"
+               class="toggle toggle-primary"
+               checked="@User.IsActive"
+               @onchange="HandleActiveChange"/>
+    </label>
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public UserDto User { get; set; } = null!;
+
+    async Task HandleActiveChange(ChangeEventArgs e)
+    {
+        if (e.Value is not bool active) return;
+        var updateActiveDto = new UserUpdateActiveStateDto { IsActive = active };
+        await UserService.UpdateActiveState(User.Id, updateActiveDto);
+    }
+
+}

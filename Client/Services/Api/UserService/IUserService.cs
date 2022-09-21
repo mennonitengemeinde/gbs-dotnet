@@ -6,6 +6,7 @@ public interface IUserService
     event Action UsersChanged;
     Task GetUsers();
     Task<ServiceResponse<List<UserDto>>> FetchUsers();
+    Task UpdateChurch(int userId, UserUpdateChurchDto updateDto);
     Task UpdateRole(int userId, UserUpdateRoleDto userUpdateRoleDto);
     Task UpdateActiveState(int userId, UserUpdateActiveStateDto userUpdateActiveDto);
 }

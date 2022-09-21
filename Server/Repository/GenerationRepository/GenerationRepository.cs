@@ -31,7 +31,7 @@ public class GenerationRepository : IGenerationRepository
     {
         if (await GenerationNameExists(generation.Name))
         {
-            return new ServiceResponse<Generation> { Success = false, Message = "Generation already exists." };
+            return ServiceResponse<Generation>.BadRequest("Generation already exists.");
         }
 
         var newGeneration = new Generation { Name = generation.Name };
@@ -44,7 +44,7 @@ public class GenerationRepository : IGenerationRepository
     {
         if (await GenerationNameExists(generation.Name, generationId))
         {
-            return new ServiceResponse<Generation> { Success = false, Message = "Generation already exists." };
+            return ServiceResponse<Generation>.BadRequest("Generation already exists.");
         }
 
         var dbGeneration = await _context.Generations.FirstOrDefaultAsync(u => u.Id == generationId);
@@ -79,10 +79,6 @@ public class GenerationRepository : IGenerationRepository
 
     private static ServiceResponse<T> GenerationNotFound<T>()
     {
-        return new ServiceResponse<T>
-        {
-            Success = false,
-            Message = $"Generation not found."
-        };
+        return ServiceResponse<T>.BadRequest("Generation already exists.");
     }
 }

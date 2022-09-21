@@ -18,7 +18,7 @@ public class StreamService : IStreamService
         var result = await GetLiveStreams();
         if (!result.Success)
         {
-            _uiService.ShowErrorAlert(result.Message);
+            await _uiService.ShowErrorAlert(result.Message, result.StatusCode);
             Streams = new List<StreamGetDto>();
             return;
         }
