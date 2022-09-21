@@ -23,8 +23,8 @@ builder.Services.AddDbContext<DataContext>(options =>
     var port = builder.Configuration.GetConnectionString("Port");
     var username = builder.Configuration.GetConnectionString("Username");
     var password = builder.Configuration.GetConnectionString("Password");
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
-    // options.UseNpgsql($"Host={host};Port={port};Database={db};Username={username};Password={password}");
+    // options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseNpgsql($"Host={host};Port={port};Database={db};Username={username};Password={password}");
 });
 
 builder.Services.AddControllersWithViews();
