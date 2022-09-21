@@ -4,6 +4,7 @@ global using gbs.Shared.Entities;
 global using gbs.Shared.Const;
 global using gbs.Shared.Dtos;
 global using gbs.Server.Repository.AuthRepository;
+global using gbs.Server.Repository.ChurchRepository;
 global using gbs.Server.Repository.GenerationRepository;
 global using gbs.Server.Repository.StreamRepository;
 global using gbs.Server.Repository.TeacherRepository;
@@ -30,6 +31,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+builder.Services.AddScoped<IChurchRepository, ChurchRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IGenerationRepository, GenerationRepository>();
 builder.Services.AddScoped<IStreamRepository, StreamRepository>();

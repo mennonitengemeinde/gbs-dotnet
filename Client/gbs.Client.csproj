@@ -7,7 +7,7 @@
     <AssemblyName>$(AssemblyName.Replace(' ', '_'))</AssemblyName>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(RunConfiguration)' == 'gbs-dotnet' " />
+<!--  <PropertyGroup Condition=" '$(RunConfiguration)' == 'gbs-dotnet' " />-->
   <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="4.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="6.0.9" />
@@ -17,10 +17,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Shared\gbs.Shared.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="Pages\Admin\Streaming\StreamsList.razor" />
   </ItemGroup>
 
 </Project>

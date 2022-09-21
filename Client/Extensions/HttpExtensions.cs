@@ -6,9 +6,10 @@ public static class HttpExtensions
 {
     public static async Task<ServiceResponse<T>> EnsureSuccess<T>(this Task<HttpResponseMessage> responseTask)
     {
-        HttpResponseMessage response = await responseTask;
+        HttpResponseMessage? response = null;
         try
         {
+            response = await responseTask;
             if (response.IsSuccessStatusCode == false)
             {
                 return await HandleHttpError<T>(response);
@@ -20,14 +21,24 @@ public static class HttpExtensions
                 return new ServiceResponse<T>
                 {
                     Success = false,
-                    Message = "No response from server"
+                    Message = "No response from server",
+                    StatusCode = 404
                 };
             }
 
             return result;
         }
-        catch (Exception e)
+        catch (Exception)
         {
+            if (response == null)
+            {
+                return new ServiceResponse<T>
+                {
+                    Success = false,
+                    Message = "No response from server",
+                    StatusCode = 404
+                };
+            }
             return await HandleHttpError<T>(response);
         }
     }
@@ -40,9 +51,11 @@ public static class HttpExtensions
         {
             case HttpStatusCode.InternalServerError:
                 result.Message = "Internal server error";
+                result.StatusCode = 500;
                 return result;
             case HttpStatusCode.Unauthorized:
                 result.Message = "Unauthorized";
+                result.StatusCode = 401;
                 return result;
         }
 

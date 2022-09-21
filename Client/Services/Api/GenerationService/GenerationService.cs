@@ -18,13 +18,12 @@ public class GenerationService : IGenerationService
         var result = await GetGenerations();
         if (result.Success == false)
         {
-            _uiService.AddErrorAlert(result.Message);
+            await _uiService.ShowErrorAlert(result.Message, result.StatusCode);
             Generations = new List<Generation>();
             return;
-            ;
         }
 
-        Generations = result.Data!;
+        Generations = result.Data;
         GenerationsChanged?.Invoke();
     }
 

@@ -1,8 +1,9 @@
 ﻿@page "/admin/users"
 @using gbs.Client.Pages.Admin.Users.Components
 @implements IDisposable
-@attribute [Authorize(Roles = $"{Roles.Admin}, {Roles.SuperAdmin}")]
+@attribute [Authorize(Roles = $"{Roles.SuperAdmin}, {Roles.Admin}")]
 @inject IUserService UserService
+@inject IChurchService ChurchService
 
 <H3>Users</H3>
 
@@ -17,25 +18,37 @@ else
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 pt-4">
         @foreach (var user in UserService.Users)
         {
-            <UserCard @key="@user.Id" User="@user" />
+            @if (user.Role == Roles.SuperAdmin)
+            {
+                <AuthorizeView Roles="@Roles.SuperAdmin">
+                    <UserCard @key="@user.Id" User="@user" Churches="ChurchService.Churches"/>
+                </AuthorizeView>
+            }
+            else
+            {
+                <UserCard @key="@user.Id" User="@user" Churches="ChurchService.Churches"/>
+            }
         }
     </div>
 }
 
 @code {
     bool _loading;
-    
+
     protected override async Task OnInitializedAsync()
     {
         _loading = true;
         await UserService.GetUsers();
+        await ChurchService.GetChurches();
         _loading = false;
         UserService.UsersChanged += StateHasChanged;
+        ChurchService.ChurchesChanged += StateHasChanged;
     }
 
     public void Dispose()
     {
         UserService.UsersChanged -= StateHasChanged;
+        ChurchService.ChurchesChanged -= StateHasChanged;
     }
 
 }

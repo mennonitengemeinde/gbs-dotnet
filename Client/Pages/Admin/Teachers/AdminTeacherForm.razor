@@ -1,6 +1,6 @@
 @page "/admin/teachers/create"
 @page "/admin/teachers/{Id:int}/edit"
-@attribute [Authorize(Roles = $"{Roles.Admin}, {Roles.SuperAdmin}, {Roles.Teacher}")]
+@attribute [Authorize(Roles = $"{Roles.SuperAdmin}, {Roles.Admin}, {Roles.Teacher}, {Roles.Sound}")]
 @inject NavigationManager NavigationManager
 @inject ITeacherService TeacherService
 @inject IUiService UiService
@@ -37,8 +37,8 @@
 
 @code {
     TeacherCreateDto _newTeacher = new TeacherCreateDto();
-    bool _isLoading = false;
-    bool _isEdit = false;
+    bool _isLoading;
+    bool _isEdit;
     TextInput _nameInput = null!;
 
     [Parameter]
@@ -81,13 +81,13 @@
         if (response.Success)
         {
             _isLoading = false;
-            UiService.AddSuccessAlert(_isEdit ? "Teacher updated successfully" : "Teacher added successfully");
+            UiService.ShowSuccessAlert(_isEdit ? "Teacher updated successfully" : "Teacher added successfully");
             NavigationManager.NavigateTo("admin/teachers");
         }
         else
         {
             _isLoading = false;
-            UiService.AddErrorAlert(response.Message);
+            await UiService.ShowErrorAlert(response.Message, response.StatusCode);
             await _nameInput.FocusAsync();
         }
     }

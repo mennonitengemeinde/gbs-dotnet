@@ -1,5 +1,5 @@
 @page "/admin/generations/create"
-@attribute [Authorize(Roles = $"{Roles.Admin}, {Roles.SuperAdmin}, {Roles.Teacher}")]
+@attribute [Authorize(Roles = $"{Roles.SuperAdmin}, {Roles.Admin}, {Roles.Teacher}")]
 @inject NavigationManager NavigationManager
 @inject IGenerationService GenerationService
 @inject IUiService UiService
@@ -28,7 +28,7 @@
 @code {
     TextInput _nameInput = null!;
     GenerationCreateDto _new = new GenerationCreateDto();
-    bool _isLoading = false;
+    bool _isLoading;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -45,14 +45,15 @@
         if (response.Success)
         {
             _isLoading = false;
-            UiService.AddSuccessAlert("Generation added successfully");
+            UiService.ShowSuccessAlert("Generation added successfully");
             NavigationManager.NavigateTo("admin/generations");
         }
         else
         {
             _isLoading = false;
-            UiService.AddErrorAlert(response.Message);
+            await UiService.ShowErrorAlert(response.Message, response.StatusCode);
             await _nameInput.FocusAsync();
         }
     }
+
 }

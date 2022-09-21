@@ -6,7 +6,7 @@ public interface IUiService
 {
     List<AlertDto> Alerts { get; set; }
     event Action AlertsChanged;
-    void AddErrorAlert(string message);
-    void AddSuccessAlert(string message);
+    Task ShowErrorAlert(string message, int statusCode);
+    void ShowSuccessAlert(string message);
     void RemoveAlert(string alertId);
 }

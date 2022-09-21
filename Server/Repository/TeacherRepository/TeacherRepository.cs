@@ -25,7 +25,7 @@ public class TeacherRepository : ITeacherRepository
     {
         if (await TeacherNameExists(teacherCreateDto.Name))
         {
-            return new ServiceResponse<Teacher> { Success = false, Message = "Teacher already exists" };
+            return ServiceResponse<Teacher>.BadRequest("Teacher already exists");
         }
 
         var teacher = new Teacher
@@ -41,7 +41,7 @@ public class TeacherRepository : ITeacherRepository
     {
         if (await TeacherNameExists(teacherDto.Name, teacherId))
         {
-            return new ServiceResponse<Teacher> { Success = false, Message = "Teacher already exists" };
+            return ServiceResponse<Teacher>.BadRequest("Teacher already exists");
         }
 
         var teacher = await _context.Teachers.FirstOrDefaultAsync(t => t.Id == teacherId);
@@ -59,9 +59,9 @@ public class TeacherRepository : ITeacherRepository
             ? await _context.Teachers.AnyAsync(t => t.Name == name && t.Id != id)
             : await _context.Teachers.AnyAsync(t => t.Name == name);
     }
-    
+
     private static ServiceResponse<Teacher> TeacherNotFound()
     {
-        return new ServiceResponse<Teacher> { Success = false, Message = "Teacher not found." };
+        return ServiceResponse<Teacher>.BadRequest("Teacher already exists");
     }
 }

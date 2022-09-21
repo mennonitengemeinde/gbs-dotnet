@@ -1,5 +1,5 @@
 ﻿@page "/admin/streams"
-@attribute [Authorize(Roles = $"{Roles.Admin}, {Roles.SuperAdmin}, {Roles.Teacher}")]
+@attribute [Authorize(Roles = $"{Roles.SuperAdmin}, {Roles.Admin}, {Roles.Teacher}, {Roles.Sound}")]
 @implements IDisposable
 @using gbs.Client.Pages.Admin.Streams.Components
 @inject IStreamService StreamService
@@ -8,7 +8,9 @@
 
 <div class="flex justify-between items-center">
     <H3>Streams</H3>
-    <Button Href="/admin/streams/create" Color="BtnColor.Primary"><i class="oi oi-plus"></i></Button>
+    <Button Href="/admin/streams/create" Color="BtnColor.Primary">
+        <i class="oi oi-plus"></i>
+    </Button>
 </div>
 
 <div id="streams-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pt-4">
@@ -20,7 +22,7 @@
 
 @if (_isModalOpen && deleteStream != null)
 {
-    <ConfirmModal Title="@($"Delete {deleteStream.Title}?")" 
+    <ConfirmModal Title="@($"Delete {deleteStream.Title}?")"
                   Message="Are you sure you want to continue"
                   Color="BtnColor.Error"
                   OnCancel="() => _isModalOpen = false"
@@ -31,19 +33,19 @@
 @code {
     bool _isModalOpen = false;
     StreamGetDto? deleteStream = null;
-    
+
     protected override async Task OnInitializedAsync()
     {
         await StreamService.LoadStreams();
         StreamService.StreamsChanged += StateHasChanged;
     }
-    
+
     void HandleDelete(StreamGetDto stream)
     {
         deleteStream = stream;
         _isModalOpen = true;
     }
-    
+
     async Task DeleteStream()
     {
         if (deleteStream != null)
@@ -53,13 +55,13 @@
             {
                 _isModalOpen = false;
                 await StreamService.LoadStreams();
-                UiService.AddSuccessAlert(result.Message);
+                UiService.ShowSuccessAlert(result.Message);
             }
             else
             {
                 _isModalOpen = false;
                 await StreamService.LoadStreams();
-                UiService.AddErrorAlert(result.Message);
+                await UiService.ShowErrorAlert(result.Message, result.StatusCode);
             }
         }
     }

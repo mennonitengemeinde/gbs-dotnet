@@ -1,0 +1,135 @@
+@page "/admin/churches/create"
+@page "/admin/churches/{Id:int}/edit"
+@attribute [Authorize(Roles = $"{Roles.SuperAdmin}, {Roles.Admin}, {Roles.Teacher}")]
+@inject NavigationManager NavigationManager
+@inject IChurchService ChurchService
+@inject IUiService UiService
+
+<H3>
+    @if (_isEdit)
+    {
+        <span>Edit Church</span>
+    }
+    else
+    {
+        <span>Create Church</span>
+    }
+</H3>
+
+<div class="flex justify-center pt-4">
+    <div class="card w-96 bg-base-200 shadow-lg">
+        <div class="card-body">
+            @if (_pageLoading)
+            {
+                <div class="flex justify-center">
+                    <InfinitLoading Height="10" Width="10"/>
+                </div>
+            }
+            else
+            {
+                <EditForm Model="_newChurch" OnValidSubmit="HandleValidSubmit">
+                    <DataAnnotationsValidator/>
+                    <TextInput Id="name"
+                               @ref="_nameInput"
+                               Label="Name"
+                               Required
+                               @bind-Value="_newChurch.Name"
+                               For="() => _newChurch.Name"/>
+                    <TextInput Id="address"
+                               Label="Address"
+                               @bind-Value="_newChurch.Address"
+                               For="() => _newChurch.Address!"/>
+                    <TextInput Id="city"
+                               Label="City"
+                               @bind-Value="_newChurch.City"
+                               For="() => _newChurch.City!"/>
+                    <TextInput Id="state"
+                               Label="State"
+                               @bind-Value="_newChurch.State"
+                               For="() => _newChurch.State!"/>
+                    <TextInput Id="country"
+                               Label="Country"
+                               Required
+                               @bind-Value="_newChurch.Country"
+                               For="() => _newChurch.Country"/>
+                    <TextInput Id="postalCode"
+                               Label="PostalCode"
+                               @bind-Value="_newChurch.PostalCode"
+                               For="() => _newChurch.PostalCode!"/>
+                    <div class="flex justify-end pt-4 space-x-2">
+                        <Button Href="admin/churches">Cancel</Button>
+                        <Button Type="submit" Color="BtnColor.Success" IsLoading="_isLoading">Save</Button>
+                    </div>
+                </EditForm>
+            }
+        </div>
+    </div>
+</div>
+
+
+@code {
+    ChurchCreateDto _newChurch = new ChurchCreateDto();
+    bool _isLoading;
+    bool _pageLoading;
+    bool _isEdit;
+    TextInput? _nameInput;
+
+    [Parameter]
+    public int? Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Id != null)
+        {
+            _isEdit = true;
+            _pageLoading = true;
+            var church = await ChurchService.GetChurch(Id.Value);
+            _pageLoading = false;
+            _newChurch = new ChurchCreateDto
+            {
+                Name = church.Data.Name,
+                Address = church.Data.Address,
+                City = church.Data.City,
+                State = church.Data.State,
+                PostalCode = church.Data.PostalCode,
+                Country = church.Data.Country
+            };
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && _nameInput != null)
+        {
+            await _nameInput.FocusAsync();
+        }
+    }
+
+    async Task HandleValidSubmit()
+    {
+        _isLoading = true;
+        ServiceResponse<List<Church>> response;
+        if (_isEdit == false)
+        {
+            response = await ChurchService.AddChurch(_newChurch);
+        }
+        else
+        {
+            response = await ChurchService.UpdateChurch(Id!.Value, _newChurch);
+        }
+
+        if (response.Success)
+        {
+            _isLoading = false;
+            UiService.ShowSuccessAlert(_isEdit ? "Church updated successfully" : "Church added successfully");
+            NavigationManager.NavigateTo("admin/churches");
+        }
+        else
+        {
+            _isLoading = false;
+            await UiService.ShowErrorAlert(response.Message, response.StatusCode);
+            await _nameInput.FocusAsync();
+        }
+    }
+
+}

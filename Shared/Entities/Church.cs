@@ -8,6 +8,8 @@ public class Church
     public string? City { get; set; }
     public string? State { get; set; }
     public string? PostalCode { get; set; }
+    public string Country { get; set; } = string.Empty;
 
     public List<Student> Students { get; set; } = new List<Student>();
+    public List<User> Users { get; set; } = new List<User>();
 }

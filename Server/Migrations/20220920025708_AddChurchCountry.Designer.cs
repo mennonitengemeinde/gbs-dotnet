@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using gbs.Server.Data;
@@ -11,9 +12,10 @@ using gbs.Server.Data;
 namespace gbs.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220920025708_AddChurchCountry")]
+    partial class AddChurchCountry
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -422,9 +424,6 @@ namespace gbs.Server.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ChurchId")
-                        .HasColumnType("integer");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -465,8 +464,6 @@ namespace gbs.Server.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ChurchId");
 
                     b.HasIndex("TeacherId")
                         .IsUnique();
@@ -640,15 +637,9 @@ namespace gbs.Server.Migrations
 
             modelBuilder.Entity("gbs.Shared.Entities.User", b =>
                 {
-                    b.HasOne("gbs.Shared.Entities.Church", "Church")
-                        .WithMany("Users")
-                        .HasForeignKey("ChurchId");
-
                     b.HasOne("gbs.Shared.Entities.Teacher", "Teacher")
                         .WithOne()
                         .HasForeignKey("gbs.Shared.Entities.User", "TeacherId");
-
-                    b.Navigation("Church");
 
                     b.Navigation("Teacher");
                 });
@@ -656,8 +647,6 @@ namespace gbs.Server.Migrations
             modelBuilder.Entity("gbs.Shared.Entities.Church", b =>
                 {
                     b.Navigation("Students");
-
-                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("gbs.Shared.Entities.Enrollment", b =>

@@ -20,9 +20,11 @@ public class UserRepository : IUserRepository
             EmailVerified = u.EmailVerified,
             Role = u.Role,
             IsActive = u.IsActive,
+            ChurchId = u.ChurchId,
+            ChurchName = u.Church.Name,
         }).OrderBy(u => u.FirstName).ToListAsync();
 
-        return new ServiceResponse<List<UserDto>> {Data = users};
+        return new ServiceResponse<List<UserDto>> { Data = users };
     }
 
     public async Task<ServiceResponse<UserDto>> GetUserById(int userId)
@@ -36,54 +38,52 @@ public class UserRepository : IUserRepository
             EmailVerified = u.EmailVerified,
             Role = u.Role,
             IsActive = u.IsActive,
+            ChurchId = u.ChurchId,
+            ChurchName = u.Church.Name,
         }).FirstOrDefaultAsync(u => u.Id == userId);
 
         return user == null
-            ? new ServiceResponse<UserDto> {Success = false, Message = "User not found"}
-            : new ServiceResponse<UserDto> {Data = user};
+            ? ServiceResponse<UserDto>.BadRequest("User not found")
+            : new ServiceResponse<UserDto> { Data = user };
     }
 
-    public async Task<ServiceResponse<UserDto>> UpdateUserRole(int userId, string newRole)
+    public async Task<ServiceResponse<List<UserDto>>> UpdateUserRole(int userId, string newRole)
     {
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
         if (user == null)
         {
-            return new ServiceResponse<UserDto> {Success = false, Message = "User not found"};
+            return ServiceResponse<List<UserDto>>.BadRequest("User not found");
         }
 
         user.Role = newRole;
         await _context.SaveChangesAsync();
 
-        return CreateUserDto(user);
+        return await GetUsers();
     }
 
-    public async Task<ServiceResponse<UserDto>> UpdateUserActiveState(int userId, bool newActiveState)
+    public async Task<ServiceResponse<List<UserDto>>> UpdateUserActiveState(int userId, bool newActiveState)
     {
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
         if (user == null)
         {
-            return new ServiceResponse<UserDto> {Success = false, Message = "User not found"};
+            return ServiceResponse<List<UserDto>>.BadRequest("User not found");
         }
 
         user.IsActive = newActiveState;
         await _context.SaveChangesAsync();
-        return CreateUserDto(user);
+        return await GetUsers();
     }
 
-    private static ServiceResponse<UserDto> CreateUserDto(User user)
+    public async Task<ServiceResponse<List<UserDto>>> UpdateUserChurch(int userId, UserUpdateChurchDto updateDto)
     {
-        return new ServiceResponse<UserDto>
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+        if (user == null)
         {
-            Data = new UserDto
-            {
-                Id = user.Id,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Email = user.Email,
-                EmailVerified = user.EmailVerified,
-                Role = user.Role,
-                IsActive = user.IsActive,
-            }
-        };
+            return ServiceResponse<List<UserDto>>.BadRequest("User not found");
+        }
+
+        user.ChurchId = updateDto.ChurchId;
+        await _context.SaveChangesAsync();
+        return await GetUsers();
     }
 }

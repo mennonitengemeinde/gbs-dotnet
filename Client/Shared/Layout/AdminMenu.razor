@@ -1,12 +1,19 @@
 ﻿<div class="flex w-full bg-base-300 pt-2 overflow-x-auto">
-  <div class="tabs flex-nowrap">
-    <NavLink Href="admin/streams" ActiveClass="tab-active" class="tab tab-lifted">Streams</NavLink> 
-    <NavLink Href="admin/generations" class="tab tab-lifted" ActiveClass="tab-active">Generations</NavLink> 
-    <NavLink Href="admin/teachers" class="tab tab-lifted" ActiveClass="tab-active">Teachers</NavLink>
-    <NavLink Href="admin/users" ActiveClass="tab-active" class="tab tab-lifted">Users</NavLink> 
-  </div>
+    <div class="tabs flex-nowrap">
+        <AuthorizeView Roles="@($"{Roles.SuperAdmin}, {Roles.Admin}, {Roles.Teacher}, {Roles.Sound}")">
+            <NavLink Href="admin/streams" ActiveClass="tab-active" class="tab tab-lifted">Streams</NavLink>
+            <NavLink Href="admin/teachers" class="tab tab-lifted" ActiveClass="tab-active">Teachers</NavLink>
+        </AuthorizeView>
+        <AuthorizeView Roles="@($"{Roles.SuperAdmin}, {Roles.Admin}, {Roles.Teacher}")">
+            <NavLink Href="admin/generations" class="tab tab-lifted" ActiveClass="tab-active">Generations</NavLink>
+            <NavLink Href="admin/churches" class="tab tab-lifted" ActiveClass="tab-active">Churches</NavLink>
+        </AuthorizeView>
+        <AuthorizeView Roles="@($"{Roles.SuperAdmin}, {Roles.Admin}")">
+            <NavLink Href="admin/users" ActiveClass="tab-active" class="tab tab-lifted">Users</NavLink>
+        </AuthorizeView>
+    </div>
 </div>
 
 @code {
-    
+
 }

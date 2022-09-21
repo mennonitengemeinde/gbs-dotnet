@@ -1,4 +1,5 @@
 ﻿using gbs.Shared.Const;
+using gbs.Shared.Entities;
 
 namespace gbs.Shared.Dtos;
 
@@ -11,4 +12,6 @@ public class UserDto
     public string LastName { get; set; } = string.Empty;
     public string Role { get; set; } = Roles.User;
     public bool IsActive { get; set; } = false;
+    public int? ChurchId { get; set; }
+    public string? ChurchName { get; set; }
 }

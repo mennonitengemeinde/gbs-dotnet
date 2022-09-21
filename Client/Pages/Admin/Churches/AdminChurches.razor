@@ -1,0 +1,63 @@
+@page "/admin/churches"
+@attribute [Authorize(Roles = $"{Roles.SuperAdmin}, {Roles.Admin}, {Roles.Teacher}")]
+@implements IDisposable
+@inject IChurchService ChurchService
+
+<H3>Churches</H3>
+
+<div class="overflow-x-auto shadow-lg mt-4">
+    <table class="table w-full">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th class="text-end py-0">
+                <NavLink Href="/admin/churches/create"
+                         class="btn btn-primary btn-sm">
+                    <i class="oi oi-plus"></i>
+                </NavLink>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        @if (!_isLoading)
+        {
+            @foreach (var church in ChurchService.Churches)
+            {
+                <tr>
+                    <th>@church.Name</th>
+                    <td class="text-end">
+                        <Button Href="@($"admin/churches/{church.Id}/edit")" Color="BtnColor.Warning" Size="BtnSize.Small">
+                            <i class="oi oi-pencil"></i>
+                        </Button>
+                    </td>
+                </tr>
+            }
+        }
+        </tbody>
+    </table>
+</div>
+
+@if (_isLoading)
+{
+    <div class="flex justify-center pt-8">
+        <InfinitLoading Height="10" Width="10"/>
+    </div>
+}
+
+@code {
+    bool _isLoading = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _isLoading = true;
+        await ChurchService.GetChurches();
+        ChurchService.ChurchesChanged += StateHasChanged;
+        _isLoading = false;
+    }
+
+    public void Dispose()
+    {
+        ChurchService.ChurchesChanged -= StateHasChanged;
+    }
+
+}
