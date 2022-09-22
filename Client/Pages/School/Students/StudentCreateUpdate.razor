@@ -1,0 +1,43 @@
+<H3>StudentCreateUpdate</H3>
+
+<div class="flex justify-center pt-4">
+    <div class="card w-96 bg-base-200 shadow-lg">
+        <div class="card-body">
+            <EditForm Model="_newStudent" OnValidSubmit="HandleValidSubmit">
+                <DataAnnotationsValidator/>
+                <TextInput Id="name"
+                           @ref="_nameInput"
+                           Label="Name"
+                           @bind-Value="_newStudent.Name"
+                           For="() => _newStudent.Name"/>
+
+                <div class="flex justify-end pt-4 space-x-2">
+                    <Button Href="admin/streams">Cancel</Button>
+                    <Button Type="submit" Color="BtnColor.Primary" IsLoading="_isLoading">Save</Button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+@code {
+    StudentCreateDto _newStudent = new StudentCreateDto();
+    ElementReference _nameInput;
+    bool _isLoading = false;
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await _nameInput.FocusAsync();
+        }
+    }
+    
+    async Task HandleValidSubmit()
+    {
+        // _isLoading = true;
+        // await _studentService.CreateStudent(_newStudent);
+        // _isLoading = false;
+        // NavigationManager.NavigateTo("admin/students");
+    }
+}
