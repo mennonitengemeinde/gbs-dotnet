@@ -1,9 +1,10 @@
 ﻿using gbs.Shared.Enums;
+using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace gbs.Server.Data;
 
-public class DataContext : DbContext
+public class DataContext : DbContext, IDataProtectionKeyContext
 {
     public DataContext(DbContextOptions<DataContext> options) : base(options)
     {
@@ -24,16 +25,16 @@ public class DataContext : DbContext
             .HasForeignKey<User>(u => u.TeacherId);
 
         modelBuilder.Entity<Enrollment>()
-            .HasKey(e => new {e.StudentId, e.GenerationId});
+            .HasKey(e => new { e.StudentId, e.GenerationId });
 
         modelBuilder.Entity<LiveStreamTeacher>()
-            .HasKey(lt => new {lt.LiveStreamId, lt.TeacherId});
+            .HasKey(lt => new { lt.LiveStreamId, lt.TeacherId });
 
         modelBuilder.Entity<Grade>()
-            .HasKey(g => new {g.SubjectId, g.EnrollmentId});
+            .HasKey(g => new { g.SubjectId, g.EnrollmentId });
 
         modelBuilder.Entity<WatchList>()
-            .HasKey(wl => new {wl.UserId, wl.QuestionId});
+            .HasKey(wl => new { wl.UserId, wl.QuestionId });
 
         modelBuilder.Entity<Message>()
             .Property(m => m.MessageType)
@@ -47,6 +48,8 @@ public class DataContext : DbContext
             .Property(sd => sd.SubjectDocumentType)
             .HasConversion<int>();
     }
+
+    public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = null!;
 
     public DbSet<Generation> Generations { get; set; } = null!;
     public DbSet<Enrollment> Enrollments { get; set; } = null!;
