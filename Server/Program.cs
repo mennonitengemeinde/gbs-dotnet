@@ -10,6 +10,7 @@ global using gbs.Server.Repository.StreamRepository;
 global using gbs.Server.Repository.TeacherRepository;
 global using gbs.Server.Repository.UserRepository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.IdentityModel.Tokens;
 
@@ -52,6 +53,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddDataProtection()
+    .PersistKeysToDbContext<DataContext>();
 
 var app = builder.Build();
 
