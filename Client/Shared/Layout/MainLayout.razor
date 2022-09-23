@@ -1,5 +1,7 @@
 ﻿@inherits LayoutComponentBase
 @inject NavigationManager NavigationManager
+@inject ILocalStorageService LocalStorage
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <MudThemeProvider Theme="_gbsTheme"/>
 <MudDialogProvider/>
@@ -10,7 +12,15 @@
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
         <MudText Typo="Typo.h5" Class="ml-3">GBS</MudText>
         <MudSpacer />
-        <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
+        @* <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" /> *@
+        <AuthorizeView>
+            <Authorized>
+                <MudIconButton Icon="@Icons.Material.Filled.Logout" OnClick="Logout" Color="Color.Inherit"/>
+            </Authorized>
+            <NotAuthorized>
+                <MudIconButton Icon="@Icons.Material.Filled.Login" Href="login" Color="Color.Inherit"/>
+            </NotAuthorized>
+        </AuthorizeView>
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
         <NavMenu/>
@@ -22,37 +32,27 @@
     </MudMainContent>
 </MudLayout>
 
-@* <div class="relative"> *@
-@*     <NavMenu/> *@
-@* *@
-@*     @if (NavigationManager.Uri.Contains("/admin")) *@
-@*     { *@
-@*         <AdminMenu/> *@
-@*     } *@
-@* *@
-@*     <main class="flex justify-center p-4 md:p-8 relative"> *@
-@* *@
-@*         <div class="w-full max-w-7xl"> *@
-@*             @Body *@
-@*         </div> *@
-@*     </main> *@
-@* *@
-@*     <AlertList/> *@
-@* </div> *@
-
 @code {
     private bool _drawerOpen = true;
     readonly MudTheme _gbsTheme = new MudTheme()
     {
         Palette = new Palette()
         {
-            Primary = Colors.Indigo.Default
+            Primary = Colors.Indigo.Default,
+            Background = Colors.Grey.Lighten4,
         }
     };
     
     void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
+    }
+    
+    private async Task Logout()
+    {
+        await LocalStorage.RemoveItemAsync("authToken");
+        await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        NavigationManager.NavigateTo("");
     }
 
 }

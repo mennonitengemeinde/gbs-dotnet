@@ -10,4 +10,9 @@ public class Teacher
 
     public int? UserId { get; set; }
     public User? User { get; set; }
+
+    public override string ToString()
+    {
+        return Name;
+    }
 }

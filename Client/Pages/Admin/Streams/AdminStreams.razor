@@ -7,27 +7,27 @@
 @inject IDialogService DialogService
 
 <div class="tw-flex tw-justify-between tw-items-center tw-py-4">
-    <MudText Typo="Typo.h3">Streams</MudText>
+    <MudText Typo="Typo.h4">Streams</MudText>
     <MudSpacer/>
     <MudIconButton Icon="@Icons.Filled.Add" Color="Color.Primary" Variant="Variant.Filled" Href="/admin/streams/create"/>
 </div>
 
-<MudGrid>
-    <MudItem xs="12" sm="6" lg="4" xl="3">
-        @if (_isLoading)
+<MudGrid Justify="Justify.FlexStart">
+    @if (_isLoading)
+    {
+        <MudOverlay Visible="_isLoading" DarkBackground="true" Absolute="true">
+            <MudProgressCircular Color="Color.Primary" Indeterminate="true"/>
+        </MudOverlay>
+    }
+    else
+    {
+        @foreach (var liveStream in StreamService.Streams)
         {
-            <MudOverlay Visible="_isLoading" DarkBackground="true" Absolute="true">
-                <MudProgressCircular Color="Color.Primary" Indeterminate="true"/>
-            </MudOverlay>
-        }
-        else
-        {
-            @foreach (var liveStream in StreamService.Streams)
-            {
+            <MudItem xs="12" sm="6" lg="4" xl="3">
                 <AdminStreamCard LiveStream="@liveStream" OnDelete="HandleDelete"/>
-            }
+            </MudItem>
         }
-    </MudItem>
+    }
 </MudGrid>
 
 @code {
@@ -43,8 +43,6 @@
 
     async Task HandleDelete(StreamGetDto stream)
     {
-    // deleteStream = stream;
-    // _isModalOpen = true;
         bool? result = await DialogService.ShowMessageBox(
             $"Delete {stream.Title}?",
             "Are you sure you want to continue?",
@@ -61,13 +59,11 @@
         var result = await StreamService.DeleteById(stream.Id);
         if (result.Success)
         {
-            // _isModalOpen = false;
             await StreamService.LoadStreams();
             UiService.ShowSuccessAlert(result.Message);
         }
         else
         {
-            // _isModalOpen = false;
             await StreamService.LoadStreams();
             await UiService.ShowErrorAlert(result.Message, result.StatusCode);
         }

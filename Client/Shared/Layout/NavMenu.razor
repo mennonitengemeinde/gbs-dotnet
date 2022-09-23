@@ -8,77 +8,19 @@
 <MudNavMenu Class="py-3" Color="Color.Primary">
     <MudNavLink Href="school" Icon="@Icons.Filled.School" Match="NavLinkMatch.All">School</MudNavLink>
     <MudNavLink Href="school/students" Icon="@Icons.Filled.People" Match="NavLinkMatch.All">Students</MudNavLink>
+    <MudDivider Light="true" DividerType="DividerType.Middle"/>
     <AuthorizeView Roles="@($"{Roles.SuperAdmin}, {Roles.Admin}, {Roles.Teacher}, {Roles.Sound}")">
-        <MudNavGroup Title="Admin" Expanded="false">
-            <MudNavLink Href="/admin/streams" Icon="@Icons.Filled.LiveTv">Streams</MudNavLink>
-            <MudNavLink Href="/security">Security</MudNavLink>
-        </MudNavGroup>
+        <MudNavLink Href="/admin/streams" Icon="@Icons.Filled.LiveTv">Streams</MudNavLink>
+        <MudNavLink Href="/admin/teachers" Icon="@Icons.Filled.Man">Teachers</MudNavLink>
+    </AuthorizeView>
+    <AuthorizeView Roles="@($"{Roles.SuperAdmin}, {Roles.Admin}, {Roles.Teacher}")">
+        <MudNavLink Href="/admin/generations" Icon="@Icons.Filled.GroupWork">Generations</MudNavLink>
+        <MudNavLink Href="/admin/churches" Icon="@Icons.Filled.Church">Churches</MudNavLink>
+    </AuthorizeView>
+    <AuthorizeView Roles="@($"{Roles.SuperAdmin}, {Roles.Admin}")">
+        <MudNavLink Href="/admin/users" Icon="@Icons.Filled.PeopleAlt">Users</MudNavLink>
     </AuthorizeView>
 </MudNavMenu>
-
-@* <header class="w-full"> *@
-@*     <div class="navbar bg-base-100 shadow-xl"> *@
-@*         $1$ Mobile #1# *@
-@*         <div class=""> *@
-@*             <div class="dropdown"> *@
-@*                 <label tabindex="0" class="btn btn-ghost lg:hidden"> *@
-@*                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" *@
-@*                          stroke="currentColor"> *@
-@*                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16"/> *@
-@*                     </svg> *@
-@*                 </label> *@
-@*                 <ul tabindex="0" class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"> *@
-@*                     <li> *@
-@*                         <NavLink Href="school" ActiveClass="active" Match="NavLinkMatch.All">School</NavLink> *@
-@*                     </li> *@
-@*                 </ul> *@
-@*             </div> *@
-@*             <a class="btn btn-ghost normal-case text-xl">GBS</a> *@
-@*         </div> *@
-@*         $1$ Web #1# *@
-@*         <div class="hidden lg:flex"> *@
-@*             <ul class="menu menu-horizontal p-0"> *@
-@*                 <li> *@
-@*                     <NavLink Href="school" ActiveClass="active" Match="NavLinkMatch.All">School</NavLink> *@
-@*                 </li> *@
-@*                 <li> *@
-@*                     <a>Q&A</a> *@
-@*                 </li> *@
-@*             </ul> *@
-@*         </div> *@
-@* *@
-@*         <ul class="ml-auto menu menu-horizontal p-0"> *@
-@*             <AuthorizeView Roles="@($"{Roles.SuperAdmin}, {Roles.Admin}, {Roles.Teacher}, {Roles.Sound}")"> *@
-@*                 <Authorized> *@
-@*                     <li> *@
-@*                         <NavLink Href="admin" ActiveClass="active" class="py-2"> *@
-@*                             <i class="oi oi-wrench text-lg"></i> *@
-@*                         </NavLink> *@
-@*                     </li> *@
-@*                 </Authorized> *@
-@*             </AuthorizeView> *@
-@*             $1$ <li> #1# *@
-@*             $1$     <a href="#" class="py-1"> #1# *@
-@*             $1$         <i class="oi oi-envelope-closed text-lg"></i> #1# *@
-@*             $1$     </a> #1# *@
-@*             $1$ </li> #1# *@
-@*             <li> *@
-@*                 <AuthorizeView> *@
-@*                     <Authorized> *@
-@*                         <button @onclick="Logout"> *@
-@*                             Logout *@
-@*                         </button> *@
-@*                     </Authorized> *@
-@*                     <NotAuthorized> *@
-@*                         <NavLink Href="login" ActiveClass="active"> *@
-@*                             Login *@
-@*                         </NavLink> *@
-@*                     </NotAuthorized> *@
-@*                 </AuthorizeView> *@
-@*             </li> *@
-@*         </ul> *@
-@*     </div> *@
-@* </header> *@
 
 @code {
 
