@@ -1,26 +1,58 @@
 ﻿@inherits LayoutComponentBase
 @inject NavigationManager NavigationManager
 
-<div class="relative">
-    <NavMenu/>
+<MudThemeProvider Theme="_gbsTheme"/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
 
-    @if (NavigationManager.Uri.Contains("/admin"))
-    {
-        <AdminMenu/>
-    }
-
-    <main class="flex justify-center p-4 md:p-8 relative">
-
-        <div class="w-full max-w-7xl">
+<MudLayout Class="tw-min-h-screen">
+    <MudAppBar Elevation="1" Color="Color.Primary">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        <MudText Typo="Typo.h5" Class="ml-3">GBS</MudText>
+        <MudSpacer />
+        <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
+    </MudAppBar>
+    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
+        <NavMenu/>
+    </MudDrawer>
+    <MudMainContent Class="tw-h-fill">
+        <MudContainer MaxWidth="MaxWidth.ExtraLarge">
             @Body
-        </div>
-    </main>
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
 
-    <AlertList/>
-</div>
+@* <div class="relative"> *@
+@*     <NavMenu/> *@
+@* *@
+@*     @if (NavigationManager.Uri.Contains("/admin")) *@
+@*     { *@
+@*         <AdminMenu/> *@
+@*     } *@
+@* *@
+@*     <main class="flex justify-center p-4 md:p-8 relative"> *@
+@* *@
+@*         <div class="w-full max-w-7xl"> *@
+@*             @Body *@
+@*         </div> *@
+@*     </main> *@
+@* *@
+@*     <AlertList/> *@
+@* </div> *@
 
 @code {
-
-
+    private bool _drawerOpen = true;
+    readonly MudTheme _gbsTheme = new MudTheme()
+    {
+        Palette = new Palette()
+        {
+            Primary = Colors.Indigo.Default
+        }
+    };
+    
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
 
 }
