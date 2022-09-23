@@ -1,0 +1,52 @@
+﻿<MudCard Class="tw-relative">
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudText Typo="Typo.h5">@(IsEdit ? $"Update {Label}" : $"Create {Label}")</MudText>
+        </CardHeaderContent>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudOverlay Visible="IsLoading" DarkBackground="true" Absolute="true">
+            <MudProgressCircular Color="Color.Primary" Indeterminate="true"/>
+        </MudOverlay>
+        <MudFocusTrap DefaultFocus="DefaultFocus.FirstChild" Class="tw-space-y-2">
+            @ChildContent
+        </MudFocusTrap>
+    </MudCardContent>
+    <MudCardActions Class="tw-flex tw-justify-end tw-space-x-2">
+        <MudButton Variant="Variant.Text" Href="@ReturnUrl">Cancel</MudButton>
+        <MudButton ButtonType="ButtonType.Submit"
+                   Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.Save"
+                   Disabled="@IsProcessing">
+            @if (IsProcessing)
+            {
+                <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
+                <MudText Class="ms-2">Processing</MudText>
+            }
+            <MudText>Save</MudText>
+        </MudButton>
+    </MudCardActions>
+</MudCard>
+
+@code {
+
+    [Parameter, EditorRequired]
+    public bool IsEdit { get; set; }
+
+    [Parameter, EditorRequired]
+    public bool IsProcessing { get; set; }
+
+    [Parameter, EditorRequired]
+    public bool IsLoading { get; set; }
+
+    [Parameter, EditorRequired]
+    public string Label { get; set; } = "Something";
+
+    [Parameter, EditorRequired]
+    public string ReturnUrl { get; set; } = string.Empty;
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+}

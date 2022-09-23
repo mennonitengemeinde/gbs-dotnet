@@ -12,59 +12,39 @@
     <DataAnnotationsValidator/>
     <MudGrid Justify="Justify.Center" Class="tw-pt-8">
         <MudItem xs="12" sm="8" md="5">
-            <MudCard>
-                <MudCardHeader>
-                    <CardHeaderContent>
-                        <MudText Typo="Typo.h5">Create Stream</MudText>
-                    </CardHeaderContent>
-                </MudCardHeader>
-                <MudCardContent>
-                    <MudFocusTrap DefaultFocus="DefaultFocus.FirstChild" Class="tw-space-y-2">
-                        <MudTextField Label="Title"
-                                      @bind-Value="_newStream.Title"
-                                      For="() => _newStream.Title"/>
-                        <MudTextField Label="Url"
-                                      @bind-Value="_newStream.Url"
-                                      For="() => _newStream.Url"/>
-                        <MudSwitch Label="Live"
-                                   Color="Color.Primary"
-                                   @bind-Checked="_newStream.IsLive"/>
-                        <MudSelect Label="Generation"
-                                   AnchorOrigin="Origin.BottomCenter"
-                                   For="@(() => _newStream.GenerationId)"
-                                   @bind-Value="_newStream.GenerationId">
-                            @foreach (var item in GenerationService.Generations)
-                            {
-                                <MudSelectItem T="int?" Value="@item.Id">@item.Name</MudSelectItem>
-                            }
-                        </MudSelect>
-                        <MudSelect Label="Teachers"
-                                   MultiSelection="true"
-                                   AnchorOrigin="Origin.BottomCenter"
-                                   @bind-SelectedValues="SelectedTeachers">
-                            @foreach (var item in TeacherService.Teachers)
-                            {
-                                <MudSelectItem Value="@item">@item.Name</MudSelectItem>
-                            }
-                        </MudSelect>
-                    </MudFocusTrap>
-                </MudCardContent>
-                <MudCardActions Class="tw-flex tw-justify-end tw-space-x-2">
-                    <MudButton Variant="Variant.Text" Color="Color.Primary" Href="admin/streams">Cancel</MudButton>
-                    <MudButton ButtonType="ButtonType.Submit"
-                               Variant="Variant.Filled"
-                               Color="Color.Primary"
-                               StartIcon="@Icons.Material.Filled.Save"
-                               Disabled="@_isProcessing">
-                        @if (_isProcessing)
-                        {
-                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
-                            <MudText Class="ms-2">Processing</MudText>
-                        }
-                        <MudText>Save</MudText>
-                    </MudButton>
-                </MudCardActions>
-            </MudCard>
+            <MatFormCard Label="Stream"
+                         IsEdit="_isEditMode"
+                         IsLoading="_isLoading"
+                         IsProcessing="_isProcessing"
+                         ReturnUrl="/admin/streams">
+                <MudTextField Label="Title"
+                              @bind-Value="_newStream.Title"
+                              For="() => _newStream.Title"/>
+                <MudTextField Label="Url"
+                              @bind-Value="_newStream.Url"
+                              For="() => _newStream.Url"/>
+                <MudSelect Label="Generation"
+                           AnchorOrigin="Origin.BottomCenter"
+                           For="@(() => _newStream.GenerationId)"
+                           @bind-Value="_newStream.GenerationId">
+                    @foreach (var item in GenerationService.Generations)
+                    {
+                        <MudSelectItem T="int?" Value="@item.Id">@item.Name</MudSelectItem>
+                    }
+                </MudSelect>
+                <MudSelect Label="Teachers"
+                           MultiSelection="true"
+                           AnchorOrigin="Origin.BottomCenter"
+                           @bind-SelectedValues="SelectedTeachers">
+                    @foreach (var item in TeacherService.Teachers)
+                    {
+                        <MudSelectItem Value="@item">@item.Name</MudSelectItem>
+                    }
+                </MudSelect>
+                <MudSwitch Label="Live"
+                           Color="Color.Primary"
+                           @bind-Checked="_newStream.IsLive"/>
+            </MatFormCard>
         </MudItem>
     </MudGrid>
 </EditForm>
@@ -73,7 +53,9 @@
     StreamCreateDto _newStream = new StreamCreateDto();
     IEnumerable<Teacher> _selectedTeachers = new List<Teacher>();
     bool _isProcessing;
+    bool _isLoading;
     bool _isEditMode;
+    string[] _valueStreams = new string[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" };
 
     IEnumerable<Teacher> SelectedTeachers
     {
@@ -93,9 +75,11 @@
         if (Id != null)
         {
             _isEditMode = true;
+            _isLoading = true;
             var stream = await StreamService.GetStreamById(Id.Value);
             if (!stream.Success)
             {
+                _isLoading = false;
                 await UiService.ShowErrorAlert(stream.Message, stream.StatusCode);
                 NavigationManager.NavigateTo("/admin/streams");
             }
@@ -109,8 +93,9 @@
                     GenerationId = stream.Data.GenerationId,
                     Teachers = stream.Data.Teachers.Select(t => t.Id).ToList()
                 };
-                _selectedTeachers = stream.Data.Teachers;
+                SelectedTeachers = stream.Data.Teachers;
             }
+            _isLoading = false;
         }
         await GenerationService.LoadGenerations();
         await TeacherService.LoadTeachers();

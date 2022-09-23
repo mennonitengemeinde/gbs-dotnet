@@ -4,15 +4,36 @@
 @inject IUiService UiService
 @implements IDisposable
 
-<H3>Generations</H3>
+<div class="tw-py-4 tw-space-y-4">
+    <MudText Typo="Typo.h4">Generations</MudText>
+    <MudButton StartIcon="@Icons.Filled.Add" Color="Color.Primary" Variant="Variant.Filled" Href="/admin/generations/create">
+        New
+    </MudButton>
+</div>
 
-<GenerationsTable Generations="GenerationService.Generations"/>
+<MudTable Items="@GenerationService.Generations" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading" LoadingProgressColor="Color.Info">
+    <HeaderContent>
+        <MudTh>Name</MudTh>
+        <MudTh></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd Class="tw-text-end">
+            <MudIconButton Icon="@Icons.Material.Filled.Edit" 
+                           Size="Size.Small" 
+                           Href="@($"admin/generations/{context.Id}/edit")"/>
+        </MudTd>
+    </RowTemplate>
+</MudTable>
 
 @code {
+    bool _loading;
     protected override async Task OnInitializedAsync()
     {
+        _loading = true;
         await GenerationService.LoadGenerations();
         GenerationService.GenerationsChanged += StateHasChanged;
+        _loading = false;
     }
 
     public void Dispose()

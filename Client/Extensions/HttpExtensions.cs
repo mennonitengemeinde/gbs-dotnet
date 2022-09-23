@@ -15,18 +15,20 @@ public static class HttpExtensions
                 return await HandleHttpError<T>(response);
             }
 
-            var result = await response.Content.ReadFromJsonAsync<ServiceResponse<T>>();
-            if (result == null || result.Data == null)
-            {
-                return new ServiceResponse<T>
-                {
-                    Success = false,
-                    Message = "No response from server",
-                    StatusCode = 404
-                };
-            }
+            return await ReadFromJson<T>(response);
 
-            return result;
+            // var result = await response.Content.ReadFromJsonAsync<ServiceResponse<T>>();
+            // if (result == null || result.Data == null)
+            // {
+            //     return new ServiceResponse<T>
+            //     {
+            //         Success = false,
+            //         Message = "No response from server",
+            //         StatusCode = 404
+            //     };
+            // }
+            //
+            // return result;
         }
         catch (Exception)
         {
@@ -40,6 +42,30 @@ public static class HttpExtensions
                 };
             }
             return await HandleHttpError<T>(response);
+        }
+    }
+
+    private static async Task<ServiceResponse<T>> ReadFromJson<T>(HttpResponseMessage response)
+    {
+        try
+        {
+            var result = await response.Content.ReadFromJsonAsync<ServiceResponse<T>>();
+            if (result == null || result.Data == null)
+            {
+                return new ServiceResponse<T>
+                {
+                    Success = false,
+                    Message = "No response from server",
+                    StatusCode = 404
+                };
+            }
+
+            return result;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
         }
     }
 

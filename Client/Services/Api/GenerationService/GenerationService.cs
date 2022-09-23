@@ -32,6 +32,12 @@ public class GenerationService : IGenerationService
         return await _http.GetAsync("api/generations")
             .EnsureSuccess<List<Generation>>();
     }
+    
+    public async Task<ServiceResponse<Generation>> GetGeneration(int id)
+    {
+        return await _http.GetAsync($"api/generations/{id}")
+            .EnsureSuccess<Generation>();
+    }
 
     public async Task<ServiceResponse<Generation>> AddGeneration(GenerationCreateDto generation)
     {
@@ -39,7 +45,7 @@ public class GenerationService : IGenerationService
             .EnsureSuccess<Generation>();
     }
 
-    public async Task<ServiceResponse<Generation>> UpdateGeneration(int generationId, GenerationUpdateDto generation)
+    public async Task<ServiceResponse<Generation>> UpdateGeneration(int generationId, GenerationCreateDto generation)
     {
         return await _http.PutAsJsonAsync($"api/generations/{generationId}", generation)
             .EnsureSuccess<Generation>();

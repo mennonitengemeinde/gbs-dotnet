@@ -15,4 +15,16 @@ public class Teacher
     {
         return Name;
     }
+
+    public override int GetHashCode() => Id.GetHashCode();
+
+    public override bool Equals(object? obj)
+    {
+        if (obj is Teacher teacher)
+        {
+            return teacher.Id == Id;
+        }
+
+        return false;
+    }
 }
