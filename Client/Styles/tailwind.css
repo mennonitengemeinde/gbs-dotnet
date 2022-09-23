@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+
+.mud-card-header-content {
+    min-width: 0
+}
 /*html, body, #app {*/
 /*    @apply h-full;*/
 /*}*/

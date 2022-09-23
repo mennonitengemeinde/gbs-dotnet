@@ -52,7 +52,7 @@ namespace gbs.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Churches");
+                    b.ToTable("Churches", (string)null);
                 });
 
             modelBuilder.Entity("gbs.Shared.Entities.Enrollment", b =>
@@ -86,7 +86,7 @@ namespace gbs.Server.Migrations
 
                     b.HasIndex("GenerationId");
 
-                    b.ToTable("Enrollments");
+                    b.ToTable("Enrollments", (string)null);
                 });
 
             modelBuilder.Entity("gbs.Shared.Entities.Generation", b =>
@@ -106,7 +106,7 @@ namespace gbs.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Generations");
+                    b.ToTable("Generations", (string)null);
                 });
 
             modelBuilder.Entity("gbs.Shared.Entities.Grade", b =>
@@ -133,7 +133,7 @@ namespace gbs.Server.Migrations
 
                     b.HasIndex("EnrollmentStudentId", "EnrollmentGenerationId");
 
-                    b.ToTable("Grades");
+                    b.ToTable("Grades", (string)null);
                 });
 
             modelBuilder.Entity("gbs.Shared.Entities.Lesson", b =>
@@ -160,7 +160,7 @@ namespace gbs.Server.Migrations
 
                     b.HasIndex("TeacherId");
 
-                    b.ToTable("Lessons");
+                    b.ToTable("Lessons", (string)null);
                 });
 
             modelBuilder.Entity("gbs.Shared.Entities.LiveStream", b =>
@@ -190,7 +190,7 @@ namespace gbs.Server.Migrations
 
                     b.HasIndex("GenerationId");
 
-                    b.ToTable("Streams");
+                    b.ToTable("Streams", (string)null);
                 });
 
             modelBuilder.Entity("gbs.Shared.Entities.LiveStreamTeacher", b =>
@@ -205,7 +205,7 @@ namespace gbs.Server.Migrations
 
                     b.HasIndex("TeacherId");
 
-                    b.ToTable("StreamTeachers");
+                    b.ToTable("StreamTeachers", (string)null);
                 });
 
             modelBuilder.Entity("gbs.Shared.Entities.Message", b =>
@@ -242,7 +242,7 @@ namespace gbs.Server.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Messages");
+                    b.ToTable("Messages", (string)null);
                 });
 
             modelBuilder.Entity("gbs.Shared.Entities.Question", b =>
@@ -286,7 +286,7 @@ namespace gbs.Server.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Questions");
+                    b.ToTable("Questions", (string)null);
                 });
 
             modelBuilder.Entity("gbs.Shared.Entities.Student", b =>
@@ -343,7 +343,7 @@ namespace gbs.Server.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Students");
+                    b.ToTable("Students", (string)null);
                 });
 
             modelBuilder.Entity("gbs.Shared.Entities.Subject", b =>
@@ -360,7 +360,7 @@ namespace gbs.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Subjects");
+                    b.ToTable("Subjects", (string)null);
                 });
 
             modelBuilder.Entity("gbs.Shared.Entities.SubjectDocument", b =>
@@ -388,7 +388,7 @@ namespace gbs.Server.Migrations
 
                     b.HasIndex("SubjectId");
 
-                    b.ToTable("SubjectDocuments");
+                    b.ToTable("SubjectDocuments", (string)null);
                 });
 
             modelBuilder.Entity("gbs.Shared.Entities.Teacher", b =>
@@ -411,7 +411,7 @@ namespace gbs.Server.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Teachers");
+                    b.ToTable("Teachers", (string)null);
                 });
 
             modelBuilder.Entity("gbs.Shared.Entities.User", b =>
@@ -471,7 +471,7 @@ namespace gbs.Server.Migrations
                     b.HasIndex("TeacherId")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("gbs.Shared.Entities.WatchList", b =>
@@ -487,7 +487,7 @@ namespace gbs.Server.Migrations
 
                     b.HasKey("UserId", "QuestionId");
 
-                    b.ToTable("WatchLists");
+                    b.ToTable("WatchLists", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.DataProtection.EntityFrameworkCore.DataProtectionKey", b =>
@@ -506,7 +506,7 @@ namespace gbs.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DataProtectionKeys");
+                    b.ToTable("DataProtectionKeys", (string)null);
                 });
 
             modelBuilder.Entity("gbs.Shared.Entities.Enrollment", b =>

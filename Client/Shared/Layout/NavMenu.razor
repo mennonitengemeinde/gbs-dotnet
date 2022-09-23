@@ -8,8 +8,8 @@
 <MudNavMenu Class="py-3" Color="Color.Primary">
     <MudNavLink Href="school" Icon="@Icons.Filled.School" Match="NavLinkMatch.All">School</MudNavLink>
     <MudNavLink Href="school/students" Icon="@Icons.Filled.People" Match="NavLinkMatch.All">Students</MudNavLink>
-    <MudDivider Light="true" DividerType="DividerType.Middle"/>
     <AuthorizeView Roles="@($"{Roles.SuperAdmin}, {Roles.Admin}, {Roles.Teacher}, {Roles.Sound}")">
+        <MudText Typo="Typo.caption" Class="tw-text-gray-500 tw-font-bold tw-ml-2">ADMIN</MudText>
         <MudNavLink Href="/admin/streams" Icon="@Icons.Filled.LiveTv">Streams</MudNavLink>
         <MudNavLink Href="/admin/teachers" Icon="@Icons.Filled.Man">Teachers</MudNavLink>
     </AuthorizeView>

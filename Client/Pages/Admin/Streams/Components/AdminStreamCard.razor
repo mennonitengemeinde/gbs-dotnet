@@ -4,8 +4,8 @@
 <MudCard Elevation="1">
     <MudCardHeader>
         <CardHeaderContent>
-            <MudText Typo="Typo.h6">@LiveStream.Title</MudText>
-            <MudText Typo="Typo.body2">@LiveStream.Generation.Name</MudText>
+                <MudText Typo="Typo.h6" Class="tw-truncate">@LiveStream.Title</MudText>
+                <MudText Typo="Typo.body2">@LiveStream.Generation.Name</MudText>
         </CardHeaderContent>
         <CardHeaderActions>
             <MudIconButton Color="Color.Error"
@@ -24,14 +24,11 @@
     </MudCardContent>
     <MudCardActions>
         <div class="tw-flex tw-w-full tw-justify-end tw-space-x-2">
-            <MudButton Variant="Variant.Outlined"
-                       StartIcon="@Icons.Material.Filled.Edit"
-                       Color="Color.Warning"
+            <MudButton Variant="Variant.Text"
                        Href="@($"admin/streams/{LiveStream.Id}/edit")">
                 Edit
             </MudButton>
-            <MudButton Variant="Variant.Outlined"
-                       StartIcon="@Icons.Material.Filled.Delete"
+            <MudButton Variant="Variant.Text"
                        Color="Color.Error"
                        OnClick="HandleDelete">
                 Delete

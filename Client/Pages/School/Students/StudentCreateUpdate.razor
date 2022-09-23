@@ -22,14 +22,18 @@
 
 @code {
     StudentCreateDto _newStudent = new StudentCreateDto();
-    TextInput _nameInput;
+    TextInput? _nameInput;
     bool _isLoading = false;
     
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            await _nameInput.FocusAsync();
+            if (_nameInput != null)
+            {
+                await _nameInput.FocusAsync();
+            }
+            // await _nameInput.FocusAsync();
         }
     }
     

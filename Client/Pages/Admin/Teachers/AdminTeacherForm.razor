@@ -5,41 +5,28 @@
 @inject ITeacherService TeacherService
 @inject IUiService UiService
 
-<H3>
-    @if (_isEdit)
-    {
-        <span>Edit Teacher</span>
-    }
-    else
-    {
-        <span>Create Teacher</span>
-    }
-</H3>
-
-<div class="flex justify-center pt-4">
-    <div class="card w-96 bg-base-200 shadow-lg">
-        <div class="card-body">
-            <EditForm Model="_newTeacher" OnValidSubmit="HandleValidSubmit">
-                <DataAnnotationsValidator/>
-                <TextInput Id="name"
-                           @ref="_nameInput"
-                           Label="Name"
-                           @bind-Value="_newTeacher.Name"
-                           For="() => _newTeacher.Name"/>
-                <div class="flex justify-end pt-4 space-x-2">
-                    <Button Href="admin/teachers">Cancel</Button>
-                    <Button Type="submit" Color="BtnColor.Success" IsLoading="_isLoading">Save</Button>
-                </div>
-            </EditForm>
-        </div>
-    </div>
-</div>
+<EditForm Model="_newTeacher" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator/>
+    <MudGrid Justify="Justify.Center" Class="tw-pt-8">
+        <MudItem xs="12" sm="8" md="5">
+            <MatFormCard Label="Teacher"
+                         IsEdit="@_isEdit"
+                         IsLoading="@_isLoading"
+                         IsProcessing="@_isProcessing"
+                         ReturnUrl="/admin/teachers">
+                <MudTextField Label="Name"
+                              @bind-Value="_newTeacher.Name"
+                              For="() => _newTeacher.Name"/>
+            </MatFormCard>
+        </MudItem>
+    </MudGrid>
+</EditForm>
 
 @code {
     TeacherCreateDto _newTeacher = new TeacherCreateDto();
+    bool _isProcessing;
     bool _isLoading;
     bool _isEdit;
-    TextInput _nameInput = null!;
 
     [Parameter]
     public int? Id { get; set; }
@@ -49,46 +36,33 @@
         if (Id != null)
         {
             _isEdit = true;
+            _isLoading = true;
             var teacher = await TeacherService.FetchTeacher(Id.Value);
             _newTeacher = new TeacherCreateDto
             {
                 Name = teacher.Data.Name
             };
-        }
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await _nameInput.FocusAsync();
+            _isLoading = false;
         }
     }
 
     async Task HandleValidSubmit()
     {
-        _isLoading = true;
-        ServiceResponse<Teacher> response;
-        if (_isEdit == false)
-        {
-            response = await TeacherService.AddTeacher(_newTeacher);
-        }
-        else
-        {
-            response = await TeacherService.UpdateTeacher(Id!.Value, _newTeacher);
-        }
+        _isProcessing = true;
+        var response = _isEdit == false 
+            ? await TeacherService.AddTeacher(_newTeacher) 
+            : await TeacherService.UpdateTeacher(Id!.Value, _newTeacher);
 
         if (response.Success)
         {
-            _isLoading = false;
+            _isProcessing = false;
             UiService.ShowSuccessAlert(_isEdit ? "Teacher updated successfully" : "Teacher added successfully");
             NavigationManager.NavigateTo("admin/teachers");
         }
         else
         {
-            _isLoading = false;
+            _isProcessing = false;
             await UiService.ShowErrorAlert(response.Message, response.StatusCode);
-            await _nameInput.FocusAsync();
         }
     }
 
