@@ -2,21 +2,16 @@
 @page "/admin/streams/{Id:int}/edit"
 @attribute [Authorize(Roles = $"{Roles.SuperAdmin}, {Roles.Admin}, {Roles.Teacher}, {Roles.Sound}")]
 @implements IDisposable
-@using gbs.Client.Pages.Admin.Streams.Components
 @inject IStreamService StreamService
 @inject ITeacherService TeacherService
 @inject IGenerationService GenerationService
 @inject IUiService UiService
 @inject NavigationManager NavigationManager
 
-@* <div class="tw-flex tw-justify-between tw-items-center tw-py-4"> *@
-@*     <MudText Typo="Typo.h3">Create Streams</MudText> *@
-@* </div> *@
-
 <EditForm Model="_newStream" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator/>
     <MudGrid Justify="Justify.Center" Class="tw-pt-8">
-        <MudItem xs="12" sm="6" md="4">
+        <MudItem xs="12" sm="8" md="5">
             <MudCard>
                 <MudCardHeader>
                     <CardHeaderContent>
@@ -24,7 +19,7 @@
                     </CardHeaderContent>
                 </MudCardHeader>
                 <MudCardContent>
-                    <MudFocusTrap DefaultFocus="DefaultFocus.FirstChild">
+                    <MudFocusTrap DefaultFocus="DefaultFocus.FirstChild" Class="tw-space-y-2">
                         <MudTextField Label="Title"
                                       @bind-Value="_newStream.Title"
                                       For="() => _newStream.Title"/>
@@ -46,75 +41,52 @@
                         <MudSelect Label="Teachers"
                                    MultiSelection="true"
                                    AnchorOrigin="Origin.BottomCenter"
-                                   @bind-Value="_newStream.Teachers">
+                                   @bind-SelectedValues="SelectedTeachers">
                             @foreach (var item in TeacherService.Teachers)
                             {
-                                <MudSelectItem T=int Value="@item.Id">@item.Name</MudSelectItem>
+                                <MudSelectItem Value="@item">@item.Name</MudSelectItem>
                             }
                         </MudSelect>
                     </MudFocusTrap>
                 </MudCardContent>
+                <MudCardActions Class="tw-flex tw-justify-end tw-space-x-2">
+                    <MudButton Variant="Variant.Text" Color="Color.Primary" Href="admin/streams">Cancel</MudButton>
+                    <MudButton ButtonType="ButtonType.Submit"
+                               Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               StartIcon="@Icons.Material.Filled.Save"
+                               Disabled="@_isProcessing">
+                        @if (_isProcessing)
+                        {
+                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
+                            <MudText Class="ms-2">Processing</MudText>
+                        }
+                        <MudText>Save</MudText>
+                    </MudButton>
+                </MudCardActions>
             </MudCard>
         </MudItem>
     </MudGrid>
 </EditForm>
-@* <div class="tw-flex tw-justify-center tw-pt-4"> *@
-
-@* <div class="card w-96 bg-base-200 shadow-lg"> *@
-@*     <div class="card-body"> *@
-@*         <EditForm Model="_newStream" OnValidSubmit="HandleValidSubmit"> *@
-@*             <DataAnnotationsValidator/> *@
-@*             <TextInput Id="title" *@
-@*                        @ref="_titleInput" *@
-@*                        Label="Title" *@
-@*                        @bind-Value="_newStream.Title" *@
-@*                        For="() => _newStream.Title"/> *@
-@*             <TextInput Id="url" *@
-@*                        Label="Url" *@
-@*                        @bind-Value="_newStream.Url" *@
-@*                        For="() => _newStream.Url"/> *@
-@*             <ToggleInput Id="isLive" *@
-@*                          Label="Live" *@
-@*                          @bind-Checked="_newStream.IsLive"/> *@
-@*             <SelectInput Id="generation" *@
-@*                          Label="Generation" *@
-@*                          Placeholder="Select a generation" *@
-@*                          Items="_generationSelectItems" *@
-@*                          For="@(() => _newStream.GenerationId)" *@
-@*                          @bind-Value="_newStream.GenerationId"/> *@
-@*             <TeacherComboBox @bind-Teachers="SelectedTeachers" *@
-@*                              For="() => _newStream.Teachers"/> *@
-@* *@
-@*             <div class="flex justify-end pt-4 space-x-2"> *@
-@*                 <Button Href="admin/streams">Cancel</Button> *@
-@*                 <Button Type="submit" Color="BtnColor.Primary" IsLoading="_isLoading">Save</Button> *@
-@*             </div> *@
-@*         </EditForm> *@
-@*     </div> *@
-@* </div> *@
-@* </div> *@
 
 @code {
     StreamCreateDto _newStream = new StreamCreateDto();
-    // TextInput _titleInput = null!;
-    // DefaultFocus DefaultFocus { get; set; } = DefaultFocus.FirstChild;
-    bool _isLoading;
+    IEnumerable<Teacher> _selectedTeachers = new List<Teacher>();
+    bool _isProcessing;
     bool _isEditMode;
-    string _selectedTeachers { get; set; } = string.Empty;
-    // List<Teacher> _selectedTeachers = new List<Teacher>();
+
+    IEnumerable<Teacher> SelectedTeachers
+    {
+        get => _selectedTeachers;
+        set
+        {
+            _selectedTeachers = value;
+            _newStream.Teachers = value.Select(t => t.Id).ToList();
+        }
+    }
 
     [Parameter]
     public int? Id { get; set; }
-
-    // List<Teacher> SelectedTeachers
-    // {
-    //     get => _selectedTeachers;
-    //     set
-    //     {
-    //         _selectedTeachers = value;
-    //         _newStream.Teachers = value.Select(t => t.Id).ToList();
-    //     }
-    // }
 
     protected override async Task OnInitializedAsync()
     {
@@ -137,44 +109,33 @@
                     GenerationId = stream.Data.GenerationId,
                     Teachers = stream.Data.Teachers.Select(t => t.Id).ToList()
                 };
-                // _selectedTeachers = stream.Data.Teachers;
+                _selectedTeachers = stream.Data.Teachers;
             }
         }
         await GenerationService.LoadGenerations();
         await TeacherService.LoadTeachers();
         TeacherService.TeachersChanged += StateHasChanged;
         GenerationService.GenerationsChanged += StateHasChanged;
-    // _generationSelectItems = GenerationService.Generations.ToDictionary(g => g.Id, g => g.Name);
     }
-
-    // protected override async Task OnAfterRenderAsync(bool firstRender)
-    // {
-    //     if (firstRender)
-    //     {
-    //         await _titleInput.FocusAsync();
-    //     }
-    // }
 
     async Task HandleValidSubmit()
     {
-        _isLoading = true;
-        if (Id != null)
+        _isProcessing = true;
+    // if (Id != null)
+    // {
+        var response = _isEditMode
+            ? await StreamService.UpdateStream(Id!.Value, _newStream)
+            : await StreamService.AddLiveStream(_newStream);
+        if (response.Success)
         {
-            var response = _isEditMode
-                ? await StreamService.UpdateStream(Id.Value, _newStream)
-                : await StreamService.AddLiveStream(_newStream);
-            if (response.Success)
-            {
-                _isLoading = false;
-                UiService.ShowSuccessAlert(_isEditMode ? "Stream updated" : "Stream created");
-                NavigationManager.NavigateTo("admin/streams");
-            }
-            else
-            {
-                _isLoading = false;
-                await UiService.ShowErrorAlert(response.Message, response.StatusCode);
-    // await _titleInput.FocusAsync();
-            }
+            _isProcessing = false;
+            UiService.ShowSuccessAlert(_isEditMode ? "Stream updated" : "Stream created");
+            NavigationManager.NavigateTo("admin/streams");
+        }
+        else
+        {
+            _isProcessing = false;
+            await UiService.ShowErrorAlert(response.Message, response.StatusCode);
         }
     }
 
