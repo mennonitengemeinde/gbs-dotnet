@@ -1,3 +1,6 @@
+using System.Security.Claims;
+using gbs.Shared.Const;
+
 namespace gbs.Client.Services.Api.AuthService;
 
 public class AuthApiService : IAuthService
@@ -26,5 +29,12 @@ public class AuthApiService : IAuthService
     public async Task<bool> IsUserAuthenticated()
     {
         return (await _authStateProvider.GetAuthenticationStateAsync()).User.Identity!.IsAuthenticated;
+    }
+    
+    public async Task<string> GetUserRole()
+    {
+        var authState = await _authStateProvider.GetAuthenticationStateAsync();
+        var role = authState.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+        return role ?? Roles.User;
     }
 }

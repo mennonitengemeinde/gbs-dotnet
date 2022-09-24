@@ -1,5 +1,5 @@
 @page "/admin/churches"
-@attribute [Authorize(Roles = $"{Roles.SuperAdmin}, {Roles.Admin}, {Roles.Teacher}")]
+@attribute [Authorize(Roles = Roles.Admins)]
 @implements IDisposable
 @inject IChurchService ChurchService
 

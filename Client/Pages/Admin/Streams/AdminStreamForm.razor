@@ -1,6 +1,6 @@
 @page "/admin/streams/create"
 @page "/admin/streams/{Id:int}/edit"
-@attribute [Authorize(Roles = $"{Roles.SuperAdmin}, {Roles.Admin}, {Roles.Teacher}, {Roles.Sound}")]
+@attribute [Authorize(Roles = Roles.AdminAndSound)]
 @implements IDisposable
 @inject IStreamService StreamService
 @inject ITeacherService TeacherService
@@ -35,10 +35,11 @@
                 <MudSelect Label="Teachers"
                            MultiSelection="true"
                            AnchorOrigin="Origin.BottomCenter"
-                           @bind-SelectedValues="SelectedTeachers">
+                           @bind-SelectedValues="_newStream.Teachers"
+                           MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiSelectionText))">
                     @foreach (var item in TeacherService.Teachers)
                     {
-                        <MudSelectItem Value="@item">@item.Name</MudSelectItem>
+                        <MudSelectItem Value="@item.Id">@item.Name</MudSelectItem>
                     }
                 </MudSelect>
                 <MudSwitch Label="Live"
@@ -51,21 +52,9 @@
 
 @code {
     StreamCreateDto _newStream = new StreamCreateDto();
-    IEnumerable<Teacher> _selectedTeachers = new List<Teacher>();
     bool _isProcessing;
     bool _isLoading;
     bool _isEditMode;
-    string[] _valueStreams = new string[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" };
-
-    IEnumerable<Teacher> SelectedTeachers
-    {
-        get => _selectedTeachers;
-        set
-        {
-            _selectedTeachers = value;
-            _newStream.Teachers = value.Select(t => t.Id).ToList();
-        }
-    }
 
     [Parameter]
     public int? Id { get; set; }
@@ -91,9 +80,9 @@
                     Url = stream.Data.Url,
                     IsLive = stream.Data.IsLive,
                     GenerationId = stream.Data.GenerationId,
-                    Teachers = stream.Data.Teachers.Select(t => t.Id).ToList()
+                    Teachers = stream.Data.Teachers.Select(t => t.Id).ToHashSet()
                 };
-                SelectedTeachers = stream.Data.Teachers;
+                // SelectedTeachers = stream.Data.Teachers;
             }
             _isLoading = false;
         }
@@ -106,8 +95,6 @@
     async Task HandleValidSubmit()
     {
         _isProcessing = true;
-    // if (Id != null)
-    // {
         var response = _isEditMode
             ? await StreamService.UpdateStream(Id!.Value, _newStream)
             : await StreamService.AddLiveStream(_newStream);
@@ -122,6 +109,17 @@
             _isProcessing = false;
             await UiService.ShowErrorAlert(response.Message, response.StatusCode);
         }
+    }
+
+    private string GetMultiSelectionText(List<string> selectedValues)
+    {
+        var nameList = new List<string>();
+        foreach (var value in selectedValues)
+        {
+            int.TryParse(value, out var id);
+            nameList.Add(TeacherService.Teachers.FirstOrDefault(t => t.Id == id)!.Name);
+        }
+        return string.Join(", ", nameList);
     }
 
 

@@ -10,7 +10,7 @@ namespace gbs.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = $"{Roles.Admin}, {Roles.SuperAdmin}")]
+    [Authorize(Roles = Roles.Admins)]
     public class UsersController : ControllerBase
     {
         private readonly IUserRepository _userRepo;

@@ -95,6 +95,9 @@ public class AuthRepository : IAuthRepository
     public int GetUserId() =>
         int.Parse(_httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier));
 
+    public string GetUserRole() =>
+        _httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.Role);
+
     private string CreateToken(User user)
     {
         List<Claim> claims = new List<Claim>

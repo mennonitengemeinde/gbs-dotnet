@@ -10,6 +10,10 @@ public static class Roles
     public const string Sound = "Sound";
     public const string User = "User";
 
-    public static string[] AllRoles = new string[]
-        { Admin, SuperAdmin, Teacher, ChurchLeader, ChurchTeacher, Sound, User };
+    public const string AllButUser = $"{Admin}, {SuperAdmin}, {Teacher}, {ChurchLeader}, {ChurchTeacher}, {Sound}";
+    public const string AdminAndTeachers = $"{Admin}, {SuperAdmin}, {Teacher}, {ChurchLeader}, {ChurchTeacher}";
+    public const string Admins = $"{Admin}, {SuperAdmin}";
+    public const string AdminAndSound = $"{Admin}, {SuperAdmin}, {Sound}";
+
+    public static readonly string[] AllRoles = { Admin, SuperAdmin, Teacher, ChurchLeader, ChurchTeacher, Sound, User };
 }

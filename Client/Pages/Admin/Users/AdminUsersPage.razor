@@ -1,7 +1,7 @@
 ﻿@page "/admin/users"
-@using gbs.Client.Pages.Admin.Users.Components
 @implements IDisposable
-@attribute [Authorize(Roles = $"{Roles.SuperAdmin}, {Roles.Admin}")]
+@attribute [Authorize(Roles = Roles.Admins)]
+@inject IAuthService AuthService
 @inject IUserService UserService
 @inject IChurchService ChurchService
 
@@ -17,7 +17,6 @@
         <MudTh>Church</MudTh>
         <MudTh>Role</MudTh>
         <MudTh>Active</MudTh>
-        <MudTh></MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Name">@context.FirstName @context.LastName</MudTd>
@@ -49,11 +48,6 @@
             <MudSwitch T="bool"
                        Checked="@context.IsActive"
                        CheckedChanged="@((e) => HandleActiveChange(e, context.Id))"/>
-        </MudTd>
-        <MudTd Class="tw-text-end">
-            <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                           Size="Size.Small"
-                           Href="@($"admin/churches/{context.Id}/edit")"/>
         </MudTd>
     </RowTemplate>
 </MudTable>
@@ -91,18 +85,13 @@
     protected override async Task OnInitializedAsync()
     {
         _loading = true;
+        var userRole = await AuthService.GetUserRole();
         await UserService.GetUsers();
         await ChurchService.GetChurches();
-        Console.WriteLine(await UserService.GetUserRole());
-        if (await UserService.GetUserRole() == Roles.SuperAdmin)
-        {
-            _roles = Roles.AllRoles;
-        }
-        else
-        {
-            _roles = Roles.AllRoles.Where(x => x != Roles.SuperAdmin).ToArray();
-        }
-        
+        _roles = userRole == Roles.SuperAdmin
+            ? Roles.AllRoles
+            : Roles.AllRoles.Where(x => x != Roles.SuperAdmin).ToArray();
+
         _loading = false;
         UserService.UsersChanged += StateHasChanged;
         ChurchService.ChurchesChanged += StateHasChanged;
@@ -110,7 +99,7 @@
 
     async Task HandleActiveChange(bool e, int userId)
     {
-        var updateActiveDto = new UserUpdateActiveStateDto {IsActive = e};
+        var updateActiveDto = new UserUpdateActiveStateDto { IsActive = e };
         await UserService.UpdateActiveState(userId, updateActiveDto);
     }
 
@@ -126,7 +115,7 @@
 
     async Task HandleRoleChange(string value, UserDto user)
     {
-        var updateRoleDto = new UserUpdateRoleDto {Role = value};
+        var updateRoleDto = new UserUpdateRoleDto { Role = value };
         await UserService.UpdateRole(user.Id, updateRoleDto);
     }
 

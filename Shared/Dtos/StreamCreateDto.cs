@@ -16,5 +16,5 @@ public class StreamCreateDto
     public int? GenerationId { get; set; }
 
     [Required, MinLength(1, ErrorMessage = "Please select at least one teacher")]
-    public List<int> Teachers { get; set; } = new List<int>();
+    public IEnumerable<int> Teachers { get; set; } = new HashSet<int>();
 }

@@ -9,5 +9,4 @@ public interface IUserService
     Task UpdateChurch(int userId, UserUpdateChurchDto updateDto);
     Task UpdateRole(int userId, UserUpdateRoleDto userUpdateRoleDto);
     Task UpdateActiveState(int userId, UserUpdateActiveStateDto userUpdateActiveDto);
-    Task<string> GetUserRole();
 }

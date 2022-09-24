@@ -1,11 +1,12 @@
 @page "/school/students"
+@attribute [Authorize(Roles = Roles.AdminAndTeachers)]
 @using gbs.Client.Pages.School.Students.Components
 
-<div class="flex justify-between items-center">
-    <H3>Students</H3>
-    <Button Href="/admin/streams/create" Color="BtnColor.Primary">
-        <i class="oi oi-plus"></i>
-    </Button>
+<div class="tw-py-4 tw-space-y-4">
+    <MudText Typo="Typo.h4">Students</MudText>
+    <MudButton StartIcon="@Icons.Filled.Add" Color="Color.Primary" Variant="Variant.Filled" Href="/admin/teachers/create">
+        New
+    </MudButton>
 </div>
 
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-4">
