@@ -2,39 +2,35 @@
 @attribute [Authorize(Roles = Roles.AllButUser)]
 @using gbs.Client.Pages.School.Components
 @inject IStreamService StreamService
+@inject IUiService UiService
 
 <WelcomeBanner />
 
-<div class="flex justify-center py-8 text-gray-600">
-    <h2 class="text-2xl font-semibold">Live</h2>
+<div class="tw-pt-8 tw-pb-2 tw-text-gray-600">
+    <MudText Typo="Typo.h2" Class="tw-text-2xl tw-font-semibold">Live</MudText>
 </div>
 
-@if (_isLoading)
-{
-    <div class="flex justify-center">
-        <progress class="progress progress-primary w-56"></progress>
-    </div>
-}
+<MudDivider Light="true"/>
 
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<MudGrid Class="tw-relative tw-pt-2">
     @foreach (var liveStream in StreamService.Streams.Where(s => s.IsLive == true))
     {
-        <LiveStreamCard LiveStream="@liveStream" />
+        <MudItem xs="12" md="6" xl="4">
+            <LiveStreamCard LiveStream="@liveStream" />
+        </MudItem>
     }
-</div>
+</MudGrid>
 
 <div class="flex justify-center pt-8 text-gray-600">
     <h2 class="text-2xl font-semibold">Q&A</h2>
 </div>
 
 @code {
-    bool _isLoading = false;
-
     protected override async Task OnInitializedAsync()
     {
-        _isLoading = true;
+        UiService.LoadingStart();
         await StreamService.LoadStreams();
-        _isLoading = false;
+        UiService.LoadingStop();
     }
 
 }

@@ -10,6 +10,9 @@ public class UiService : IUiService
     private readonly ILocalStorageService _localStorage;
     private readonly AuthenticationStateProvider _authenticationStateProvider;
     private readonly ISnackbar _snackbar;
+
+    public bool Loading { get; set; }
+    public event Action? LoadingChanged;
     public List<AlertDto> Alerts { get; set; } = new List<AlertDto>();
     public event Action? AlertsChanged;
 
@@ -24,12 +27,6 @@ public class UiService : IUiService
 
     public async Task ShowErrorAlert(string message, int statusCode = 400)
     {
-        // Alerts.Add(new AlertDto
-        // {
-        //     Message = message,
-        //     Type = AlertType.Error
-        // });
-        // AlertsChanged?.Invoke();
         _snackbar.Add(message, Severity.Error);
         if (statusCode == 401)
         {
@@ -41,19 +38,18 @@ public class UiService : IUiService
 
     public void ShowSuccessAlert(string message)
     {
-        // Alerts.Add(new AlertDto
-        // {
-        //     Message = message,
-        //     Type = AlertType.Success
-        // });
-        // AlertsChanged?.Invoke();
         _snackbar.Add(message, Severity.Success);
     }
 
-    public void RemoveAlert(string alertId)
+    public void LoadingStart()
     {
-        var alert = Alerts.Single(a => a.Id == alertId);
-        Alerts.Remove(alert);
-        AlertsChanged?.Invoke();
+        Loading = true;
+        LoadingChanged?.Invoke();
+    }
+
+    public void LoadingStop()
+    {
+        Loading = false;
+        LoadingChanged?.Invoke();
     }
 }
