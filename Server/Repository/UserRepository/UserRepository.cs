@@ -3,15 +3,17 @@
 public class UserRepository : IUserRepository
 {
     private readonly DataContext _context;
+    private readonly IAuthRepository _authRepo;
 
-    public UserRepository(DataContext context)
+    public UserRepository(DataContext context, IAuthRepository authRepo)
     {
         _context = context;
+        _authRepo = authRepo;
     }
 
     public async Task<ServiceResponse<List<UserDto>>> GetUsers()
     {
-        var users = await _context.Users.Select(u => new UserDto
+        var userSelect = _context.Users.Select(u => new UserDto
         {
             Id = u.Id,
             FirstName = u.FirstName,
@@ -22,9 +24,19 @@ public class UserRepository : IUserRepository
             IsActive = u.IsActive,
             ChurchId = u.ChurchId,
             ChurchName = u.Church.Name,
-        }).OrderBy(u => u.FirstName).ToListAsync();
+        });
 
-        return new ServiceResponse<List<UserDto>> { Data = users };
+        var response = new ServiceResponse<List<UserDto>>();
+
+        if (_authRepo.GetUserRole() != Roles.SuperAdmin)
+        {
+            response.Data = await userSelect.Where(u => u.Role != Roles.SuperAdmin)
+                .OrderBy(u => u.FirstName).ToListAsync();
+            return response;
+        }
+
+        response.Data = await userSelect.OrderBy(u => u.FirstName).ToListAsync();
+        return response;
     }
 
     public async Task<ServiceResponse<UserDto>> GetUserById(int userId)

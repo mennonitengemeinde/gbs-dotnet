@@ -1,6 +1,6 @@
 @page "/admin/churches/create"
 @page "/admin/churches/{Id:int}/edit"
-@attribute [Authorize(Roles = $"{Roles.SuperAdmin}, {Roles.Admin}, {Roles.Teacher}")]
+@attribute [Authorize(Roles = Roles.Admins)]
 @inject NavigationManager NavigationManager
 @inject IChurchService ChurchService
 @inject IUiService UiService

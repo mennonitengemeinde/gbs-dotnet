@@ -1,5 +1,5 @@
 ﻿@page "/school/{Id:int}/live"
-@attribute [Authorize]
+@attribute [Authorize(Roles = Roles.AllButUser)]
 @using gbs.Client.Pages.School.Components
 @inject IStreamService StreamService
 @inject NavigationManager NavigationManager

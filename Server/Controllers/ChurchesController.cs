@@ -16,6 +16,7 @@ public class ChurchesController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Roles = Roles.AdminAndTeachers)]
     public async Task<ActionResult<ServiceResponse<List<Church>>>> GetChurches()
     {
         var response = await _churchRepo.GetAllChurches();
@@ -28,6 +29,7 @@ public class ChurchesController : ControllerBase
     }
 
     [HttpGet("{churchId:int}")]
+    [Authorize(Roles = Roles.AdminAndTeachers)]
     public async Task<ActionResult<ServiceResponse<Church>>> GetChurch(int churchId)
     {
         var response = await _churchRepo.GetChurchById(churchId);
@@ -53,7 +55,7 @@ public class ChurchesController : ControllerBase
     }
 
     [HttpPut("{churchId:int}")]
-    [Authorize(Roles = $"{Roles.Admin}, {Roles.SuperAdmin}, {Roles.Teacher}")]
+    [Authorize(Roles = Roles.Admins)]
     public async Task<ActionResult<ServiceResponse<Church>>> UpdateChurch(int churchId, ChurchCreateDto church)
     {
         var response = await _churchRepo.UpdateChurch(churchId, church);
@@ -66,7 +68,7 @@ public class ChurchesController : ControllerBase
     }
 
     [HttpDelete("{churchId:int}")]
-    [Authorize(Roles = $"{Roles.Admin}, {Roles.SuperAdmin}, {Roles.Teacher}")]
+    [Authorize(Roles = Roles.Admins)]
     public async Task<ActionResult<ServiceResponse<List<Church>>>> DeleteChurch(int churchId)
     {
         var response = await _churchRepo.DeleteChurch(churchId);

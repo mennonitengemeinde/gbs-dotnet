@@ -1,5 +1,5 @@
 ﻿@page "/admin/generations"
-@attribute [Authorize(Roles = $"{Roles.Admin}, {Roles.SuperAdmin}, {Roles.Teacher}")]
+@attribute [Authorize(Roles = Roles.Admins)]
 @inject IGenerationService GenerationService
 @inject IUiService UiService
 @implements IDisposable
