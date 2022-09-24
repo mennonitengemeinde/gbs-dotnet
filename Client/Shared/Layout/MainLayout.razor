@@ -3,29 +3,29 @@
 @inject ILocalStorageService LocalStorage
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
-<MudThemeProvider Theme="_gbsTheme"/>
-<MudDialogProvider/>
-<MudSnackbarProvider/>
+<GbsThemeProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
 
 <MudLayout Class="tw-min-h-screen">
-    <MudAppBar Elevation="1" Color="Color.Primary">
+    <MudAppBar Elevation="1">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
         <MudText Typo="Typo.h5" Class="ml-3">GBS</MudText>
         <MudSpacer />
-        @* <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" /> *@
         <AuthorizeView>
             <Authorized>
-                <MudIconButton Icon="@Icons.Material.Filled.Logout" OnClick="Logout" Color="Color.Inherit"/>
+                <MudIconButton Icon="@Icons.Material.Filled.Logout" OnClick="Logout" Color="Color.Inherit" />
             </Authorized>
             <NotAuthorized>
-                <MudIconButton Icon="@Icons.Material.Filled.Login" Href="login" Color="Color.Inherit"/>
+                <MudIconButton Icon="@Icons.Material.Filled.Login" Href="login" Color="Color.Inherit" />
             </NotAuthorized>
         </AuthorizeView>
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
-        <NavMenu/>
+        <NavMenu />
     </MudDrawer>
     <MudMainContent Class="tw-h-fill">
+        <InfinitLinearProgress />
         <MudContainer MaxWidth="MaxWidth.ExtraLarge">
             @Body
         </MudContainer>
@@ -34,20 +34,12 @@
 
 @code {
     private bool _drawerOpen = true;
-    readonly MudTheme _gbsTheme = new MudTheme()
-    {
-        Palette = new Palette()
-        {
-            Primary = Colors.Indigo.Default,
-            Background = Colors.Grey.Lighten4,
-        }
-    };
-    
+
     void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
     }
-    
+
     private async Task Logout()
     {
         await LocalStorage.RemoveItemAsync("authToken");
