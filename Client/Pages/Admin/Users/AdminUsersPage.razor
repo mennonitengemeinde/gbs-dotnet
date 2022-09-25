@@ -1,48 +1,122 @@
 ﻿@page "/admin/users"
-@using gbs.Client.Pages.Admin.Users.Components
 @implements IDisposable
-@attribute [Authorize(Roles = $"{Roles.SuperAdmin}, {Roles.Admin}")]
+@attribute [Authorize(Roles = Roles.Admins)]
+@inject IAuthService AuthService
 @inject IUserService UserService
 @inject IChurchService ChurchService
 
-<H3>Users</H3>
+<div class="tw-py-4 tw-space-y-4">
+    <MudText Typo="Typo.h4">Churches</MudText>
+</div>
 
-@if (_loading)
-{
-    <div class="flex justify-center pt-8">
-        <InfinitLoading Height="10" Width="10"/>
-    </div>
-}
-else
-{
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 pt-4">
-        @foreach (var user in UserService.Users)
-        {
-            @if (user.Role == Roles.SuperAdmin)
-            {
-                <AuthorizeView Roles="@Roles.SuperAdmin">
-                    <UserCard @key="@user.Id" User="@user" Churches="ChurchService.Churches"/>
-                </AuthorizeView>
-            }
-            else
-            {
-                <UserCard @key="@user.Id" User="@user" Churches="ChurchService.Churches"/>
-            }
-        }
-    </div>
-}
+<MudTable Items="@UserService.Users" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading" LoadingProgressColor="Color.Info">
+    <HeaderContent>
+        <MudTh>Name</MudTh>
+        <MudTh>Email</MudTh>
+        <MudTh>Email Verified</MudTh>
+        <MudTh>Church</MudTh>
+        <MudTh>Role</MudTh>
+        <MudTh>Active</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Name">@context.FirstName @context.LastName</MudTd>
+        <MudTd DataLabel="Email">@context.Email</MudTd>
+        <MudTd DataLabel="Email Verified">@context.EmailVerified</MudTd>
+        <MudTd DataLabel="Church">
+            <MudSelect T="int?"
+                       Value="@context.ChurchId"
+                       Label="Church"
+                       ValueChanged="@((value) => HandleChurchChange(value, context))">
+                @foreach (var church in ChurchService.Churches)
+                {
+                    <MudSelectItem T="int?" Value="@church.Id">@church.Name</MudSelectItem>
+                }
+            </MudSelect>
+        </MudTd>
+        <MudTd DataLabel="Role">
+            <MudSelect T="string"
+                       Value="@context.Role"
+                       Label="Role"
+                       ValueChanged="@((value) => HandleRoleChange(value, context))">
+                @foreach (var role in _roles)
+                {
+                    <MudSelectItem T="string" Value="@role">@role</MudSelectItem>
+                }
+            </MudSelect>
+        </MudTd>
+        <MudTd DataLabel="Active">
+            <MudSwitch T="bool"
+                       Checked="@context.IsActive"
+                       CheckedChanged="@((e) => HandleActiveChange(e, context.Id))"/>
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+
+@* @if (_loading) *@
+@* { *@
+@*     <div class="flex justify-center pt-8"> *@
+@*         <InfinitLoading Height="10" Width="10"/> *@
+@*     </div> *@
+@* } *@
+@* else *@
+@* { *@
+@*     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 pt-4"> *@
+@*         @foreach (var user in UserService.Users) *@
+@*         { *@
+@*             @if (user.Role == Roles.SuperAdmin) *@
+@*             { *@
+@*                 <AuthorizeView Roles="@Roles.SuperAdmin"> *@
+@*                     <UserCard @key="@user.Id" User="@user" Churches="ChurchService.Churches"/> *@
+@*                 </AuthorizeView> *@
+@*             } *@
+@*             else *@
+@*             { *@
+@*                 <UserCard @key="@user.Id" User="@user" Churches="ChurchService.Churches"/> *@
+@*             } *@
+@*         } *@
+@*     </div> *@
+@* } *@
 
 @code {
     bool _loading;
+    UserUpdateChurchDto _updateChurchDto = new UserUpdateChurchDto();
+    string[] _roles = new string[] { Roles.User };
 
     protected override async Task OnInitializedAsync()
     {
         _loading = true;
+        var userRole = await AuthService.GetUserRole();
         await UserService.GetUsers();
         await ChurchService.GetChurches();
+        _roles = userRole == Roles.SuperAdmin
+            ? Roles.AllRoles
+            : Roles.AllRoles.Where(x => x != Roles.SuperAdmin).ToArray();
+
         _loading = false;
         UserService.UsersChanged += StateHasChanged;
         ChurchService.ChurchesChanged += StateHasChanged;
+    }
+
+    async Task HandleActiveChange(bool e, int userId)
+    {
+        var updateActiveDto = new UserUpdateActiveStateDto { IsActive = e };
+        await UserService.UpdateActiveState(userId, updateActiveDto);
+    }
+
+    async Task HandleChurchChange(int? value, UserDto user)
+    {
+        if (value == null)
+        {
+            return;
+        }
+        _updateChurchDto.ChurchId = value;
+        await UserService.UpdateChurch(user.Id, _updateChurchDto);
+    }
+
+    async Task HandleRoleChange(string value, UserDto user)
+    {
+        var updateRoleDto = new UserUpdateRoleDto { Role = value };
+        await UserService.UpdateRole(user.Id, updateRoleDto);
     }
 
     public void Dispose()

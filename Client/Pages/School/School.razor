@@ -1,51 +1,36 @@
 @page "/school"
-@attribute [Authorize]
+@attribute [Authorize(Roles = Roles.AllButUser)]
 @using gbs.Client.Pages.School.Components
 @inject IStreamService StreamService
+@inject IUiService UiService
 
-<div class="flex">
-    <div class="card bg-base-200 h-40 w-full rounded-xl shadow-lg">
-        <div class="card-body items-center p-4 justify-between">
-            <h1 class="card-title text-2xl text-gray-600">Welcome to GBS</h1>
-            <p class="text-gray-500 text-center">
-                Motivational verse from Bible, Lorem ipsum dolor sit amet, consectetur
-                adipiscing elit,
-                sed do.&nbsp;&nbsp;<span class="text-gray-600 font-semibold">Herman 5:17</span>
-            </p>
-        </div>
-    </div>
+<WelcomeBanner />
+
+<div class="tw-pt-8 tw-pb-2 tw-text-gray-600">
+    <MudText Typo="Typo.h2" Class="tw-text-2xl tw-font-semibold">Live</MudText>
 </div>
 
-<div class="flex justify-center py-8 text-gray-600">
-    <h2 class="text-2xl font-semibold">Live</h2>
-</div>
+<MudDivider Light="true"/>
 
-@if (_isLoading)
-{
-    <div class="flex justify-center">
-        <progress class="progress progress-primary w-56"></progress>
-    </div>
-}
-
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<MudGrid Class="tw-relative tw-pt-2">
     @foreach (var liveStream in StreamService.Streams.Where(s => s.IsLive == true))
     {
-        <LiveStreamCard LiveStream="@liveStream"/>
+        <MudItem xs="12" md="6" xl="4">
+            <LiveStreamCard LiveStream="@liveStream" />
+        </MudItem>
     }
-</div>
+</MudGrid>
 
 <div class="flex justify-center pt-8 text-gray-600">
     <h2 class="text-2xl font-semibold">Q&A</h2>
 </div>
 
 @code {
-    bool _isLoading = false;
-
     protected override async Task OnInitializedAsync()
     {
-        _isLoading = true;
+        UiService.LoadingStart();
         await StreamService.LoadStreams();
-        _isLoading = false;
+        UiService.LoadingStop();
     }
 
 }

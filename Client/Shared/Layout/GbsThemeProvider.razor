@@ -1,0 +1,30 @@
+﻿<MudThemeProvider Theme="_gbsTheme" />
+
+@code {
+
+    readonly MudTheme _gbsTheme = new MudTheme()
+    {
+        Palette = new Palette()
+        {
+            AppbarBackground = Colors.Indigo.Default,
+            Primary = Colors.Indigo.Default,
+            Secondary = "#bd9a46",
+            Info = Colors.Grey.Default,
+            Background = "#f7f9fa",
+        }
+    };
+
+        @*     $theme-colors: ( *@
+        @*     "light":      #f7f9fa, *@
+        @*     "dark":       #07114e, *@
+        @*     "primary":    #3f51b5, *@
+        @*     "secondary":  #bd9a46, *@
+        @*     "info":       #9e9e9e, *@
+        @*     "accent1":    #374054, *@
+        @*     "accent2":    #e0b867, *@
+        @*     "accent3":    #d0d6dc, *@
+        @*     "success":    #2db871, *@
+        @*     "warning":    #e7d129, *@
+        @*     "danger":     #f72615, *@
+        @*     ); *@
+}

@@ -15,18 +15,7 @@ public static class HttpExtensions
                 return await HandleHttpError<T>(response);
             }
 
-            var result = await response.Content.ReadFromJsonAsync<ServiceResponse<T>>();
-            if (result == null || result.Data == null)
-            {
-                return new ServiceResponse<T>
-                {
-                    Success = false,
-                    Message = "No response from server",
-                    StatusCode = 404
-                };
-            }
-
-            return result;
+            return await ReadFromJson<T>(response);
         }
         catch (Exception)
         {
@@ -43,6 +32,30 @@ public static class HttpExtensions
         }
     }
 
+    private static async Task<ServiceResponse<T>> ReadFromJson<T>(HttpResponseMessage response)
+    {
+        try
+        {
+            var result = await response.Content.ReadFromJsonAsync<ServiceResponse<T>>();
+            if (result == null || result.Data == null)
+            {
+                return new ServiceResponse<T>
+                {
+                    Success = false,
+                    Message = "No response from server",
+                    StatusCode = 404
+                };
+            }
+
+            return result;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
     private static async Task<ServiceResponse<T>> HandleHttpError<T>(HttpResponseMessage response)
     {
         var result = new ServiceResponse<T> {Success = false};
@@ -52,6 +65,10 @@ public static class HttpExtensions
             case HttpStatusCode.InternalServerError:
                 result.Message = "Internal server error";
                 result.StatusCode = 500;
+                return result;
+            case HttpStatusCode.Forbidden:
+                result.Message = "You are not authorized to access this resource";
+                result.StatusCode = 403;
                 return result;
             case HttpStatusCode.Unauthorized:
                 result.Message = "Unauthorized";

@@ -21,6 +21,7 @@ namespace gbs.Server.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = @Roles.AllButUser)]
         public async Task<ActionResult<ServiceResponse<List<StreamGetDto>>>> GetStreams()
         {
             var response = await _streamRepo.GetLiveStreams();
@@ -33,7 +34,7 @@ namespace gbs.Server.Controllers
         }
         
         [HttpGet("{id:int}")]
-        [Authorize]
+        [Authorize(Roles = @Roles.AllButUser)]
         public async Task<ActionResult<ServiceResponse<StreamGetDto>>> GetStream(int id)
         {
             var response = await _streamRepo.GetLiveStreamById(id);
@@ -46,7 +47,7 @@ namespace gbs.Server.Controllers
         }
         
         [HttpGet("{id:int}/live")]
-        [Authorize]
+        [Authorize(Roles = @Roles.AllButUser)]
         public async Task<ActionResult<ServiceResponse<StreamGetDto>>> GetOnlineStream(int id)
         {
             var response = await _streamRepo.GetLiveStreamById(id, true);
@@ -59,7 +60,7 @@ namespace gbs.Server.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = $"{Roles.SuperAdmin}, {Roles.Admin}")]
+        [Authorize(Roles = Roles.AdminAndSound)]
         public async Task<ActionResult<ServiceResponse<StreamGetDto>>> AddStream(StreamCreateDto streamCreateDto)
         {
             var response = await _streamRepo.CreateLiveStream(streamCreateDto);
@@ -72,7 +73,7 @@ namespace gbs.Server.Controllers
         }
         
         [HttpPut("{streamId:int}")]
-        [Authorize(Roles = $"{Roles.SuperAdmin}, {Roles.Admin}")]
+        [Authorize(Roles = Roles.AdminAndSound)]
         public async Task<ActionResult<ServiceResponse<StreamGetDto>>> UpdateStream(int streamId,
             StreamCreateDto liveDto)
         {
@@ -86,7 +87,7 @@ namespace gbs.Server.Controllers
         }
 
         [HttpPut("{streamId:int}/live")]
-        [Authorize(Roles = $"{Roles.SuperAdmin}, {Roles.Admin}")]
+        [Authorize(Roles = Roles.AdminAndSound)]
         public async Task<ActionResult<ServiceResponse<StreamGetDto>>> UpdateStreamLiveStatus(int streamId,
             StreamUpdateLiveDto liveDto)
         {
@@ -100,7 +101,7 @@ namespace gbs.Server.Controllers
         }
         
         [HttpDelete("{streamId:int}")]
-        [Authorize(Roles = $"{Roles.SuperAdmin}, {Roles.Admin}")]
+        [Authorize(Roles = Roles.AdminAndSound)]
         public async Task<ActionResult<ServiceResponse<int>>> DeleteStream(int streamId)
         {
             var response = await _streamRepo.DeleteStream(streamId);

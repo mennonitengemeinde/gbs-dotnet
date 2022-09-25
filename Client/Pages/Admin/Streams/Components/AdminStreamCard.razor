@@ -1,38 +1,41 @@
 ﻿@inject IUiService UiService
 @inject IStreamService StreamService
 
-<div class="card bg-base-200 shadow-lg">
-    <div class="card-body">
-        <h2 class="font-semibold text-lg truncate">@LiveStream.Title</h2>
-        <p class="card-subtitle text-gray-500">@LiveStream.Generation.Name</p>
-        <ul>
+<MudCard Elevation="1">
+    <MudCardHeader>
+        <CardHeaderContent>
+                <MudText Typo="Typo.h6" Class="tw-truncate">@LiveStream.Title</MudText>
+                <MudText Typo="Typo.body2">@LiveStream.Generation.Name</MudText>
+        </CardHeaderContent>
+        <CardHeaderActions>
+            <MudIconButton Color="Color.Error"
+                           OnClick="ToggleLive"
+                           Icon="@(LiveStream.IsLive ? Icons.Material.Filled.Circle : Icons.Material.Outlined.Circle)"/>
+        </CardHeaderActions>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudText Typo="Typo.body1" Class="tw-font-semibold">Speakers:</MudText>
+        <MudList Dense="true">
             @foreach (var teacher in LiveStream.Teachers)
             {
-                <li>
-                    <i class="oi oi-microphone"></i> @teacher.Name
-                </li>
+                <MudListItem Text="@teacher.Name" Icon="@Icons.Material.Filled.Mic" ExpandLessIcon="true"/>
             }
-        </ul>
-        <div class="card-actions justify-end pt-2">
-            <Button Color="BtnColor.Error" @onclick="HandleDelete">
-                <i class="oi oi-trash"></i>
-            </Button>
-            <Button Color="BtnColor.Warning" Href="@($"admin/streams/{LiveStream.Id}/edit")">
-                <i class="oi oi-pencil"></i>
-            </Button>
-            <Button Color="BtnColor.Accent" OnClick="@ToggleLive" Outline="@(!LiveStream.IsLive)">
-                @if (LiveStream.IsLive)
-                {
-                    <span>End Live</span>
-                }
-                else
-                {
-                    <span>Start Live</span>
-                }
-            </Button>
+        </MudList>
+    </MudCardContent>
+    <MudCardActions>
+        <div class="tw-flex tw-w-full tw-justify-end tw-space-x-2">
+            <MudButton Variant="Variant.Text"
+                       Href="@($"admin/streams/{LiveStream.Id}/edit")">
+                Edit
+            </MudButton>
+            <MudButton Variant="Variant.Text"
+                       Color="Color.Error"
+                       OnClick="HandleDelete">
+                Delete
+            </MudButton>
         </div>
-    </div>
-</div>
+    </MudCardActions>
+</MudCard>
 
 @code {
 

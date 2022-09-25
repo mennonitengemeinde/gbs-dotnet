@@ -2,9 +2,9 @@
 
 public interface IChurchRepository
 {
-    Task<ServiceResponse<List<Church>>> GetAllChurches();
-    Task<ServiceResponse<Church>> GetChurchById(int id);
-    Task<ServiceResponse<List<Church>>> AddChurch(ChurchCreateDto church);
-    Task<ServiceResponse<List<Church>>> UpdateChurch(int id, ChurchCreateDto churchDto);
-    Task<ServiceResponse<List<Church>>> DeleteChurch(int id);
+    Task<ServiceResponse<List<ChurchDto>>> GetAllChurches();
+    Task<ServiceResponse<ChurchDto>> GetChurchById(int id);
+    Task<ServiceResponse<List<ChurchDto>>> AddChurch(ChurchCreateDto church);
+    Task<ServiceResponse<List<ChurchDto>>> UpdateChurch(int id, ChurchCreateDto churchDto);
+    Task<ServiceResponse<List<ChurchDto>>> DeleteChurch(int id);
 }

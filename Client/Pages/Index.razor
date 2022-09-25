@@ -1,24 +1,14 @@
 ﻿@page "/"
+@layout AuthLayout
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
 <PageTitle>Index</PageTitle>
 
-<div class="flex">
-    <div class="card bg-base-200 h-40 w-full rounded-xl shadow-lg">
-        <div class="card-body items-center p-4 justify-between">
-            <h1 class="card-title text-2xl text-gray-600">Welcome to GBS</h1>
-            <p class="text-gray-500 text-center">
-                Motivational verse from Bible, Lorem ipsum dolor sit amet, consectetur
-                adipiscing elit,
-                sed do.&nbsp;&nbsp;<span class="text-gray-600 font-semibold">Herman 5:17</span>
-            </p>
-        </div>
-    </div>
-</div>
+<WelcomeBanner />
 
-<div class="flex justify-center pt-8">
-    <p class="text-2xl font-semibold text-gray-500">Please <NavLink class="btn btn-link px-0 text-2xl" Href="login">Login</NavLink> to continue</p>
+<div class="tw-flex tw-justify-center tw-pt-8">
+    <p class="tw-text-2xl tw-font-semibold tw-text-gray-500">Please <MudLink Class="tw-text-2xl tw-font-bold" Href="login">Login</MudLink> to continue</p>
 </div>
 
 @code {

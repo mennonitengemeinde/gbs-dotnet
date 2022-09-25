@@ -1,68 +1,64 @@
 ﻿@page "/admin/streams"
-@attribute [Authorize(Roles = $"{Roles.SuperAdmin}, {Roles.Admin}, {Roles.Teacher}, {Roles.Sound}")]
+@attribute [Authorize(Roles = Roles.AdminAndSound)]
 @implements IDisposable
 @using gbs.Client.Pages.Admin.Streams.Components
 @inject IStreamService StreamService
 @inject IUiService UiService
+@inject IDialogService DialogService
 
-
-<div class="flex justify-between items-center">
-    <H3>Streams</H3>
-    <Button Href="/admin/streams/create" Color="BtnColor.Primary">
-        <i class="oi oi-plus"></i>
-    </Button>
+<div class="tw-flex tw-justify-between tw-items-center tw-py-4">
+    <MudText Typo="Typo.h4">Streams</MudText>
+    <MudSpacer />
+    <MudIconButton Icon="@Icons.Filled.Add" Color="Color.Primary" Variant="Variant.Filled" Href="/admin/streams/create" />
 </div>
 
-<div id="streams-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pt-4">
+<MudGrid Justify="Justify.FlexStart">
     @foreach (var liveStream in StreamService.Streams)
     {
-        <AdminStreamCard LiveStream="@liveStream" OnDelete="HandleDelete"/>
+        <MudItem xs="12" sm="6" lg="4" xl="3">
+            <AdminStreamCard LiveStream="@liveStream" OnDelete="HandleDelete" />
+        </MudItem>
     }
-</div>
-
-@if (_isModalOpen && deleteStream != null)
-{
-    <ConfirmModal Title="@($"Delete {deleteStream.Title}?")"
-                  Message="Are you sure you want to continue"
-                  Color="BtnColor.Error"
-                  OnCancel="() => _isModalOpen = false"
-                  ConfirmText="Delete"
-                  OnConfirm="DeleteStream"/>
-}
+</MudGrid>
 
 @code {
-    bool _isModalOpen = false;
-    StreamGetDto? deleteStream = null;
 
     protected override async Task OnInitializedAsync()
     {
+        UiService.LoadingStart();
         await StreamService.LoadStreams();
+        UiService.LoadingStop();
         StreamService.StreamsChanged += StateHasChanged;
     }
 
-    void HandleDelete(StreamGetDto stream)
+    async Task HandleDelete(StreamGetDto stream)
     {
-        deleteStream = stream;
-        _isModalOpen = true;
+        bool? result = await DialogService.ShowMessageBox(
+            $"Delete {stream.Title}?",
+            "Are you sure you want to continue?",
+            yesText: "Delete!", cancelText: "Cancel");
+        if (result != null)
+        {
+            await DeleteStream(stream);
+        }
+        StateHasChanged();
     }
 
-    async Task DeleteStream()
+    async Task DeleteStream(StreamGetDto stream)
     {
-        if (deleteStream != null)
+        UiService.LoadingStart();
+        var result = await StreamService.DeleteById(stream.Id);
+        if (result.Success)
         {
-            var result = await StreamService.DeleteById(deleteStream.Id);
-            if (result.Success)
-            {
-                _isModalOpen = false;
-                await StreamService.LoadStreams();
-                UiService.ShowSuccessAlert(result.Message);
-            }
-            else
-            {
-                _isModalOpen = false;
-                await StreamService.LoadStreams();
-                await UiService.ShowErrorAlert(result.Message, result.StatusCode);
-            }
+            await StreamService.LoadStreams();
+            UiService.ShowSuccessAlert(result.Message);
+            UiService.LoadingStop();
+        }
+        else
+        {
+            await StreamService.LoadStreams();
+            await UiService.ShowErrorAlert(result.Message, result.StatusCode);
+            UiService.LoadingStop();
         }
     }
 

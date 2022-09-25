@@ -9,6 +9,7 @@
   </PropertyGroup>
 
 <!--  <PropertyGroup Condition=" '$(RunConfiguration)' == 'gbs-dotnet.Server' " />-->
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'gbs-dotnet.Server' " />
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.9" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.9" />
@@ -30,6 +31,10 @@
   <ItemGroup>
     <Folder Include="Migrations" />
   </ItemGroup>
+
+<!--  <ItemGroup>-->
+<!--    <Folder Include="Migrations" />-->
+<!--  </ItemGroup>-->
 
 
 </Project>

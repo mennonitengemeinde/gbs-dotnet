@@ -1,12 +1,11 @@
-
-
 namespace gbs.Client.Services.UiService;
 
 public interface IUiService
 {
-    List<AlertDto> Alerts { get; set; }
-    event Action AlertsChanged;
-    Task ShowErrorAlert(string message, int statusCode);
+    public bool Loading { get; set; }
+    event Action LoadingChanged;
+    Task ShowErrorAlert(string message, int statusCode = 400);
     void ShowSuccessAlert(string message);
-    void RemoveAlert(string alertId);
+    void LoadingStart();
+    void LoadingStop();
 }

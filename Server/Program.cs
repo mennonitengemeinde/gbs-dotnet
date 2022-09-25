@@ -1,14 +1,3 @@
-global using Microsoft.EntityFrameworkCore;
-global using gbs.Server.Data;
-global using gbs.Shared.Entities;
-global using gbs.Shared.Const;
-global using gbs.Shared.Dtos;
-global using gbs.Server.Repository.AuthRepository;
-global using gbs.Server.Repository.ChurchRepository;
-global using gbs.Server.Repository.GenerationRepository;
-global using gbs.Server.Repository.StreamRepository;
-global using gbs.Server.Repository.TeacherRepository;
-global using gbs.Server.Repository.UserRepository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -36,6 +25,7 @@ builder.Services.AddScoped<IChurchRepository, ChurchRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IGenerationRepository, GenerationRepository>();
 builder.Services.AddScoped<IStreamRepository, StreamRepository>();
+builder.Services.AddScoped<IStudentRepository, StudentRepository>();
 builder.Services.AddScoped<ITeacherRepository, TeacherRepository>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

@@ -1,58 +1,67 @@
 @page "/admin/generations/create"
-@attribute [Authorize(Roles = $"{Roles.SuperAdmin}, {Roles.Admin}, {Roles.Teacher}")]
+@page "/admin/generations/{Id:int}/edit"
+@attribute [Authorize(Roles = Roles.Admins)]
 @inject NavigationManager NavigationManager
 @inject IGenerationService GenerationService
 @inject IUiService UiService
 
-<H3>Create Generation</H3>
-
-<div class="flex justify-center pt-4">
-    <div class="card w-96 bg-base-200 shadow-lg">
-        <div class="card-body">
-            <EditForm Model="_new" OnValidSubmit="HandleValidSubmit">
-                <DataAnnotationsValidator/>
-                <TextInput Id="name"
-                           @ref="_nameInput"
-                           Label="Name"
-                           @bind-Value="_new.Name"
-                           For="() => _new.Name"/>
-                <div class="flex justify-end pt-4 space-x-2">
-                    <Button Href="admin/generations">Cancel</Button>
-                    <Button Type="submit" Color="BtnColor.Primary" IsLoading="_isLoading">Add</Button>
-                </div>
-            </EditForm>
-        </div>
-    </div>
-</div>
+<EditForm Model="_model" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator/>
+    <MudGrid Justify="Justify.Center" Class="tw-pt-8">
+        <MudItem xs="12" sm="8" md="5">
+            <MatFormCard Label="Teacher"
+                         IsEdit="@_isEdit"
+                         IsLoading="@_isLoading"
+                         IsProcessing="@_isProcessing"
+                         ReturnUrl="/admin/generations">
+                <MudTextField Label="Name"
+                              @bind-Value="_model.Name"
+                              For="() => _model.Name"/>
+            </MatFormCard>
+        </MudItem>
+    </MudGrid>
+</EditForm>
 
 @code {
-    TextInput _nameInput = null!;
-    GenerationCreateDto _new = new GenerationCreateDto();
+    GenerationCreateDto _model = new GenerationCreateDto();
+    bool _isEdit;
     bool _isLoading;
+    bool _isProcessing;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    [Parameter]
+    public int? Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
     {
-        if (firstRender)
+        if (Id.HasValue)
         {
-            await _nameInput.FocusAsync();
+            _isEdit = true;
+            _isLoading = true;
+            var generation = await GenerationService.GetGeneration(Id.Value);
+            _model = new GenerationCreateDto
+            {
+                Name = generation.Data.Name
+            };
+            _isLoading = false;
         }
     }
 
     async Task HandleValidSubmit()
     {
-        _isLoading = true;
-        var response = await GenerationService.AddGeneration(_new);
+        _isProcessing = true;
+        var response = _isEdit
+            ? await GenerationService.UpdateGeneration(Id!.Value, _model)
+            : await GenerationService.AddGeneration(_model);
         if (response.Success)
         {
-            _isLoading = false;
+            _isProcessing = false;
             UiService.ShowSuccessAlert("Generation added successfully");
             NavigationManager.NavigateTo("admin/generations");
         }
         else
         {
-            _isLoading = false;
+            _isProcessing = false;
             await UiService.ShowErrorAlert(response.Message, response.StatusCode);
-            await _nameInput.FocusAsync();
         }
     }
 

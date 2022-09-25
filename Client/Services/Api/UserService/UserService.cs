@@ -40,25 +40,17 @@ public class UserService : IUserService
     public async Task UpdateRole(int userId, UserUpdateRoleDto userUpdateRoleDto)
     {
         var response = await _http.PutAsJsonAsync($"api/users/{userId}/role", userUpdateRoleDto)
-            .EnsureSuccess<UserDto>();
-        if (response.Success)
-        {
-            await GetUsers();
-            UsersChanged?.Invoke();
-        }
+            .EnsureSuccess<List<UserDto>>();
+        await HandleUsersChanged(response);
     }
 
     public async Task UpdateActiveState(int userId, UserUpdateActiveStateDto userUpdateActiveDto)
     {
         var response = await _http.PutAsJsonAsync($"api/users/{userId}/active", userUpdateActiveDto)
-            .EnsureSuccess<UserDto>();
-        if (response.Success)
-        {
-            await GetUsers();
-            UsersChanged?.Invoke();
-        }
+            .EnsureSuccess<List<UserDto>>();
+        await HandleUsersChanged(response);
     }
-    
+
     private async Task HandleUsersChanged(ServiceResponse<List<UserDto>> result)
     {
         if (result.Success)

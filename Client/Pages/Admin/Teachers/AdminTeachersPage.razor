@@ -1,45 +1,39 @@
 @page "/admin/teachers"
-@attribute [Authorize(Roles = $"{Roles.SuperAdmin}, {Roles.Admin}, {Roles.Teacher}, {Roles.Sound}")]
+@attribute [Authorize(Roles = Roles.AdminAndSound)]
 @implements IDisposable
 @inject ITeacherService TeacherService
 
-<H3>Teachers</H3>
-
-<div class="overflow-x-auto shadow-lg mt-4">
-    <table class="table w-full">
-        <thead>
-        <tr>
-            <th>Name</th>
-            <th class="text-end py-0">
-                <NavLink Href="/admin/teachers/create"
-                         class="btn btn-primary btn-sm">
-                    <i class="oi oi-plus"></i>
-                </NavLink>
-            </th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (var teacher in TeacherService.Teachers)
-        {
-            <tr>
-                <th>@teacher.Name</th>
-                <td class="text-end">
-                    <Button Href="@($"admin/teachers/{teacher.Id}/edit")" Color="BtnColor.Warning" Size="BtnSize.Small">
-                        <i class="oi oi-pencil"></i>
-                    </Button>
-                </td>
-            </tr>
-        }
-        </tbody>
-    </table>
+<div class="tw-py-4 tw-space-y-4">
+    <MudText Typo="Typo.h4">Teachers</MudText>
+    <MudButton StartIcon="@Icons.Filled.Add" Color="Color.Primary" Variant="Variant.Filled" Href="/admin/teachers/create">
+        New
+    </MudButton>
 </div>
 
+<MudTable Items="@TeacherService.Teachers" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading" LoadingProgressColor="Color.Info">
+    <HeaderContent>
+        <MudTh>Name</MudTh>
+        <MudTh></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd Class="tw-text-end">
+            <MudIconButton Icon="@Icons.Material.Filled.Edit" 
+                           Size="Size.Small" 
+                           Href="@($"admin/teachers/{context.Id}/edit")"/>
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+
 @code {
-    
+    bool _loading;
+
     protected override async Task OnInitializedAsync()
     {
+        _loading = true;
         await TeacherService.LoadTeachers();
         TeacherService.TeachersChanged += StateHasChanged;
+        _loading = false;
     }
 
     public void Dispose()

@@ -10,7 +10,7 @@ namespace gbs.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = Roles.AdminAndSound)]
     public class TeachersController : ControllerBase
     {
         private readonly ITeacherRepository _teacherRepo;
@@ -39,7 +39,6 @@ namespace gbs.Server.Controllers
         }
         
         [HttpPost]
-        [Authorize(Roles = $"{Roles.SuperAdmin}, {Roles.Admin}, {Roles.Teacher}")]
         public async Task<ActionResult<ServiceResponse<Teacher>>> AddTeacher(TeacherCreateDto teacherAddDto)
         {
             var response = await _teacherRepo.AddTeacher(teacherAddDto);
@@ -51,7 +50,6 @@ namespace gbs.Server.Controllers
         }
         
         [HttpPut("{id:int}")]
-        [Authorize(Roles = $"{Roles.SuperAdmin}, {Roles.Admin}, {Roles.Teacher}")]
         public async Task<ActionResult<ServiceResponse<Teacher>>> UpdateTeacher(int id, TeacherCreateDto teacherDto)
         {
             var response = await _teacherRepo.UpdateTeacher(id, teacherDto);

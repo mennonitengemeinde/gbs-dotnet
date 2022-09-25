@@ -2,12 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body, #app {
-    @apply h-full;
-}
 
-@layer components {
-    .validation-message {
-        @apply text-error text-sm pt-1;
-    }
+.mud-card-header-content {
+    min-width: 0
 }
+/*html, body, #app {*/
+/*    @apply h-full;*/
+/*}*/
+
+/*@layer components {*/
+/*    .validation-message {*/
+/*        @apply text-error text-sm pt-1;*/
+/*    }*/
+/*}*/

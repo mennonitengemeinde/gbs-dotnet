@@ -1,0 +1,111 @@
+@page "/admin/students/create"
+@attribute [Authorize(Roles = Roles.AdminAndTeachers)]
+@inject IStudentService StudentService
+@inject IChurchService ChurchService
+@inject IAuthService AuthService
+@inject IUiService UiService
+@inject NavigationManager NavigationManager
+
+@if (_model != null)
+{
+    <EditForm Model="_model" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <MudGrid Justify="Justify.Center" Class="tw-py-8">
+            <MudItem xs="12" sm="8" md="5">
+                <MatFormCard Label="Student"
+                             IsEdit="false"
+                             IsLoading="false"
+                             IsProcessing="@_isProcessing"
+                             ReturnUrl="/admin/students">
+                    <MudTextField Label="Name"
+                                  @bind-Value="_model.Name"
+                                  For="() => _model.Name" />
+                    <MudDatePicker Label="Date of Birth"
+                                   @bind-Date="@_model.DateOfBirth"
+                                   For="@(() => _model.DateOfBirth)" />
+                    <MudField Label="Marital status" Variant="Variant.Text" InnerPadding="false">
+                        <MudRadioGroup T="MaritalStatus" @bind-SelectedOption="@_model.MaritalStatus">
+                            @foreach (var maritalStatus in Enum.GetValues(typeof(MaritalStatus)).Cast<MaritalStatus>())
+                            {
+                                <MudRadio T="MaritalStatus" Option="@maritalStatus">@maritalStatus.ToString()</MudRadio>
+                            }
+                        </MudRadioGroup>
+                    </MudField>
+                    <MudTextField Label="Address"
+                                  @bind-Value="_model.Address"
+                                  For="() => _model.Address" />
+                    <MudTextField Label="City"
+                                  @bind-Value="_model.City"
+                                  For="() => _model.City" />
+                    <MudTextField Label="State"
+                                  @bind-Value="_model.State"
+                                  For="() => _model.State" />
+                    <MudTextField Label="Country"
+                                  @bind-Value="_model.Country"
+                                  For="() => _model.Country" />
+                    <MudTextField Label="PostalCode"
+                                  @bind-Value="_model.PostalCode"
+                                  For="() => _model.PostalCode" />
+                    <MudTextField Label="Email"
+                                  @bind-Value="_model.Email"
+                                  For="() => _model.Email" />
+                    <MudTextField Label="Phone"
+                                  @bind-Value="_model.Phone"
+                                  For="() => _model.Phone" />
+                    @if (_isAdmin)
+                    {
+                        <MudSelect Label="Church"
+                                   AnchorOrigin="Origin.BottomCenter"
+                                   For="@(() => _model.ChurchId)"
+                                   @bind-Value="_model.ChurchId">
+                            @* <MudSelectItem T="int" Value=""></MudSelectItem> *@
+                            @foreach (var item in _churches)
+                            {
+                                <MudSelectItem T="int?" Value="@item.Id">@item.Name</MudSelectItem>
+                            }
+                        </MudSelect>
+                    }
+
+                </MatFormCard>
+            </MudItem>
+        </MudGrid>
+    </EditForm>
+}
+
+@code {
+    IStudentCreateDto? _model;
+    bool _isProcessing;
+    bool _isAdmin;
+    IEnumerable<ChurchDto> _churches = new HashSet<ChurchDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        UiService.LoadingStart();
+        _isAdmin = await AuthService.UserIsAdmin();
+        if (_isAdmin)
+        {
+            _model = new StudentAdminCreateDto();
+            var result = await ChurchService.GetChurches();
+            if (result.Success)
+            {
+                _churches = result.Data;
+            }
+        }
+        _model = new StudentCreateDto();
+        UiService.LoadingStop();
+    }
+
+    async Task HandleValidSubmit()
+    {
+        _isProcessing = true;
+        if (_model == null)
+        {
+            _isProcessing = false;
+            return;
+        }
+        await StudentService.AddStudent(_model);
+        _isProcessing = false;
+        NavigationManager.NavigateTo("admin/students");
+    }
+
+}
