@@ -14,11 +14,13 @@
     <HeaderContent>
         <MudTh>Name</MudTh>
         <MudTh>Country</MudTh>
+        <MudTh>Students</MudTh>
         <MudTh></MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Name">@context.Name</MudTd>
-        <MudTd DataLabel="Name">@context.Country</MudTd>
+        <MudTd DataLabel="Country">@context.Country</MudTd>
+        <MudTd DataLabel="Country">@context.StudentCount</MudTd>
         <MudTd Class="tw-text-end">
             <MudIconButton Icon="@Icons.Material.Filled.Edit" 
                            Size="Size.Small" 

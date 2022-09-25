@@ -9,7 +9,7 @@
 @inject NavigationManager NavigationManager
 
 <EditForm Model="_newStream" OnValidSubmit="HandleValidSubmit">
-    <DataAnnotationsValidator/>
+    <DataAnnotationsValidator />
     <MudGrid Justify="Justify.Center" Class="tw-pt-8">
         <MudItem xs="12" sm="8" md="5">
             <MatFormCard Label="Stream"
@@ -19,10 +19,10 @@
                          ReturnUrl="/admin/streams">
                 <MudTextField Label="Title"
                               @bind-Value="_newStream.Title"
-                              For="() => _newStream.Title"/>
+                              For="() => _newStream.Title" />
                 <MudTextField Label="Url"
                               @bind-Value="_newStream.Url"
-                              For="() => _newStream.Url"/>
+                              For="() => _newStream.Url" />
                 <MudSelect Label="Generation"
                            AnchorOrigin="Origin.BottomCenter"
                            For="@(() => _newStream.GenerationId)"
@@ -44,7 +44,7 @@
                 </MudSelect>
                 <MudSwitch Label="Live"
                            Color="Color.Primary"
-                           @bind-Checked="_newStream.IsLive"/>
+                           @bind-Checked="_newStream.IsLive" />
             </MatFormCard>
         </MudItem>
     </MudGrid>
@@ -61,10 +61,10 @@
 
     protected override async Task OnInitializedAsync()
     {
+        _isLoading = true;
         if (Id != null)
         {
             _isEditMode = true;
-            _isLoading = true;
             var stream = await StreamService.GetStreamById(Id.Value);
             if (!stream.Success)
             {
@@ -82,14 +82,14 @@
                     GenerationId = stream.Data.GenerationId,
                     Teachers = stream.Data.Teachers.Select(t => t.Id).ToHashSet()
                 };
-                // SelectedTeachers = stream.Data.Teachers;
+    // SelectedTeachers = stream.Data.Teachers;
             }
-            _isLoading = false;
         }
         await GenerationService.LoadGenerations();
         await TeacherService.LoadTeachers();
         TeacherService.TeachersChanged += StateHasChanged;
         GenerationService.GenerationsChanged += StateHasChanged;
+        _isLoading = false;
     }
 
     async Task HandleValidSubmit()
