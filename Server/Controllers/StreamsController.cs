@@ -10,7 +10,7 @@ namespace gbs.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = Roles.AllButUser)]
+    [Authorize]
     public class StreamsController : ControllerBase
     {
         private readonly IStreamRepository _streamRepo;
@@ -21,6 +21,7 @@ namespace gbs.Server.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = @Roles.AllButUser)]
         public async Task<ActionResult<ServiceResponse<List<StreamGetDto>>>> GetStreams()
         {
             var response = await _streamRepo.GetLiveStreams();
@@ -33,6 +34,7 @@ namespace gbs.Server.Controllers
         }
         
         [HttpGet("{id:int}")]
+        [Authorize(Roles = @Roles.AllButUser)]
         public async Task<ActionResult<ServiceResponse<StreamGetDto>>> GetStream(int id)
         {
             var response = await _streamRepo.GetLiveStreamById(id);
@@ -45,6 +47,7 @@ namespace gbs.Server.Controllers
         }
         
         [HttpGet("{id:int}/live")]
+        [Authorize(Roles = @Roles.AllButUser)]
         public async Task<ActionResult<ServiceResponse<StreamGetDto>>> GetOnlineStream(int id)
         {
             var response = await _streamRepo.GetLiveStreamById(id, true);

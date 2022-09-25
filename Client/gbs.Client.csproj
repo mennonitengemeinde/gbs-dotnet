@@ -8,6 +8,7 @@
   </PropertyGroup>
 
 <!--  <PropertyGroup Condition=" '$(RunConfiguration)' == 'gbs-dotnet' " />-->
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'gbs-dotnet' " />
   <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="4.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="6.0.9" />
@@ -18,6 +19,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Shared\gbs.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Pages\Admin\Users\Components\UserActiveUpdate.razor" />
+    <_ContentIncludedByDefault Remove="Pages\Admin\Users\Components\UserCard.razor" />
+    <_ContentIncludedByDefault Remove="Pages\Admin\Users\Components\UserChurchUpdate.razor" />
+    <_ContentIncludedByDefault Remove="Pages\Admin\Users\Components\UserRoleUpdate.razor" />
   </ItemGroup>
 
 </Project>

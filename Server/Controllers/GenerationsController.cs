@@ -10,7 +10,7 @@ namespace gbs.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = Roles.Admins)]
+    [Authorize]
     public class GenerationsController : ControllerBase
     {
         private readonly IGenerationRepository _generationRepo;
@@ -21,6 +21,7 @@ namespace gbs.Server.Controllers
         }
         
         [HttpGet]
+        [Authorize(Roles = Roles.AdminAndSound)]
         public async Task<ActionResult<ServiceResponse<List<Generation>>>> GetGenerations()
         {
             var result = await _generationRepo.GetAllGenerations();
@@ -28,6 +29,7 @@ namespace gbs.Server.Controllers
         }
         
         [HttpGet("{id:int}")]
+        [Authorize(Roles = Roles.Admins)]
         public async Task<ActionResult<ServiceResponse<Generation>>> GetGenerationById(int id)
         {
             var result = await _generationRepo.GetGenerationById(id);
@@ -39,6 +41,7 @@ namespace gbs.Server.Controllers
         }
         
         [HttpPost]
+        [Authorize(Roles = Roles.Admins)]
         public async Task<ActionResult<ServiceResponse<Generation>>> AddGeneration(GenerationCreateDto request)
         {
             var result = await _generationRepo.AddGeneration(request);
@@ -50,6 +53,7 @@ namespace gbs.Server.Controllers
         }
         
         [HttpPut("{generationId:int}")]
+        [Authorize(Roles = Roles.Admins)]
         public async Task<ActionResult<ServiceResponse<Generation>>> UpdateGeneration(int generationId, GenerationUpdateDto generation)
         {
             var result = await _generationRepo.UpdateGeneration(generationId, generation);
@@ -61,6 +65,7 @@ namespace gbs.Server.Controllers
         }
         
         [HttpDelete("{id:int}")]
+        [Authorize(Roles = Roles.Admins)]
         public async Task<ActionResult<ServiceResponse<Generation>>> DeleteGeneration(int id)
         {
             var result = await _generationRepo.DeleteGeneration(id);

@@ -52,7 +52,7 @@ namespace gbs.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Churches", (string)null);
+                    b.ToTable("Churches");
                 });
 
             modelBuilder.Entity("gbs.Shared.Entities.Enrollment", b =>
@@ -86,7 +86,7 @@ namespace gbs.Server.Migrations
 
                     b.HasIndex("GenerationId");
 
-                    b.ToTable("Enrollments", (string)null);
+                    b.ToTable("Enrollments");
                 });
 
             modelBuilder.Entity("gbs.Shared.Entities.Generation", b =>
@@ -106,7 +106,7 @@ namespace gbs.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Generations", (string)null);
+                    b.ToTable("Generations");
                 });
 
             modelBuilder.Entity("gbs.Shared.Entities.Grade", b =>
@@ -133,7 +133,7 @@ namespace gbs.Server.Migrations
 
                     b.HasIndex("EnrollmentStudentId", "EnrollmentGenerationId");
 
-                    b.ToTable("Grades", (string)null);
+                    b.ToTable("Grades");
                 });
 
             modelBuilder.Entity("gbs.Shared.Entities.Lesson", b =>
@@ -160,7 +160,7 @@ namespace gbs.Server.Migrations
 
                     b.HasIndex("TeacherId");
 
-                    b.ToTable("Lessons", (string)null);
+                    b.ToTable("Lessons");
                 });
 
             modelBuilder.Entity("gbs.Shared.Entities.LiveStream", b =>
@@ -190,7 +190,7 @@ namespace gbs.Server.Migrations
 
                     b.HasIndex("GenerationId");
 
-                    b.ToTable("Streams", (string)null);
+                    b.ToTable("Streams");
                 });
 
             modelBuilder.Entity("gbs.Shared.Entities.LiveStreamTeacher", b =>
@@ -205,7 +205,7 @@ namespace gbs.Server.Migrations
 
                     b.HasIndex("TeacherId");
 
-                    b.ToTable("StreamTeachers", (string)null);
+                    b.ToTable("StreamTeachers");
                 });
 
             modelBuilder.Entity("gbs.Shared.Entities.Message", b =>
@@ -242,7 +242,7 @@ namespace gbs.Server.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Messages", (string)null);
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("gbs.Shared.Entities.Question", b =>
@@ -286,7 +286,7 @@ namespace gbs.Server.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Questions", (string)null);
+                    b.ToTable("Questions");
                 });
 
             modelBuilder.Entity("gbs.Shared.Entities.Student", b =>
@@ -299,40 +299,52 @@ namespace gbs.Server.Migrations
 
                     b.Property<string>("Address")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<int>("ChurchId")
                         .HasColumnType("integer");
 
                     b.Property<string>("City")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("Country")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
-                    b.Property<DateOnly>("DateOfBirth")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("DateOfBirth")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<int>("MaritalStatus")
                         .HasColumnType("integer");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("Phone")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("PostalCode")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
 
                     b.Property<string>("State")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<int?>("UserId")
                         .HasColumnType("integer");
@@ -343,7 +355,7 @@ namespace gbs.Server.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Students", (string)null);
+                    b.ToTable("Students");
                 });
 
             modelBuilder.Entity("gbs.Shared.Entities.Subject", b =>
@@ -360,7 +372,7 @@ namespace gbs.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Subjects", (string)null);
+                    b.ToTable("Subjects");
                 });
 
             modelBuilder.Entity("gbs.Shared.Entities.SubjectDocument", b =>
@@ -388,7 +400,7 @@ namespace gbs.Server.Migrations
 
                     b.HasIndex("SubjectId");
 
-                    b.ToTable("SubjectDocuments", (string)null);
+                    b.ToTable("SubjectDocuments");
                 });
 
             modelBuilder.Entity("gbs.Shared.Entities.Teacher", b =>
@@ -411,7 +423,7 @@ namespace gbs.Server.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Teachers", (string)null);
+                    b.ToTable("Teachers");
                 });
 
             modelBuilder.Entity("gbs.Shared.Entities.User", b =>
@@ -471,7 +483,7 @@ namespace gbs.Server.Migrations
                     b.HasIndex("TeacherId")
                         .IsUnique();
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("gbs.Shared.Entities.WatchList", b =>
@@ -487,7 +499,7 @@ namespace gbs.Server.Migrations
 
                     b.HasKey("UserId", "QuestionId");
 
-                    b.ToTable("WatchLists", (string)null);
+                    b.ToTable("WatchLists");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.DataProtection.EntityFrameworkCore.DataProtectionKey", b =>
@@ -506,7 +518,7 @@ namespace gbs.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DataProtectionKeys", (string)null);
+                    b.ToTable("DataProtectionKeys");
                 });
 
             modelBuilder.Entity("gbs.Shared.Entities.Enrollment", b =>

@@ -16,19 +16,6 @@ public static class HttpExtensions
             }
 
             return await ReadFromJson<T>(response);
-
-            // var result = await response.Content.ReadFromJsonAsync<ServiceResponse<T>>();
-            // if (result == null || result.Data == null)
-            // {
-            //     return new ServiceResponse<T>
-            //     {
-            //         Success = false,
-            //         Message = "No response from server",
-            //         StatusCode = 404
-            //     };
-            // }
-            //
-            // return result;
         }
         catch (Exception)
         {
@@ -78,6 +65,10 @@ public static class HttpExtensions
             case HttpStatusCode.InternalServerError:
                 result.Message = "Internal server error";
                 result.StatusCode = 500;
+                return result;
+            case HttpStatusCode.Forbidden:
+                result.Message = "You are not authorized to access this resource";
+                result.StatusCode = 403;
                 return result;
             case HttpStatusCode.Unauthorized:
                 result.Message = "Unauthorized";

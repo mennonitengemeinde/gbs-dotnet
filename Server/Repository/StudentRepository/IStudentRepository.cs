@@ -2,8 +2,8 @@ namespace gbs.Server.Repository.StudentRepository;
 
 public interface IStudentRepository
 {
-    Task<ServiceResponse<List<Student>>> GetStudents();
-    Task<ServiceResponse<Student>> GetStudentById(int id);
-    Task<ServiceResponse<List<Student>>> AddStudent(StudentCreateDto studentDto);
-    Task<ServiceResponse<List<Student>>> UpdateStudent(int studentId, StudentCreateDto studentDto);
+    Task<ServiceResponse<List<StudentDto>>> GetStudents();
+    Task<ServiceResponse<StudentDto>> GetStudentById(int id);
+    Task<ServiceResponse<List<StudentDto>>> AddStudent(IStudentCreateDto studentDto);
+    Task<ServiceResponse<List<StudentDto>>> UpdateStudent(int studentId, IStudentCreateDto studentDto);
 }

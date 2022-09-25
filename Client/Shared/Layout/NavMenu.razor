@@ -10,18 +10,15 @@
         <MudNavLink Href="school" Icon="@Icons.Filled.School" Match="NavLinkMatch.All">School</MudNavLink>
     </AuthorizeView>
     <AuthorizeView Roles="@Roles.AdminAndTeachers">
-        <MudNavLink Href="school/students" Icon="@Icons.Filled.People" Match="NavLinkMatch.All">Students</MudNavLink>
+        <MudNavLink Href="/admin/students" Icon="@Icons.Filled.People" Match="NavLinkMatch.All">Students</MudNavLink>
     </AuthorizeView>
-    <AuthorizeView Roles="@($"{Roles.SuperAdmin}, {Roles.Admin}, {Roles.Teacher}, {Roles.Sound}")">
-        <MudText Typo="Typo.caption" Class="tw-text-gray-500 tw-font-bold tw-ml-2">ADMIN</MudText>
+    <AuthorizeView Roles="@Roles.AdminAndSound">
         <MudNavLink Href="/admin/streams" Icon="@Icons.Filled.LiveTv">Streams</MudNavLink>
         <MudNavLink Href="/admin/teachers" Icon="@Icons.Filled.Man">Teachers</MudNavLink>
     </AuthorizeView>
-    <AuthorizeView Roles="@($"{Roles.SuperAdmin}, {Roles.Admin}, {Roles.Teacher}")">
+    <AuthorizeView Roles="@Roles.Admins">
         <MudNavLink Href="/admin/generations" Icon="@Icons.Filled.GroupWork">Generations</MudNavLink>
         <MudNavLink Href="/admin/churches" Icon="@Icons.Filled.Church">Churches</MudNavLink>
-    </AuthorizeView>
-    <AuthorizeView Roles="@($"{Roles.SuperAdmin}, {Roles.Admin}")">
         <MudNavLink Href="/admin/users" Icon="@Icons.Filled.PeopleAlt">Users</MudNavLink>
     </AuthorizeView>
 </MudNavMenu>

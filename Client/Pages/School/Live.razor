@@ -2,6 +2,7 @@
 @attribute [Authorize(Roles = Roles.AllButUser)]
 @using gbs.Client.Pages.School.Components
 @inject IStreamService StreamService
+@inject IUiService UiService
 @inject NavigationManager NavigationManager
 
 @if (LiveStream != null)
@@ -18,15 +19,17 @@
 
     protected override async Task OnInitializedAsync()
     {
-
+        UiService.LoadingStart();
         var liveStream = await StreamService.GetStreamById(Id, true);
         if (!liveStream.Success)
         {
+            UiService.LoadingStop();
             NavigationManager.NavigateTo("school");
         }
         else
         {
             LiveStream = liveStream.Data;
+            UiService.LoadingStop();
         }
     }
 }

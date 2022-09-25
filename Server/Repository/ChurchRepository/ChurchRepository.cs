@@ -9,28 +9,36 @@ public class ChurchRepository : IChurchRepository
         _context = context;
     }
 
-    public async Task<ServiceResponse<List<Church>>> GetAllChurches()
+    public async Task<ServiceResponse<List<ChurchDto>>> GetAllChurches()
     {
-        var churches = await _context.Churches.ToListAsync();
-        return new ServiceResponse<List<Church>>
+        var churches = await _context.Churches
+            .AsNoTracking()
+            .Include((c) => c.Students)
+            .Select((c) => ChurchToDto(c))
+            .ToListAsync();
+        return new ServiceResponse<List<ChurchDto>>
         {
             Data = churches
         };
     }
 
-    public async Task<ServiceResponse<Church>> GetChurchById(int id)
+    public async Task<ServiceResponse<ChurchDto>> GetChurchById(int id)
     {
-        var church = await _context.Churches.FirstOrDefaultAsync(c => c.Id == id);
+        var church = await _context.Churches
+            .AsNoTracking()
+            .Include((c) => c.Students)
+            .Select((c) => ChurchToDto(c))
+            .FirstOrDefaultAsync(c => c.Id == id);
         return church == null
-            ? ServiceResponse<Church>.BadRequest("Church not found")
-            : new ServiceResponse<Church> { Data = church };
+            ? ServiceResponse<ChurchDto>.BadRequest("Church not found")
+            : new ServiceResponse<ChurchDto> { Data = church };
     }
 
-    public async Task<ServiceResponse<List<Church>>> AddChurch(ChurchCreateDto church)
+    public async Task<ServiceResponse<List<ChurchDto>>> AddChurch(ChurchCreateDto church)
     {
         if (await ChurchExists(church.Name))
         {
-            return ServiceResponse<List<Church>>.BadRequest("A Church with that name already exists");
+            return ServiceResponse<List<ChurchDto>>.BadRequest("A Church with that name already exists");
         }
 
         var newChurch = new Church
@@ -47,17 +55,17 @@ public class ChurchRepository : IChurchRepository
         return await GetAllChurches();
     }
 
-    public async Task<ServiceResponse<List<Church>>> UpdateChurch(int id, ChurchCreateDto churchDto)
+    public async Task<ServiceResponse<List<ChurchDto>>> UpdateChurch(int id, ChurchCreateDto churchDto)
     {
         var dbChurch = await _context.Churches.FirstOrDefaultAsync(c => c.Id == id);
         if (dbChurch == null)
         {
-            return ServiceResponse<List<Church>>.BadRequest("Church not found");
+            return ServiceResponse<List<ChurchDto>>.BadRequest("Church not found");
         }
 
         if (await ChurchExists(churchDto.Name, id))
         {
-            return ServiceResponse<List<Church>>.BadRequest("A Church with that name already exists");
+            return ServiceResponse<List<ChurchDto>>.BadRequest("A Church with that name already exists");
         }
 
         dbChurch.Name = churchDto.Name;
@@ -72,12 +80,12 @@ public class ChurchRepository : IChurchRepository
         return await GetAllChurches();
     }
 
-    public async Task<ServiceResponse<List<Church>>> DeleteChurch(int id)
+    public async Task<ServiceResponse<List<ChurchDto>>> DeleteChurch(int id)
     {
         var dbChurch = await _context.Churches.FirstOrDefaultAsync(c => c.Id == id);
         if (dbChurch == null)
         {
-            return ServiceResponse<List<Church>>.BadRequest("Church not found");
+            return ServiceResponse<List<ChurchDto>>.BadRequest("Church not found");
         }
 
         _context.Churches.Remove(dbChurch);
@@ -93,5 +101,20 @@ public class ChurchRepository : IChurchRepository
         }
 
         return await _context.Churches.AnyAsync(c => c.Name.ToLower().Equals(name.ToLower()) && c.Id != id);
+    }
+    
+    private static ChurchDto ChurchToDto(Church church)
+    {
+        return new ChurchDto
+        {
+            Id = church.Id,
+            Name = church.Name,
+            Address = church.Address,
+            City = church.City,
+            State = church.State,
+            PostalCode = church.PostalCode,
+            Country = church.Country,
+            StudentCount = church.Students.Count
+        };
     }
 }

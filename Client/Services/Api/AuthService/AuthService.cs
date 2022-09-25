@@ -37,4 +37,10 @@ public class AuthApiService : IAuthService
         var role = authState.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
         return role ?? Roles.User;
     }
+
+    public async Task<bool> UserIsAdmin()
+    {
+        var role = await GetUserRole();
+        return role is Roles.Admin or Roles.SuperAdmin;
+    }
 }

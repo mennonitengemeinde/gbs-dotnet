@@ -5,7 +5,7 @@ namespace gbs.Server.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
+[Authorize(Roles = Roles.Admins)]
 public class ChurchesController : ControllerBase
 {
     private readonly IChurchRepository _churchRepo;
@@ -16,8 +16,7 @@ public class ChurchesController : ControllerBase
     }
 
     [HttpGet]
-    [Authorize(Roles = Roles.AdminAndTeachers)]
-    public async Task<ActionResult<ServiceResponse<List<Church>>>> GetChurches()
+    public async Task<ActionResult<ServiceResponse<List<ChurchDto>>>> GetChurches()
     {
         var response = await _churchRepo.GetAllChurches();
         if (!response.Success)
@@ -29,8 +28,7 @@ public class ChurchesController : ControllerBase
     }
 
     [HttpGet("{churchId:int}")]
-    [Authorize(Roles = Roles.AdminAndTeachers)]
-    public async Task<ActionResult<ServiceResponse<Church>>> GetChurch(int churchId)
+    public async Task<ActionResult<ServiceResponse<ChurchDto>>> GetChurch(int churchId)
     {
         var response = await _churchRepo.GetChurchById(churchId);
         if (!response.Success)
@@ -42,8 +40,7 @@ public class ChurchesController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = $"{Roles.Admin}, {Roles.SuperAdmin}, {Roles.Teacher}")]
-    public async Task<ActionResult<ServiceResponse<List<Church>>>> AddChurch(ChurchCreateDto church)
+    public async Task<ActionResult<ServiceResponse<List<ChurchDto>>>> AddChurch(ChurchCreateDto church)
     {
         var response = await _churchRepo.AddChurch(church);
         if (!response.Success)
@@ -55,8 +52,7 @@ public class ChurchesController : ControllerBase
     }
 
     [HttpPut("{churchId:int}")]
-    [Authorize(Roles = Roles.Admins)]
-    public async Task<ActionResult<ServiceResponse<Church>>> UpdateChurch(int churchId, ChurchCreateDto church)
+    public async Task<ActionResult<ServiceResponse<ChurchDto>>> UpdateChurch(int churchId, ChurchCreateDto church)
     {
         var response = await _churchRepo.UpdateChurch(churchId, church);
         if (!response.Success)
@@ -68,8 +64,7 @@ public class ChurchesController : ControllerBase
     }
 
     [HttpDelete("{churchId:int}")]
-    [Authorize(Roles = Roles.Admins)]
-    public async Task<ActionResult<ServiceResponse<List<Church>>>> DeleteChurch(int churchId)
+    public async Task<ActionResult<ServiceResponse<List<ChurchDto>>>> DeleteChurch(int churchId)
     {
         var response = await _churchRepo.DeleteChurch(churchId);
         if (!response.Success)

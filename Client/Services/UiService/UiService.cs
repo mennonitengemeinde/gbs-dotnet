@@ -13,8 +13,6 @@ public class UiService : IUiService
 
     public bool Loading { get; set; }
     public event Action? LoadingChanged;
-    public List<AlertDto> Alerts { get; set; } = new List<AlertDto>();
-    public event Action? AlertsChanged;
 
     public UiService(NavigationManager navManager, ILocalStorageService localStorage,
         AuthenticationStateProvider authenticationStateProvider, ISnackbar snackbar)

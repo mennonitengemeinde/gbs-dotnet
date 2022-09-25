@@ -2,19 +2,10 @@
 
 <MudTabs Elevation="0" Rounded="true" PanelClass="pa-6" @bind-ActivePanelIndex="_activeIndex" Centered="true">
     <MudTabPanel Text="Login" OnClick="@(() => NavigationManager.NavigateTo("login"))">
-        @* <MudText>Content One</MudText> *@
     </MudTabPanel>
     <MudTabPanel Text="Register" OnClick="@(() => NavigationManager.NavigateTo("register"))">
-        @* <MudText>Content Two</MudText> *@
     </MudTabPanel>
 </MudTabs>
-
-@* <div class="flex justify-center pt-2"> *@
-@*     <div class="tabs"> *@
-@*         <NavLink Href="login" ActiveClass="tab-active" class="tab tab-bordered">Login</NavLink> *@
-@*         <NavLink Href="register" ActiveClass="tab-active" class="tab tab-bordered">Register</NavLink> *@
-@*     </div> *@
-@* </div> *@
 
 @code {
 

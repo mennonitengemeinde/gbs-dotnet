@@ -98,6 +98,12 @@ public class AuthRepository : IAuthRepository
     public string GetUserRole() =>
         _httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.Role);
 
+    public bool UserIsAdmin()
+    {
+        var role = GetUserRole();
+        return role is Roles.Admin or Roles.SuperAdmin;
+    }
+
     private string CreateToken(User user)
     {
         List<Claim> claims = new List<Claim>

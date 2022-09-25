@@ -1,14 +1,14 @@
 using System.ComponentModel.DataAnnotations;
 using gbs.Shared.Enums;
 
-namespace gbs.Shared.Dtos;
+namespace gbs.Shared.Dtos.Students;
 
-public class StudentCreateDto
+public class StudentCreateDto : IStudentCreateDto
 {
     [Required, StringLength(100, MinimumLength = 3)]
     public string Name { get; set; } = string.Empty;
 
-    [Required] public DateOnly DateOfBirth { get; set; }
+    [Required] public DateTime? DateOfBirth { get; set; }
 
     [Required, StringLength(100, MinimumLength = 3)]
     public string Address { get; set; } = string.Empty;
@@ -28,5 +28,5 @@ public class StudentCreateDto
     [Required] public MaritalStatus MaritalStatus { get; set; }
     [StringLength(100, MinimumLength = 3)] public string Email { get; set; } = string.Empty;
     [StringLength(50, MinimumLength = 3)] public string Phone { get; set; } = string.Empty;
-    [Required] public int ChurchId { get; set; }
+    public int? ChurchId { get; set; }
 }
