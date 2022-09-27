@@ -7,6 +7,7 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
     apt-get install -y nodejs build-essential
 WORKDIR /src
+RUN dotnet workload install wasm-tools
 COPY ["Server/gbs.Server.csproj", "Server/"]
 COPY ["Client/gbs.Client.csproj", "Client/"]
 COPY ["Shared/gbs.Shared.csproj", "Shared/"]
