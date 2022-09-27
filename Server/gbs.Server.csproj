@@ -6,7 +6,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>$(AssemblyName.Replace(' ', '_'))</AssemblyName>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <SelfContained>false</SelfContained>
   </PropertyGroup>
 
 <!--  <PropertyGroup Condition=" '$(RunConfiguration)' == 'gbs-dotnet.Server' " />-->
