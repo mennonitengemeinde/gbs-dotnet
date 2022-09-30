@@ -55,15 +55,12 @@
             _isEdit = true;
             _isLoading = true;
             var church = await ChurchService.GetChurch(Id.Value);
-            _model = new ChurchCreateDto
-            {
-                Name = church.Data.Name,
-                Address = church.Data.Address,
-                City = church.Data.City,
-                State = church.Data.State,
-                PostalCode = church.Data.PostalCode,
-                Country = church.Data.Country
-            };
+            _model.Name = church.Data.Name;
+            _model.Address = church.Data.Address;
+            _model.City = church.Data.City;
+            _model.State = church.Data.State;
+            _model.PostalCode = church.Data.PostalCode;
+            _model.Country = church.Data.Country;
             _isLoading = false;
         }
     }

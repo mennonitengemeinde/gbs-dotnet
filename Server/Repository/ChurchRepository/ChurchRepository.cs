@@ -14,7 +14,17 @@ public class ChurchRepository : IChurchRepository
         var churches = await _context.Churches
             .AsNoTracking()
             .Include((c) => c.Students)
-            .Select((c) => ChurchToDto(c))
+            .Select((c) => new ChurchDto
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Address = c.Address,
+                City = c.City,
+                State = c.State,
+                PostalCode = c.PostalCode,
+                Country = c.Country,
+                StudentCount = c.Students.Count
+            })
             .ToListAsync();
         return new ServiceResponse<List<ChurchDto>>
         {
@@ -27,7 +37,17 @@ public class ChurchRepository : IChurchRepository
         var church = await _context.Churches
             .AsNoTracking()
             .Include((c) => c.Students)
-            .Select((c) => ChurchToDto(c))
+            .Select((c) => new ChurchDto
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Address = c.Address,
+                City = c.City,
+                State = c.State,
+                PostalCode = c.PostalCode,
+                Country = c.Country,
+                StudentCount = c.Students.Count
+            })
             .FirstOrDefaultAsync(c => c.Id == id);
         return church == null
             ? ServiceResponse<ChurchDto>.BadRequest("Church not found")
@@ -101,20 +121,5 @@ public class ChurchRepository : IChurchRepository
         }
 
         return await _context.Churches.AnyAsync(c => c.Name.ToLower().Equals(name.ToLower()) && c.Id != id);
-    }
-    
-    private static ChurchDto ChurchToDto(Church church)
-    {
-        return new ChurchDto
-        {
-            Id = church.Id,
-            Name = church.Name,
-            Address = church.Address,
-            City = church.City,
-            State = church.State,
-            PostalCode = church.PostalCode,
-            Country = church.Country,
-            StudentCount = church.Students.Count
-        };
     }
 }
