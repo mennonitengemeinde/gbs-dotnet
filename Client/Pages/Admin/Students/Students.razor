@@ -35,9 +35,9 @@
             <MudTd DataLabel="Church">@context.ChurchName</MudTd>
         }
         <MudTd Class="tw-text-end">
-            @* <MudIconButton Icon="@Icons.Material.Filled.Edit" *@
-            @*                Size="Size.Small" *@
-            @*                Href="@($"admin/teachers/{context.Id}/edit")" /> *@
+            <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                           Size="Size.Small"
+                           Href="@($"admin/students/{context.Id}/edit")" />
         </MudTd>
     </RowTemplate>
 </MudTable>

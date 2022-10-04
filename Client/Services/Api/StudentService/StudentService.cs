@@ -20,14 +20,28 @@ public class StudentService : IStudentService
         await UpdateRepository(students);
     }
 
-    public async Task AddStudent(IStudentCreateDto student)
+    public async Task<ServiceResponse<StudentDto>> GetStudentById(int id)
+    {
+        var student = await _http.GetAsync($"api/students/{id}")
+            .EnsureSuccess<StudentDto>();
+        return student;
+    }
+
+    public async Task<ServiceResponse<StudentDto>> AddStudent(IStudentCreateDto student)
     {
         var result = await _http.PostAsJsonAsync("api/students", student)
             .EnsureSuccess<List<StudentDto>>();
-        await UpdateRepository(result);
+        return await UpdateRepository(result);
     }
 
-    private async Task UpdateRepository(ServiceResponse<List<StudentDto>> response)
+    public async Task<ServiceResponse<StudentDto>> UpdateStudent(int studentId, IStudentCreateDto student)
+    {
+        var result = await _http.PutAsJsonAsync($"api/students/{studentId}", student)
+            .EnsureSuccess<List<StudentDto>>();
+        return await UpdateRepository(result);
+    }
+
+    private async Task<ServiceResponse<StudentDto>> UpdateRepository(ServiceResponse<List<StudentDto>> response)
     {
         if (response.Success)
         {
@@ -40,5 +54,7 @@ public class StudentService : IStudentService
         }
 
         StudentsChanged?.Invoke();
+        
+        return new ServiceResponse<StudentDto> { Success = response.Success, Message = response.Message };
     }
 }

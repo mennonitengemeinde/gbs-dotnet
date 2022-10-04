@@ -1,4 +1,5 @@
 @page "/admin/students/create"
+@page "/admin/students/{Id:int}/edit"
 @attribute [Authorize(Roles = Roles.AdminAndTeachers)]
 @inject IStudentService StudentService
 @inject IChurchService ChurchService
@@ -6,7 +7,7 @@
 @inject IUiService UiService
 @inject NavigationManager NavigationManager
 
-@if (_model != null)
+@if (!UiService.Loading && _model != null)
 {
     <EditForm Model="_model" OnValidSubmit="HandleValidSubmit">
         <DataAnnotationsValidator />
@@ -58,7 +59,6 @@
                                    AnchorOrigin="Origin.BottomCenter"
                                    For="@(() => _model.ChurchId)"
                                    @bind-Value="_model.ChurchId">
-                            @* <MudSelectItem T="int" Value=""></MudSelectItem> *@
                             @foreach (var item in _churches)
                             {
                                 <MudSelectItem T="int?" Value="@item.Id">@item.Name</MudSelectItem>
@@ -76,22 +76,32 @@
     IStudentCreateDto? _model;
     bool _isProcessing;
     bool _isAdmin;
+    bool _isEdit;
     IEnumerable<ChurchDto> _churches = new HashSet<ChurchDto>();
+
+    [Parameter]
+    public int? Id { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         UiService.LoadingStart();
         _isAdmin = await AuthService.UserIsAdmin();
-        if (_isAdmin)
+
+        var isUpdate = await InitUpdatePage();
+        if (!isUpdate)
         {
-            _model = new StudentAdminCreateDto();
-            var result = await ChurchService.GetChurches();
-            if (result.Success)
+            if (_isAdmin)
             {
-                _churches = result.Data;
+                _model = new StudentAdminCreateDto();
+                var result = await ChurchService.GetChurches();
+                if (result.Success)
+                {
+                    _churches = result.Data;
+                }
             }
+            _model = new StudentCreateDto();
         }
-        _model = new StudentCreateDto();
+
         UiService.LoadingStop();
     }
 
@@ -103,9 +113,80 @@
             _isProcessing = false;
             return;
         }
-        await StudentService.AddStudent(_model);
+
+        ServiceResponse<StudentDto> response;
+        if (_isEdit && Id.HasValue)
+        {
+            response = await StudentService.UpdateStudent(Id.Value, _model);
+        }
+        else
+        {
+            response = await StudentService.AddStudent(_model);
+        }
         _isProcessing = false;
-        NavigationManager.NavigateTo("admin/students");
+        if (response.Success)
+        {
+            NavigationManager.NavigateTo("admin/students");
+        }
+    }
+
+    async Task<bool> InitUpdatePage()
+    {
+        if (!Id.HasValue)
+        {
+            return false;
+        }
+
+        _isEdit = true;
+        var student = await StudentService.GetStudentById(Id.Value);
+        if (!student.Success)
+        {
+            UiService.LoadingStop();
+            await UiService.ShowErrorAlert(student.Message);
+            NavigationManager.NavigateTo("/admin/students");
+            return false;
+        }
+        if (_isAdmin)
+        {
+            var result = await ChurchService.GetChurches();
+            if (result.Success)
+            {
+                _churches = result.Data;
+            }
+            _model = new StudentAdminCreateDto
+            {
+                Name = student.Data.Name,
+                DateOfBirth = student.Data.DateOfBirth,
+                MaritalStatus = student.Data.MaritalStatus,
+                Address = student.Data.Address,
+                City = student.Data.City,
+                State = student.Data.State,
+                Country = student.Data.Country,
+                PostalCode = student.Data.PostalCode,
+                Email = student.Data.Email,
+                Phone = student.Data.Phone,
+                ChurchId = student.Data.ChurchId
+            };
+            Console.WriteLine(_model.ChurchId);
+        }
+        else
+        {
+            _model = new StudentCreateDto
+            {
+                Name = student.Data.Name,
+                DateOfBirth = student.Data.DateOfBirth,
+                MaritalStatus = student.Data.MaritalStatus,
+                Address = student.Data.Address,
+                City = student.Data.City,
+                State = student.Data.State,
+                Country = student.Data.Country,
+                PostalCode = student.Data.PostalCode,
+                Email = student.Data.Email,
+                Phone = student.Data.Phone,
+                ChurchId = student.Data.ChurchId
+            };
+        }
+        return true;
     }
 
 }
