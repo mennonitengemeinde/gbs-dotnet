@@ -17,6 +17,9 @@ builder.Services.AddDbContext<DataContext>(options =>
     options.UseNpgsql($"Host={host};Port={port};Database={db};Username={username};Password={password}");
 });
 
+builder.Services.AddDefaultIdentity<IdentityUser>()
+    .AddEntityFrameworkStores<DataContext>();
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
@@ -33,13 +36,15 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     {
         options.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey =
-                new SymmetricSecurityKey(
-                    System.Text.Encoding.UTF8.GetBytes(builder.Configuration.GetSection("AppSettings:Secret").Value)),
             ValidateIssuer = false,
             ValidateAudience = false,
-            ValidateLifetime = true
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            // ValidIssuer = Configuration["JwtIssuer"],
+            // ValidAudience = Configuration["JwtAudience"],
+            IssuerSigningKey =
+                new SymmetricSecurityKey(
+                    System.Text.Encoding.UTF8.GetBytes(builder.Configuration.GetSection("AppSettings:Secret").Value))
         };
     });
 builder.Services.AddHttpContextAccessor();

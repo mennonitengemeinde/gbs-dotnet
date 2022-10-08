@@ -14,7 +14,7 @@ public class Question
     public string Timezone { get; set; } = string.Empty;
     public bool IsClosed { get; set; } = false;
 
-    public int UserId { get; set; }
+    public string UserId { get; set; } = string.Empty;
     public User User { get; set; } = null!;
 
     public List<Message> Messages { get; set; } = new List<Message>();
