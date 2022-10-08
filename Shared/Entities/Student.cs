@@ -30,6 +30,6 @@ public class Student
     public int ChurchId { get; set; }
     public Church Church { get; set; } = null!;
 
-    public int? UserId { get; set; }
+    public string? UserId { get; set; }
     public User? User { get; set; }
 }

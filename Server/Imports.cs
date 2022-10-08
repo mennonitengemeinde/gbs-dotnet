@@ -1,4 +1,5 @@
 global using Microsoft.EntityFrameworkCore;
+global using Microsoft.AspNetCore.Identity;
 global using gbs.Server.Data;
 global using gbs.Shared.Entities;
 global using gbs.Shared.Const;

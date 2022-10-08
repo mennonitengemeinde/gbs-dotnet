@@ -16,6 +16,6 @@ public class Message
     public int QuestionId { get; set; }
     public Question Question { get; set; } = null!;
     
-    public int UserId { get; set; }
+    public string UserId { get; set; } = string.Empty;
     public User User { get; set; } = null!;
 }

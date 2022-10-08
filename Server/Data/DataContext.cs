@@ -1,10 +1,11 @@
 ﻿using gbs.Shared.Enums;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace gbs.Server.Data;
 
-public class DataContext : DbContext, IDataProtectionKeyContext
+public class DataContext : IdentityDbContext, IDataProtectionKeyContext
 {
     public DataContext(DbContextOptions<DataContext> options) : base(options)
     {

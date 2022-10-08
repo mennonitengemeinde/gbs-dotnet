@@ -7,38 +7,42 @@ namespace gbs.Server.Repository.AuthRepository;
 public class AuthRepository : IAuthRepository
 {
     private readonly DataContext _context;
+    private readonly UserManager<User> _userManager;
     private readonly IConfiguration _configuration;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public AuthRepository(DataContext context, IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
+    public AuthRepository(DataContext context, UserManager<User> userManager, IConfiguration configuration,
+        IHttpContextAccessor httpContextAccessor)
     {
         _context = context;
+        _userManager = userManager;
         _configuration = configuration;
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public async Task<ServiceResponse<int>> Register(RegisterDto request)
+    public async Task<ServiceResponse<string>> Register(RegisterDto request)
     {
         if (await UserExists(request.Email))
         {
-            return ServiceResponse<int>.BadRequest("User already exists");
+            return ServiceResponse<string>.BadRequest("User already exists");
         }
 
-        CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
-
-        var user = new User
+        var newUser = new User
         {
+            UserName = request.Email,
             Email = request.Email,
             FirstName = request.FirstName,
             LastName = request.LastName,
-            PasswordHash = passwordHash,
-            PasswordSalt = passwordSalt,
             CreatedAt = DateTime.UtcNow
         };
-        _context.Users.Add(user);
-        await _context.SaveChangesAsync();
 
-        return new ServiceResponse<int> { Data = user.Id, Message = "Registration successful" };
+        var result = await _userManager.CreateAsync(newUser, request.Password);
+
+        if (result.Succeeded)
+            return new ServiceResponse<string> { Data = newUser.Id, Message = "Registration successful" };
+
+        var error = result.Errors.Select(x => x.Description).First();
+        return ServiceResponse<string>.BadRequest(error);
     }
 
     public async Task<bool> UserExists(string email)
@@ -57,10 +61,10 @@ public class AuthRepository : IAuthRepository
         {
             return ServiceResponse<string>.BadRequest("You account needs to be verified. Please come back later.");
         }
-        else if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
-        {
-            return ServiceResponse<string>.BadRequest("Incorrect email or password");
-        }
+        // else if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
+        // {
+        // return ServiceResponse<string>.BadRequest("Incorrect email or password");
+        // }
         else
         {
             var response = new ServiceResponse<string>();
@@ -80,9 +84,9 @@ public class AuthRepository : IAuthRepository
             return ServiceResponse<bool>.BadRequest("User not found");
         }
 
-        CreatePasswordHash(newPassword, out byte[] passwordHash, out byte[] passwordSalt);
-        user.PasswordHash = passwordHash;
-        user.PasswordSalt = passwordSalt;
+        // CreatePasswordHash(newPassword, out byte[] passwordHash, out byte[] passwordSalt);
+        // user.PasswordHash = passwordHash;
+        // user.PasswordSalt = passwordSalt;
         await _context.SaveChangesAsync();
 
         return new ServiceResponse<bool>
