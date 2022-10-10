@@ -34,16 +34,16 @@
             </MudSelect>
         </MudTd>
         <MudTd DataLabel="Role">
-            <MudSelect Label="Roles"
-                       T="List<string>"
-                       MultiSelection="true"
-                       Value="@context.Roles"
-                       ValueChanged="@((value) => HandleRoleChange(value, context))">
-                @foreach (var role in _roles)
-                {
-                    <MudSelectItem T="string" Value="@role">@role</MudSelectItem>
-                }
-            </MudSelect>
+            @* <MudSelect Label="Roles" *@
+            @*            T="List<string>" *@
+            @*            MultiSelection="true" *@
+            @*            Value="@context.Roles" *@
+            @*            ValueChanged="@((value) => HandleRoleChange(value, context))"> *@
+            @*     @foreach (var role in _roles) *@
+            @*     { *@
+            @*         <MudSelectItem T="string" Value="@role">@role</MudSelectItem> *@
+            @*     } *@
+            @* </MudSelect> *@
         </MudTd>
         <MudTd DataLabel="Active">
             <MudSwitch T="bool"
@@ -98,7 +98,7 @@
         ChurchService.ChurchesChanged += StateHasChanged;
     }
 
-    async Task HandleActiveChange(bool e, int userId)
+    async Task HandleActiveChange(bool e, string userId)
     {
         var updateActiveDto = new UserUpdateActiveStateDto { IsActive = e };
         await UserService.UpdateActiveState(userId, updateActiveDto);

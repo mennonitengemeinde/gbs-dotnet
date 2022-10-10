@@ -15,8 +15,8 @@ public class StudentRepository : IStudentRepository
 
     public async Task<ServiceResponse<List<StudentDto>>> GetStudents()
     {
-        var role = _authRepo.GetUserRole();
-        if (role is Roles.SuperAdmin or Roles.Admin)
+        var roles = _authRepo.GetUserRoles();
+        if (roles.Contains(Roles.Admin) || roles.Contains(Roles.SuperAdmin))
         {
             var result = await GetStudentDtoQuery().ToListAsync();
             return ServiceResponse<List<StudentDto>>.Ok(result);
@@ -32,8 +32,8 @@ public class StudentRepository : IStudentRepository
 
     public async Task<ServiceResponse<StudentDto>> GetStudentById(int id)
     {
-        var role = _authRepo.GetUserRole();
-        if (role is Roles.SuperAdmin or Roles.Admin)
+        var roles = _authRepo.GetUserRoles();
+        if (roles.Contains(Roles.Admin) || roles.Contains(Roles.SuperAdmin))
         {
             var student = await GetStudentDtoQuery().FirstOrDefaultAsync(s => s.Id == id);
             return student == null
