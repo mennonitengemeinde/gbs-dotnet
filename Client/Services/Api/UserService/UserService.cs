@@ -29,7 +29,7 @@ public class UserService : IUserService
             .EnsureSuccess<List<UserDto>>();
     }
 
-    public async Task UpdateChurch(int userId, UserUpdateChurchDto updateDto)
+    public async Task UpdateChurch(string userId, UserUpdateChurchDto updateDto)
     {
         var result = await _http
             .PutAsJsonAsync($"api/users/{userId}/church", updateDto)
@@ -37,14 +37,14 @@ public class UserService : IUserService
         await HandleUsersChanged(result);
     }
 
-    public async Task UpdateRole(int userId, UserUpdateRoleDto userUpdateRoleDto)
+    public async Task UpdateRole(string userId, UserUpdateRoleDto userUpdateRoleDto)
     {
         var response = await _http.PutAsJsonAsync($"api/users/{userId}/role", userUpdateRoleDto)
             .EnsureSuccess<List<UserDto>>();
         await HandleUsersChanged(response);
     }
 
-    public async Task UpdateActiveState(int userId, UserUpdateActiveStateDto userUpdateActiveDto)
+    public async Task UpdateActiveState(string userId, UserUpdateActiveStateDto userUpdateActiveDto)
     {
         var response = await _http.PutAsJsonAsync($"api/users/{userId}/active", userUpdateActiveDto)
             .EnsureSuccess<List<UserDto>>();

@@ -15,17 +15,17 @@ public class UserRepository : IUserRepository
 
     public async Task<ServiceResponse<List<UserDto>>> GetUsers()
     {
-        var userSelect = _context.Users.Select(async u => new UserDto
-        {
-            Id = u.Id,
-            FirstName = u.FirstName,
-            LastName = u.LastName,
-            Email = u.Email,
-            Roles = await _userManager.GetRolesAsync(u),
-            IsActive = u.IsActive,
-            ChurchId = u.ChurchId,
-            ChurchName = u.Church.Name,
-        });
+        // var userSelect = _context.Users.Select(async u => new UserDto
+        // {
+        //     Id = u.Id,
+        //     FirstName = u.FirstName,
+        //     LastName = u.LastName,
+        //     Email = u.Email,
+        //     Roles = await _userManager.GetRolesAsync(u),
+        //     IsActive = u.IsActive,
+        //     ChurchId = u.ChurchId,
+        //     ChurchName = u.Church.Name,
+        // });
 
         var response = new ServiceResponse<List<UserDto>>();
 
