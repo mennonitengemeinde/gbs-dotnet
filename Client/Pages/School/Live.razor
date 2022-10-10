@@ -1,5 +1,5 @@
 ﻿@page "/school/{Id:int}/live"
-@attribute [Authorize(Roles = Roles.AllButUser)]
+@attribute [Authorize(Policy = Policies.RequireAdminsSoundAndTeachers)]
 @using gbs.Client.Pages.School.Components
 @inject IStreamService StreamService
 @inject IUiService UiService

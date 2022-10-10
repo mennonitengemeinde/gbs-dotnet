@@ -5,7 +5,7 @@ namespace gbs.Server.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize(Roles = Roles.Admins)]
+[Authorize(Policy = Policies.RequireAdmins)]
 public class ChurchesController : ControllerBase
 {
     private readonly IChurchRepository _churchRepo;

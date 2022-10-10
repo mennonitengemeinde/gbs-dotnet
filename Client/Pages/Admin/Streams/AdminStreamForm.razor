@@ -1,6 +1,6 @@
 @page "/admin/streams/create"
 @page "/admin/streams/{Id:int}/edit"
-@attribute [Authorize(Roles = Roles.AdminAndSound)]
+@attribute [Authorize(Policy = Policies.RequireAdminsAndSound)]
 @implements IDisposable
 @inject IStreamService StreamService
 @inject ITeacherService TeacherService

@@ -1,12 +1,12 @@
 ﻿@page "/admin/users"
 @implements IDisposable
-@attribute [Authorize(Roles = Roles.Admins)]
+@attribute [Authorize(Policy = Policies.RequireAdmins)]
 @inject IAuthService AuthService
 @inject IUserService UserService
 @inject IChurchService ChurchService
 
 <div class="tw-py-4 tw-space-y-4">
-    <MudText Typo="Typo.h4">Churches</MudText>
+    <MudText Typo="Typo.h4">Users</MudText>
 </div>
 
 <MudTable Items="@UserService.Users" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading" LoadingProgressColor="Color.Info">
@@ -34,9 +34,10 @@
             </MudSelect>
         </MudTd>
         <MudTd DataLabel="Role">
-            <MudSelect T="string"
-                       Value="@context.Role"
-                       Label="Role"
+            <MudSelect Label="Roles"
+                       T="List<string>"
+                       MultiSelection="true"
+                       Value="@context.Roles"
                        ValueChanged="@((value) => HandleRoleChange(value, context))">
                 @foreach (var role in _roles)
                 {
@@ -80,17 +81,17 @@
 @code {
     bool _loading;
     UserUpdateChurchDto _updateChurchDto = new UserUpdateChurchDto();
-    string[] _roles = new string[] { Roles.User };
+    List<string> _roles = new List<string>();
 
     protected override async Task OnInitializedAsync()
     {
         _loading = true;
-        var userRole = await AuthService.GetUserRole();
+        var userRole = await AuthService.GetUserRoles();
         await UserService.GetUsers();
         await ChurchService.GetChurches();
-        _roles = userRole == Roles.SuperAdmin
-            ? Roles.AllRoles
-            : Roles.AllRoles.Where(x => x != Roles.SuperAdmin).ToArray();
+        _roles = userRole.Contains(Roles.SuperAdmin)
+            ? Roles.AllRoles.ToList()
+            : Roles.AllRoles.Where(x => x != Roles.SuperAdmin).ToList();
 
         _loading = false;
         UserService.UsersChanged += StateHasChanged;
@@ -113,10 +114,11 @@
         await UserService.UpdateChurch(user.Id, _updateChurchDto);
     }
 
-    async Task HandleRoleChange(string value, UserDto user)
+    async Task HandleRoleChange(List<string> value, UserDto user)
     {
-        var updateRoleDto = new UserUpdateRoleDto { Role = value };
-        await UserService.UpdateRole(user.Id, updateRoleDto);
+        Console.WriteLine(value);
+        // var updateRoleDto = new UserUpdateRoleDto { Role = value };
+        // await UserService.UpdateRole(user.Id, updateRoleDto);
     }
 
     public void Dispose()

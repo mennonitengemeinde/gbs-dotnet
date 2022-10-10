@@ -1,5 +1,5 @@
 ﻿@page "/admin/generations"
-@attribute [Authorize(Roles = Roles.Admins)]
+@attribute [Authorize(Policy = Policies.RequireAdmins)]
 @inject IGenerationService GenerationService
 @inject IUiService UiService
 @implements IDisposable

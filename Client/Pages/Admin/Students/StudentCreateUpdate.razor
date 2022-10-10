@@ -1,6 +1,6 @@
 @page "/admin/students/create"
 @page "/admin/students/{Id:int}/edit"
-@attribute [Authorize(Roles = Roles.AdminAndTeachers)]
+@attribute [Authorize(Policy = Policies.RequireAdminsAndTeachers)]
 @inject IStudentService StudentService
 @inject IChurchService ChurchService
 @inject IAuthService AuthService

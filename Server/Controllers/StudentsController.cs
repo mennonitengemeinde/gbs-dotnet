@@ -7,7 +7,7 @@ namespace gbs.Server.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize(Roles = Roles.AdminAndTeachers)]
+[Authorize(Policy = Policies.RequireAdminsAndTeachers)]
 public class StudentsController : ControllerBase
 {
     private readonly IStudentRepository _studentRepo;

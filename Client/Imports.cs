@@ -9,6 +9,7 @@ global using gbs.Client.Services.Api.GenerationService;
 global using gbs.Client.Services.Api.StreamService;
 global using gbs.Client.Services.Api.StudentService;
 global using gbs.Client.Services.Api.TeacherService;
+global using gbs.Shared.Const;
 global using gbs.Shared.Dtos;
 global using gbs.Shared.Dtos.Churches;
 global using gbs.Shared.Dtos.Students;

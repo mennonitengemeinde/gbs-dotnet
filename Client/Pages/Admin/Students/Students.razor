@@ -1,5 +1,5 @@
 @page "/admin/students"
-@attribute [Authorize(Roles = Roles.AdminAndTeachers)]
+@attribute [Authorize(Policy = Policies.RequireAdminsAndTeachers)]
 @implements IDisposable
 @inject IStudentService StudentService
 @inject IAuthService AuthService

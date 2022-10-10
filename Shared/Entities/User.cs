@@ -13,7 +13,7 @@ public class User : IdentityUser
     // public byte[] PasswordSalt { get; set; } = Array.Empty<byte>();
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
-    public string Role { get; set; } = Roles.User;
+    // public string Role { get; set; } = Roles.User;
     public bool IsActive { get; set; } = false;
     public DateTime CreatedAt { get; set; }
     public DateTime? LastLogin { get; set; }

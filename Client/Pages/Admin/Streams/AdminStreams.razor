@@ -1,5 +1,5 @@
 ﻿@page "/admin/streams"
-@attribute [Authorize(Roles = Roles.AdminAndSound)]
+@attribute [Authorize(Policy = Policies.RequireAdminsAndSound)]
 @implements IDisposable
 @using gbs.Client.Pages.Admin.Streams.Components
 @inject IStreamService StreamService

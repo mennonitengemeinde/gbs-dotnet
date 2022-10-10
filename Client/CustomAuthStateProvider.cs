@@ -18,26 +18,25 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
-        string authToken = await _localStorageService.GetItemAsStringAsync("authToken");
-        var identity = new ClaimsIdentity();
-        _http.DefaultRequestHeaders.Authorization = null;
+        var savedToken = await _localStorageService.GetItemAsStringAsync("authToken");
+        ClaimsIdentity? identity = null;
 
-        if (!string.IsNullOrWhiteSpace(authToken))
+        if (!string.IsNullOrWhiteSpace(savedToken))
         {
             try
             {
-                identity = new ClaimsIdentity(ParseClaimsFromJwt(authToken), "jwt");
-                Int32.TryParse(identity.Claims.First(c => c.Type == "exp").Value, out int exp);
+                identity = new ClaimsIdentity(ParseClaimsFromJwt(savedToken), "jwt");
+                int.TryParse(identity.Claims.First(c => c.Type == "exp").Value, out var exp);
                 if (exp < DateTimeOffset.UtcNow.ToUnixTimeSeconds())
                 {
                     identity = new ClaimsIdentity();
                     await _localStorageService.RemoveItemAsync("authToken");
-                    authToken = string.Empty;
+                    // savedToken = string.Empty;
                 }
                 else
                 {
                     _http.DefaultRequestHeaders.Authorization =
-                        new AuthenticationHeaderValue("Bearer", authToken.Replace("\"", ""));
+                        new AuthenticationHeaderValue("Bearer", savedToken.Replace("\"", ""));
                 }
             }
             catch (Exception)
@@ -46,12 +45,13 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
                 identity = new ClaimsIdentity();
             }
         }
-
+        
+        identity ??= new ClaimsIdentity();
         var user = new ClaimsPrincipal(identity);
         var state = new AuthenticationState(user);
-
+        
         NotifyAuthenticationStateChanged(Task.FromResult(state));
-
+        
         return state;
     }
 
@@ -72,11 +72,29 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
 
     private IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
     {
+        var claims = new List<Claim>();
         var payload = jwt.Split('.')[1];
         var jsonBytes = ParseBase64WithoutPadding(payload);
         var keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonBytes);
 
-        var claims = keyValuePairs!.Select(kvp => new Claim(kvp.Key, kvp.Value.ToString()!));
+        keyValuePairs!.TryGetValue(ClaimTypes.Role, out object? roles);
+        if (roles != null)
+        {
+            if (roles.ToString()!.Trim().StartsWith("["))
+            {
+                var parsedRoles = JsonSerializer.Deserialize<string[]>(roles.ToString()!);
+
+                claims.AddRange(parsedRoles!.Select(parsedRole => new Claim(ClaimTypes.Role, parsedRole)));
+            }
+            else
+            {
+                claims.Add(new Claim(ClaimTypes.Role, roles.ToString()!));
+            }
+
+            keyValuePairs.Remove(ClaimTypes.Role);
+        }
+
+        claims.AddRange(keyValuePairs.Select(kvp => new Claim(kvp.Key, kvp.Value.ToString()!)));
 
         return claims;
     }

@@ -14,10 +14,10 @@ public class AuthApiService : IAuthService
         _authStateProvider = authStateProvider;
     }
 
-    public async Task<ServiceResponse<int>> Register(RegisterDto userRegister)
+    public async Task<ServiceResponse<string>> Register(RegisterDto userRegister)
     {
         return await _http.PostAsJsonAsync("api/auth/register", userRegister)
-            .EnsureSuccess<int>();
+            .EnsureSuccess<string>();
     }
 
     public async Task<ServiceResponse<string>> Login(LoginDto userLogin)
@@ -30,17 +30,20 @@ public class AuthApiService : IAuthService
     {
         return (await _authStateProvider.GetAuthenticationStateAsync()).User.Identity!.IsAuthenticated;
     }
-    
-    public async Task<string> GetUserRole()
+
+    public async Task<List<string>> GetUserRoles()
     {
         var authState = await _authStateProvider.GetAuthenticationStateAsync();
-        var role = authState.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
-        return role ?? Roles.User;
+        var roles = authState.User.Claims
+            .Where(c => c.Type == ClaimTypes.Role)
+            .Select(c => c.Value)
+            .ToList();
+        return roles;
     }
 
     public async Task<bool> UserIsAdmin()
     {
-        var role = await GetUserRole();
-        return role is Roles.Admin or Roles.SuperAdmin;
+        var roles = await GetUserRoles();
+        return roles.Contains(Roles.Admin) || roles.Contains(Roles.SuperAdmin);
     }
 }

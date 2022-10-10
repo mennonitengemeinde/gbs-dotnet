@@ -28,7 +28,17 @@ builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<ITeacherService, TeacherService>();
 
 builder.Services.AddOptions();
-builder.Services.AddAuthorizationCore();
+builder.Services.AddAuthorizationCore(options =>
+{
+    options.AddPolicy(Policies.RequireAdmins,
+        policy => policy.RequireRole(Roles.SuperAdmin, Roles.Admin));
+    options.AddPolicy(Policies.RequireAdminsAndSound,
+        policy => policy.RequireRole(Roles.SuperAdmin, Roles.Admin, Roles.Sound));
+    options.AddPolicy(Policies.RequireAdminsAndTeachers,
+        policy => policy.RequireRole(Roles.SuperAdmin, Roles.Admin, Roles.Teacher));
+    options.AddPolicy(Policies.RequireAdminsSoundAndTeachers,
+        policy => policy.RequireRole(Roles.SuperAdmin, Roles.Admin, Roles.Sound, Roles.Teacher));
+});
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
 
 builder.Logging.AddFilter("Microsoft.AspNetCore.Authorization.*", LogLevel.None);
