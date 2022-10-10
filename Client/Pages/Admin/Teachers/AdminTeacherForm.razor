@@ -1,6 +1,6 @@
 @page "/admin/teachers/create"
 @page "/admin/teachers/{Id:int}/edit"
-@attribute [Authorize(Roles = Roles.AdminAndSound)]
+@attribute [Authorize(Policy = Policies.RequireAdminsAndSound)]
 @inject NavigationManager NavigationManager
 @inject ITeacherService TeacherService
 @inject IUiService UiService

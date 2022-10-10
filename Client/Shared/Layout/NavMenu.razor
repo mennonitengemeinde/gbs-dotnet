@@ -6,17 +6,17 @@
 @*     <MudText Typo="Typo.h6">My App</MudText> *@
 @* </MudDrawerHeader> *@
 <MudNavMenu Class="py-3" Color="Color.Primary">
-    <AuthorizeView Roles="@Roles.AllButUser">
+    <AuthorizeView Policy="@Policies.RequireAdminsSoundAndTeachers">
         <MudNavLink Href="school" Icon="@Icons.Filled.School" Match="NavLinkMatch.All">School</MudNavLink>
     </AuthorizeView>
-    <AuthorizeView Roles="@Roles.AdminAndTeachers">
+    <AuthorizeView Policy="@Policies.RequireAdminsAndTeachers">
         <MudNavLink Href="/admin/students" Icon="@Icons.Filled.People" Match="NavLinkMatch.All">Students</MudNavLink>
     </AuthorizeView>
-    <AuthorizeView Roles="@Roles.AdminAndSound">
+    <AuthorizeView Policy="@Policies.RequireAdminsAndSound">
         <MudNavLink Href="/admin/streams" Icon="@Icons.Filled.LiveTv">Streams</MudNavLink>
         <MudNavLink Href="/admin/teachers" Icon="@Icons.Filled.Man">Teachers</MudNavLink>
     </AuthorizeView>
-    <AuthorizeView Roles="@Roles.Admins">
+    <AuthorizeView Policy="@Policies.RequireAdmins">
         <MudNavLink Href="/admin/generations" Icon="@Icons.Filled.GroupWork">Generations</MudNavLink>
         <MudNavLink Href="/admin/churches" Icon="@Icons.Filled.Church">Churches</MudNavLink>
         <MudNavLink Href="/admin/users" Icon="@Icons.Filled.PeopleAlt">Users</MudNavLink>

@@ -1,6 +1,6 @@
 @page "/admin/churches/create"
 @page "/admin/churches/{Id:int}/edit"
-@attribute [Authorize(Roles = Roles.Admins)]
+@attribute [Authorize(Policy = Policies.RequireAdmins)]
 @inject NavigationManager NavigationManager
 @inject IChurchService ChurchService
 @inject IUiService UiService

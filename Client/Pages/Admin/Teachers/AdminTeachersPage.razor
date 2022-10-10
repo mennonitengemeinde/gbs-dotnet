@@ -1,5 +1,5 @@
 @page "/admin/teachers"
-@attribute [Authorize(Roles = Roles.AdminAndSound)]
+@attribute [Authorize(Policy = Policies.RequireAdminsAndSound)]
 @implements IDisposable
 @inject ITeacherService TeacherService
 

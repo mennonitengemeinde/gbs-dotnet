@@ -4,27 +4,28 @@ public class UserRepository : IUserRepository
 {
     private readonly DataContext _context;
     private readonly IAuthRepository _authRepo;
+    private readonly UserManager<User> _userManager;
 
-    public UserRepository(DataContext context, IAuthRepository authRepo)
+    public UserRepository(DataContext context, IAuthRepository authRepo, UserManager<User> userManager)
     {
         _context = context;
         _authRepo = authRepo;
+        _userManager = userManager;
     }
 
     public async Task<ServiceResponse<List<UserDto>>> GetUsers()
     {
-        // var userSelect = _context.Users.Select(u => new UserDto
-        // {
-        //     Id = u.Id,
-        //     FirstName = u.FirstName,
-        //     LastName = u.LastName,
-        //     Email = u.Email,
-        //     EmailVerified = u.EmailVerified,
-        //     Role = u.Role,
-        //     IsActive = u.IsActive,
-        //     ChurchId = u.ChurchId,
-        //     ChurchName = u.Church.Name,
-        // });
+        var userSelect = _context.Users.Select(async u => new UserDto
+        {
+            Id = u.Id,
+            FirstName = u.FirstName,
+            LastName = u.LastName,
+            Email = u.Email,
+            Roles = await _userManager.GetRolesAsync(u),
+            IsActive = u.IsActive,
+            ChurchId = u.ChurchId,
+            ChurchName = u.Church.Name,
+        });
 
         var response = new ServiceResponse<List<UserDto>>();
 

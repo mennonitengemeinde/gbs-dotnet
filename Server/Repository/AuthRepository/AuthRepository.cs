@@ -8,14 +8,20 @@ public class AuthRepository : IAuthRepository
 {
     private readonly DataContext _context;
     private readonly UserManager<User> _userManager;
+    private readonly SignInManager<User> _signInManager;
     private readonly IConfiguration _configuration;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public AuthRepository(DataContext context, UserManager<User> userManager, IConfiguration configuration,
+    public AuthRepository(
+        DataContext context,
+        UserManager<User> userManager,
+        SignInManager<User> signInManager,
+        IConfiguration configuration,
         IHttpContextAccessor httpContextAccessor)
     {
         _context = context;
         _userManager = userManager;
+        _signInManager = signInManager;
         _configuration = configuration;
         _httpContextAccessor = httpContextAccessor;
     }
@@ -52,28 +58,29 @@ public class AuthRepository : IAuthRepository
 
     public async Task<ServiceResponse<string>> Login(string email, string password)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(x => x.Email.ToLower().Equals(email.ToLower()));
+        var user = await _userManager.FindByNameAsync(email);
         if (user == null)
         {
             return ServiceResponse<string>.BadRequest("Incorrect email or password");
         }
-        else if (user.IsActive == false)
+
+        if (user.IsActive == false)
         {
             return ServiceResponse<string>.BadRequest("You account needs to be verified. Please come back later.");
         }
-        // else if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
-        // {
-        // return ServiceResponse<string>.BadRequest("Incorrect email or password");
-        // }
-        else
-        {
-            var response = new ServiceResponse<string>();
-            user.LastLogin = DateTime.UtcNow;
-            _context.Users.Update(user);
-            await _context.SaveChangesAsync();
-            response.Data = CreateToken(user);
-            return response;
-        }
+
+        var result = await _signInManager.PasswordSignInAsync(user, password, false, false);
+        if (!result.Succeeded)
+            return ServiceResponse<string>.BadRequest("Incorrect email or password");
+
+        var response = new ServiceResponse<string>();
+        user.LastLogin = DateTime.UtcNow;
+        _context.Users.Update(user);
+        await _context.SaveChangesAsync();
+
+        response.Data = await CreateToken(user);
+
+        return response;
     }
 
     public async Task<ServiceResponse<bool>> ChangePassword(int userId, string newPassword)
@@ -84,9 +91,6 @@ public class AuthRepository : IAuthRepository
             return ServiceResponse<bool>.BadRequest("User not found");
         }
 
-        // CreatePasswordHash(newPassword, out byte[] passwordHash, out byte[] passwordSalt);
-        // user.PasswordHash = passwordHash;
-        // user.PasswordSalt = passwordSalt;
         await _context.SaveChangesAsync();
 
         return new ServiceResponse<bool>
@@ -99,51 +103,56 @@ public class AuthRepository : IAuthRepository
     public int GetUserId() =>
         int.Parse(_httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-    public string GetUserRole() =>
-        _httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.Role);
+    public List<string> GetUserRoles() =>
+        _httpContextAccessor.HttpContext!.User
+            .FindAll(ClaimTypes.Role)
+            .Select(c => c.Value)
+            .ToList();
 
     public bool UserIsAdmin()
     {
-        var role = GetUserRole();
-        return role is Roles.Admin or Roles.SuperAdmin;
+        var role = GetUserRoles();
+        return role.Contains("Admin") || role.Contains("SuperAdmin");
     }
 
-    private string CreateToken(User user)
+    private async Task<string> CreateToken(User user)
     {
-        List<Claim> claims = new List<Claim>
+        List<string> userRoles = (await _userManager.GetRolesAsync(user)).ToList();
+        var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(ClaimTypes.NameIdentifier, user.Id),
             new Claim(ClaimTypes.Email, user.Email),
             new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
-            new Claim(ClaimTypes.Role, user.Role),
         };
+        claims.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
 
         var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8
             .GetBytes(_configuration.GetSection("AppSettings:Secret").Value));
 
-        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
 
         var token = new JwtSecurityToken(
             claims: claims,
             expires: DateTime.Now.AddDays(1),
-            signingCredentials: credentials);
+            signingCredentials: credentials
+        );
 
         var jwt = new JwtSecurityTokenHandler().WriteToken(token);
 
         return jwt;
     }
 
-    private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
-    {
-        using var hmac = new System.Security.Cryptography.HMACSHA512();
-        passwordSalt = hmac.Key;
-        passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-    }
-
-    private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
-    {
-        using var hmac = new System.Security.Cryptography.HMACSHA512(passwordSalt);
-        var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-        return computedHash.SequenceEqual(passwordHash);
-    }
+    // private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+    // {
+    //     using var hmac = new System.Security.Cryptography.HMACSHA512();
+    //     passwordSalt = hmac.Key;
+    //     passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+    // }
+    //
+    // private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
+    // {
+    //     using var hmac = new System.Security.Cryptography.HMACSHA512(passwordSalt);
+    //     var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+    //     return computedHash.SequenceEqual(passwordHash);
+    // }
 }

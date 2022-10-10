@@ -17,7 +17,8 @@ builder.Services.AddDbContext<DataContext>(options =>
     options.UseNpgsql($"Host={host};Port={port};Database={db};Username={username};Password={password}");
 });
 
-builder.Services.AddDefaultIdentity<IdentityUser>()
+builder.Services.AddDefaultIdentity<User>()
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<DataContext>();
 
 builder.Services.AddControllersWithViews();
@@ -47,6 +48,18 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     System.Text.Encoding.UTF8.GetBytes(builder.Configuration.GetSection("AppSettings:Secret").Value))
         };
     });
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(Policies.RequireAdmins,
+        policy => policy.RequireRole(Roles.SuperAdmin, Roles.Admin));
+    options.AddPolicy(Policies.RequireAdminsAndSound,
+        policy => policy.RequireRole(Roles.SuperAdmin, Roles.Admin, Roles.Sound));
+    options.AddPolicy(Policies.RequireAdminsAndTeachers,
+        policy => policy.RequireRole(Roles.SuperAdmin, Roles.Admin, Roles.Teacher));
+    options.AddPolicy(Policies.RequireAdminsSoundAndTeachers,
+        policy => policy.RequireRole(Roles.SuperAdmin, Roles.Admin, Roles.Sound, Roles.Teacher));
+});
+
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddDataProtection()
     .PersistKeysToDbContext<DataContext>();

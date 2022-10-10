@@ -1,6 +1,6 @@
 @page "/admin/generations/create"
 @page "/admin/generations/{Id:int}/edit"
-@attribute [Authorize(Roles = Roles.Admins)]
+@attribute [Authorize(Policy = Policies.RequireAdmins)]
 @inject NavigationManager NavigationManager
 @inject IGenerationService GenerationService
 @inject IUiService UiService
