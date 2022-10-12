@@ -138,7 +138,7 @@ public class AuthRepository : IAuthRepository
     public bool UserIsAdmin()
     {
         var role = GetUserRoles();
-        return role.Contains("Admin") || role.Contains("SuperAdmin");
+        return role.Contains(Roles.Admin) || role.Contains(Roles.SuperAdmin);
     }
 
     private async Task<string> CreateToken(User user)
