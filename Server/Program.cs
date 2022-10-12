@@ -18,7 +18,7 @@ builder.Services.AddDbContext<DataContext>(options =>
 });
 
 builder.Services.AddDefaultIdentity<User>()
-    .AddRoles<IdentityRole>()
+    .AddRoles<Role>()
     .AddEntityFrameworkStores<DataContext>();
 
 builder.Services.AddControllersWithViews();

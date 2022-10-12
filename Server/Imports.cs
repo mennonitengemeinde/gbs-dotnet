@@ -6,6 +6,7 @@ global using gbs.Shared.Const;
 global using gbs.Shared.Dtos;
 global using gbs.Shared.Dtos.Churches;
 global using gbs.Shared.Dtos.Students;
+global using gbs.Shared.Responses;
 global using gbs.Server.Repository.AuthRepository;
 global using gbs.Server.Repository.ChurchRepository;
 global using gbs.Server.Repository.GenerationRepository;

@@ -26,6 +26,12 @@ public class AuthApiService : IAuthService
             .EnsureSuccess<string>();
     }
 
+    public async Task<ServiceResponse<List<RolesResponse>>> FetchRoles()
+    {
+        return await _http.GetAsync("api/auth/roles")
+            .EnsureSuccess<List<RolesResponse>>();
+    }
+
     public async Task<bool> IsUserAuthenticated()
     {
         return (await _authStateProvider.GetAuthenticationStateAsync()).User.Identity!.IsAuthenticated;

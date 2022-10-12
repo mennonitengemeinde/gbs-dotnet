@@ -40,4 +40,16 @@ public class AuthController : ControllerBase
 
         return Ok(result);
     }
+    
+    [HttpGet("roles")]
+    public async Task<ActionResult<ServiceResponse<List<RolesResponse>>>> GetRoles()
+    {
+        var result = await _authRepo.GetRoles();
+        if (!result.Success)
+        {
+            return BadRequest(result);
+        }
+
+        return Ok(result);
+    }
 }

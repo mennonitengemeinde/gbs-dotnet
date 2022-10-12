@@ -3,8 +3,8 @@
 public interface IUserRepository
 {
     Task<ServiceResponse<List<UserDto>>> GetUsers();
-    Task<ServiceResponse<UserDto>> GetUserById(int userId);
-    Task<ServiceResponse<List<UserDto>>> UpdateUserRole(int userId, string newRole);
-    Task<ServiceResponse<List<UserDto>>> UpdateUserActiveState(int userId, bool newActiveState);
-    Task<ServiceResponse<List<UserDto>>> UpdateUserChurch(int userId, UserUpdateChurchDto updateDto);
+    Task<ServiceResponse<UserDto>> GetUserById(string userId);
+    Task<ServiceResponse<List<UserDto>>> UpdateUserRole(string userId, List<string> newRoles);
+    Task<ServiceResponse<List<UserDto>>> UpdateUserActiveState(string userId, bool newActiveState);
+    Task<ServiceResponse<List<UserDto>>> UpdateUserChurch(string userId, UserUpdateChurchDto updateDto);
 }

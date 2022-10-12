@@ -27,8 +27,8 @@ namespace gbs.Server.Controllers
             return Ok(users);
         }
 
-        [HttpPut("{userId:int}/church")]
-        public async Task<ActionResult<ServiceResponse<List<UserDto>>>> UpdateUser(int userId, UserUpdateChurchDto updateDto)
+        [HttpPut("{userId}/church")]
+        public async Task<ActionResult<ServiceResponse<List<UserDto>>>> UpdateUser(string userId, UserUpdateChurchDto updateDto)
         {
             var user = await _userRepo.UpdateUserChurch(userId, updateDto);
             if (!user.Success)
@@ -39,11 +39,11 @@ namespace gbs.Server.Controllers
             return Ok(user);
         }
 
-        [HttpPut("{userId:int}/role")]
-        public async Task<ActionResult<ServiceResponse<List<UserDto>>>> UpdateUserRole(int userId,
+        [HttpPut("{userId}/roles")]
+        public async Task<ActionResult<ServiceResponse<List<UserDto>>>> UpdateUserRole(string userId,
             [FromBody] UserUpdateRoleDto updateRoleDto)
         {
-            var user = await _userRepo.UpdateUserRole(userId, updateRoleDto.Role);
+            var user = await _userRepo.UpdateUserRole(userId, updateRoleDto.Roles);
             if (!user.Success)
             {
                 return BadRequest(user);
@@ -52,8 +52,8 @@ namespace gbs.Server.Controllers
             return Ok(user);
         }
 
-        [HttpPut("{userId:int}/active")]
-        public async Task<ActionResult<ServiceResponse<List<UserDto>>>> UpdateUserActiveState(int userId,
+        [HttpPut("{userId}/active")]
+        public async Task<ActionResult<ServiceResponse<List<UserDto>>>> UpdateUserActiveState(string userId,
             UserUpdateActiveStateDto updateActiveStateDto)
         {
             var user = await _userRepo.UpdateUserActiveState(userId, updateActiveStateDto.IsActive);

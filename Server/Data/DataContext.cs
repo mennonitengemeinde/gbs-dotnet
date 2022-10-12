@@ -5,7 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace gbs.Server.Data;
 
-public class DataContext : IdentityDbContext<User>, IDataProtectionKeyContext
+public class DataContext :
+    IdentityDbContext<User, Role, string, IdentityUserClaim<string>, UserRole, IdentityUserLogin<string>,
+        IdentityRoleClaim<string>, IdentityUserToken<string>>, IDataProtectionKeyContext
 {
     public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = null!;
 
@@ -34,6 +36,21 @@ public class DataContext : IdentityDbContext<User>, IDataProtectionKeyContext
             .HasOne<Teacher>()
             .WithOne(t => t.User)
             .HasForeignKey<Teacher>(t => t.UserId);
+
+        modelBuilder.Entity<UserRole>(userRole =>
+        {
+            userRole.HasKey(ur => new { ur.UserId, ur.RoleId });
+
+            userRole.HasOne(ur => ur.Role)
+                .WithMany(r => r.UserRoles)
+                .HasForeignKey(ur => ur.RoleId)
+                .IsRequired();
+
+            userRole.HasOne(ur => ur.User)
+                .WithMany(r => r.UserRoles)
+                .HasForeignKey(ur => ur.UserId)
+                .IsRequired();
+        });
 
         modelBuilder.Entity<Teacher>()
             .HasOne<User>()
@@ -64,55 +81,55 @@ public class DataContext : IdentityDbContext<User>, IDataProtectionKeyContext
             .Property(sd => sd.SubjectDocumentType)
             .HasConversion<int>();
 
-        modelBuilder.Entity<IdentityRole>()
+        modelBuilder.Entity<Role>()
             .HasData(
-                new IdentityRole
+                new Role
                 {
-                    Id = Guid.NewGuid().ToString(), 
-                    Name = Shared.Const.Roles.SuperAdmin, 
-                    NormalizedName = nameof(Shared.Const.Roles.SuperAdmin),
+                    Id = Guid.NewGuid().ToString(),
+                    Name = Shared.Const.Roles.SuperAdmin,
+                    NormalizedName = Shared.Const.Roles.SuperAdmin.ToUpper(),
                     ConcurrencyStamp = Guid.NewGuid().ToString()
                 },
-                new IdentityRole
+                new Role
                 {
-                    Id = Guid.NewGuid().ToString(), 
-                    Name = Shared.Const.Roles.Admin, 
-                    NormalizedName = nameof(Shared.Const.Roles.Admin),
+                    Id = Guid.NewGuid().ToString(),
+                    Name = Shared.Const.Roles.Admin,
+                    NormalizedName = Shared.Const.Roles.Admin.ToUpper(),
                     ConcurrencyStamp = Guid.NewGuid().ToString()
                 },
-                new IdentityRole
+                new Role
                 {
-                    Id = Guid.NewGuid().ToString(), 
-                    Name = Shared.Const.Roles.Teacher, 
-                    NormalizedName = nameof(Shared.Const.Roles.Teacher),
+                    Id = Guid.NewGuid().ToString(),
+                    Name = Shared.Const.Roles.Teacher,
+                    NormalizedName = Shared.Const.Roles.Teacher.ToUpper(),
                     ConcurrencyStamp = Guid.NewGuid().ToString()
                 },
-                new IdentityRole
+                new Role
                 {
-                    Id = Guid.NewGuid().ToString(), 
-                    Name = Shared.Const.Roles.ChurchLeader, 
-                    NormalizedName = nameof(Shared.Const.Roles.ChurchLeader),
+                    Id = Guid.NewGuid().ToString(),
+                    Name = Shared.Const.Roles.ChurchLeader,
+                    NormalizedName = Shared.Const.Roles.ChurchLeader.ToUpper(),
                     ConcurrencyStamp = Guid.NewGuid().ToString()
                 },
-                new IdentityRole
+                new Role
                 {
-                    Id = Guid.NewGuid().ToString(), 
-                    Name = Shared.Const.Roles.ChurchTeacher, 
-                    NormalizedName = nameof(Shared.Const.Roles.ChurchTeacher),
+                    Id = Guid.NewGuid().ToString(),
+                    Name = Shared.Const.Roles.ChurchTeacher,
+                    NormalizedName = Shared.Const.Roles.ChurchTeacher.ToUpper(),
                     ConcurrencyStamp = Guid.NewGuid().ToString()
                 },
-                new IdentityRole
+                new Role
                 {
-                    Id = Guid.NewGuid().ToString(), 
-                    Name = Shared.Const.Roles.Sound, 
-                    NormalizedName = nameof(Shared.Const.Roles.Sound),
+                    Id = Guid.NewGuid().ToString(),
+                    Name = Shared.Const.Roles.Sound,
+                    NormalizedName = Shared.Const.Roles.Sound.ToUpper(),
                     ConcurrencyStamp = Guid.NewGuid().ToString()
                 },
-                new IdentityRole
+                new Role
                 {
-                    Id = Guid.NewGuid().ToString(), 
-                    Name = Shared.Const.Roles.Student, 
-                    NormalizedName = nameof(Shared.Const.Roles.Student),
+                    Id = Guid.NewGuid().ToString(),
+                    Name = Shared.Const.Roles.Student,
+                    NormalizedName = Shared.Const.Roles.Student.ToUpper(),
                     ConcurrencyStamp = Guid.NewGuid().ToString()
                 }
             );
