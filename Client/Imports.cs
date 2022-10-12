@@ -14,4 +14,5 @@ global using gbs.Shared.Dtos;
 global using gbs.Shared.Dtos.Churches;
 global using gbs.Shared.Dtos.Students;
 global using gbs.Shared.Dtos.Ui;
+global using gbs.Shared.Responses;
 global using gbs.Shared.Entities;

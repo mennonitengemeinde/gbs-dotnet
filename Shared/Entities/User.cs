@@ -23,4 +23,6 @@ public class User : IdentityUser
     
     public int? ChurchId { get; set; }
     public Church Church { get; set; } = null!;
+    
+    public ICollection<UserRole> UserRoles { get; set; } = null!;
 }

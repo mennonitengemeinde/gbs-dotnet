@@ -39,7 +39,7 @@ public class UserService : IUserService
 
     public async Task UpdateRole(string userId, UserUpdateRoleDto userUpdateRoleDto)
     {
-        var response = await _http.PutAsJsonAsync($"api/users/{userId}/role", userUpdateRoleDto)
+        var response = await _http.PutAsJsonAsync($"api/users/{userId}/roles", userUpdateRoleDto)
             .EnsureSuccess<List<UserDto>>();
         await HandleUsersChanged(response);
     }

@@ -15,90 +15,131 @@ public class UserRepository : IUserRepository
 
     public async Task<ServiceResponse<List<UserDto>>> GetUsers()
     {
-        // var userSelect = _context.Users.Select(async u => new UserDto
-        // {
-        //     Id = u.Id,
-        //     FirstName = u.FirstName,
-        //     LastName = u.LastName,
-        //     Email = u.Email,
-        //     Roles = await _userManager.GetRolesAsync(u),
-        //     IsActive = u.IsActive,
-        //     ChurchId = u.ChurchId,
-        //     ChurchName = u.Church.Name,
-        // });
-
         var response = new ServiceResponse<List<UserDto>>();
 
-        // if (_authRepo.GetUserRole() != Roles.SuperAdmin)
-        // {
-        //     response.Data = await userSelect.Where(u => u.Role != Roles.SuperAdmin)
-        //         .OrderBy(u => u.FirstName).ToListAsync();
-        //     return response;
-        // }
-        //
-        // response.Data = await userSelect.OrderBy(u => u.FirstName).ToListAsync();
+        if (!_authRepo.GetUserRoles().Contains(Roles.SuperAdmin))
+        {
+            response.Data = await _context.Users
+                .Select(u => new UserDto
+                {
+                    Id = u.Id,
+                    FirstName = u.FirstName,
+                    LastName = u.LastName,
+                    Email = u.Email,
+                    Roles = u.UserRoles
+                        .Select(r => r.Role.Name)
+                        .Where(r => r != Roles.SuperAdmin)
+                        .ToList(),
+                    IsActive = u.IsActive,
+                    ChurchId = u.ChurchId,
+                    ChurchName = u.Church.Name,
+                })
+                .OrderBy(u => u.FirstName)
+                .ToListAsync();
+            return response;
+        }
+
+        response.Data = await _context.Users
+            .Select(u => new UserDto
+            {
+                Id = u.Id,
+                FirstName = u.FirstName,
+                LastName = u.LastName,
+                Email = u.Email,
+                Roles = u.UserRoles
+                    .Select(r => r.Role.Name)
+                    .ToList(),
+                IsActive = u.IsActive,
+                ChurchId = u.ChurchId,
+                ChurchName = u.Church.Name,
+            })
+            .OrderBy(u => u.FirstName)
+            .ToListAsync();
         return response;
     }
 
-    public async Task<ServiceResponse<UserDto>> GetUserById(int userId)
+    public async Task<ServiceResponse<UserDto>> GetUserById(string userId)
     {
-        // var user = await _context.Users.Select(u => new UserDto
-        // {
-        //     Id = u.Id,
-        //     FirstName = u.FirstName,
-        //     LastName = u.LastName,
-        //     Email = u.Email,
-        //     EmailVerified = u.EmailVerified,
-        //     Role = u.Role,
-        //     IsActive = u.IsActive,
-        //     ChurchId = u.ChurchId,
-        //     ChurchName = u.Church.Name,
-        // }).FirstOrDefaultAsync(u => u.Id == userId);
+        if (_authRepo.GetUserId() != userId && !_authRepo.GetUserRoles().Contains(Roles.SuperAdmin))
+        {
+            return ServiceResponse<UserDto>.BadRequest("User not found");
+        }
 
-        // return user == null
-            // ? ServiceResponse<UserDto>.BadRequest("User not found")
-            // : new ServiceResponse<UserDto> { Data = user };
-        
-           return new ServiceResponse<UserDto>(); 
+        var user = await _context.Users.Select(u => new UserDto
+        {
+            Id = u.Id,
+            FirstName = u.FirstName,
+            LastName = u.LastName,
+            Email = u.Email,
+            Roles = u.UserRoles
+                .Select(r => r.Role.Name)
+                .ToList(),
+            IsActive = u.IsActive,
+            ChurchId = u.ChurchId,
+            ChurchName = u.Church.Name,
+        }).FirstOrDefaultAsync(u => u.Id == userId);
+
+        return user == null
+            ? ServiceResponse<UserDto>.BadRequest("User not found")
+            : new ServiceResponse<UserDto> { Data = user };
     }
 
-    public async Task<ServiceResponse<List<UserDto>>> UpdateUserRole(int userId, string newRole)
+    public async Task<ServiceResponse<List<UserDto>>> UpdateUserRole(string userId, List<string> newRoles)
     {
-        // var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
-        // if (user == null)
-        // {
-        //     return ServiceResponse<List<UserDto>>.BadRequest("User not found");
-        // }
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+        if (user == null)
+        {
+            return ServiceResponse<List<UserDto>>.BadRequest("User not found");
+        }
 
-        // user.Role = newRole;
-        // await _context.SaveChangesAsync();
+        var userRoles = await _userManager.GetRolesAsync(user);
+
+        var rolesToRemove = userRoles.Except(newRoles).ToList();
+        if (rolesToRemove.Any())
+        {
+            var result = await _userManager.RemoveFromRolesAsync(user, rolesToRemove);
+            if (!result.Succeeded)
+            {
+                Console.WriteLine(result.Errors);
+                return ServiceResponse<List<UserDto>>.BadRequest("Failed to remove roles");
+            }
+        }
+
+        var rolesToAdd = newRoles.Except(userRoles).ToList();
+        if (!rolesToAdd.Any()) return await GetUsers();
+        {
+            var result = await _userManager.AddToRolesAsync(user, rolesToAdd);
+            if (result.Succeeded) return await GetUsers();
+            Console.WriteLine(result.Errors);
+            return ServiceResponse<List<UserDto>>.BadRequest("Failed to add roles");
+        }
 
         return await GetUsers();
     }
 
-    public async Task<ServiceResponse<List<UserDto>>> UpdateUserActiveState(int userId, bool newActiveState)
+    public async Task<ServiceResponse<List<UserDto>>> UpdateUserActiveState(string userId, bool newActiveState)
     {
-        // var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
-        // if (user == null)
-        // {
-            // return ServiceResponse<List<UserDto>>.BadRequest("User not found");
-        // }
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+        if (user == null)
+        {
+            return ServiceResponse<List<UserDto>>.BadRequest("User not found");
+        }
 
-        // user.IsActive = newActiveState;
-        // await _context.SaveChangesAsync();
+        user.IsActive = newActiveState;
+        await _context.SaveChangesAsync();
         return await GetUsers();
     }
 
-    public async Task<ServiceResponse<List<UserDto>>> UpdateUserChurch(int userId, UserUpdateChurchDto updateDto)
+    public async Task<ServiceResponse<List<UserDto>>> UpdateUserChurch(string userId, UserUpdateChurchDto updateDto)
     {
-        // var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
-        // if (user == null)
-        // {
-        //     return ServiceResponse<List<UserDto>>.BadRequest("User not found");
-        // }
-        //
-        // user.ChurchId = updateDto.ChurchId;
-        // await _context.SaveChangesAsync();
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+        if (user == null)
+        {
+            return ServiceResponse<List<UserDto>>.BadRequest("User not found");
+        }
+
+        user.ChurchId = updateDto.ChurchId;
+        await _context.SaveChangesAsync();
         return await GetUsers();
     }
 }

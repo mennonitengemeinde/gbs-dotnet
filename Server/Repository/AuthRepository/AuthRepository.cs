@@ -100,8 +100,34 @@ public class AuthRepository : IAuthRepository
         };
     }
 
-    public int GetUserId() =>
-        int.Parse(_httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier));
+    public async Task<ServiceResponse<List<RolesResponse>>> GetRoles()
+    {
+        var userRoles = GetUserRoles();
+        List<RolesResponse> roles;
+        if (userRoles.Contains(Roles.SuperAdmin))
+        {
+            roles = await _context.Roles.Select(x => new RolesResponse
+            {
+                Id = x.Id,
+                Name = x.Name,
+                NormalizedName = x.NormalizedName
+            }).ToListAsync();
+        }
+        else
+        {
+            roles = await _context.Roles.Where(x => x.Name != Roles.SuperAdmin).Select(x => new RolesResponse
+            {
+                Id = x.Id,
+                Name = x.Name,
+                NormalizedName = x.NormalizedName
+            }).ToListAsync();
+        }
+
+        return new ServiceResponse<List<RolesResponse>> { Data = roles };
+    }
+
+    public string GetUserId() =>
+        _httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
     public List<string> GetUserRoles() =>
         _httpContextAccessor.HttpContext!.User
