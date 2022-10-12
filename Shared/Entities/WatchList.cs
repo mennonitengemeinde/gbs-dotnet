@@ -2,7 +2,7 @@
 
 public class WatchList
 {
-    public int UserId { get; set; }
+    public string UserId { get; set; } = string.Empty;
     public int QuestionId { get; set; }
     public bool IsAnswered { get; set; } = false;
 }
