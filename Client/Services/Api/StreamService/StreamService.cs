@@ -13,18 +13,23 @@ public class StreamService : IStreamService
         _uiService = uiService;
     }
 
-    public async Task LoadStreams()
+    public async Task CacheStreams(ServiceResponse<List<StreamGetDto>> streamsResponse)
     {
-        var result = await GetLiveStreams();
-        if (!result.Success)
+        if (!streamsResponse.Success)
         {
-            await _uiService.ShowErrorAlert(result.Message, result.StatusCode);
-            Streams = new List<StreamGetDto>();
+            await _uiService.ShowErrorAlert(streamsResponse.Message, streamsResponse.StatusCode);
+            Streams.Clear();
             return;
         }
 
-        Streams = result.Data;
+        Streams = streamsResponse.Data;
         StreamsChanged?.Invoke();
+    }
+
+    public async Task LoadStreams()
+    {
+        var result = await GetLiveStreams();
+        await CacheStreams(result);
     }
 
     public async Task<ServiceResponse<List<StreamGetDto>>> GetLiveStreams()

@@ -21,6 +21,13 @@ builder.Services.AddDefaultIdentity<User>()
     .AddRoles<Role>()
     .AddEntityFrameworkStores<DataContext>();
 
+builder.Services.AddSignalR();
+builder.Services.AddResponseCompression(opts =>
+{
+    opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+        new[] { "application/octet-stream" });
+});
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
@@ -66,6 +73,8 @@ builder.Services.AddDataProtection()
 
 var app = builder.Build();
 
+app.UseResponseCompression();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -90,6 +99,7 @@ app.UseAuthorization();
 
 app.MapRazorPages();
 app.MapControllers();
+app.MapHub<LivestreamHub>("/hubs/streamshub");
 app.MapFallbackToFile("index.html");
 
 app.Run();

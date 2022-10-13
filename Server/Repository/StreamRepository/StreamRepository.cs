@@ -3,10 +3,18 @@
 public class StreamRepository : IStreamRepository
 {
     private readonly DataContext _context;
+    private readonly IHubContext<LivestreamHub> _streamHub;
 
-    public StreamRepository(DataContext context)
+    public StreamRepository(DataContext context, IHubContext<LivestreamHub> streamHub)
     {
         _context = context;
+        _streamHub = streamHub;
+    }
+    
+    private async Task NotifyClients()
+    {
+        var streams = await GetLiveStreams();
+        await _streamHub.Clients.All.SendAsync("ReceiveStreams", streams);
     }
 
     public async Task<ServiceResponse<List<StreamGetDto>>> GetLiveStreams()
@@ -72,6 +80,7 @@ public class StreamRepository : IStreamRepository
         stream.StreamTeachers.AddRange(streamTeachers);
         _context.Streams.Add(stream);
         await _context.SaveChangesAsync();
+        await NotifyClients();
         return await GetLiveStreamById(stream.Id);
     }
 
@@ -110,6 +119,7 @@ public class StreamRepository : IStreamRepository
         stream.Generation = generation;
         _context.Streams.Update(stream);
         await _context.SaveChangesAsync();
+        await NotifyClients();
         return await GetLiveStreamById(stream.Id);
     }
 
@@ -123,6 +133,7 @@ public class StreamRepository : IStreamRepository
 
         dbStream.IsLive = liveDto.IsLive;
         await _context.SaveChangesAsync();
+        await NotifyClients();
         return await GetLiveStreamById(dbStream.Id);
     }
 
@@ -133,6 +144,7 @@ public class StreamRepository : IStreamRepository
             return ServiceResponse<bool>.BadRequest("Stream not found");
         _context.Streams.Remove(stream);
         await _context.SaveChangesAsync();
+        await NotifyClients();
         return new ServiceResponse<bool> { Data = true, Message = "Stream deleted." };
     }
 

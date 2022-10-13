@@ -1,8 +1,10 @@
 @page "/school"
 @attribute [Authorize(Policy = Policies.RequireAdminsSoundAndTeachers)]
 @using gbs.Client.Pages.School.Components
+@implements IAsyncDisposable
 @inject IStreamService StreamService
 @inject IUiService UiService
+@inject NavigationManager NavigationManager
 
 <PageTitle>School - GBS</PageTitle>
 
@@ -28,11 +30,39 @@
 @* </div> *@
 
 @code {
+    private HubConnection? hubConnection;
+    
     protected override async Task OnInitializedAsync()
     {
         UiService.LoadingStart();
+        
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(NavigationManager.ToAbsoluteUri("/hubs/streamshub"))
+            .Build();
+
+        hubConnection.On<ServiceResponse<List<StreamGetDto>>>("ReceiveStreams", OnReceiveStreams);
+
+        await hubConnection.StartAsync();
+        
         await StreamService.LoadStreams();
         UiService.LoadingStop();
+    }
+    
+    private async Task OnReceiveStreams(ServiceResponse<List<StreamGetDto>> streams)
+    {
+        if (streams.Success)
+        {
+            await StreamService.CacheStreams(streams);
+        }
+        StateHasChanged();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.DisposeAsync();
+        }
     }
 
 }

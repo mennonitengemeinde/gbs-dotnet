@@ -4,6 +4,7 @@ public interface IStreamService
 {
     List<StreamGetDto> Streams { get; set; }
     event Action StreamsChanged;
+    Task CacheStreams(ServiceResponse<List<StreamGetDto>> streamsResponse);
     Task LoadStreams();
     Task<ServiceResponse<List<StreamGetDto>>> GetLiveStreams();
     Task<ServiceResponse<StreamGetDto>> GetStreamById(int streamId, bool isOnline = false);
