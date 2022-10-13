@@ -7,6 +7,8 @@
 @inject IUiService UiService
 @inject NavigationManager NavigationManager
 
+<PageTitle>Students Form - GBS</PageTitle>
+
 @if (!UiService.Loading && _model != null)
 {
     <EditForm Model="_model" OnValidSubmit="HandleValidSubmit">

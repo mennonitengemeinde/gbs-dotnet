@@ -113,8 +113,6 @@ public class UserRepository : IUserRepository
             Console.WriteLine(result.Errors);
             return ServiceResponse<List<UserDto>>.BadRequest("Failed to add roles");
         }
-
-        return await GetUsers();
     }
 
     public async Task<ServiceResponse<List<UserDto>>> UpdateUserActiveState(string userId, bool newActiveState)
