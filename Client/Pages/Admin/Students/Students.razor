@@ -4,6 +4,8 @@
 @inject IStudentService StudentService
 @inject IAuthService AuthService
 
+<PageTitle>Students - GBS</PageTitle>
+
 <div class="tw-py-4">
     <MudText Typo="Typo.h4">Students</MudText>
     @if (!_userIsAdmin && StudentService.Students.Count > 0)

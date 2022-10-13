@@ -4,6 +4,8 @@
 @inject IStreamService StreamService
 @inject IUiService UiService
 
+<PageTitle>School - GBS</PageTitle>
+
 <WelcomeBanner />
 
 <div class="tw-pt-8 tw-pb-2 tw-text-gray-600">
@@ -21,9 +23,9 @@
     }
 </MudGrid>
 
-<div class="flex justify-center pt-8 text-gray-600">
-    <h2 class="text-2xl font-semibold">Q&A</h2>
-</div>
+@* <div class="flex justify-center pt-8 text-gray-600"> *@
+@*     <h2 class="text-2xl font-semibold">Q&A</h2> *@
+@* </div> *@
 
 @code {
     protected override async Task OnInitializedAsync()

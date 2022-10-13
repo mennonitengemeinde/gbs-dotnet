@@ -6,10 +6,13 @@
 @inject IUiService UiService
 @inject IDialogService DialogService
 
-<div class="tw-flex tw-justify-between tw-items-center tw-py-4">
+<PageTitle>Streams - GBS</PageTitle>
+
+<div class="tw-py-4 tw-space-y-4">
     <MudText Typo="Typo.h4">Streams</MudText>
-    <MudSpacer />
-    <MudIconButton Icon="@Icons.Filled.Add" Color="Color.Primary" Variant="Variant.Filled" Href="/admin/streams/create" />
+    <MudButton StartIcon="@Icons.Filled.Add" Color="Color.Primary" Variant="Variant.Filled" Href="/admin/streams/create">
+        New
+    </MudButton>
 </div>
 
 <MudGrid Justify="Justify.FlexStart">
