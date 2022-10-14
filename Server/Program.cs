@@ -62,9 +62,9 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy(Policies.RequireAdminsAndSound,
         policy => policy.RequireRole(Roles.SuperAdmin, Roles.Admin, Roles.Sound));
     options.AddPolicy(Policies.RequireAdminsAndTeachers,
-        policy => policy.RequireRole(Roles.SuperAdmin, Roles.Admin, Roles.Teacher));
+        policy => policy.RequireRole(Roles.SuperAdmin, Roles.Admin, Roles.Teacher, Roles.ChurchLeader, Roles.ChurchTeacher));
     options.AddPolicy(Policies.RequireAdminsSoundAndTeachers,
-        policy => policy.RequireRole(Roles.SuperAdmin, Roles.Admin, Roles.Sound, Roles.Teacher));
+        policy => policy.RequireRole(Roles.SuperAdmin, Roles.Admin, Roles.Sound, Roles.Teacher, Roles.ChurchLeader, Roles.ChurchTeacher));
 });
 
 builder.Services.AddHttpContextAccessor();
