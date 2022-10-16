@@ -19,7 +19,16 @@ public class UserRepository : IUserRepository
 
         if (!_authRepo.GetUserRoles().Contains(Roles.SuperAdmin))
         {
+            var superAdminRoleId = await _context.Roles.FirstOrDefaultAsync(r => r.Name == Roles.SuperAdmin);
+            if (superAdminRoleId == null)
+            {
+                response.Success = false;
+                response.Message = "Server error";
+                return response;
+            }
+            
             response.Data = await _context.Users
+                .Where(u => u.UserRoles.Any(ur => ur.RoleId != superAdminRoleId.Id))
                 .Select(u => new UserDto
                 {
                     Id = u.Id,
