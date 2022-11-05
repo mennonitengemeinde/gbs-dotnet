@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>$(AssemblyName.Replace(' ', '_'))</AssemblyName>
+    <RootNamespace>gbs.Client</RootNamespace>
+  </PropertyGroup>
+
+<!--  <PropertyGroup Condition=" '$(RunConfiguration)' == 'gbs-dotnet' " />-->
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'gbs-dotnet' " />
+  <ItemGroup>
+    <PackageReference Include="Blazored.LocalStorage" Version="4.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="6.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.10" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="6.0.10" />
+    <PackageReference Include="MudBlazor" Version="6.0.17" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Shared\Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Pages\Admin\Users\Components\UserActiveUpdate.razor" />
+    <_ContentIncludedByDefault Remove="Pages\Admin\Users\Components\UserCard.razor" />
+    <_ContentIncludedByDefault Remove="Pages\Admin\Users\Components\UserChurchUpdate.razor" />
+    <_ContentIncludedByDefault Remove="Pages\Admin\Users\Components\UserRoleUpdate.razor" />
+  </ItemGroup>
+
+</Project>
