@@ -1,4 +1,4 @@
-﻿namespace Gbs.Core.Domain.Dto;
+﻿namespace gbs.Core.Shared.Wrapper;
 
 public static class Result
 {

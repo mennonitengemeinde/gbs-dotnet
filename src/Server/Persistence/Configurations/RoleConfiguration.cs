@@ -1,4 +1,6 @@
-﻿namespace Gbs.Server.Persistence.Configurations;
+﻿using gbs.Core.Shared.Const;
+
+namespace Gbs.Server.Persistence.Configurations;
 
 public class RoleConfiguration : IEntityTypeConfiguration<Role>
 {

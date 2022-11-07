@@ -1,4 +1,3 @@
-using Gbs.Core.Domain.Const;
 using Gbs.Core.Domain.Dto.Churches;
 using Gbs.Server.Application.Common.Interfaces.Repositories;
 using Microsoft.AspNetCore.Authorization;

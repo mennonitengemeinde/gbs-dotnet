@@ -8,7 +8,7 @@
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
 	<SelfContained>false</SelfContained>
 	<UserSecretsId>a4b7561b-6c3c-45fb-880d-7e27fb94610e</UserSecretsId>
-	<RootNamespace>gbs.Server</RootNamespace>
+	<RootNamespace>gbs.Server.Api</RootNamespace>
   </PropertyGroup>
 
 <!--  <PropertyGroup Condition=" '$(RunConfiguration)' == 'gbs-dotnet.Server' " />-->

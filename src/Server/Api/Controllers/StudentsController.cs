@@ -1,5 +1,5 @@
-using Gbs.Core.Domain.Const;
-using gbs.Server.Repository.StudentRepository;
+using Gbs.Core.Domain.Dto.Students;
+using Gbs.Server.Application.Common.Interfaces.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

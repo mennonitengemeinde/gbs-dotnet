@@ -1,4 +1,4 @@
-namespace Gbs.Core.Domain.Const;
+namespace gbs.Core.Shared.Const;
 
 public static class Policies
 {

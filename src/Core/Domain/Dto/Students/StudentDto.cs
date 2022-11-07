@@ -13,11 +13,11 @@ public class StudentDto
     public MaritalStatus MaritalStatus { get; set; }
     public string Email { get; set; } = string.Empty;
     public string Phone { get; set; } = string.Empty;
-
     public int ChurchId { get; set; }
-    public ChurchDto Church { get; set; } = null!;
+    public string ChurchName { get; set; } = string.Empty;
 
     public string? UserId { get; set; }
-    
-    public ICollection<EnrollmentDto> Enrollments { get; set; } = new List<EnrollmentDto>();
+
+
+    public IEnumerable<StudentEnrollmentDto> Enrollments { get; set; } = new List<StudentEnrollmentDto>();
 }

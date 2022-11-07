@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.DataProtection;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Gbs.Server.Persistence;
@@ -17,10 +18,13 @@ public static class ConfigureServices
             var password = configuration.GetConnectionString("Password");
             options.UseNpgsql($"Host={host};Port={port};Database={db};Username={username};Password={password}");
         });
-        
+
         services.AddDefaultIdentity<User>()
             .AddRoles<Role>()
             .AddEntityFrameworkStores<DataContext>();
+
+        services.AddDataProtection()
+            .PersistKeysToDbContext<DataContext>();
 
         return services;
     }

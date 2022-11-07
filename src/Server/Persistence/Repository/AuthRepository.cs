@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Http;
+using gbs.Core.Shared.Const;
+using Gbs.Server.Application.Common.Interfaces.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -13,20 +14,20 @@ public class AuthRepository : IAuthRepository
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
     private readonly IConfiguration _configuration;
-    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IAuthenticatedUserService _authenticatedUserService;
 
     public AuthRepository(
         DataContext context,
         UserManager<User> userManager,
         SignInManager<User> signInManager,
         IConfiguration configuration,
-        IHttpContextAccessor httpContextAccessor)
+        IAuthenticatedUserService authenticatedUserService)
     {
         _context = context;
         _userManager = userManager;
         _signInManager = signInManager;
         _configuration = configuration;
-        _httpContextAccessor = httpContextAccessor;
+        _authenticatedUserService = authenticatedUserService;
     }
 
     public async Task<Result<string>> Register(RegisterDto request)
@@ -98,7 +99,7 @@ public class AuthRepository : IAuthRepository
 
     public async Task<Result<List<RolesDto>>> GetRoles()
     {
-        var userRoles = GetUserRoles();
+        var userRoles = _authenticatedUserService.GetUserRoles();
         List<RolesDto> roles;
         if (userRoles.Contains(Roles.SuperAdmin))
         {
@@ -121,21 +122,6 @@ public class AuthRepository : IAuthRepository
 
         return Result.Ok(roles);
     }
-
-    // public string GetUserId() =>
-    //     _httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier);
-    //
-    // public List<string> GetUserRoles() =>
-    //     _httpContextAccessor.HttpContext!.User
-    //         .FindAll(ClaimTypes.Role)
-    //         .Select(c => c.Value)
-    //         .ToList();
-    //
-    // public bool UserIsAdmin()
-    // {
-    //     var role = GetUserRoles();
-    //     return role.Contains(Roles.Admin) || role.Contains(Roles.SuperAdmin);
-    // }
 
     private async Task<string> CreateToken(User user)
     {
@@ -163,18 +149,4 @@ public class AuthRepository : IAuthRepository
 
         return jwt;
     }
-
-    // private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
-    // {
-    //     using var hmac = new System.Security.Cryptography.HMACSHA512();
-    //     passwordSalt = hmac.Key;
-    //     passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-    // }
-    //
-    // private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
-    // {
-    //     using var hmac = new System.Security.Cryptography.HMACSHA512(passwordSalt);
-    //     var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-    //     return computedHash.SequenceEqual(passwordHash);
-    // }
 }

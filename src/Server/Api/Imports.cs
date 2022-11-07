@@ -5,5 +5,3 @@ global using gbs.Server.Data;
 global using gbs.Shared.Entities;
 global using gbs.Shared.Dtos.Students;
 global using gbs.Server.Hubs;
-global using gbs.Server.Repository.StudentRepository;
-global using gbs.Server.Repository.TeacherRepository;
