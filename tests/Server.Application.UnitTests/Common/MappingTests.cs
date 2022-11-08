@@ -1,6 +1,8 @@
 ﻿using System.Runtime.Serialization;
 using AutoMapper;
 using Gbs.Core.Domain.Dto.Churches;
+using Gbs.Core.Domain.Dto.Generations;
+using Gbs.Core.Domain.Dto.Grades;
 using Gbs.Core.Domain.Dto.Students;
 using Gbs.Core.Domain.Dto.Teachers;
 using Gbs.Core.Domain.Entities;
@@ -31,6 +33,10 @@ public class MappingTests
     [TestCase(typeof(Church), typeof(ChurchDto))]
     [TestCase(typeof(ChurchCreateDto), typeof(Church))]
     [TestCase(typeof(Enrollment), typeof(StudentEnrollmentDto))]
+    [TestCase(typeof(Enrollment), typeof(GenerationEnrollmentDto))]
+    [TestCase(typeof(Student), typeof(StudentDto))]
+    [TestCase(typeof(Generation), typeof(GenerationDto))]
+    [TestCase(typeof(Grade), typeof(GradeDto))]
     [TestCase(typeof(Student), typeof(StudentDto))]
     [TestCase(typeof(StudentCreateDto), typeof(Student))]
     [TestCase(typeof(Teacher), typeof(TeacherDto))]

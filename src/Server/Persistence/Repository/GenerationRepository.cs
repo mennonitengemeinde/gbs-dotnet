@@ -1,40 +1,22 @@
-﻿namespace Gbs.Server.Persistence.Repository;
+﻿using AutoMapper.QueryableExtensions;
+
+namespace Gbs.Server.Persistence.Repository;
 
 public class GenerationRepository : IGenerationRepository
 {
     private readonly DataContext _context;
+    private readonly IMapper _mapper;
 
-    public GenerationRepository(DataContext context)
+    public GenerationRepository(DataContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
     public async Task<Result<List<GenerationDto>>> GetAllGenerations()
     {
         var generations = await _context.Generations
-            .Select(g => new GenerationDto
-            {
-                Id = g.Id,
-                Name = g.Name,
-                IsActive = g.IsActive,
-                Students = g.Enrolments.Select(e => new GenerationStudentDto
-                {
-                    Name = e.Student.Name,
-                    DateOfBirth = e.Student.DateOfBirth,
-                    MaritalStatus = e.Student.MaritalStatus,
-                    Email = e.Student.Email,
-                    Phone = e.Student.Phone,
-                    ChurchId = e.Student.ChurchId,
-                    ChurchName = e.Student.Church.Name,
-                    Grades = e.Grades.Select(grade => new GradeDto
-                    {
-                        EnrollmentId = grade.EnrollmentId,
-                        SubjectId = grade.SubjectId,
-                        Date = grade.Date,
-                        Percent = grade.Percent
-                    })
-                })
-            })
+            .ProjectTo<GenerationDto>(_mapper.ConfigurationProvider)
             .ToListAsync();
 
         return Result.Ok(generations);
@@ -42,29 +24,10 @@ public class GenerationRepository : IGenerationRepository
 
     public async Task<Result<GenerationDto>> GetGenerationById(int id)
     {
-        var generation = await _context.Generations.Select(g => new GenerationDto
-        {
-            Id = g.Id,
-            Name = g.Name,
-            IsActive = g.IsActive,
-            Students = g.Enrolments.Select(e => new GenerationStudentDto
-            {
-                Name = e.Student.Name,
-                DateOfBirth = e.Student.DateOfBirth,
-                MaritalStatus = e.Student.MaritalStatus,
-                Email = e.Student.Email,
-                Phone = e.Student.Phone,
-                ChurchId = e.Student.ChurchId,
-                ChurchName = e.Student.Church.Name,
-                Grades = e.Grades.Select(grade => new GradeDto
-                {
-                    EnrollmentId = grade.EnrollmentId,
-                    SubjectId = grade.SubjectId,
-                    Date = grade.Date,
-                    Percent = grade.Percent
-                })
-            })
-        }).FirstOrDefaultAsync(u => u.Id == id);
+        var generation = await _context.Generations
+            .Where(g => g.Id == id)
+            .ProjectTo<GenerationDto>(_mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync();
 
         return generation == null
             ? Result.NotFound<GenerationDto>("Generation not found")

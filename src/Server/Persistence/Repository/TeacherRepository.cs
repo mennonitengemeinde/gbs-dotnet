@@ -1,4 +1,3 @@
-using AutoMapper;
 using AutoMapper.QueryableExtensions;
 
 namespace Gbs.Server.Persistence.Repository;

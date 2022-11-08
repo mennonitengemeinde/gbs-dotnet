@@ -1,5 +1,6 @@
 ﻿// Global using directives
 
+global using AutoMapper;
 global using Gbs.Core.Domain.Dto.Churches;
 global using Gbs.Core.Domain.Dto.Generations;
 global using Gbs.Core.Domain.Dto.Grades;

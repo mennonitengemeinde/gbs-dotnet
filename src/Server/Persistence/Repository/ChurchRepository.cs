@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
+﻿using AutoMapper.QueryableExtensions;
 
 namespace Gbs.Server.Persistence.Repository;
 
@@ -33,34 +32,34 @@ public class ChurchRepository : IChurchRepository
             .FirstOrDefaultAsync(c => c.Id == id);
         
         return church == null
-            ? Result.BadRequest<ChurchDto>("Church not found")
+            ? Result.NotFound<ChurchDto>("Church not found")
             : Result.Ok(church);
     }
 
-    public async Task<Result<List<ChurchDto>>> AddChurch(ChurchCreateDto church)
+    public async Task<Result<ChurchDto>> AddChurch(ChurchCreateDto church)
     {
         if (await ChurchExists(church.Name))
         {
-            return Result.BadRequest<List<ChurchDto>>("A Church with that name already exists");
+            return Result.BadRequest<ChurchDto>("A Church with that name already exists");
         }
 
         var newChurch = _mapper.Map<Church>(church);
         _context.Churches.Add(newChurch);
         await _context.SaveChangesAsync();
-        return await GetAllChurches();
+        return Result.Ok(_mapper.Map<ChurchDto>(newChurch));
     }
 
-    public async Task<Result<List<ChurchDto>>> UpdateChurch(int id, ChurchCreateDto churchDto)
+    public async Task<Result<ChurchDto>> UpdateChurch(int id, ChurchCreateDto churchDto)
     {
         var dbChurch = await _context.Churches.FirstOrDefaultAsync(c => c.Id == id);
         if (dbChurch == null)
         {
-            return Result.NotFound<List<ChurchDto>>("Church not found");
+            return Result.NotFound<ChurchDto>("Church not found");
         }
 
         if (await ChurchExists(churchDto.Name, id))
         {
-            return Result.BadRequest<List<ChurchDto>>("A Church with that name already exists");
+            return Result.BadRequest<ChurchDto>("A Church with that name already exists");
         }
 
         dbChurch.Name = churchDto.Name;
@@ -72,20 +71,20 @@ public class ChurchRepository : IChurchRepository
         _context.Churches.Update(dbChurch);
         await _context.SaveChangesAsync();
 
-        return await GetAllChurches();
+        return Result.Ok(_mapper.Map<ChurchDto>(dbChurch));
     }
 
-    public async Task<Result<List<ChurchDto>>> DeleteChurch(int id)
+    public async Task<Result<ChurchDto>> DeleteChurch(int id)
     {
         var dbChurch = await _context.Churches.FirstOrDefaultAsync(c => c.Id == id);
         if (dbChurch == null)
         {
-            return Result.NotFound<List<ChurchDto>>("Church not found");
+            return Result.NotFound<ChurchDto>("Church not found");
         }
 
         _context.Churches.Remove(dbChurch);
         await _context.SaveChangesAsync();
-        return await GetAllChurches();
+        return Result.Ok(_mapper.Map<ChurchDto>(dbChurch));
     }
 
     private async Task<bool> ChurchExists(string name, int? id = null)

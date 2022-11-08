@@ -1,4 +1,3 @@
-using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using gbs.Core.Shared.Const;
 using Gbs.Server.Application.Common.Interfaces.Services;

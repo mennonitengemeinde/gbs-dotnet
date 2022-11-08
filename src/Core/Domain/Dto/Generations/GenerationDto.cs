@@ -1,4 +1,6 @@
-﻿namespace Gbs.Core.Domain.Dto.Generations;
+﻿using Gbs.Core.Domain.Entities;
+
+namespace Gbs.Core.Domain.Dto.Generations;
 
 public class GenerationDto
 {
@@ -6,5 +8,5 @@ public class GenerationDto
     public string Name { get; set; } = string.Empty;
     public bool IsActive { get; set; } = true;
 
-    public IEnumerable<GenerationStudentDto> Students { get; set; } = new List<GenerationStudentDto>();
+    public List<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
 }
