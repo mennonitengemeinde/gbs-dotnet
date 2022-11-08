@@ -1,10 +1,10 @@
 using System.Net;
 
-namespace gbs.Client.Extensions;
+namespace gbs.Client.Wasm.Extensions;
 
 public static class HttpExtensions
 {
-    public static async Task<ServiceResponse<T>> EnsureSuccess<T>(this Task<HttpResponseMessage> responseTask)
+    public static async Task<Result<T>> EnsureSuccess<T>(this Task<HttpResponseMessage> responseTask)
     {
         HttpResponseMessage? response = null;
         try
@@ -21,30 +21,21 @@ public static class HttpExtensions
         {
             if (response == null)
             {
-                return new ServiceResponse<T>
-                {
-                    Success = false,
-                    Message = "No response from server",
-                    StatusCode = 404
-                };
+                return Result.NotFound<T>("No response from server");
             }
+
             return await HandleHttpError<T>(response);
         }
     }
 
-    private static async Task<ServiceResponse<T>> ReadFromJson<T>(HttpResponseMessage response)
+    private static async Task<Result<T>> ReadFromJson<T>(HttpResponseMessage response)
     {
         try
         {
-            var result = await response.Content.ReadFromJsonAsync<ServiceResponse<T>>();
+            var result = await response.Content.ReadFromJsonAsync<Result<T>>();
             if (result == null || result.Data == null)
             {
-                return new ServiceResponse<T>
-                {
-                    Success = false,
-                    Message = "No response from server",
-                    StatusCode = 404
-                };
+                return Result.NotFound<T>("No response from server");
             }
 
             return result;
@@ -56,28 +47,21 @@ public static class HttpExtensions
         }
     }
 
-    private static async Task<ServiceResponse<T>> HandleHttpError<T>(HttpResponseMessage response)
+    private static async Task<Result<T>> HandleHttpError<T>(HttpResponseMessage response)
     {
-        var result = new ServiceResponse<T> {Success = false};
+        // var result = new Result<T> {Success = false};
 
         switch (response.StatusCode)
         {
             case HttpStatusCode.InternalServerError:
-                result.Message = "Internal server error";
-                result.StatusCode = 500;
-                return result;
+                return Result.InternalError<T>();
             case HttpStatusCode.Forbidden:
-                result.Message = "You are not authorized to access this resource";
-                result.StatusCode = 403;
-                return result;
+                return Result.Forbidden<T>();
             case HttpStatusCode.Unauthorized:
-                result.Message = "Unauthorized";
-                result.StatusCode = 401;
-                return result;
+                return Result.Unauthorized<T>();
         }
 
-        var responseData = await response.Content.ReadFromJsonAsync<ServiceResponse<T>>();
-        result.Message = responseData?.Message ?? "Something went wrong";
-        return result;
+        var responseData = await response.Content.ReadFromJsonAsync<Result<T>>();
+        return responseData ?? Result.NotFound<T>("Something went wrong");
     }
 }

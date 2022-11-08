@@ -1,13 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Gbs.Server.Application.Common.Interfaces.Repositories;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace gbs.Server.Controllers
+namespace gbs.Server.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -22,14 +16,14 @@ namespace gbs.Server.Controllers
         }
         
         [HttpGet]
-        public async Task<ActionResult<ServiceResponse<List<Teacher>>>> GetAllTeachers()
+        public async Task<ActionResult<Result<List<TeacherDto>>>> GetAllTeachers()
         {
             var response = await _teacherRepo.GetTeachers();
             return Ok(response);
         }
         
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<ServiceResponse<Teacher>>> GetTeacher(int id)
+        public async Task<ActionResult<Result<TeacherDto>>> GetTeacher(int id)
         {
             var response = await _teacherRepo.GetTeacherById(id);
             if (!response.Success)
@@ -40,7 +34,7 @@ namespace gbs.Server.Controllers
         }
         
         [HttpPost]
-        public async Task<ActionResult<ServiceResponse<Teacher>>> AddTeacher(TeacherCreateDto teacherAddDto)
+        public async Task<ActionResult<Result<TeacherDto>>> AddTeacher(TeacherCreateDto teacherAddDto)
         {
             var response = await _teacherRepo.AddTeacher(teacherAddDto);
             if (!response.Success)
@@ -51,7 +45,7 @@ namespace gbs.Server.Controllers
         }
         
         [HttpPut("{id:int}")]
-        public async Task<ActionResult<ServiceResponse<Teacher>>> UpdateTeacher(int id, TeacherCreateDto teacherDto)
+        public async Task<ActionResult<Result<TeacherDto>>> UpdateTeacher(int id, TeacherCreateDto teacherDto)
         {
             var response = await _teacherRepo.UpdateTeacher(id, teacherDto);
             if (!response.Success)

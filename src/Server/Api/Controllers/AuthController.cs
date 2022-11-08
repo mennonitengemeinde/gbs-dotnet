@@ -1,12 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Gbs.Server.Application.Common.Interfaces.Repositories;
-using Microsoft.AspNetCore.Http;
+using Gbs.Core.Domain.Dto.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace gbs.Server.Controllers;
+namespace gbs.Server.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -20,7 +15,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
-    public async Task<ActionResult<ServiceResponse<string>>> RegisterUser(RegisterDto request)
+    public async Task<ActionResult<Result<string>>> RegisterUser(RegisterDto request)
     {
         var result = await _authRepo.Register(request);
         if (!result.Success)
@@ -31,7 +26,7 @@ public class AuthController : ControllerBase
     }
     
     [HttpPost("login")]
-    public async Task<ActionResult<ServiceResponse<int>>> Login(LoginDto request)
+    public async Task<ActionResult<Result<int>>> Login(LoginDto request)
     {
         var result = await _authRepo.Login(request.Email, request.Password);
         if (!result.Success)
@@ -43,7 +38,7 @@ public class AuthController : ControllerBase
     }
     
     [HttpGet("roles")]
-    public async Task<ActionResult<ServiceResponse<List<RolesResponse>>>> GetRoles()
+    public async Task<ActionResult<Result<List<RolesDto>>>> GetRoles()
     {
         var result = await _authRepo.GetRoles();
         if (!result.Success)

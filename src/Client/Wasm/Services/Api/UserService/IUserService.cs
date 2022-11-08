@@ -1,4 +1,4 @@
-﻿namespace gbs.Client.Services.Api.UserService;
+﻿namespace gbs.Client.Wasm.Services.Api.UserService;
 
 public interface IUserService
 {

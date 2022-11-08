@@ -1,4 +1,4 @@
-namespace gbs.Client.Services.UiService;
+namespace gbs.Client.Wasm.Services.UiService;
 
 public interface IUiService
 {

@@ -1,5 +1,6 @@
 @page "/admin/churches/create"
 @page "/admin/churches/{Id:int}/edit"
+@using gbs.Client.Wasm.Services.Api.ChurchService
 @attribute [Authorize(Policy = Policies.RequireAdmins)]
 @inject NavigationManager NavigationManager
 @inject IChurchService ChurchService

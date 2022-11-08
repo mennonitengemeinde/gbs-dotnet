@@ -1,5 +1,8 @@
 @page "/admin/students/create"
 @page "/admin/students/{Id:int}/edit"
+@using gbs.Client.Wasm.Services.Api.StudentService
+@using gbs.Client.Wasm.Services.Api.ChurchService
+@using gbs.Client.Wasm.Services.Api.AuthService
 @attribute [Authorize(Policy = Policies.RequireAdminsAndTeachers)]
 @inject IStudentService StudentService
 @inject IChurchService ChurchService

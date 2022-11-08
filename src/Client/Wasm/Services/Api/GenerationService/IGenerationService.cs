@@ -1,13 +1,13 @@
-﻿namespace gbs.Client.Services.Api.GenerationService;
+﻿namespace gbs.Client.Wasm.Services.Api.GenerationService;
 
 public interface IGenerationService
 {
-    List<Generation> Generations { get; set; }
+    List<GenerationDto> Generations { get; set; }
     event Action GenerationsChanged;
     Task LoadGenerations();
-    Task<ServiceResponse<List<Generation>>> GetGenerations();
-    Task<ServiceResponse<Generation>> GetGeneration(int Id);
-    Task<ServiceResponse<Generation>> AddGeneration(GenerationCreateDto generation);
-    Task<ServiceResponse<Generation>> UpdateGeneration(int generationId, GenerationCreateDto generation);
-    Task<ServiceResponse<bool>> DeleteGeneration(int generationId);
+    Task<Result<List<GenerationDto>>> GetGenerations();
+    Task<Result<GenerationDto>> GetGeneration(int id);
+    Task<Result<GenerationDto>> AddGeneration(GenerationCreateDto generation);
+    Task<Result<GenerationDto>> UpdateGeneration(int generationId, GenerationCreateDto generation);
+    Task<Result<bool>> DeleteGeneration(int generationId);
 }

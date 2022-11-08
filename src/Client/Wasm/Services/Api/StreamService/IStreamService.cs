@@ -1,17 +1,17 @@
-namespace gbs.Client.Services.Api.StreamService;
+namespace gbs.Client.Wasm.Services.Api.StreamService;
 
 public interface IStreamService
 {
-    List<StreamGetDto> Streams { get; set; }
+    List<StreamDto> Streams { get; set; }
     event Action StreamsChanged;
-    Task CacheStreams(ServiceResponse<List<StreamGetDto>> streamsResponse);
+    Task CacheStreams(Result<List<StreamDto>> streamsResponse);
     Task LoadStreams();
-    Task<ServiceResponse<List<StreamGetDto>>> GetLiveStreams();
-    Task<ServiceResponse<StreamGetDto>> GetStreamById(int streamId, bool isOnline = false);
-    Task<ServiceResponse<StreamGetDto>> FetchStreamById(int streamId);
-    Task<ServiceResponse<StreamGetDto>> FetchLiveOnlyLiveStreamById(int streamId);
-    Task<ServiceResponse<StreamGetDto>> AddLiveStream(StreamCreateDto createDto);
-    Task<ServiceResponse<StreamGetDto>> UpdateStream(int streamId, StreamCreateDto createDto);
-    Task<ServiceResponse<StreamGetDto>> ToggleLive(int id);
-    Task<ServiceResponse<bool>> DeleteById(int id);
+    Task<Result<List<StreamDto>>> GetLiveStreams();
+    Task<Result<StreamDto>> GetStreamById(int streamId, bool isOnline = false);
+    Task<Result<StreamDto>> FetchStreamById(int streamId);
+    Task<Result<StreamDto>> FetchLiveOnlyLiveStreamById(int streamId);
+    Task<Result<StreamDto>> AddLiveStream(StreamCreateDto createDto);
+    Task<Result<StreamDto>> UpdateStream(int streamId, StreamCreateDto createDto);
+    Task<Result<StreamDto>> ToggleLive(int id);
+    Task<Result<bool>> DeleteById(int id);
 }

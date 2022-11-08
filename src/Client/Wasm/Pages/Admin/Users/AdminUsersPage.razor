@@ -1,4 +1,7 @@
 ﻿@page "/admin/users"
+@using gbs.Client.Wasm.Services.Api.AuthService
+@using gbs.Client.Wasm.Services.Api.ChurchService
+@using gbs.Client.Wasm.Services.Api.UserService
 @implements IDisposable
 @attribute [Authorize(Policy = Policies.RequireAdmins)]
 @inject IAuthService AuthService

@@ -1,5 +1,6 @@
 @page "/admin/churches"
 @attribute [Authorize(Policy = Policies.RequireAdmins)]
+@using gbs.Client.Wasm.Services.Api.ChurchService
 @implements IDisposable
 @inject IChurchService ChurchService
 

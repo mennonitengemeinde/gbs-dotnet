@@ -1,160 +1,133 @@
-﻿using Gbs.Server.Persistence.Seeds;
-
-namespace gbs.Server.Persistence.UnitTests.Repositories;
+﻿namespace gbs.Server.Persistence.UnitTests.Repositories;
 
 public class ChurchRepositoryTests
 {
-    private DataContext _context = null!;
-    private ChurchRepository _churchRepository = null!;
+    private readonly ChurchRepository _churchRepo;
 
-    [SetUp]
-    public void Setup()
+    public ChurchRepositoryTests()
     {
         var options = new DbContextOptionsBuilder<DataContext>()
             .UseInMemoryDatabase(databaseName: "ChurchDatabase")
             .Options;
 
-        _context = new DataContext(options);
-        _context.Database.EnsureDeleted();
-        _context.Database.EnsureCreated();
+        var context = new DataContext(options);
+        context.Database.EnsureDeleted();
+        context.Database.EnsureCreated();
 
         var churches = ChurchSeed.GetChurches();
-        _context.Churches.AddRange(churches);
-        _context.SaveChanges();
+        context.Churches.AddRange(churches);
+        context.SaveChanges();
 
         var config = new MapperConfiguration(cfg => { cfg.AddProfile(new MappingProfile()); });
         var mapper = config.CreateMapper();
 
-        _churchRepository = new ChurchRepository(_context, mapper);
+        _churchRepo = new ChurchRepository(context, mapper);
     }
 
-    [Test]
+    [Fact]
     public async Task GetAllChurches_ReturnsAllChurches()
     {
-        var churches = await _churchRepository.GetAllChurches();
+        var churches = await _churchRepo.GetAllChurches();
 
-        Assert.That(churches.Data, Is.Not.Null);
-        Assert.That(churches.Data, Has.Count.EqualTo(3));
+        Assert.NotNull(churches.Data);
+        Assert.Equal(3, churches.Data.Count);
     }
-    
-    [Test]
+
+    [Fact]
     public async Task GetChurchById_ReturnsChurch()
     {
-        var church = await _churchRepository.GetChurchById(1);
+        var church = await _churchRepo.GetChurchById(1);
 
-        Assert.That(church.Data, Is.Not.Null);
-        Assert.Multiple(() =>
-        {
-            Assert.That(church.Data.Id, Is.EqualTo(1));
-            Assert.That(church.Data.Name, Is.EqualTo("Church 1"));
-        });
+        Assert.NotNull(church.Data);
+        Assert.Equal(1, church.Data.Id);
+        Assert.Equal("Church 1", church.Data.Name);
     }
-    
-    [Test]
+
+    [Fact]
     public async Task GetChurchById_ReturnsNotFound()
     {
-        var church = await _churchRepository.GetChurchById(4);
-        Assert.Multiple(() =>
-        {
-            Assert.That(church.Success, Is.False);
-            Assert.That(church.Data, Is.Null);
-            Assert.That(church.StatusCode, Is.EqualTo(404));
-        });
+        var church = await _churchRepo.GetChurchById(4);
+
+        Assert.False(church.Success);
+        Assert.Null(church.Data);
+        Assert.Equal(404, church.StatusCode);
     }
 
-    [Test]
+    [Fact]
     public async Task AddChurch_ReturnsChurch()
     {
         var church = new ChurchCreateDto { Name = "Church 4", Country = "Canada" };
 
-        var result = await _churchRepository.AddChurch(church);
+        var result = await _churchRepo.AddChurch(church);
 
-        Assert.That(result.Data, Is.Not.Null);
-        Assert.Multiple(() =>
-        {
-            Assert.That(result.Data.Id, Is.EqualTo(4));
-            Assert.That(result.Data.Name, Is.EqualTo("Church 4"));
-        });
+        Assert.NotNull(result.Data);
+        Assert.Equal(4, result.Data.Id);
+        Assert.Equal("Church 4", result.Data.Name);
     }
-    
-    [Test]
+
+    [Fact]
     public async Task AddChurch_ReturnsBadRequest()
     {
         var church = new ChurchCreateDto { Name = "Church 1", Country = "Canada" };
 
-        var result = await _churchRepository.AddChurch(church);
+        var result = await _churchRepo.AddChurch(church);
 
-        Assert.Multiple(() =>
-        {
-            Assert.That(result.Data, Is.Null);
-            Assert.That(result.Success, Is.False);
-            Assert.That(result.StatusCode, Is.EqualTo(400));
-        });
+        Assert.False(result.Success);
+        Assert.Null(result.Data);
+        Assert.Equal(400, result.StatusCode);
     }
-    
-    [Test]
+
+    [Fact]
     public async Task UpdateChurch_ReturnsChurch()
     {
         var church = new ChurchCreateDto { Name = "Church 1 Updated", Country = "Canada" };
 
-        var result = await _churchRepository.UpdateChurch(1, church);
+        var result = await _churchRepo.UpdateChurch(1, church);
 
-        Assert.That(result.Data, Is.Not.Null);
-        Assert.Multiple(() =>
-        {
-            Assert.That(result.Data.Id, Is.EqualTo(1));
-            Assert.That(result.Data.Name, Is.EqualTo("Church 1 Updated"));
-        });
+        Assert.NotNull(result.Data);
+        Assert.Equal(1, result.Data.Id);
+        Assert.Equal("Church 1 Updated", result.Data.Name);
     }
-    
-    [Test]
+
+    [Fact]
     public async Task UpdateChurch_ReturnsNotFound()
     {
         var church = new ChurchCreateDto { Name = "Church 1 Updated", Country = "Canada" };
 
-        var result = await _churchRepository.UpdateChurch(4, church);
+        var result = await _churchRepo.UpdateChurch(4, church);
 
-        Assert.Multiple(() =>
-        {
-            Assert.That(result.Data, Is.Null);
-            Assert.That(result.Success, Is.False);
-            Assert.That(result.StatusCode, Is.EqualTo(404));
-        });
+        Assert.False(result.Success);
+        Assert.Null(result.Data);
+        Assert.Equal(404, result.StatusCode);
     }
-    
-    [Test]
+
+    [Fact]
     public async Task UpdateChurch_ChurchNameAlreadyExists_ReturnsBadRequest()
     {
         var church = new ChurchCreateDto { Name = "Church 2", Country = "Canada" };
 
-        var result = await _churchRepository.UpdateChurch(1, church);
+        var result = await _churchRepo.UpdateChurch(1, church);
 
-        Assert.Multiple(() =>
-        {
-            Assert.That(result.Data, Is.Null);
-            Assert.That(result.Success, Is.False);
-            Assert.That(result.StatusCode, Is.EqualTo(400));
-        });
+        Assert.False(result.Success);
+        Assert.Null(result.Data);
+        Assert.Equal(400, result.StatusCode);
     }
-    
-    [Test]
+
+    [Fact]
     public async Task DeleteChurch_ReturnsSuccess()
     {
-        var result = await _churchRepository.DeleteChurch(1);
+        var result = await _churchRepo.DeleteChurch(1);
 
-        Assert.That(result.Success, Is.True);
+        Assert.True(result.Success);
+        Assert.True(result.Data);
     }
-    
-    [Test]
+
+    [Fact]
     public async Task DeleteChurch_ReturnsNotFound()
     {
-        var result = await _churchRepository.DeleteChurch(4);
+        var result = await _churchRepo.DeleteChurch(4);
 
-        Assert.Multiple(() =>
-        {
-            Assert.That(result.Data, Is.Null);
-            Assert.That(result.Success, Is.False);
-            Assert.That(result.StatusCode, Is.EqualTo(404));
-        });
+        Assert.False(result.Success);
+        Assert.Equal(404, result.StatusCode);
     }
 }

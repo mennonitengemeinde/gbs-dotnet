@@ -1,4 +1,4 @@
-namespace gbs.Client.Services.Api.TeacherService;
+namespace gbs.Client.Wasm.Services.Api.TeacherService;
 
 public class TeacherService : ITeacherService
 {

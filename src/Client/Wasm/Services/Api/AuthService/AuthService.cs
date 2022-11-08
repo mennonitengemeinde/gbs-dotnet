@@ -1,7 +1,7 @@
 using System.Security.Claims;
-using gbs.Shared.Const;
+using Microsoft.AspNetCore.Components.Authorization;
 
-namespace gbs.Client.Services.Api.AuthService;
+namespace gbs.Client.Wasm.Services.Api.AuthService;
 
 public class AuthApiService : IAuthService
 {
@@ -14,22 +14,22 @@ public class AuthApiService : IAuthService
         _authStateProvider = authStateProvider;
     }
 
-    public async Task<ServiceResponse<string>> Register(RegisterDto userRegister)
+    public async Task<Result<string>> Register(RegisterDto userRegister)
     {
         return await _http.PostAsJsonAsync("api/auth/register", userRegister)
             .EnsureSuccess<string>();
     }
 
-    public async Task<ServiceResponse<string>> Login(LoginDto userLogin)
+    public async Task<Result<string>> Login(LoginDto userLogin)
     {
         return await _http.PostAsJsonAsync("api/auth/login", userLogin)
             .EnsureSuccess<string>();
     }
 
-    public async Task<ServiceResponse<List<RolesResponse>>> FetchRoles()
+    public async Task<Result<List<RolesDto>>> FetchRoles()
     {
         return await _http.GetAsync("api/auth/roles")
-            .EnsureSuccess<List<RolesResponse>>();
+            .EnsureSuccess<List<RolesDto>>();
     }
 
     public async Task<bool> IsUserAuthenticated()

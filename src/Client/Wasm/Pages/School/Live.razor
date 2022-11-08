@@ -1,6 +1,7 @@
 ﻿@page "/school/{Id:int}/live"
 @attribute [Authorize(Policy = Policies.RequireAdminsSoundAndTeachers)]
 @using gbs.Client.Pages.School.Components
+@using gbs.Client.Wasm.Services.Api.StreamService
 @inject IStreamService StreamService
 @inject IUiService UiService
 @inject NavigationManager NavigationManager

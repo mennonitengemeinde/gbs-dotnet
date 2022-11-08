@@ -1,9 +1,8 @@
 using Gbs.Core.Domain.Dto.Churches;
-using Gbs.Server.Application.Common.Interfaces.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace gbs.Server.Controllers;
+namespace gbs.Server.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -18,7 +17,7 @@ public class ChurchesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<ServiceResponse<List<ChurchDto>>>> GetChurches()
+    public async Task<ActionResult<Result<List<ChurchDto>>>> GetChurches()
     {
         var response = await _churchRepo.GetAllChurches();
         if (!response.Success)
@@ -30,7 +29,7 @@ public class ChurchesController : ControllerBase
     }
 
     [HttpGet("{churchId:int}")]
-    public async Task<ActionResult<ServiceResponse<ChurchDto>>> GetChurch(int churchId)
+    public async Task<ActionResult<Result<ChurchDto>>> GetChurch(int churchId)
     {
         var response = await _churchRepo.GetChurchById(churchId);
         if (!response.Success)
@@ -42,7 +41,7 @@ public class ChurchesController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<ServiceResponse<List<ChurchDto>>>> AddChurch(ChurchCreateDto church)
+    public async Task<ActionResult<Result<ChurchDto>>> AddChurch(ChurchCreateDto church)
     {
         var response = await _churchRepo.AddChurch(church);
         if (!response.Success)
@@ -54,7 +53,7 @@ public class ChurchesController : ControllerBase
     }
 
     [HttpPut("{churchId:int}")]
-    public async Task<ActionResult<ServiceResponse<ChurchDto>>> UpdateChurch(int churchId, ChurchCreateDto church)
+    public async Task<ActionResult<Result<ChurchDto>>> UpdateChurch(int churchId, ChurchCreateDto church)
     {
         var response = await _churchRepo.UpdateChurch(churchId, church);
         if (!response.Success)
@@ -66,7 +65,7 @@ public class ChurchesController : ControllerBase
     }
 
     [HttpDelete("{churchId:int}")]
-    public async Task<ActionResult<ServiceResponse<List<ChurchDto>>>> DeleteChurch(int churchId)
+    public async Task<ActionResult<Result<List<ChurchDto>>>> DeleteChurch(int churchId)
     {
         var response = await _churchRepo.DeleteChurch(churchId);
         if (!response.Success)

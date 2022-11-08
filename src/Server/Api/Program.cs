@@ -1,4 +1,5 @@
 using gbs.Server.Api;
+using gbs.Server.Api.Hubs;
 using Gbs.Server.Application;
 using Gbs.Server.Persistence;
 

@@ -1,10 +1,10 @@
-﻿namespace gbs.Client.Services.Api.GenerationService;
+﻿namespace gbs.Client.Wasm.Services.Api.GenerationService;
 
 public class GenerationService : IGenerationService
 {
     private readonly HttpClient _http;
     private readonly IUiService _uiService;
-    public List<Generation> Generations { get; set; } = new List<Generation>();
+    public List<GenerationDto> Generations { get; set; } = new();
     public event Action? GenerationsChanged;
 
     public GenerationService(HttpClient http, IUiService uiService)
@@ -19,7 +19,7 @@ public class GenerationService : IGenerationService
         if (result.Success == false)
         {
             await _uiService.ShowErrorAlert(result.Message, result.StatusCode);
-            Generations = new List<Generation>();
+            Generations = new List<GenerationDto>();
             return;
         }
 
@@ -27,31 +27,31 @@ public class GenerationService : IGenerationService
         GenerationsChanged?.Invoke();
     }
 
-    public async Task<ServiceResponse<List<Generation>>> GetGenerations()
+    public async Task<Result<List<GenerationDto>>> GetGenerations()
     {
         return await _http.GetAsync("api/generations")
-            .EnsureSuccess<List<Generation>>();
+            .EnsureSuccess<List<GenerationDto>>();
     }
     
-    public async Task<ServiceResponse<Generation>> GetGeneration(int id)
+    public async Task<Result<GenerationDto>> GetGeneration(int id)
     {
         return await _http.GetAsync($"api/generations/{id}")
-            .EnsureSuccess<Generation>();
+            .EnsureSuccess<GenerationDto>();
     }
 
-    public async Task<ServiceResponse<Generation>> AddGeneration(GenerationCreateDto generation)
+    public async Task<Result<GenerationDto>> AddGeneration(GenerationCreateDto generation)
     {
         return await _http.PostAsJsonAsync("api/generations", generation)
-            .EnsureSuccess<Generation>();
+            .EnsureSuccess<GenerationDto>();
     }
 
-    public async Task<ServiceResponse<Generation>> UpdateGeneration(int generationId, GenerationCreateDto generation)
+    public async Task<Result<GenerationDto>> UpdateGeneration(int generationId, GenerationCreateDto generation)
     {
         return await _http.PutAsJsonAsync($"api/generations/{generationId}", generation)
-            .EnsureSuccess<Generation>();
+            .EnsureSuccess<GenerationDto>();
     }
 
-    public async Task<ServiceResponse<bool>> DeleteGeneration(int generationId)
+    public async Task<Result<bool>> DeleteGeneration(int generationId)
     {
         return await _http.DeleteAsync($"api/generations/{generationId}")
             .EnsureSuccess<bool>();

@@ -1,13 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Gbs.Server.Application.Common.Interfaces.Repositories;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace gbs.Server.Controllers
+namespace gbs.Server.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -23,7 +17,7 @@ namespace gbs.Server.Controllers
 
         [HttpGet]
         [Authorize(Policy = Policies.RequireAdminsSoundAndTeachers)]
-        public async Task<ActionResult<ServiceResponse<List<StreamGetDto>>>> GetStreams()
+        public async Task<ActionResult<Result<List<StreamDto>>>> GetStreams()
         {
             var response = await _streamRepo.GetLiveStreams();
             if (!response.Success)
@@ -36,7 +30,7 @@ namespace gbs.Server.Controllers
         
         [HttpGet("{id:int}")]
         [Authorize(Policy = Policies.RequireAdminsSoundAndTeachers)]
-        public async Task<ActionResult<ServiceResponse<StreamGetDto>>> GetStream(int id)
+        public async Task<ActionResult<Result<StreamDto>>> GetStream(int id)
         {
             var response = await _streamRepo.GetLiveStreamById(id);
             if (!response.Success)
@@ -49,7 +43,7 @@ namespace gbs.Server.Controllers
         
         [HttpGet("{id:int}/live")]
         [Authorize(Policy = Policies.RequireAdminsSoundAndTeachers)]
-        public async Task<ActionResult<ServiceResponse<StreamGetDto>>> GetOnlineStream(int id)
+        public async Task<ActionResult<Result<StreamDto>>> GetOnlineStream(int id)
         {
             var response = await _streamRepo.GetLiveStreamById(id, true);
             if (!response.Success)
@@ -62,7 +56,7 @@ namespace gbs.Server.Controllers
 
         [HttpPost]
         [Authorize(Policy = Policies.RequireAdminsAndSound)]
-        public async Task<ActionResult<ServiceResponse<StreamGetDto>>> AddStream(StreamCreateDto streamCreateDto)
+        public async Task<ActionResult<Result<StreamDto>>> AddStream(StreamCreateDto streamCreateDto)
         {
             var response = await _streamRepo.CreateLiveStream(streamCreateDto);
             if (!response.Success)
@@ -75,7 +69,7 @@ namespace gbs.Server.Controllers
         
         [HttpPut("{streamId:int}")]
         [Authorize(Policy = Policies.RequireAdminsAndSound)]
-        public async Task<ActionResult<ServiceResponse<StreamGetDto>>> UpdateStream(int streamId,
+        public async Task<ActionResult<Result<StreamDto>>> UpdateStream(int streamId,
             StreamCreateDto liveDto)
         {
             var response = await _streamRepo.UpdateStream(streamId, liveDto);
@@ -89,7 +83,7 @@ namespace gbs.Server.Controllers
 
         [HttpPut("{streamId:int}/live")]
         [Authorize(Policy = Policies.RequireAdminsAndSound)]
-        public async Task<ActionResult<ServiceResponse<StreamGetDto>>> UpdateStreamLiveStatus(int streamId,
+        public async Task<ActionResult<Result<StreamDto>>> UpdateStreamLiveStatus(int streamId,
             StreamUpdateLiveDto liveDto)
         {
             var response = await _streamRepo.UpdateStreamLiveStatus(streamId, liveDto);
@@ -103,7 +97,7 @@ namespace gbs.Server.Controllers
         
         [HttpDelete("{streamId:int}")]
         [Authorize(Policy = Policies.RequireAdminsAndSound)]
-        public async Task<ActionResult<ServiceResponse<int>>> DeleteStream(int streamId)
+        public async Task<ActionResult<Result<int>>> DeleteStream(int streamId)
         {
             var response = await _streamRepo.DeleteStream(streamId);
             if (!response.Success)

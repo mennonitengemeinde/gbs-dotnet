@@ -1,14 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Gbs.Core.Domain.Dto.Identity;
-using Gbs.Server.Application.Common.Interfaces.Repositories;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace gbs.Server.Controllers
+namespace gbs.Server.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -23,14 +17,14 @@ namespace gbs.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<ServiceResponse<List<UserDto>>>> GetUsers()
+        public async Task<ActionResult<Result<List<UserDto>>>> GetUsers()
         {
             var users = await _userRepo.GetUsers();
             return Ok(users);
         }
 
         [HttpPut("{userId}/church")]
-        public async Task<ActionResult<ServiceResponse<List<UserDto>>>> UpdateUser(string userId, UserUpdateChurchDto updateDto)
+        public async Task<ActionResult<Result<List<UserDto>>>> UpdateUser(string userId, UserUpdateChurchDto updateDto)
         {
             var user = await _userRepo.UpdateUserChurch(userId, updateDto);
             if (!user.Success)
@@ -42,7 +36,7 @@ namespace gbs.Server.Controllers
         }
 
         [HttpPut("{userId}/roles")]
-        public async Task<ActionResult<ServiceResponse<List<UserDto>>>> UpdateUserRole(string userId,
+        public async Task<ActionResult<Result<List<UserDto>>>> UpdateUserRole(string userId,
             [FromBody] UserUpdateRoleDto updateRoleDto)
         {
             var user = await _userRepo.UpdateUserRole(userId, updateRoleDto.Roles);
@@ -55,7 +49,7 @@ namespace gbs.Server.Controllers
         }
 
         [HttpPut("{userId}/active")]
-        public async Task<ActionResult<ServiceResponse<List<UserDto>>>> UpdateUserActiveState(string userId,
+        public async Task<ActionResult<Result<List<UserDto>>>> UpdateUserActiveState(string userId,
             UserUpdateActiveStateDto updateActiveStateDto)
         {
             var user = await _userRepo.UpdateUserActiveState(userId, updateActiveStateDto.IsActive);

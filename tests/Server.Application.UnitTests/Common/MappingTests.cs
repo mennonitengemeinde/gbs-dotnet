@@ -12,46 +12,45 @@ namespace gbs.Server.Application.UnitTests.Common;
 
 public class MappingTests
 {
-    private readonly IConfigurationProvider _configuration;
-    private readonly IMapper _mapper;
-    
-    public MappingTests()
-    {
-        _configuration = new MapperConfiguration(config => 
-            config.AddProfile<MappingProfile>());
-        
-        _mapper = _configuration.CreateMapper();
-    }
-    
-    [Test]
+    [Fact]
     public void ShouldHaveValidConfiguration()
     {
-        _configuration.AssertConfigurationIsValid();
+        var configuration = new MapperConfiguration(config => 
+            config.AddProfile<MappingProfile>());
+        
+        var mapper = configuration.CreateMapper();
+        
+        // configuration.AssertConfigurationIsValid();
+        mapper.ConfigurationProvider.AssertConfigurationIsValid();
     }
     
-    [Test]
-    [TestCase(typeof(Church), typeof(ChurchDto))]
-    [TestCase(typeof(ChurchCreateDto), typeof(Church))]
-    [TestCase(typeof(Enrollment), typeof(StudentEnrollmentDto))]
-    [TestCase(typeof(Enrollment), typeof(GenerationEnrollmentDto))]
-    [TestCase(typeof(Student), typeof(StudentDto))]
-    [TestCase(typeof(Generation), typeof(GenerationDto))]
-    [TestCase(typeof(Grade), typeof(GradeDto))]
-    [TestCase(typeof(Student), typeof(StudentDto))]
-    [TestCase(typeof(StudentCreateDto), typeof(Student))]
-    [TestCase(typeof(Teacher), typeof(TeacherDto))]
+    [Theory]
+    [InlineData(typeof(Church), typeof(ChurchDto))]
+    [InlineData(typeof(ChurchCreateDto), typeof(Church))]
+    [InlineData(typeof(Enrollment), typeof(StudentEnrollmentDto))]
+    [InlineData(typeof(Enrollment), typeof(GenerationEnrollmentDto))]
+    [InlineData(typeof(Student), typeof(StudentDto))]
+    [InlineData(typeof(Generation), typeof(GenerationDto))]
+    [InlineData(typeof(Grade), typeof(GradeDto))]
+    [InlineData(typeof(StudentCreateDto), typeof(Student))]
+    [InlineData(typeof(Teacher), typeof(TeacherDto))]
     public void ShouldSupportMappingFromSourceToDestination(Type source, Type destination)
     {
+        var configuration = new MapperConfiguration(config => 
+            config.AddProfile<MappingProfile>());
+        
+        var mapper = configuration.CreateMapper();
+        
         var instance = GetInstanceOf(source);
-
-        _mapper.Map(instance, source, destination);
+    
+        mapper.Map(instance, source, destination);
     }
     
     private object GetInstanceOf(Type type)
     {
         if (type.GetConstructor(Type.EmptyTypes) != null)
             return Activator.CreateInstance(type)!;
-
+    
         // Type without parameterless constructor
         return FormatterServices.GetUninitializedObject(type);
     }

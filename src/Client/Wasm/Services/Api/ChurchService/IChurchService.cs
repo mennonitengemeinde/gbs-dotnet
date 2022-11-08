@@ -1,12 +1,12 @@
-namespace gbs.Client.Services.Api.ChurchService;
+namespace gbs.Client.Wasm.Services.Api.ChurchService;
 
 public interface IChurchService
 {
     List<ChurchDto> Churches { get; set; }
     event Action ChurchesChanged;
-    Task<ServiceResponse<List<ChurchDto>>> GetChurches();
-    Task<ServiceResponse<ChurchDto>> GetChurch(int id);
-    Task<ServiceResponse<List<ChurchDto>>> AddChurch(ChurchCreateDto church);
-    Task<ServiceResponse<List<ChurchDto>>> UpdateChurch(int churchId, ChurchCreateDto church);
-    Task<ServiceResponse<List<ChurchDto>>> DeleteChurch(int id);
+    Task<Result<List<ChurchDto>>> GetChurches();
+    Task<Result<ChurchDto>> GetChurch(int id);
+    Task<Result<ChurchDto>> AddChurch(ChurchCreateDto church);
+    Task<Result<ChurchDto>> UpdateChurch(int churchId, ChurchCreateDto church);
+    Task<Result<bool>> DeleteChurch(int id);
 }

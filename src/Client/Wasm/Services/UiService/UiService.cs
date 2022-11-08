@@ -1,8 +1,9 @@
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using MudBlazor;
 
-namespace gbs.Client.Services.UiService;
+namespace gbs.Client.Wasm.Services.UiService;
 
 public class UiService : IUiService
 {

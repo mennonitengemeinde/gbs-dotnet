@@ -1,13 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Gbs.Server.Application.Common.Interfaces.Repositories;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace gbs.Server.Controllers
+namespace gbs.Server.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -23,7 +17,7 @@ namespace gbs.Server.Controllers
         
         [HttpGet]
         [Authorize(Policy = Policies.RequireAdminsAndSound)]
-        public async Task<ActionResult<ServiceResponse<List<Generation>>>> GetGenerations()
+        public async Task<ActionResult<Result<List<GenerationDto>>>> GetGenerations()
         {
             var result = await _generationRepo.GetAllGenerations();
             return Ok(result);
@@ -31,7 +25,7 @@ namespace gbs.Server.Controllers
         
         [HttpGet("{id:int}")]
         [Authorize(Policy = Policies.RequireAdmins)]
-        public async Task<ActionResult<ServiceResponse<Generation>>> GetGenerationById(int id)
+        public async Task<ActionResult<Result<GenerationDto>>> GetGenerationById(int id)
         {
             var result = await _generationRepo.GetGenerationById(id);
             if (!result.Success)
@@ -43,7 +37,7 @@ namespace gbs.Server.Controllers
         
         [HttpPost]
         [Authorize(Policy = Policies.RequireAdmins)]
-        public async Task<ActionResult<ServiceResponse<Generation>>> AddGeneration(GenerationCreateDto request)
+        public async Task<ActionResult<Result<GenerationDto>>> AddGeneration(GenerationCreateDto request)
         {
             var result = await _generationRepo.AddGeneration(request);
             if (!result.Success)
@@ -55,7 +49,7 @@ namespace gbs.Server.Controllers
         
         [HttpPut("{generationId:int}")]
         [Authorize(Policy = Policies.RequireAdmins)]
-        public async Task<ActionResult<ServiceResponse<Generation>>> UpdateGeneration(int generationId, GenerationUpdateDto generation)
+        public async Task<ActionResult<Result<GenerationDto>>> UpdateGeneration(int generationId, GenerationUpdateDto generation)
         {
             var result = await _generationRepo.UpdateGeneration(generationId, generation);
             if (!result.Success)
@@ -67,7 +61,7 @@ namespace gbs.Server.Controllers
         
         [HttpDelete("{id:int}")]
         [Authorize(Policy = Policies.RequireAdmins)]
-        public async Task<ActionResult<ServiceResponse<Generation>>> DeleteGeneration(int id)
+        public async Task<ActionResult<Result<bool>>> DeleteGeneration(int id)
         {
             var result = await _generationRepo.DeleteGeneration(id);
             if (!result.Success)

@@ -1,7 +1,14 @@
-using gbs.Client;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Blazored.LocalStorage;
+using gbs.Client.Wasm.Services.Api.AuthService;
+using gbs.Client.Wasm.Services.Api.ChurchService;
+using gbs.Client.Wasm.Services.Api.GenerationService;
+using gbs.Client.Wasm.Services.Api.StreamService;
+using gbs.Client.Wasm.Services.Api.StudentService;
+using gbs.Client.Wasm.Services.Api.TeacherService;
+using gbs.Client.Wasm.Services.Api.UserService;
+using Microsoft.AspNetCore.Components.Authorization;
 using MudBlazor;
 using MudBlazor.Services;
 

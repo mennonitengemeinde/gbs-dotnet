@@ -1,5 +1,7 @@
 @page "/admin/students"
 @attribute [Authorize(Policy = Policies.RequireAdminsAndTeachers)]
+@using gbs.Client.Wasm.Services.Api.StudentService
+@using gbs.Client.Wasm.Services.Api.AuthService
 @implements IDisposable
 @inject IStudentService StudentService
 @inject IAuthService AuthService

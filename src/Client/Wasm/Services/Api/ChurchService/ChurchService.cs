@@ -1,4 +1,4 @@
-namespace gbs.Client.Services.Api.ChurchService;
+namespace gbs.Client.Wasm.Services.Api.ChurchService;
 
 public class ChurchService : IChurchService
 {
@@ -13,7 +13,7 @@ public class ChurchService : IChurchService
         _uiService = uiService;
     }
 
-    private async Task UpdateChurches(ServiceResponse<List<ChurchDto>> response)
+    private async Task UpdateChurches(Result<List<ChurchDto>> response)
     {
         if (!response.Success)
         {
@@ -26,7 +26,7 @@ public class ChurchService : IChurchService
         ChurchesChanged?.Invoke();
     }
 
-    public async Task<ServiceResponse<List<ChurchDto>>> GetChurches()
+    public async Task<Result<List<ChurchDto>>> GetChurches()
     {
         var result = await _http.GetAsync("api/churches")
             .EnsureSuccess<List<ChurchDto>>();
@@ -34,33 +34,33 @@ public class ChurchService : IChurchService
         return result;
     }
 
-    public async Task<ServiceResponse<ChurchDto>> GetChurch(int id)
+    public async Task<Result<ChurchDto>> GetChurch(int id)
     {
         return await _http.GetAsync($"api/churches/{id}")
             .EnsureSuccess<ChurchDto>();
     }
 
-    public async Task<ServiceResponse<List<ChurchDto>>> AddChurch(ChurchCreateDto church)
+    public async Task<Result<ChurchDto>> AddChurch(ChurchCreateDto church)
     {
         var result = await _http.PostAsJsonAsync("api/churches", church)
-            .EnsureSuccess<List<ChurchDto>>();
-        await UpdateChurches(result);
+            .EnsureSuccess<ChurchDto>();
+        await GetChurches();
         return result;
     }
 
-    public async Task<ServiceResponse<List<ChurchDto>>> UpdateChurch(int churchId, ChurchCreateDto church)
+    public async Task<Result<ChurchDto>> UpdateChurch(int churchId, ChurchCreateDto church)
     {
         var result = await _http.PutAsJsonAsync($"api/churches/{churchId}", church)
-            .EnsureSuccess<List<ChurchDto>>();
-        await UpdateChurches(result);
+            .EnsureSuccess<ChurchDto>();
+        await GetChurches();
         return result;
     }
 
-    public async Task<ServiceResponse<List<ChurchDto>>> DeleteChurch(int id)
+    public async Task<Result<bool>> DeleteChurch(int id)
     {
         var result = await _http.DeleteAsync($"api/churches/{id}")
-            .EnsureSuccess<List<ChurchDto>>();
-        await UpdateChurches(result);
+            .EnsureSuccess<bool>();
+        await GetChurches();
         return result;
     }
 }

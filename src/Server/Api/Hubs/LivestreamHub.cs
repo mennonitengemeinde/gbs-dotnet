@@ -1,7 +1,4 @@
-﻿using Gbs.Server.Application.Common.Interfaces.Repositories;
-using Microsoft.AspNetCore.SignalR;
-
-namespace gbs.Server.Hubs;
+﻿namespace gbs.Server.Api.Hubs;
 
 public class LivestreamHub : Hub
 {

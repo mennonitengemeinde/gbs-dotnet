@@ -74,17 +74,17 @@ public class ChurchRepository : IChurchRepository
         return Result.Ok(_mapper.Map<ChurchDto>(dbChurch));
     }
 
-    public async Task<Result<ChurchDto>> DeleteChurch(int id)
+    public async Task<Result<bool>> DeleteChurch(int id)
     {
         var dbChurch = await _context.Churches.FirstOrDefaultAsync(c => c.Id == id);
         if (dbChurch == null)
         {
-            return Result.NotFound<ChurchDto>("Church not found");
+            return Result.NotFound<bool>("Church not found");
         }
 
         _context.Churches.Remove(dbChurch);
         await _context.SaveChangesAsync();
-        return Result.Ok(_mapper.Map<ChurchDto>(dbChurch));
+        return Result.Ok(true);
     }
 
     private async Task<bool> ChurchExists(string name, int? id = null)

@@ -1,6 +1,9 @@
 @page "/admin/streams/create"
 @page "/admin/streams/{Id:int}/edit"
 @attribute [Authorize(Policy = Policies.RequireAdminsAndSound)]
+@using gbs.Client.Wasm.Services.Api.StreamService
+@using gbs.Client.Wasm.Services.Api.TeacherService
+@using gbs.Client.Wasm.Services.Api.GenerationService
 @implements IDisposable
 @inject IStreamService StreamService
 @inject ITeacherService TeacherService

@@ -1,10 +1,10 @@
-namespace gbs.Client.Services.Api.StreamService;
+namespace gbs.Client.Wasm.Services.Api.StreamService;
 
 public class StreamService : IStreamService
 {
     private readonly HttpClient _http;
     private readonly IUiService _uiService;
-    public List<StreamGetDto> Streams { get; set; } = new List<StreamGetDto>();
+    public List<StreamDto> Streams { get; set; } = new();
     public event Action? StreamsChanged;
 
     public StreamService(HttpClient http, IUiService uiService)
@@ -13,7 +13,7 @@ public class StreamService : IStreamService
         _uiService = uiService;
     }
 
-    public async Task CacheStreams(ServiceResponse<List<StreamGetDto>> streamsResponse)
+    public async Task CacheStreams(Result<List<StreamDto>> streamsResponse)
     {
         if (!streamsResponse.Success)
         {
@@ -32,16 +32,15 @@ public class StreamService : IStreamService
         await CacheStreams(result);
     }
 
-    public async Task<ServiceResponse<List<StreamGetDto>>> GetLiveStreams()
+    public async Task<Result<List<StreamDto>>> GetLiveStreams()
     {
         return await _http
             .GetAsync("api/streams")
-            .EnsureSuccess<List<StreamGetDto>>();
+            .EnsureSuccess<List<StreamDto>>();
     }
 
-    public async Task<ServiceResponse<StreamGetDto>> GetStreamById(int streamId, bool isOnline = false)
+    public async Task<Result<StreamDto>> GetStreamById(int streamId, bool isOnline = false)
     {
-        var response = new ServiceResponse<StreamGetDto>();
         if (Streams.Count == 0)
         {
             await LoadStreams();
@@ -52,64 +51,54 @@ public class StreamService : IStreamService
             ? Streams.FirstOrDefault(x => x.Id == streamId && x.IsLive)
             : Streams.FirstOrDefault(x => x.Id == streamId);
 
-        if (stream == null)
-        {
-            response.Success = false;
-            response.Message = "Stream not found";
-            return response;
-        }
-
-        response.Data = stream;
-        return response;
+        return stream == null 
+            ? Result.NotFound<StreamDto>("Stream not found") 
+            : Result.Ok(stream);
     }
 
-    public async Task<ServiceResponse<StreamGetDto>> FetchStreamById(int streamId)
+    public async Task<Result<StreamDto>> FetchStreamById(int streamId)
     {
         return await _http
             .GetAsync($"api/streams/{streamId}")
-            .EnsureSuccess<StreamGetDto>();
+            .EnsureSuccess<StreamDto>();
     }
 
-    public async Task<ServiceResponse<StreamGetDto>> FetchLiveOnlyLiveStreamById(int streamId)
+    public async Task<Result<StreamDto>> FetchLiveOnlyLiveStreamById(int streamId)
     {
         return await _http
             .GetAsync($"api/streams/{streamId}/live")
-            .EnsureSuccess<StreamGetDto>();
+            .EnsureSuccess<StreamDto>();
     }
 
-    public async Task<ServiceResponse<StreamGetDto>> AddLiveStream(StreamCreateDto createDto)
+    public async Task<Result<StreamDto>> AddLiveStream(StreamCreateDto createDto)
     {
         return await _http
             .PostAsJsonAsync("api/streams", createDto)
-            .EnsureSuccess<StreamGetDto>();
+            .EnsureSuccess<StreamDto>();
     }
 
-    public async Task<ServiceResponse<StreamGetDto>> UpdateStream(int streamId, StreamCreateDto createDto)
+    public async Task<Result<StreamDto>> UpdateStream(int streamId, StreamCreateDto createDto)
     {
         return await _http
             .PutAsJsonAsync($"api/streams/{streamId}", createDto)
-            .EnsureSuccess<StreamGetDto>();
+            .EnsureSuccess<StreamDto>();
     }
 
-    public async Task<ServiceResponse<StreamGetDto>> ToggleLive(int id)
+    public async Task<Result<StreamDto>> ToggleLive(int id)
     {
         var liveStream = Streams.FirstOrDefault(s => s.Id == id);
         if (liveStream == null)
         {
-            return new ServiceResponse<StreamGetDto>
-            {
-                Success = false,
-                Message = "Stream not found"
-            };
+            return Result.NotFound<StreamDto>("Stream not found");
         }
 
-        var streamDto = new StreamUpdateLiveDto {IsLive = !liveStream.IsLive};
+        var streamDto = new StreamUpdateLiveDto { IsLive = !liveStream.IsLive };
         return await _http
             .PutAsJsonAsync($"api/streams/{id}/live", streamDto)
-            .EnsureSuccess<StreamGetDto>();
+            .EnsureSuccess<StreamDto>();
     }
 
-    public async Task<ServiceResponse<bool>> DeleteById(int id)
+    public async Task<Result<bool>> DeleteById(int id)
     {
         return await _http
             .DeleteAsync($"api/streams/{id}")

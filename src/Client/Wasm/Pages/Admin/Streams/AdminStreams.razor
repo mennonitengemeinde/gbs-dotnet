@@ -2,6 +2,7 @@
 @attribute [Authorize(Policy = Policies.RequireAdminsAndSound)]
 @implements IDisposable
 @using gbs.Client.Pages.Admin.Streams.Components
+@using gbs.Client.Wasm.Services.Api.StreamService
 @inject IStreamService StreamService
 @inject IUiService UiService
 @inject IDialogService DialogService
