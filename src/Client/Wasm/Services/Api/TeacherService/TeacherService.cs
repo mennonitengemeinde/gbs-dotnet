@@ -1,10 +1,12 @@
-namespace gbs.Client.Wasm.Services.Api.TeacherService;
+using Gbs.Client.Wasm.Services.UiService;
+
+namespace Gbs.Client.Wasm.Services.Api.TeacherService;
 
 public class TeacherService : ITeacherService
 {
     private readonly HttpClient _http;
     private readonly IUiService _uiService;
-    public List<Teacher> Teachers { get; set; } = new List<Teacher>();
+    public List<TeacherDto> Teachers { get; set; } = new();
     public event Action? TeachersChanged;
 
     public TeacherService(HttpClient http, IUiService uiService)
@@ -19,7 +21,7 @@ public class TeacherService : ITeacherService
         if (!result.Success)
         {
             await _uiService.ShowErrorAlert(result.Message, result.StatusCode);
-            Teachers = new List<Teacher>();
+            Teachers = new List<TeacherDto>();
             return;
         }
 
@@ -27,27 +29,27 @@ public class TeacherService : ITeacherService
         TeachersChanged?.Invoke();
     }
 
-    public async Task<ServiceResponse<List<Teacher>>> FetchTeachers()
+    public async Task<Result<List<TeacherDto>>> FetchTeachers()
     {
         return await _http.GetAsync("api/teachers")
-            .EnsureSuccess<List<Teacher>>();
+            .EnsureSuccess<List<TeacherDto>>();
     }
 
-    public async Task<ServiceResponse<Teacher>> FetchTeacher(int id)
+    public async Task<Result<TeacherDto>> FetchTeacher(int id)
     {
         return await _http.GetAsync($"api/teachers/{id}")
-            .EnsureSuccess<Teacher>();
+            .EnsureSuccess<TeacherDto>();
     }
 
-    public async Task<ServiceResponse<Teacher>> AddTeacher(TeacherCreateDto teacher)
+    public async Task<Result<TeacherDto>> AddTeacher(TeacherCreateDto teacher)
     {
         return await _http.PostAsJsonAsync("api/teachers", teacher)
-            .EnsureSuccess<Teacher>();
+            .EnsureSuccess<TeacherDto>();
     }
 
-    public async Task<ServiceResponse<Teacher>> UpdateTeacher(int teacherId, TeacherCreateDto teacher)
+    public async Task<Result<TeacherDto>> UpdateTeacher(int teacherId, TeacherCreateDto teacher)
     {
         return await _http.PutAsJsonAsync($"api/teachers/{teacherId}", teacher)
-            .EnsureSuccess<Teacher>();
+            .EnsureSuccess<TeacherDto>();
     }
 }

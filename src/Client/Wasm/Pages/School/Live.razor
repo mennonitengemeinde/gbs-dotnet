@@ -1,7 +1,9 @@
 ﻿@page "/school/{Id:int}/live"
 @attribute [Authorize(Policy = Policies.RequireAdminsSoundAndTeachers)]
-@using gbs.Client.Pages.School.Components
-@using gbs.Client.Wasm.Services.Api.StreamService
+@using Gbs.Client.Wasm.Pages.School.Components
+@using Gbs.Client.Wasm.Services.Api.StreamService
+@using Gbs.Client.Wasm.Services.UiService
+
 @inject IStreamService StreamService
 @inject IUiService UiService
 @inject NavigationManager NavigationManager
@@ -18,7 +20,7 @@
     public int Id { get; set; }
     
     [Parameter]
-    public StreamGetDto? LiveStream { get; set; }
+    public StreamDto? LiveStream { get; set; }
 
     protected override async Task OnInitializedAsync()
     {

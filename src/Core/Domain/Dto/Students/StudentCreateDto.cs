@@ -9,7 +9,7 @@ public class StudentCreateDto
 
     [Display(Name = "Date of Birth")]
     [Required]
-    public DateTime DateOfBirth { get; set; }
+    public DateTime? DateOfBirth { get; set; }
 
     [Required, StringLength(100, MinimumLength = 3)]
     public string Address { get; set; } = string.Empty;

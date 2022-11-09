@@ -1,6 +1,6 @@
 using System.Net;
 
-namespace gbs.Client.Wasm.Extensions;
+namespace Gbs.Client.Wasm.Extensions;
 
 public static class HttpExtensions
 {

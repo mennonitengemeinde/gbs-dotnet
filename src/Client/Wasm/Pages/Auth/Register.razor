@@ -1,7 +1,9 @@
 @page "/register"
-@using gbs.Client.Pages.Auth.Components
-@using gbs.Client.Wasm.Services.Api.AuthService
+@using Gbs.Client.Wasm.Pages.Auth.Components
+@using Gbs.Client.Wasm.Services.Api.AuthService
+@using Gbs.Client.Wasm.Services.UiService
 @layout AuthLayout
+
 @inject IAuthService AuthService
 @inject IUiService UiService
 @inject NavigationManager NavigationManager

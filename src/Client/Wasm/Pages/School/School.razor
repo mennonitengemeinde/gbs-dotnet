@@ -1,8 +1,10 @@
 @page "/school"
 @attribute [Authorize(Policy = Policies.RequireAdminsSoundAndTeachers)]
-@using gbs.Client.Pages.School.Components
-@using gbs.Client.Wasm.Services.Api.StreamService
+@using Gbs.Client.Wasm.Pages.School.Components
+@using Gbs.Client.Wasm.Services.Api.StreamService
+@using Gbs.Client.Wasm.Services.UiService
 @implements IAsyncDisposable
+
 @inject IStreamService StreamService
 @inject IUiService UiService
 @inject NavigationManager NavigationManager
@@ -26,10 +28,6 @@
     }
 </MudGrid>
 
-@* <div class="flex justify-center pt-8 text-gray-600"> *@
-@*     <h2 class="text-2xl font-semibold">Q&A</h2> *@
-@* </div> *@
-
 @code {
     private HubConnection? hubConnection;
     
@@ -41,7 +39,7 @@
             .WithUrl(NavigationManager.ToAbsoluteUri("/hubs/streamshub"))
             .Build();
 
-        hubConnection.On<ServiceResponse<List<StreamGetDto>>>("ReceiveStreams", OnReceiveStreams);
+        hubConnection.On<Result<List<StreamDto>>>("ReceiveStreams", OnReceiveStreams);
 
         await hubConnection.StartAsync();
         
@@ -49,7 +47,7 @@
         UiService.LoadingStop();
     }
     
-    private async Task OnReceiveStreams(ServiceResponse<List<StreamGetDto>> streams)
+    private async Task OnReceiveStreams(Result<List<StreamDto>> streams)
     {
         if (streams.Success)
         {

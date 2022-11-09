@@ -1,4 +1,4 @@
-﻿namespace gbs.Client.Wasm.Services.Api.GenerationService;
+﻿namespace Gbs.Client.Wasm.Services.Api.GenerationService;
 
 public interface IGenerationService
 {

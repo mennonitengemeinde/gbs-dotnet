@@ -2,7 +2,8 @@
 @attribute [Authorize(Policy = Policies.RequireAdmins)]
 @inject IGenerationService GenerationService
 @inject IUiService UiService
-@using gbs.Client.Wasm.Services.Api.GenerationService
+@using Gbs.Client.Wasm.Services.Api.GenerationService
+@using Gbs.Client.Wasm.Services.UiService
 @implements IDisposable
 
 <PageTitle>Generations - GBS</PageTitle>

@@ -1,6 +1,6 @@
 @page "/admin/teachers"
 @attribute [Authorize(Policy = Policies.RequireAdminsAndSound)]
-@using gbs.Client.Wasm.Services.Api.TeacherService
+@using Gbs.Client.Wasm.Services.Api.TeacherService
 @implements IDisposable
 @inject ITeacherService TeacherService
 

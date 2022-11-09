@@ -1,12 +1,12 @@
-namespace gbs.Client.Wasm.Services.Api.TeacherService;
+namespace Gbs.Client.Wasm.Services.Api.TeacherService;
 
 public interface ITeacherService
 {
-    List<Teacher> Teachers { get; set; }
+    List<TeacherDto> Teachers { get; set; }
     event Action TeachersChanged;
     Task LoadTeachers();
-    Task<ServiceResponse<List<Teacher>>> FetchTeachers();
-    Task<ServiceResponse<Teacher>> FetchTeacher(int id);
-    Task<ServiceResponse<Teacher>> AddTeacher(TeacherCreateDto teacher);
-    Task<ServiceResponse<Teacher>> UpdateTeacher(int teacherId, TeacherCreateDto teacher);
+    Task<Result<List<TeacherDto>>> FetchTeachers();
+    Task<Result<TeacherDto>> FetchTeacher(int id);
+    Task<Result<TeacherDto>> AddTeacher(TeacherCreateDto teacher);
+    Task<Result<TeacherDto>> UpdateTeacher(int teacherId, TeacherCreateDto teacher);
 }

@@ -6,6 +6,6 @@ public class TeacherConfiguration : IEntityTypeConfiguration<Teacher>
     {
         builder.HasOne<User>()
             .WithOne(u => u.Teacher)
-            .HasForeignKey<Teacher>(t => t.UserId);
+            .HasForeignKey<User>(u => u.TeacherId);
     }
 }

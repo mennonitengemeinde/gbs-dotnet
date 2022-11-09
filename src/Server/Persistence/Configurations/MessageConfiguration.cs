@@ -6,5 +6,9 @@ public class MessageConfiguration : IEntityTypeConfiguration<Message>
     {
         builder.Property(m => m.MessageType)
             .HasConversion<int>();
+
+        builder.HasOne<User>()
+            .WithMany()
+            .HasForeignKey(m => m.UserId);
     }
 }

@@ -1,8 +1,10 @@
 ﻿@page "/admin/streams"
 @attribute [Authorize(Policy = Policies.RequireAdminsAndSound)]
 @implements IDisposable
-@using gbs.Client.Pages.Admin.Streams.Components
-@using gbs.Client.Wasm.Services.Api.StreamService
+@using Gbs.Client.Wasm.Pages.Admin.Streams.Components
+@using Gbs.Client.Wasm.Services.Api.StreamService
+@using Gbs.Client.Wasm.Services.UiService
+
 @inject IStreamService StreamService
 @inject IUiService UiService
 @inject IDialogService DialogService
@@ -35,7 +37,7 @@
         StreamService.StreamsChanged += StateHasChanged;
     }
 
-    async Task HandleDelete(StreamGetDto stream)
+    async Task HandleDelete(StreamDto stream)
     {
         bool? result = await DialogService.ShowMessageBox(
             $"Delete {stream.Title}?",
@@ -48,7 +50,7 @@
         StateHasChanged();
     }
 
-    async Task DeleteStream(StreamGetDto stream)
+    async Task DeleteStream(StreamDto stream)
     {
         UiService.LoadingStart();
         var result = await StreamService.DeleteById(stream.Id);

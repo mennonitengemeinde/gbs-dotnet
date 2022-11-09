@@ -6,5 +6,9 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
     {
         builder.Property(s => s.MaritalStatus)
             .HasConversion<int>();
+
+        builder.HasOne<User>()
+            .WithMany()
+            .HasForeignKey(s => s.UserId);
     }
 }

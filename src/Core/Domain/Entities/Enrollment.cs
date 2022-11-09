@@ -2,7 +2,7 @@
 
 public class Enrollment
 {
-    public string Id { get; set; } = Guid.NewGuid().ToString();
+    public Guid Id { get; set; }
     public int StudentId { get; set; }
     public int GenerationId { get; set; }
     public bool IsActive { get; set; } = false;

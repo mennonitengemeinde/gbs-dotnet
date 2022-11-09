@@ -43,7 +43,7 @@ public class UserRepository : IUserRepository
                         .ToList(),
                     IsActive = u.IsActive,
                     ChurchId = u.ChurchId,
-                    ChurchName = u.Church.Name,
+                    ChurchName = u.Church!.Name,
                 })
                 .OrderBy(u => u.FirstName)
                 .ToListAsync();
@@ -63,7 +63,7 @@ public class UserRepository : IUserRepository
                     .ToList(),
                 IsActive = u.IsActive,
                 ChurchId = u.ChurchId,
-                ChurchName = u.Church.Name,
+                ChurchName = u.Church!.Name,
             })
             .OrderBy(u => u.FirstName)
             .ToListAsync();
@@ -88,7 +88,7 @@ public class UserRepository : IUserRepository
                 .ToList(),
             IsActive = u.IsActive,
             ChurchId = u.ChurchId,
-            ChurchName = u.Church.Name,
+            ChurchName = u.Church!.Name,
         }).FirstOrDefaultAsync(u => u.Id == userId);
 
         return user == null

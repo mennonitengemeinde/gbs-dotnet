@@ -4,7 +4,7 @@ using System.Text.Json;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
 
-namespace gbs.Client.Wasm;
+namespace Gbs.Client.Wasm;
 
 public class CustomAuthStateProvider : AuthenticationStateProvider
 {

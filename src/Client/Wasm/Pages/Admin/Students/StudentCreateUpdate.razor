@@ -1,9 +1,11 @@
 @page "/admin/students/create"
 @page "/admin/students/{Id:int}/edit"
-@using gbs.Client.Wasm.Services.Api.StudentService
-@using gbs.Client.Wasm.Services.Api.ChurchService
-@using gbs.Client.Wasm.Services.Api.AuthService
+@using Gbs.Client.Wasm.Services.Api.StudentService
+@using Gbs.Client.Wasm.Services.Api.ChurchService
+@using Gbs.Client.Wasm.Services.Api.AuthService
+@using Gbs.Client.Wasm.Services.UiService
 @attribute [Authorize(Policy = Policies.RequireAdminsAndTeachers)]
+
 @inject IStudentService StudentService
 @inject IChurchService ChurchService
 @inject IAuthService AuthService
@@ -12,7 +14,7 @@
 
 <PageTitle>Students Form - GBS</PageTitle>
 
-@if (!UiService.Loading && _model != null)
+@if (!UiService.Loading)
 {
     <EditForm Model="_model" OnValidSubmit="HandleValidSubmit">
         <DataAnnotationsValidator />
@@ -27,50 +29,50 @@
                                   @bind-Value="_model.Name"
                                   For="() => _model.Name" />
                     <MudDatePicker Label="Date of Birth"
-                                   @bind-Date="@_model.DateOfBirth"
-                                   For="@(() => _model.DateOfBirth)" />
-                    <MudField Label="Marital status" Variant="Variant.Text" InnerPadding="false">
-                        <MudRadioGroup T="MaritalStatus" @bind-SelectedOption="@_model.MaritalStatus">
-                            @foreach (var maritalStatus in Enum.GetValues(typeof(MaritalStatus)).Cast<MaritalStatus>())
-                            {
-                                <MudRadio T="MaritalStatus" Option="@maritalStatus">@maritalStatus.ToString()</MudRadio>
-                            }
-                        </MudRadioGroup>
-                    </MudField>
-                    <MudTextField Label="Address"
-                                  @bind-Value="_model.Address"
-                                  For="() => _model.Address" />
-                    <MudTextField Label="City"
-                                  @bind-Value="_model.City"
-                                  For="() => _model.City" />
-                    <MudTextField Label="Province/State"
-                                  @bind-Value="_model.State"
-                                  For="() => _model.State" />
-                    <MudTextField Label="Country"
-                                  @bind-Value="_model.Country"
-                                  For="() => _model.Country" />
-                    <MudTextField Label="Postal Code"
-                                  @bind-Value="_model.PostalCode"
-                                  For="() => _model.PostalCode" />
-                    <MudTextField Label="Email"
-                                  @bind-Value="_model.Email"
-                                  For="() => _model.Email" />
-                    <MudTextField Label="Phone"
-                                  @bind-Value="_model.Phone"
-                                  For="() => _model.Phone" />
-                    @if (_isAdmin)
-                    {
-                        <MudSelect Label="Church"
-                                   AnchorOrigin="Origin.BottomCenter"
-                                   For="@(() => _model.ChurchId)"
-                                   @bind-Value="_model.ChurchId">
-                            @foreach (var item in _churches)
-                            {
-                                <MudSelectItem T="int?" Value="@item.Id">@item.Name</MudSelectItem>
-                            }
-                        </MudSelect>
-                    }
-
+                                   @bind-Date="_model.DateOfBirth"
+                                   For="() => _model.DateOfBirth" />
+                    @*                 <MudField Label="Marital status" Variant="Variant.Text" InnerPadding="false"> *@
+                    @*                     <MudRadioGroup T="MaritalStatus" @bind-SelectedOption="@_model.MaritalStatus"> *@
+                    @*                         @foreach (var maritalStatus in Enum.GetValues(typeof(MaritalStatus)).Cast<MaritalStatus>()) *@
+                    @*                         { *@
+                    @*                             <MudRadio T="MaritalStatus" Option="@maritalStatus">@maritalStatus.ToString()</MudRadio> *@
+                    @*                         } *@
+                    @*                     </MudRadioGroup> *@
+                    @*                 </MudField> *@
+                    @*                 <MudTextField Label="Address" *@
+                    @*                               @bind-Value="_model.Address" *@
+                    @*                               For="() => _model.Address" /> *@
+                    @*                 <MudTextField Label="City" *@
+                    @*                               @bind-Value="_model.City" *@
+                    @*                               For="() => _model.City" /> *@
+                    @*                 <MudTextField Label="Province/State" *@
+                    @*                               @bind-Value="_model.State" *@
+                    @*                               For="() => _model.State" /> *@
+                    @*                 <MudTextField Label="Country" *@
+                    @*                               @bind-Value="_model.Country" *@
+                    @*                               For="() => _model.Country" /> *@
+                    @*                 <MudTextField Label="Postal Code" *@
+                    @*                               @bind-Value="_model.PostalCode" *@
+                    @*                               For="() => _model.PostalCode" /> *@
+                    @*                 <MudTextField Label="Email" *@
+                    @*                               @bind-Value="_model.Email" *@
+                    @*                               For="() => _model.Email" /> *@
+                    @*                 <MudTextField Label="Phone" *@
+                    @*                               @bind-Value="_model.Phone" *@
+                    @*                               For="() => _model.Phone" /> *@
+                    @*                 @if (_isAdmin) *@
+                    @*                 { *@
+                    @*                     <MudSelect Label="Church" *@
+                    @*                                AnchorOrigin="Origin.BottomCenter" *@
+                    @*                                For="@(() => _model.ChurchId)" *@
+                    @*                                @bind-Value="_model.ChurchId"> *@
+                    @*                         @foreach (var item in _churches) *@
+                    @*                         { *@
+                    @*                             <MudSelectItem T="int?" Value="@item.Id">@item.Name</MudSelectItem> *@
+                    @*                         } *@
+                    @*                     </MudSelect> *@
+                    @*                 } *@
+                    @* *@
                 </MatFormCard>
             </MudItem>
         </MudGrid>
@@ -78,7 +80,7 @@
 }
 
 @code {
-    IStudentCreateDto? _model;
+    StudentCreateDto _model = new();
     bool _isProcessing;
     bool _isAdmin;
     bool _isEdit;
@@ -97,14 +99,12 @@
         {
             if (_isAdmin)
             {
-                _model = new StudentAdminCreateDto();
                 var result = await ChurchService.GetChurches();
                 if (result.Success)
                 {
                     _churches = result.Data;
                 }
             }
-            _model = new StudentCreateDto();
         }
 
         UiService.LoadingStop();
@@ -113,13 +113,7 @@
     async Task HandleValidSubmit()
     {
         _isProcessing = true;
-        if (_model == null)
-        {
-            _isProcessing = false;
-            return;
-        }
-
-        ServiceResponse<StudentDto> response;
+        Result<List<StudentDto>> response;
         if (_isEdit && Id.HasValue)
         {
             response = await StudentService.UpdateStudent(Id.Value, _model);
@@ -158,7 +152,7 @@
             {
                 _churches = result.Data;
             }
-            _model = new StudentAdminCreateDto
+            _model = new StudentCreateDto
             {
                 Name = student.Data.Name,
                 DateOfBirth = student.Data.DateOfBirth,
@@ -172,7 +166,6 @@
                 Phone = student.Data.Phone,
                 ChurchId = student.Data.ChurchId
             };
-            Console.WriteLine(_model.ChurchId);
         }
         else
         {

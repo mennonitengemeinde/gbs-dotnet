@@ -1,7 +1,7 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Components.Authorization;
 
-namespace gbs.Client.Wasm.Services.Api.AuthService;
+namespace Gbs.Client.Wasm.Services.Api.AuthService;
 
 public class AuthApiService : IAuthService
 {

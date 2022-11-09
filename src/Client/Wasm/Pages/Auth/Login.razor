@@ -1,7 +1,9 @@
 @page "/login"
 @layout AuthLayout
-@using gbs.Client.Pages.Auth.Components
-@using gbs.Client.Wasm.Services.Api.AuthService
+@using Gbs.Client.Wasm.Pages.Auth.Components
+@using Gbs.Client.Wasm.Services.Api.AuthService
+@using Gbs.Client.Wasm.Services.UiService
+
 @inject IAuthService AuthService
 @inject IUiService UiService
 @inject NavigationManager NavigationManager
@@ -51,29 +53,6 @@
             </MudCard>
         </MudItem>
     </MudGrid>
-    @* @if (_message.Length > 0) *@
-    @* { *@
-    @*     <div class="text-error py-4"> *@
-    @*         <span>@_message</span> *@
-    @*     </div> *@
-    @* } *@
-    @* *@
-    @* <TextInput Id="email" *@
-    @*            @ref="_emailInput" *@
-    @*            Label="Email" *@
-    @*            InputType="email" *@
-    @*            @bind-Value="_loginDto.Email" *@
-    @*            For="() => _loginDto.Email" /> *@
-    @* <TextInput Id="password" *@
-    @*            Label="Password" *@
-    @*            InputType="password" *@
-    @*            @bind-Value="_loginDto.Password" *@
-    @*            For="() => _loginDto.Password" /> *@
-    @* *@
-    @* <div class="flex justify-end pt-4"> *@
-    @*     <Button Type="submit" Color="BtnColor.Primary" IsLoading="_loading">Login</Button> *@
-    @* </div> *@
-
 
 </EditForm>
 

@@ -1,10 +1,12 @@
-﻿namespace gbs.Client.Wasm.Services.Api.UserService;
+﻿using Gbs.Client.Wasm.Services.UiService;
+
+namespace Gbs.Client.Wasm.Services.Api.UserService;
 
 public class UserService : IUserService
 {
     private readonly HttpClient _http;
     private readonly IUiService _uiService;
-    public List<UserDto> Users { get; set; } = new List<UserDto>();
+    public List<UserDto> Users { get; set; } = new();
     public event Action? UsersChanged;
 
     public UserService(HttpClient http, IUiService uiService)
@@ -22,7 +24,7 @@ public class UserService : IUserService
         UsersChanged?.Invoke();
     }
 
-    public async Task<ServiceResponse<List<UserDto>>> FetchUsers()
+    public async Task<Result<List<UserDto>>> FetchUsers()
     {
         return await _http
             .GetAsync("api/users")
@@ -51,7 +53,7 @@ public class UserService : IUserService
         await HandleUsersChanged(response);
     }
 
-    private async Task HandleUsersChanged(ServiceResponse<List<UserDto>> result)
+    private async Task HandleUsersChanged(Result<List<UserDto>> result)
     {
         if (result.Success)
         {

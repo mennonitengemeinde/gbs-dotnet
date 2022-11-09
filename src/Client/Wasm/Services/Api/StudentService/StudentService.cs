@@ -1,4 +1,6 @@
-namespace gbs.Client.Wasm.Services.Api.StudentService;
+using Gbs.Client.Wasm.Services.UiService;
+
+namespace Gbs.Client.Wasm.Services.Api.StudentService;
 
 public class StudentService : IStudentService
 {
@@ -27,21 +29,21 @@ public class StudentService : IStudentService
         return student;
     }
 
-    public async Task<Result<StudentDto>> AddStudent(StudentCreateDto student)
+    public async Task<Result<List<StudentDto>>> AddStudent(StudentCreateDto student)
     {
         var result = await _http.PostAsJsonAsync("api/students", student)
             .EnsureSuccess<List<StudentDto>>();
         return await UpdateRepository(result);
     }
 
-    public async Task<Result<StudentDto>> UpdateStudent(int studentId, StudentCreateDto student)
+    public async Task<Result<List<StudentDto>>> UpdateStudent(int studentId, StudentCreateDto student)
     {
         var result = await _http.PutAsJsonAsync($"api/students/{studentId}", student)
             .EnsureSuccess<List<StudentDto>>();
         return await UpdateRepository(result);
     }
 
-    private async Task<Result<StudentDto>> UpdateRepository(Result<List<StudentDto>> response)
+    private async Task<Result<List<StudentDto>>> UpdateRepository(Result<List<StudentDto>> response)
     {
         if (response.Success)
         {
@@ -54,7 +56,7 @@ public class StudentService : IStudentService
         }
 
         StudentsChanged?.Invoke();
-        
-        return new Result<StudentDto> { Success = response.Success, Message = response.Message };
+
+        return new Result<List<StudentDto>>(response.Data, response.Success, response.Message, response.StatusCode);
     }
 }

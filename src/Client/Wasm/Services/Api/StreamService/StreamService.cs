@@ -1,4 +1,6 @@
-namespace gbs.Client.Wasm.Services.Api.StreamService;
+using Gbs.Client.Wasm.Services.UiService;
+
+namespace Gbs.Client.Wasm.Services.Api.StreamService;
 
 public class StreamService : IStreamService
 {

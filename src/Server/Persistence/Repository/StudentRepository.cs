@@ -103,7 +103,7 @@ public class StudentRepository : IStudentRepository
         student.State = studentDto.State;
         student.Country = studentDto.Country;
         student.PostalCode = studentDto.PostalCode;
-        student.DateOfBirth = studentDto.DateOfBirth;
+        if (studentDto.DateOfBirth != null) student.DateOfBirth = studentDto.DateOfBirth.Value;
         student.MaritalStatus = studentDto.MaritalStatus;
         student.Email = studentDto.Email;
         student.Phone = studentDto.Phone;

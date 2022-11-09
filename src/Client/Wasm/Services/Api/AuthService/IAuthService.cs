@@ -1,4 +1,4 @@
-namespace gbs.Client.Wasm.Services.Api.AuthService;
+namespace Gbs.Client.Wasm.Services.Api.AuthService;
 
 public interface IAuthService
 {

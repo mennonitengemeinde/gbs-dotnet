@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>$(AssemblyName.Replace(' ', '_'))</AssemblyName>
-    <RootNamespace>gbs.Client.Wasm</RootNamespace>
+    <RootNamespace>Gbs.Client.Wasm</RootNamespace>
   </PropertyGroup>
 
 <!--  <PropertyGroup Condition=" '$(RunConfiguration)' == 'gbs-dotnet' " />-->
@@ -16,20 +16,12 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.10" PrivateAssets="all" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="6.0.10" />
-    <PackageReference Include="MudBlazor" Version="6.0.17" />
+    <PackageReference Include="MudBlazor" Version="6.0.18" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Domain\Domain.csproj" />
     <ProjectReference Include="..\..\Shared\Shared.csproj" />
-    <ProjectReference Include="..\Shared\Shared.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="Pages\Admin\Users\Components\UserActiveUpdate.razor" />
-    <_ContentIncludedByDefault Remove="Pages\Admin\Users\Components\UserCard.razor" />
-    <_ContentIncludedByDefault Remove="Pages\Admin\Users\Components\UserChurchUpdate.razor" />
-    <_ContentIncludedByDefault Remove="Pages\Admin\Users\Components\UserRoleUpdate.razor" />
   </ItemGroup>
 
 </Project>

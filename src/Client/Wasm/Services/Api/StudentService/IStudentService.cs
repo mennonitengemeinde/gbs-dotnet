@@ -1,4 +1,4 @@
-namespace gbs.Client.Wasm.Services.Api.StudentService;
+namespace Gbs.Client.Wasm.Services.Api.StudentService;
 
 public interface IStudentService
 {
@@ -6,6 +6,6 @@ public interface IStudentService
     event Action StudentsChanged;
     Task FetchStudents();
     Task<Result<StudentDto>> GetStudentById(int id);
-    Task<Result<StudentDto>> AddStudent(StudentCreateDto student);
-    Task<Result<StudentDto>> UpdateStudent(int studentId, StudentCreateDto student);
+    Task<Result<List<StudentDto>>> AddStudent(StudentCreateDto student);
+    Task<Result<List<StudentDto>>> UpdateStudent(int studentId, StudentCreateDto student);
 }

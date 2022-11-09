@@ -1,6 +1,7 @@
 @page "/admin/generations/create"
 @page "/admin/generations/{Id:int}/edit"
-@using gbs.Client.Wasm.Services.Api.GenerationService
+@using Gbs.Client.Wasm.Services.Api.GenerationService
+@using Gbs.Client.Wasm.Services.UiService
 @attribute [Authorize(Policy = Policies.RequireAdmins)]
 @inject NavigationManager NavigationManager
 @inject IGenerationService GenerationService

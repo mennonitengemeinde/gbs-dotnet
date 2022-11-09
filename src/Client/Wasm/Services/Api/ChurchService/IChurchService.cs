@@ -1,4 +1,4 @@
-namespace gbs.Client.Wasm.Services.Api.ChurchService;
+namespace Gbs.Client.Wasm.Services.Api.ChurchService;
 
 public interface IChurchService
 {
