@@ -8,7 +8,7 @@ public static class EnrollmentSeed
         {
             new Enrollment
             {
-                Id = Guid.Parse("31a19cdd-ed33-4331-9fdc-d5c77d29e0e1"),
+                Id = 1,
                 StudentId = 1,
                 GenerationId = 1,
                 HasCompleted = true,
@@ -19,7 +19,7 @@ public static class EnrollmentSeed
             },
             new Enrollment
             {
-                Id = Guid.Parse("31a19cdd-ed33-4331-9fdc-d5c77d29e0e2"),
+                Id = 2,
                 StudentId = 2,
                 GenerationId = 1,
                 IsActive = true,
@@ -29,7 +29,7 @@ public static class EnrollmentSeed
             },
             new Enrollment
             {
-                Id = Guid.Parse("31a19cdd-ed33-4331-9fdc-d5c77d29e0e3"),
+                Id = 3,
                 StudentId = 3,
                 GenerationId = 1,
                 IsActive = true,

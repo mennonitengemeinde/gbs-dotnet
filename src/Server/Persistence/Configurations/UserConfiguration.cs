@@ -4,8 +4,8 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 {
     public void Configure(EntityTypeBuilder<User> builder)
     {
-        builder.HasOne(t => t.Teacher)
+        builder.HasOne(u => u.Teacher)
             .WithOne()
-            .HasForeignKey<Teacher>(t => t.UserId);
+            .HasForeignKey<User>(u => u.TeacherId);
     }
 }

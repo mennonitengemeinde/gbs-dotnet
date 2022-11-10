@@ -2,7 +2,7 @@
 
 public class GenerationEnrollmentDto
 {
-    public string Id { get; set; } = string.Empty;
+    public int Id { get; set; }
     public int StudentId { get; set; }
     public bool IsActive { get; set; }
     public bool HasCompleted { get; set; }

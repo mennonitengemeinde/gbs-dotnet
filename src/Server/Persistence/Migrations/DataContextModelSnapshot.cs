@@ -17,12 +17,12 @@ namespace Gbs.Server.Persistence.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.9")
+                .HasAnnotation("ProductVersion", "6.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Gbs.Core.Domain.Church", b =>
+            modelBuilder.Entity("Gbs.Core.Domain.Entities.Church", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -52,25 +52,28 @@ namespace Gbs.Server.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Churches", (string)null);
+                    b.ToTable("Churches");
                 });
 
-            modelBuilder.Entity("Gbs.Core.Domain.Enrollment", b =>
+            modelBuilder.Entity("Gbs.Core.Domain.Entities.Enrollment", b =>
                 {
-                    b.Property<int>("StudentId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    b.Property<int>("GenerationId")
-                        .HasColumnType("integer");
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("AgreedToGbsConcept")
                         .HasColumnType("boolean");
 
-                    b.Property<DateOnly>("CompletionDate")
+                    b.Property<DateOnly?>("CompletionDate")
                         .HasColumnType("date");
 
                     b.Property<DateOnly>("EnrollmentDate")
                         .HasColumnType("date");
+
+                    b.Property<int>("GenerationId")
+                        .HasColumnType("integer");
 
                     b.Property<bool>("HasCompleted")
                         .HasColumnType("boolean");
@@ -78,18 +81,23 @@ namespace Gbs.Server.Persistence.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
+                    b.Property<int>("StudentId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Testimony")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("StudentId", "GenerationId");
+                    b.HasKey("Id");
 
                     b.HasIndex("GenerationId");
 
-                    b.ToTable("Enrollments", (string)null);
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("Enrollments");
                 });
 
-            modelBuilder.Entity("Gbs.Core.Domain.Generation", b =>
+            modelBuilder.Entity("Gbs.Core.Domain.Entities.Generation", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -106,10 +114,10 @@ namespace Gbs.Server.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Generations", (string)null);
+                    b.ToTable("Generations");
                 });
 
-            modelBuilder.Entity("Gbs.Core.Domain.Grade", b =>
+            modelBuilder.Entity("Gbs.Core.Domain.Entities.Grade", b =>
                 {
                     b.Property<int>("SubjectId")
                         .HasColumnType("integer");
@@ -120,23 +128,17 @@ namespace Gbs.Server.Persistence.Migrations
                     b.Property<DateOnly>("Date")
                         .HasColumnType("date");
 
-                    b.Property<int>("EnrollmentGenerationId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("EnrollmentStudentId")
-                        .HasColumnType("integer");
-
                     b.Property<int>("Percent")
                         .HasColumnType("integer");
 
                     b.HasKey("SubjectId", "EnrollmentId");
 
-                    b.HasIndex("EnrollmentStudentId", "EnrollmentGenerationId");
+                    b.HasIndex("EnrollmentId");
 
-                    b.ToTable("Grades", (string)null);
+                    b.ToTable("Grades");
                 });
 
-            modelBuilder.Entity("Gbs.Core.Domain.Lesson", b =>
+            modelBuilder.Entity("Gbs.Core.Domain.Entities.Lesson", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -160,10 +162,10 @@ namespace Gbs.Server.Persistence.Migrations
 
                     b.HasIndex("TeacherId");
 
-                    b.ToTable("Lessons", (string)null);
+                    b.ToTable("Lessons");
                 });
 
-            modelBuilder.Entity("Gbs.Core.Domain.LiveStream", b =>
+            modelBuilder.Entity("Gbs.Core.Domain.Entities.LiveStream", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -190,10 +192,10 @@ namespace Gbs.Server.Persistence.Migrations
 
                     b.HasIndex("GenerationId");
 
-                    b.ToTable("Streams", (string)null);
+                    b.ToTable("Streams");
                 });
 
-            modelBuilder.Entity("Gbs.Core.Domain.LiveStreamTeacher", b =>
+            modelBuilder.Entity("Gbs.Core.Domain.Entities.LiveStreamTeacher", b =>
                 {
                     b.Property<int>("LiveStreamId")
                         .HasColumnType("integer");
@@ -205,10 +207,10 @@ namespace Gbs.Server.Persistence.Migrations
 
                     b.HasIndex("TeacherId");
 
-                    b.ToTable("StreamTeachers", (string)null);
+                    b.ToTable("StreamTeachers");
                 });
 
-            modelBuilder.Entity("Gbs.Core.Domain.Message", b =>
+            modelBuilder.Entity("Gbs.Core.Domain.Entities.Message", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -243,10 +245,10 @@ namespace Gbs.Server.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Messages", (string)null);
+                    b.ToTable("Messages");
                 });
 
-            modelBuilder.Entity("Gbs.Core.Domain.Question", b =>
+            modelBuilder.Entity("Gbs.Core.Domain.Entities.Question", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -288,10 +290,10 @@ namespace Gbs.Server.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Questions", (string)null);
+                    b.ToTable("Questions");
                 });
 
-            modelBuilder.Entity("Gbs.Core.Domain.Student", b =>
+            modelBuilder.Entity("Gbs.Core.Domain.Entities.Student", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -357,10 +359,10 @@ namespace Gbs.Server.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Students", (string)null);
+                    b.ToTable("Students");
                 });
 
-            modelBuilder.Entity("Gbs.Core.Domain.Subject", b =>
+            modelBuilder.Entity("Gbs.Core.Domain.Entities.Subject", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -374,10 +376,10 @@ namespace Gbs.Server.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Subjects", (string)null);
+                    b.ToTable("Subjects");
                 });
 
-            modelBuilder.Entity("Gbs.Core.Domain.SubjectDocument", b =>
+            modelBuilder.Entity("Gbs.Core.Domain.Entities.SubjectDocument", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -402,10 +404,10 @@ namespace Gbs.Server.Persistence.Migrations
 
                     b.HasIndex("SubjectId");
 
-                    b.ToTable("SubjectDocuments", (string)null);
+                    b.ToTable("SubjectDocuments");
                 });
 
-            modelBuilder.Entity("Gbs.Core.Domain.Teacher", b =>
+            modelBuilder.Entity("Gbs.Core.Domain.Entities.Teacher", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -425,10 +427,10 @@ namespace Gbs.Server.Persistence.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Teachers", (string)null);
+                    b.ToTable("Teachers");
                 });
 
-            modelBuilder.Entity("Gbs.Core.Domain.WatchList", b =>
+            modelBuilder.Entity("Gbs.Core.Domain.Entities.WatchList", b =>
                 {
                     b.Property<string>("UserId")
                         .HasColumnType("text");
@@ -441,7 +443,7 @@ namespace Gbs.Server.Persistence.Migrations
 
                     b.HasKey("UserId", "QuestionId");
 
-                    b.ToTable("WatchLists", (string)null);
+                    b.ToTable("WatchLists");
                 });
 
             modelBuilder.Entity("Gbs.Server.Persistence.Identity.Role", b =>
@@ -644,7 +646,7 @@ namespace Gbs.Server.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DataProtectionKeys", (string)null);
+                    b.ToTable("DataProtectionKeys");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -742,16 +744,16 @@ namespace Gbs.Server.Persistence.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Gbs.Core.Domain.Enrollment", b =>
+            modelBuilder.Entity("Gbs.Core.Domain.Entities.Enrollment", b =>
                 {
-                    b.HasOne("Gbs.Core.Domain.Generation", "Generation")
-                        .WithMany("Enrolments")
+                    b.HasOne("Gbs.Core.Domain.Entities.Generation", "Generation")
+                        .WithMany("Enrollments")
                         .HasForeignKey("GenerationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Gbs.Core.Domain.Student", "Student")
-                        .WithMany()
+                    b.HasOne("Gbs.Core.Domain.Entities.Student", "Student")
+                        .WithMany("Enrollments")
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -761,24 +763,32 @@ namespace Gbs.Server.Persistence.Migrations
                     b.Navigation("Student");
                 });
 
-            modelBuilder.Entity("Gbs.Core.Domain.Grade", b =>
+            modelBuilder.Entity("Gbs.Core.Domain.Entities.Grade", b =>
                 {
-                    b.HasOne("Gbs.Core.Domain.Enrollment", null)
+                    b.HasOne("Gbs.Core.Domain.Entities.Enrollment", null)
                         .WithMany("Grades")
-                        .HasForeignKey("EnrollmentStudentId", "EnrollmentGenerationId")
+                        .HasForeignKey("EnrollmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Gbs.Core.Domain.Entities.Subject", "Subject")
+                        .WithMany()
+                        .HasForeignKey("SubjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Subject");
                 });
 
-            modelBuilder.Entity("Gbs.Core.Domain.Lesson", b =>
+            modelBuilder.Entity("Gbs.Core.Domain.Entities.Lesson", b =>
                 {
-                    b.HasOne("Gbs.Core.Domain.Subject", "Subject")
+                    b.HasOne("Gbs.Core.Domain.Entities.Subject", "Subject")
                         .WithMany("Lessons")
                         .HasForeignKey("SubjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Gbs.Core.Domain.Teacher", "Teacher")
+                    b.HasOne("Gbs.Core.Domain.Entities.Teacher", "Teacher")
                         .WithMany()
                         .HasForeignKey("TeacherId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -789,9 +799,9 @@ namespace Gbs.Server.Persistence.Migrations
                     b.Navigation("Teacher");
                 });
 
-            modelBuilder.Entity("Gbs.Core.Domain.LiveStream", b =>
+            modelBuilder.Entity("Gbs.Core.Domain.Entities.LiveStream", b =>
                 {
-                    b.HasOne("Gbs.Core.Domain.Generation", "Generation")
+                    b.HasOne("Gbs.Core.Domain.Entities.Generation", "Generation")
                         .WithMany()
                         .HasForeignKey("GenerationId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -800,15 +810,15 @@ namespace Gbs.Server.Persistence.Migrations
                     b.Navigation("Generation");
                 });
 
-            modelBuilder.Entity("Gbs.Core.Domain.LiveStreamTeacher", b =>
+            modelBuilder.Entity("Gbs.Core.Domain.Entities.LiveStreamTeacher", b =>
                 {
-                    b.HasOne("Gbs.Core.Domain.LiveStream", "LiveStream")
+                    b.HasOne("Gbs.Core.Domain.Entities.LiveStream", "LiveStream")
                         .WithMany("StreamTeachers")
                         .HasForeignKey("LiveStreamId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Gbs.Core.Domain.Teacher", "Teacher")
+                    b.HasOne("Gbs.Core.Domain.Entities.Teacher", "Teacher")
                         .WithMany()
                         .HasForeignKey("TeacherId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -819,60 +829,54 @@ namespace Gbs.Server.Persistence.Migrations
                     b.Navigation("Teacher");
                 });
 
-            modelBuilder.Entity("Gbs.Core.Domain.Message", b =>
+            modelBuilder.Entity("Gbs.Core.Domain.Entities.Message", b =>
                 {
-                    b.HasOne("Gbs.Core.Domain.Question", "Question")
+                    b.HasOne("Gbs.Core.Domain.Entities.Question", "Question")
                         .WithMany("Messages")
                         .HasForeignKey("QuestionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Gbs.Server.Persistence.Identity.User", "User")
+                    b.HasOne("Gbs.Server.Persistence.Identity.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Question");
-
-                    b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Gbs.Core.Domain.Question", b =>
+            modelBuilder.Entity("Gbs.Core.Domain.Entities.Question", b =>
                 {
-                    b.HasOne("Gbs.Core.Domain.Subject", null)
+                    b.HasOne("Gbs.Core.Domain.Entities.Subject", null)
                         .WithMany("Questions")
                         .HasForeignKey("SubjectId");
 
-                    b.HasOne("Gbs.Server.Persistence.Identity.User", "User")
+                    b.HasOne("Gbs.Server.Persistence.Identity.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Gbs.Core.Domain.Student", b =>
+            modelBuilder.Entity("Gbs.Core.Domain.Entities.Student", b =>
                 {
-                    b.HasOne("Gbs.Core.Domain.Church", "Church")
+                    b.HasOne("Gbs.Core.Domain.Entities.Church", "Church")
                         .WithMany("Students")
                         .HasForeignKey("ChurchId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Gbs.Server.Persistence.Identity.User", "User")
+                    b.HasOne("Gbs.Server.Persistence.Identity.User", null)
                         .WithMany()
                         .HasForeignKey("UserId");
 
                     b.Navigation("Church");
-
-                    b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Gbs.Core.Domain.SubjectDocument", b =>
+            modelBuilder.Entity("Gbs.Core.Domain.Entities.SubjectDocument", b =>
                 {
-                    b.HasOne("Gbs.Core.Domain.Subject", "Subject")
+                    b.HasOne("Gbs.Core.Domain.Entities.Subject", "Subject")
                         .WithMany()
                         .HasForeignKey("SubjectId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -881,22 +885,20 @@ namespace Gbs.Server.Persistence.Migrations
                     b.Navigation("Subject");
                 });
 
-            modelBuilder.Entity("Gbs.Core.Domain.Teacher", b =>
+            modelBuilder.Entity("Gbs.Core.Domain.Entities.Teacher", b =>
                 {
-                    b.HasOne("Gbs.Server.Persistence.Identity.User", "User")
+                    b.HasOne("Gbs.Server.Persistence.Identity.User", null)
                         .WithOne()
-                        .HasForeignKey("Gbs.Core.Domain.Teacher", "UserId");
-
-                    b.Navigation("User");
+                        .HasForeignKey("Gbs.Core.Domain.Entities.Teacher", "UserId");
                 });
 
             modelBuilder.Entity("Gbs.Server.Persistence.Identity.User", b =>
                 {
-                    b.HasOne("Gbs.Core.Domain.Church", "Church")
-                        .WithMany("Users")
+                    b.HasOne("Gbs.Core.Domain.Entities.Church", "Church")
+                        .WithMany()
                         .HasForeignKey("ChurchId");
 
-                    b.HasOne("Gbs.Core.Domain.Teacher", "Teacher")
+                    b.HasOne("Gbs.Core.Domain.Entities.Teacher", "Teacher")
                         .WithOne()
                         .HasForeignKey("Gbs.Server.Persistence.Identity.User", "TeacherId");
 
@@ -960,34 +962,37 @@ namespace Gbs.Server.Persistence.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Gbs.Core.Domain.Church", b =>
+            modelBuilder.Entity("Gbs.Core.Domain.Entities.Church", b =>
                 {
                     b.Navigation("Students");
-
-                    b.Navigation("Users");
                 });
 
-            modelBuilder.Entity("Gbs.Core.Domain.Enrollment", b =>
+            modelBuilder.Entity("Gbs.Core.Domain.Entities.Enrollment", b =>
                 {
                     b.Navigation("Grades");
                 });
 
-            modelBuilder.Entity("Gbs.Core.Domain.Generation", b =>
+            modelBuilder.Entity("Gbs.Core.Domain.Entities.Generation", b =>
                 {
-                    b.Navigation("Enrolments");
+                    b.Navigation("Enrollments");
                 });
 
-            modelBuilder.Entity("Gbs.Core.Domain.LiveStream", b =>
+            modelBuilder.Entity("Gbs.Core.Domain.Entities.LiveStream", b =>
                 {
                     b.Navigation("StreamTeachers");
                 });
 
-            modelBuilder.Entity("Gbs.Core.Domain.Question", b =>
+            modelBuilder.Entity("Gbs.Core.Domain.Entities.Question", b =>
                 {
                     b.Navigation("Messages");
                 });
 
-            modelBuilder.Entity("Gbs.Core.Domain.Subject", b =>
+            modelBuilder.Entity("Gbs.Core.Domain.Entities.Student", b =>
+                {
+                    b.Navigation("Enrollments");
+                });
+
+            modelBuilder.Entity("Gbs.Core.Domain.Entities.Subject", b =>
                 {
                     b.Navigation("Lessons");
 

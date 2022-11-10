@@ -2,7 +2,7 @@
 
 public class Enrollment
 {
-    public Guid Id { get; set; }
+    public int Id { get; set; }
     public int StudentId { get; set; }
     public int GenerationId { get; set; }
     public bool IsActive { get; set; } = false;

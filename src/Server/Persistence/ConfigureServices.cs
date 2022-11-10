@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.DataProtection;
+﻿using Gbs.Server.Persistence.Repository;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -26,6 +27,14 @@ public static class ConfigureServices
 
         services.AddDataProtection()
             .PersistKeysToDbContext<DataContext>();
+        
+        services.AddScoped<IAuthRepository, AuthRepository>();
+        services.AddScoped<IChurchRepository, ChurchRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IGenerationRepository, GenerationRepository>();
+        services.AddScoped<IStreamRepository, StreamRepository>();
+        services.AddScoped<IStudentRepository, StudentRepository>();
+        services.AddScoped<ITeacherRepository, TeacherRepository>();
 
         return services;
     }
