@@ -1,0 +1,27 @@
+﻿@page "/"
+@layout AuthLayout
+
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<PageTitle>GBS</PageTitle>
+
+<WelcomeBanner />
+
+<div class="tw-flex tw-justify-center tw-pt-8">
+    <p class="tw-text-2xl tw-font-semibold tw-text-gray-500">Please <MudLink Class="tw-text-2xl tw-font-bold" Href="login">Login</MudLink> to continue</p>
+</div>
+
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        if (user.Identity is {IsAuthenticated: true })
+        {
+            NavigationManager.NavigateTo("school");
+        }
+    }
+
+}

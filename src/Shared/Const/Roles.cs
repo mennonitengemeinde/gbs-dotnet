@@ -1,4 +1,4 @@
-﻿namespace gbs.Core.Shared.Const;
+﻿namespace Gbs.Shared.Const;
 
 public static class Roles
 {

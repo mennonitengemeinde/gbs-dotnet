@@ -1,0 +1,67 @@
+@page "/school"
+@attribute [Authorize(Policy = Policies.RequireAdminsSoundAndTeachers)]
+@using Gbs.Wasm.Pages.School.Components
+@using Gbs.Wasm.Services.Api.StreamService
+@using Gbs.Wasm.Services.UiService
+@implements IAsyncDisposable
+
+@inject IStreamService StreamService
+@inject IUiService UiService
+@inject NavigationManager NavigationManager
+
+<PageTitle>School - GBS</PageTitle>
+
+<WelcomeBanner />
+
+<div class="tw-pt-8 tw-pb-2 tw-text-gray-600">
+    <MudText Typo="Typo.h2" Class="tw-text-2xl tw-font-semibold">Live</MudText>
+</div>
+
+<MudDivider Light="true"/>
+
+<MudGrid Class="tw-relative tw-pt-2">
+    @foreach (var liveStream in StreamService.Streams.Where(s => s.IsLive == true))
+    {
+        <MudItem xs="12" md="6" xl="4">
+            <LiveStreamCard LiveStream="@liveStream" />
+        </MudItem>
+    }
+</MudGrid>
+
+@code {
+    private HubConnection? hubConnection;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        UiService.LoadingStart();
+        
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(NavigationManager.ToAbsoluteUri("/hubs/streamshub"))
+            .Build();
+
+        hubConnection.On<Result<List<StreamDto>>>("ReceiveStreams", OnReceiveStreams);
+
+        await hubConnection.StartAsync();
+        
+        await StreamService.LoadStreams();
+        UiService.LoadingStop();
+    }
+    
+    private async Task OnReceiveStreams(Result<List<StreamDto>> streams)
+    {
+        if (streams.Success)
+        {
+            await StreamService.CacheStreams(streams);
+        }
+        StateHasChanged();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.DisposeAsync();
+        }
+    }
+
+}

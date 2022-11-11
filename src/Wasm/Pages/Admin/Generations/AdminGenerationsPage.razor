@@ -1,0 +1,48 @@
+﻿@page "/admin/generations"
+@attribute [Authorize(Policy = Policies.RequireAdmins)]
+@inject IGenerationService GenerationService
+@inject IUiService UiService
+@using Gbs.Wasm.Services.Api.GenerationService
+@using Gbs.Wasm.Services.UiService
+@implements IDisposable
+
+<PageTitle>Generations - GBS</PageTitle>
+
+<div class="tw-py-4 tw-space-y-4">
+    <MudText Typo="Typo.h4">Generations</MudText>
+    <MudButton StartIcon="@Icons.Filled.Add" Color="Color.Primary" Variant="Variant.Filled" Href="/admin/generations/create">
+        New
+    </MudButton>
+</div>
+
+<MudTable Items="@GenerationService.Generations" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading" LoadingProgressColor="Color.Info">
+    <HeaderContent>
+        <MudTh>Name</MudTh>
+        <MudTh></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd Class="tw-text-end">
+            <MudIconButton Icon="@Icons.Material.Filled.Edit" 
+                           Size="Size.Small" 
+                           Href="@($"admin/generations/{context.Id}/edit")"/>
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+
+@code {
+    bool _loading;
+    protected override async Task OnInitializedAsync()
+    {
+        _loading = true;
+        await GenerationService.LoadGenerations();
+        GenerationService.GenerationsChanged += StateHasChanged;
+        _loading = false;
+    }
+
+    public void Dispose()
+    {
+        GenerationService.GenerationsChanged -= StateHasChanged;
+    }
+
+}

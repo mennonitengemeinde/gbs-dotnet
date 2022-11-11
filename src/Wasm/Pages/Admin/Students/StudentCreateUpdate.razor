@@ -1,0 +1,191 @@
+@page "/admin/students/create"
+@page "/admin/students/{Id:int}/edit"
+@using Gbs.Wasm.Services.Api.StudentService
+@using Gbs.Wasm.Services.UiService
+@using Gbs.Wasm.Services.Api.ChurchService
+@using Gbs.Wasm.Services.Api.AuthService
+@using Gbs.Shared.Enums
+@attribute [Authorize(Policy = Policies.RequireAdminsAndTeachers)]
+
+@inject IStudentService StudentService
+@inject IChurchService ChurchService
+@inject IAuthService AuthService
+@inject IUiService UiService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Students Form - GBS</PageTitle>
+
+@if (!UiService.Loading)
+{
+    <EditForm Model="_model" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <MudGrid Justify="Justify.Center" Class="tw-py-8">
+            <MudItem xs="12" sm="8" md="5">
+                <MatFormCard Label="Student"
+                             IsEdit="false"
+                             IsLoading="false"
+                             IsProcessing="@_isProcessing"
+                             ReturnUrl="/admin/students">
+                    <MudTextField Label="Name"
+                                  @bind-Value="_model.Name"
+                                  For="() => _model.Name" />
+                    <MudDatePicker Label="Date of Birth"
+                                   @bind-Date="_model.DateOfBirth"
+                                   For="() => _model.DateOfBirth" />
+                    <MudField Label="Marital status" Variant="Variant.Text" InnerPadding="false">
+                        <MudRadioGroup T="MaritalStatus" @bind-SelectedOption="@_model.MaritalStatus">
+                            @foreach (var maritalStatus in Enum.GetValues(typeof(MaritalStatus)).Cast<MaritalStatus>())
+                            {
+                                <MudRadio T="MaritalStatus" Option="@maritalStatus">@maritalStatus.ToString()</MudRadio>
+                            }
+                        </MudRadioGroup>
+                    </MudField>
+                    <MudTextField Label="Address"
+                                  @bind-Value="_model.Address"
+                                  For="() => _model.Address" />
+                    <MudTextField Label="City"
+                                  @bind-Value="_model.City"
+                                  For="() => _model.City" />
+                    <MudTextField Label="Province/State"
+                                  @bind-Value="_model.State"
+                                  For="() => _model.State" />
+                    <MudTextField Label="Country"
+                                  @bind-Value="_model.Country"
+                                  For="() => _model.Country" />
+                    <MudTextField Label="Postal Code"
+                                  @bind-Value="_model.PostalCode"
+                                  For="() => _model.PostalCode" />
+                    <MudTextField Label="Email"
+                                  @bind-Value="_model.Email"
+                                  For="() => _model.Email" />
+                    <MudTextField Label="Phone"
+                                  @bind-Value="_model.Phone"
+                                  For="() => _model.Phone" />
+                    @if (_isAdmin)
+                    {
+                        <MudSelect Label="Church"
+                                   AnchorOrigin="Origin.BottomCenter"
+                                   For="@(() => _model.ChurchId)"
+                                   @bind-Value="_model.ChurchId">
+                            @foreach (var item in _churches)
+                            {
+                                <MudSelectItem T="int" Value="@item.Id">@item.Name</MudSelectItem>
+                            }
+                        </MudSelect>
+                    }
+
+                </MatFormCard>
+            </MudItem>
+        </MudGrid>
+    </EditForm>
+}
+
+@code {
+    StudentCreateDto _model = new();
+    bool _isProcessing;
+    bool _isAdmin;
+    bool _isEdit;
+    IEnumerable<ChurchDto> _churches = new HashSet<ChurchDto>();
+
+    [Parameter]
+    public int? Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        UiService.LoadingStart();
+        _isAdmin = await AuthService.UserIsAdmin();
+
+        var isUpdate = await InitUpdatePage();
+        if (!isUpdate)
+        {
+            if (_isAdmin)
+            {
+                var result = await ChurchService.GetChurches();
+                if (result.Success)
+                {
+                    _churches = result.Data.ToHashSet();
+                }
+            }
+        }
+
+        UiService.LoadingStop();
+    }
+
+    async Task HandleValidSubmit()
+    {
+        _isProcessing = true;
+        Result<List<StudentDto>> response;
+        if (_isEdit && Id.HasValue)
+        {
+            response = await StudentService.UpdateStudent(Id.Value, _model);
+        }
+        else
+        {
+            response = await StudentService.AddStudent(_model);
+        }
+        _isProcessing = false;
+        if (response.Success)
+        {
+            NavigationManager.NavigateTo("admin/students");
+        }
+    }
+
+    async Task<bool> InitUpdatePage()
+    {
+        if (!Id.HasValue)
+        {
+            return false;
+        }
+
+        _isEdit = true;
+        var student = await StudentService.GetStudentById(Id.Value);
+        if (!student.Success)
+        {
+            UiService.LoadingStop();
+            await UiService.ShowErrorAlert(student.Message);
+            NavigationManager.NavigateTo("/admin/students");
+            return false;
+        }
+        if (_isAdmin)
+        {
+            var result = await ChurchService.GetChurches();
+            if (result.Success)
+            {
+                _churches = result.Data;
+            }
+            _model = new StudentCreateDto
+            {
+                Name = student.Data.Name,
+                DateOfBirth = student.Data.DateOfBirth,
+                MaritalStatus = student.Data.MaritalStatus,
+                Address = student.Data.Address,
+                City = student.Data.City,
+                State = student.Data.State,
+                Country = student.Data.Country,
+                PostalCode = student.Data.PostalCode,
+                Email = student.Data.Email,
+                Phone = student.Data.Phone,
+                ChurchId = student.Data.ChurchId
+            };
+        }
+        else
+        {
+            _model = new StudentCreateDto
+            {
+                Name = student.Data.Name,
+                DateOfBirth = student.Data.DateOfBirth,
+                MaritalStatus = student.Data.MaritalStatus,
+                Address = student.Data.Address,
+                City = student.Data.City,
+                State = student.Data.State,
+                Country = student.Data.Country,
+                PostalCode = student.Data.PostalCode,
+                Email = student.Data.Email,
+                Phone = student.Data.Phone,
+                ChurchId = student.Data.ChurchId
+            };
+        }
+        return true;
+    }
+
+}

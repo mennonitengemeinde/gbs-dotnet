@@ -399,3 +399,6 @@ output.css
 
 # Mac
 .DS_Store
+
+# dist
+dist/

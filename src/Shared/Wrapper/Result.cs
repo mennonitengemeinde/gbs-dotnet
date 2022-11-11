@@ -1,4 +1,4 @@
-﻿namespace gbs.Core.Shared.Wrapper;
+﻿namespace Gbs.Shared.Wrapper;
 
 public static class Result
 {

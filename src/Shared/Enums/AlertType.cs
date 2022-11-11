@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace gbs.Shared.Enums;
+namespace Gbs.Shared.Enums;
 
 public enum AlertType
 {
