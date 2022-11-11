@@ -1,4 +1,6 @@
-﻿namespace Gbs.Server.Application.Common.Interfaces.Repositories;
+﻿using Gbs.Core.Domain.Entities;
+
+namespace Gbs.Server.Application.Common.Interfaces.Repositories;
 
 public interface IGenerationRepository
 {

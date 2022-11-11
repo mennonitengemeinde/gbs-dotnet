@@ -25,12 +25,12 @@ public class UserRepository : IUserRepository
     {
         if (!_authenticatedUserService.GetUserRoles().Contains(Roles.SuperAdmin))
         {
-            var superAdminRoleId = await _context.Roles.FirstOrDefaultAsync(r => r.Name == Roles.SuperAdmin);
-            if (superAdminRoleId == null)
+            var superAdminRole = await _context.Roles.FirstOrDefaultAsync(r => r.Name == Roles.SuperAdmin);
+            if (superAdminRole == null)
                 return Result.BadRequest<List<UserDto>>("Your role is not valid");
 
             var users = await _context.Users
-                .Where(u => u.UserRoles.Any(ur => ur.RoleId != superAdminRoleId.Id))
+                .Where(u => u.UserRoles.Any(ur => ur.RoleId != superAdminRole.Id) || u.UserRoles.Count == 0)
                 .Select(u => new UserDto
                 {
                     Id = u.Id,
@@ -38,9 +38,7 @@ public class UserRepository : IUserRepository
                     LastName = u.LastName,
                     Email = u.Email,
                     Roles = u.UserRoles
-                        .Select(r => r.Role.Name)
-                        .Where(r => r != Roles.SuperAdmin)
-                        .ToList(),
+                        .Select(r => r.Role.Name),
                     IsActive = u.IsActive,
                     ChurchId = u.ChurchId,
                     ChurchName = u.Church!.Name,
@@ -59,8 +57,7 @@ public class UserRepository : IUserRepository
                 LastName = u.LastName,
                 Email = u.Email,
                 Roles = u.UserRoles
-                    .Select(r => r.Role.Name)
-                    .ToList(),
+                    .Select(r => r.Role.Name),
                 IsActive = u.IsActive,
                 ChurchId = u.ChurchId,
                 ChurchName = u.Church!.Name,

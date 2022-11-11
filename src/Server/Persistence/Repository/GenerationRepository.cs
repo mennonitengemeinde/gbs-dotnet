@@ -1,4 +1,5 @@
-﻿using AutoMapper.QueryableExtensions;
+﻿using System.Linq.Expressions;
+using AutoMapper.QueryableExtensions;
 
 namespace Gbs.Server.Persistence.Repository;
 

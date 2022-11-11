@@ -31,48 +31,48 @@
                     <MudDatePicker Label="Date of Birth"
                                    @bind-Date="_model.DateOfBirth"
                                    For="() => _model.DateOfBirth" />
-                    @*                 <MudField Label="Marital status" Variant="Variant.Text" InnerPadding="false"> *@
-                    @*                     <MudRadioGroup T="MaritalStatus" @bind-SelectedOption="@_model.MaritalStatus"> *@
-                    @*                         @foreach (var maritalStatus in Enum.GetValues(typeof(MaritalStatus)).Cast<MaritalStatus>()) *@
-                    @*                         { *@
-                    @*                             <MudRadio T="MaritalStatus" Option="@maritalStatus">@maritalStatus.ToString()</MudRadio> *@
-                    @*                         } *@
-                    @*                     </MudRadioGroup> *@
-                    @*                 </MudField> *@
-                    @*                 <MudTextField Label="Address" *@
-                    @*                               @bind-Value="_model.Address" *@
-                    @*                               For="() => _model.Address" /> *@
-                    @*                 <MudTextField Label="City" *@
-                    @*                               @bind-Value="_model.City" *@
-                    @*                               For="() => _model.City" /> *@
-                    @*                 <MudTextField Label="Province/State" *@
-                    @*                               @bind-Value="_model.State" *@
-                    @*                               For="() => _model.State" /> *@
-                    @*                 <MudTextField Label="Country" *@
-                    @*                               @bind-Value="_model.Country" *@
-                    @*                               For="() => _model.Country" /> *@
-                    @*                 <MudTextField Label="Postal Code" *@
-                    @*                               @bind-Value="_model.PostalCode" *@
-                    @*                               For="() => _model.PostalCode" /> *@
-                    @*                 <MudTextField Label="Email" *@
-                    @*                               @bind-Value="_model.Email" *@
-                    @*                               For="() => _model.Email" /> *@
-                    @*                 <MudTextField Label="Phone" *@
-                    @*                               @bind-Value="_model.Phone" *@
-                    @*                               For="() => _model.Phone" /> *@
-                    @*                 @if (_isAdmin) *@
-                    @*                 { *@
-                    @*                     <MudSelect Label="Church" *@
-                    @*                                AnchorOrigin="Origin.BottomCenter" *@
-                    @*                                For="@(() => _model.ChurchId)" *@
-                    @*                                @bind-Value="_model.ChurchId"> *@
-                    @*                         @foreach (var item in _churches) *@
-                    @*                         { *@
-                    @*                             <MudSelectItem T="int?" Value="@item.Id">@item.Name</MudSelectItem> *@
-                    @*                         } *@
-                    @*                     </MudSelect> *@
-                    @*                 } *@
-                    @* *@
+                    <MudField Label="Marital status" Variant="Variant.Text" InnerPadding="false">
+                        <MudRadioGroup T="MaritalStatus" @bind-SelectedOption="@_model.MaritalStatus">
+                            @foreach (var maritalStatus in Enum.GetValues(typeof(MaritalStatus)).Cast<MaritalStatus>())
+                            {
+                                <MudRadio T="MaritalStatus" Option="@maritalStatus">@maritalStatus.ToString()</MudRadio>
+                            }
+                        </MudRadioGroup>
+                    </MudField>
+                    <MudTextField Label="Address"
+                                  @bind-Value="_model.Address"
+                                  For="() => _model.Address" />
+                    <MudTextField Label="City"
+                                  @bind-Value="_model.City"
+                                  For="() => _model.City" />
+                    <MudTextField Label="Province/State"
+                                  @bind-Value="_model.State"
+                                  For="() => _model.State" />
+                    <MudTextField Label="Country"
+                                  @bind-Value="_model.Country"
+                                  For="() => _model.Country" />
+                    <MudTextField Label="Postal Code"
+                                  @bind-Value="_model.PostalCode"
+                                  For="() => _model.PostalCode" />
+                    <MudTextField Label="Email"
+                                  @bind-Value="_model.Email"
+                                  For="() => _model.Email" />
+                    <MudTextField Label="Phone"
+                                  @bind-Value="_model.Phone"
+                                  For="() => _model.Phone" />
+                    @if (_isAdmin)
+                    {
+                        <MudSelect Label="Church"
+                                   AnchorOrigin="Origin.BottomCenter"
+                                   For="@(() => _model.ChurchId)"
+                                   @bind-Value="_model.ChurchId">
+                            @foreach (var item in _churches)
+                            {
+                                <MudSelectItem T="int" Value="@item.Id">@item.Name</MudSelectItem>
+                            }
+                        </MudSelect>
+                    }
+
                 </MatFormCard>
             </MudItem>
         </MudGrid>
@@ -102,7 +102,7 @@
                 var result = await ChurchService.GetChurches();
                 if (result.Success)
                 {
-                    _churches = result.Data;
+                    _churches = result.Data.ToHashSet();
                 }
             }
         }

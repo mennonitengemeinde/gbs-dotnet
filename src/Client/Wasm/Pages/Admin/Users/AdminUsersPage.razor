@@ -116,7 +116,7 @@
 
         var dbUser = UserService.Users.First(u => u.Id == user.Id);
         var localUser = _users.First(u => u.Id == user.Id);
-        if (roles.Count == dbUser.Roles.Count && !roles.Except(dbUser.Roles).Any())
+        if (roles.Count == dbUser.Roles.ToList().Count && !roles.Except(dbUser.Roles).Any())
         {
             localUser.RoleChanged = false;
             localUser.Roles = roles;
@@ -129,7 +129,7 @@
     async Task SubmitRoleChange(string userId)
     {
         _loading = true;
-        var updateRoleDto = new UserUpdateRoleDto { Roles = _users.First(u => u.Id == userId).Roles };
+        var updateRoleDto = new UserUpdateRoleDto { Roles = _users.First(u => u.Id == userId).Roles.ToList() };
         await UserService.UpdateRole(userId, updateRoleDto);
         _loading = false;
     }

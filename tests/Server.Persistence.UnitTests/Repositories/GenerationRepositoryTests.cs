@@ -35,6 +35,7 @@ public class GenerationRepositoryTests
         var generations = await _generationRepo.GetAllGenerations();
         
         Assert.Equal(3, generations.Data.Count);
+        Assert.Equal(3, generations.Data.FirstOrDefault()!.Enrollments.Count());
     }
     
     [Fact]
@@ -44,7 +45,7 @@ public class GenerationRepositoryTests
         
         Assert.Equal("Generation 1", generation.Data.Name);
         Assert.Equal(1, generation.Data.Id);
-        Assert.Equal(3, generation.Data.Enrollments.Count);
+        Assert.Equal(3, generation.Data.Enrollments.ToList().Count);
     }
     
     [Fact]
@@ -95,7 +96,7 @@ public class GenerationRepositoryTests
         
         Assert.Equal("Generation 1 Updated", generation.Data.Name);
         Assert.Equal(1, generation.Data.Id);
-        Assert.Equal(3, generation.Data.Enrollments.Count);
+        Assert.Equal(3, generation.Data.Enrollments.ToList().Count);
     }
     
     [Fact]
