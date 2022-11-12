@@ -1,0 +1,20 @@
+@inherits LayoutComponentBase
+
+<GbsThemeProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar Elevation="1" Color="Color.Primary">
+        <MudText Typo="Typo.h5" Class="ml-3">GBS</MudText>
+        <MudSpacer />
+        <MudButton StartIcon="@Icons.Material.Filled.Login" Href="login" Color="Color.Inherit">
+            Login
+        </MudButton>
+    </MudAppBar>
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.ExtraLarge">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>

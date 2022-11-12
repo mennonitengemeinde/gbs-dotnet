@@ -1,0 +1,25 @@
+﻿@using Gbs.Wasm.Services.UiService
+@implements IDisposable
+@inject IUiService UiService
+
+<div class="tw-h-2 tw-mb-4">
+    @if (UiService.Loading)
+    {
+        <MudProgressLinear Color="Color.Secondary" Indeterminate="true" />
+    }
+</div>
+
+@code {
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        UiService.LoadingChanged += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        UiService.LoadingChanged -= StateHasChanged;
+    }
+
+}

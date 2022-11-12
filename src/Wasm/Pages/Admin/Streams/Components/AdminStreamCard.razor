@@ -1,0 +1,69 @@
+﻿@using Gbs.Wasm.Services.UiService
+@using Gbs.Wasm.Services.Api.StreamService
+
+@inject IUiService UiService
+@inject IStreamService StreamService
+
+<MudCard Elevation="1">
+    <MudCardHeader>
+        <CardHeaderContent>
+                <MudText Typo="Typo.h6" Class="tw-truncate">@LiveStream.Title</MudText>
+                <MudText Typo="Typo.body2">@LiveStream.GenerationName</MudText>
+        </CardHeaderContent>
+        <CardHeaderActions>
+            <MudIconButton Color="Color.Error"
+                           OnClick="ToggleLive"
+                           Icon="@(LiveStream.IsLive ? Icons.Material.Filled.Circle : Icons.Material.Outlined.Circle)"/>
+        </CardHeaderActions>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudText Typo="Typo.body1" Class="tw-font-semibold">Speakers:</MudText>
+        <MudList Dense="true">
+            @foreach (var teacher in LiveStream.Teachers)
+            {
+                <MudListItem Text="@teacher.Name" Icon="@Icons.Material.Filled.Mic" ExpandLessIcon="true"/>
+            }
+        </MudList>
+    </MudCardContent>
+    <MudCardActions>
+        <div class="tw-flex tw-w-full tw-justify-end tw-space-x-2">
+            <MudButton Variant="Variant.Text"
+                       Href="@($"admin/streams/{LiveStream.Id}/edit")">
+                Edit
+            </MudButton>
+            <MudButton Variant="Variant.Text"
+                       Color="Color.Error"
+                       OnClick="HandleDelete">
+                Delete
+            </MudButton>
+        </div>
+    </MudCardActions>
+</MudCard>
+
+@code {
+
+    [Parameter, EditorRequired]
+    public StreamDto LiveStream { get; set; } = null!;
+
+    [Parameter]
+    public EventCallback<StreamDto> OnDelete { get; set; }
+
+    async Task ToggleLive()
+    {
+        var result = await StreamService.ToggleLive(LiveStream.Id);
+        if (result.Success)
+        {
+            await StreamService.LoadStreams();
+        }
+        else
+        {
+            await UiService.ShowErrorAlert(result.Message, result.StatusCode);
+        }
+    }
+
+    private async Task HandleDelete()
+    {
+        await OnDelete.InvokeAsync(LiveStream);
+    }
+
+}

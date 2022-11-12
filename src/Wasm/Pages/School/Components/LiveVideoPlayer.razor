@@ -1,0 +1,26 @@
+﻿<MudCard>
+    <MudCardContent Class="tw-pt-2">
+        <MudGrid Spacing="0" Class="tw-px-2 tw-pb-1">
+            <MudItem xs="4" Class="tw-flex tw-items-end">
+                <MudText Class="tw-text-sm tw-font-semibold">@LiveStream.GenerationName</MudText>
+            </MudItem>
+            <MudItem xs="4" Class="tw-flex tw-justify-center tw-items-end">
+                <MudText Class="tw-font-semibold tw-text-lg">@LiveStream.Title</MudText>
+            </MudItem>
+            <MudItem xs="4" Class="tw-flex tw-justify-end tw-items-end">
+                <MudIcon Icon="@Icons.Material.Filled.PlayCircle" Color="Color.Error"></MudIcon>
+            </MudItem>
+        </MudGrid>
+        <iframe class="tw-aspect-video tw-w-full tw-rounded" referrerpolicy="origin-when-cross-origin"
+                src="@LiveStream.Url"
+                allowfullscreen>
+        </iframe>
+    </MudCardContent>
+</MudCard>
+
+@code {
+
+    [Parameter]
+    public StreamDto LiveStream { get; set; } = null!;
+
+}
