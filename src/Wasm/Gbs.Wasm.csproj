@@ -8,10 +8,6 @@
     <RootNamespace>Gbs.Wasm</RootNamespace>
   </PropertyGroup>
 
-<!--  <PropertyGroup Condition=" '$(RunConfiguration)' == 'gbs-dotnet' " />-->
-  <PropertyGroup Condition=" '$(RunConfiguration)' == 'gbs-dotnet' ">
-    <ExternalConsole>true</ExternalConsole>
-  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="4.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="6.0.11" />
@@ -20,8 +16,9 @@
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="6.0.11" />
     <PackageReference Include="MudBlazor" Version="6.0.18" />
   </ItemGroup>
+	
   <ItemGroup>
-    <ProjectReference Include="..\Shared\Shared.csproj" />
+    <ProjectReference Include="..\Shared\Gbs.Shared.csproj" />
   </ItemGroup>
 
 </Project>

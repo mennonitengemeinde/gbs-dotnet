@@ -16,7 +16,7 @@ public static class ResultExtensions
         {
             return new OkObjectResult(result);
         }
-        
+
         switch (result.StatusCode)
         {
             case 400:
@@ -32,6 +32,6 @@ public static class ResultExtensions
 
     public static Result<TOut> Parse<TIn, TOut>(this Result<TIn> result)
     {
-        return new Result<TOut>(result.Success, result.Message, result.StatusCode);
+        return new Result<TOut> { Success = result.Success, Message = result.Message, StatusCode = result.StatusCode };
     }
 }

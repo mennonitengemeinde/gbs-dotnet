@@ -26,7 +26,7 @@ public class GenerationService : IGenerationService
             return;
         }
 
-        Generations = result.Data;
+        Generations = result.Data ?? new List<GenerationDto>();
         GenerationsChanged?.Invoke();
     }
 

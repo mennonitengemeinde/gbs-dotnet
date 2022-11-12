@@ -25,7 +25,7 @@ public class ChurchService : IChurchService
             return;
         }
 
-        Churches = response.Data;
+        Churches = response.Data ?? new List<ChurchDto>();
         ChurchesChanged?.Invoke();
     }
 

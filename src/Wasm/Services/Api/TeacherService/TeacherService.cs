@@ -26,7 +26,7 @@ public class TeacherService : ITeacherService
             return;
         }
 
-        Teachers = result.Data;
+        Teachers = result.Data ?? new List<TeacherDto>();
         TeachersChanged?.Invoke();
     }
 

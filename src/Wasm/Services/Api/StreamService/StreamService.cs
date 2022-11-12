@@ -25,7 +25,7 @@ public class StreamService : IStreamService
             return;
         }
 
-        Streams = streamsResponse.Data;
+        Streams = streamsResponse.Data ?? new List<StreamDto>();
         StreamsChanged?.Invoke();
     }
 

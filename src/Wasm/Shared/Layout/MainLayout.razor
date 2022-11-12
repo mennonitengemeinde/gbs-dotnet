@@ -14,10 +14,14 @@
         <MudSpacer />
         <AuthorizeView>
             <Authorized>
-                <MudIconButton Icon="@Icons.Material.Filled.Logout" OnClick="Logout" Color="Color.Inherit" />
+                <MudButton StartIcon="@Icons.Material.Filled.Logout" OnClick="Logout" Color="Color.Inherit">
+                    Logout
+                </MudButton>
             </Authorized>
             <NotAuthorized>
-                <MudIconButton Icon="@Icons.Material.Filled.Login" Href="login" Color="Color.Inherit" />
+                <MudButton StartIcon="@Icons.Material.Filled.Login" Href="login" Color="Color.Inherit">
+                    Login
+                </MudButton>
             </NotAuthorized>
         </AuthorizeView>
     </MudAppBar>

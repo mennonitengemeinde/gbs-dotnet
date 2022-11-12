@@ -48,7 +48,7 @@ public class StudentService : IStudentService
     {
         if (response.Success)
         {
-            Students = response.Data;
+            Students = response.Data ?? new List<StudentDto>();
         }
         else
         {
@@ -58,6 +58,6 @@ public class StudentService : IStudentService
 
         StudentsChanged?.Invoke();
 
-        return new Result<List<StudentDto>>(response.Data, response.Success, response.Message, response.StatusCode);
+        return response;
     }
 }

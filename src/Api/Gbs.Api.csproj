@@ -11,7 +11,6 @@
 	<RootNamespace>Gbs.Api</RootNamespace>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(RunConfiguration)' == 'gbs-dotnet.Server' " />
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.11" />
@@ -24,9 +23,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Application\Application.csproj" />
-    <ProjectReference Include="..\Infrastructure.Persistence\Infrastructure.Persistence.csproj" />
-    <ProjectReference Include="..\Wasm\Wasm.csproj" />
+    <ProjectReference Include="..\Application\Gbs.Application.csproj" />
+    <ProjectReference Include="..\Infrastructure.Persistence\Gbs.Infrastructure.Persistence.csproj" />
+    <ProjectReference Include="..\Wasm\Gbs.Wasm.csproj" />
   </ItemGroup>
 
 

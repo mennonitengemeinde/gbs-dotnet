@@ -20,7 +20,7 @@ public class UserService : IUserService
     {
         var result = await FetchUsers();
         if (result.Success)
-            Users = result.Data;
+            Users = result.Data ?? new List<UserDto>();
 
         UsersChanged?.Invoke();
     }
@@ -58,7 +58,7 @@ public class UserService : IUserService
     {
         if (result.Success)
         {
-            Users = result.Data;
+            Users = result.Data ?? new List<UserDto>();
             UsersChanged?.Invoke();
         }
         else

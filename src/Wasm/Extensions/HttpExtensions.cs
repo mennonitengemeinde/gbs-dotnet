@@ -10,12 +10,6 @@ public static class HttpExtensions
         try
         {
             response = await responseTask;
-            if (response.IsSuccessStatusCode == false)
-            {
-                return await HandleHttpError<T>(response);
-            }
-
-            return await ReadFromJson<T>(response);
         }
         catch (Exception)
         {
@@ -26,6 +20,13 @@ public static class HttpExtensions
 
             return await HandleHttpError<T>(response);
         }
+
+        if (response.IsSuccessStatusCode == false)
+        {
+            return await HandleHttpError<T>(response);
+        }
+
+        return await ReadFromJson<T>(response);
     }
 
     private static async Task<Result<T>> ReadFromJson<T>(HttpResponseMessage response)
@@ -62,6 +63,8 @@ public static class HttpExtensions
         }
 
         var responseData = await response.Content.ReadFromJsonAsync<Result<T>>();
+        
+        
         return responseData ?? Result.NotFound<T>("Something went wrong");
     }
 }

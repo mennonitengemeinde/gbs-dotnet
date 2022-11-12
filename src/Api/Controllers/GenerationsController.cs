@@ -5,14 +5,11 @@ namespace Gbs.Api.Controllers
     [Authorize]
     public class GenerationsController : ControllerBase
     {
-        private readonly IGenerationRepository _generationRepo;
         private readonly IGenerationQueries _generationQueries;
         private readonly IGenerationCommands _generationCommands;
 
-        public GenerationsController(IGenerationRepository generationRepo, IGenerationQueries generationQueries,
-            IGenerationCommands generationCommands)
+        public GenerationsController(IGenerationQueries generationQueries, IGenerationCommands generationCommands)
         {
-            _generationRepo = generationRepo;
             _generationQueries = generationQueries;
             _generationCommands = generationCommands;
         }

@@ -32,18 +32,19 @@ public class GenerationRepositoryTests
     {
         var generations = await _generationRepo.GetAllGenerations();
         
-        Assert.Equal(3, generations.Data.Count);
-        Assert.Equal(3, generations.Data.FirstOrDefault()!.Enrollments.Count());
+        Assert.Equal(3, generations.Count);
+        Assert.Equal(3, generations.FirstOrDefault()!.Enrollments.Count());
     }
     
     [Fact]
     public async Task GetGenerationById_ReturnsGeneration()
     {
         var generation = await _generationRepo.GetGenerationById(1);
-        
-        Assert.Equal("Generation 1", generation.Data.Name);
-        Assert.Equal(1, generation.Data.Id);
-        Assert.Equal(3, generation.Data.Enrollments.ToList().Count);
+
+        Assert.NotNull(generation);
+        Assert.Equal("Generation 1", generation.Name);
+        Assert.Equal(1, generation.Id);
+        Assert.Equal(3, generation.Enrollments.ToList().Count);
     }
     
     [Fact]
@@ -51,7 +52,7 @@ public class GenerationRepositoryTests
     {
         var generation = await _generationRepo.GetGenerationById(4);
         
-        Assert.Equal(404, generation.StatusCode);
+        Assert.Null(generation);
     }
     
     [Fact]
@@ -62,11 +63,9 @@ public class GenerationRepositoryTests
             Name = "Generation 4",
         };
         
-        var generation = await _generationRepo.AddGeneration(dto);
+        var generationId = await _generationRepo.AddGeneration(dto);
         
-        Assert.Equal("Generation 4", generation.Data.Name);
-        Assert.Equal(4, generation.Data.Id);
-        Assert.Empty(generation.Data.Enrollments);
+        Assert.Equal(4, generationId);
     }
     
     [Fact]
@@ -77,9 +76,9 @@ public class GenerationRepositoryTests
             Name = "Generation 1",
         };
         
-        var generation = await _generationRepo.AddGeneration(dto);
+        var generationId = await _generationRepo.AddGeneration(dto);
         
-        Assert.Equal(400, generation.StatusCode);
+        Assert.Equal(4, generationId);
     }
     
     [Fact]
@@ -92,9 +91,9 @@ public class GenerationRepositoryTests
         
         var generation = await _generationRepo.UpdateGeneration(1, dto);
         
-        Assert.Equal("Generation 1 Updated", generation.Data.Name);
-        Assert.Equal(1, generation.Data.Id);
-        Assert.Equal(3, generation.Data.Enrollments.ToList().Count);
+        Assert.Equal(1, generation.Data);
+        Assert.Equal(200, generation.StatusCode);
+        Assert.True(generation.Success);
     }
     
     [Fact]
@@ -108,19 +107,6 @@ public class GenerationRepositoryTests
         var generation = await _generationRepo.UpdateGeneration(4, dto);
         
         Assert.Equal(404, generation.StatusCode);
-    }
-    
-    [Fact]
-    public async Task UpdateGeneration_ReturnsBadRequest()
-    {
-        var dto = new GenerationUpdateDto()
-        {
-            Name = "Generation 1",
-        };
-        
-        var generation = await _generationRepo.UpdateGeneration(2, dto);
-        
-        Assert.Equal(400, generation.StatusCode);
     }
     
     [Fact]
