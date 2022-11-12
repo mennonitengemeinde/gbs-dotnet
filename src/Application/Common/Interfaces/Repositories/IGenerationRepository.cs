@@ -2,9 +2,10 @@
 
 public interface IGenerationRepository
 {
-    Task<Result<List<GenerationDto>>> GetAllGenerations();
-    Task<Result<GenerationDto>> GetGenerationById(int id);
-    Task<Result<GenerationDto>> AddGeneration(GenerationCreateDto generation);
-    Task<Result<GenerationDto>> UpdateGeneration(int generationId, GenerationUpdateDto generation);
+    Task<List<GenerationDto>> GetAllGenerations();
+    Task<GenerationDto?> GetGenerationById(int id);
+    Task<int> AddGeneration(GenerationCreateDto generation);
+    Task<Result<int>> UpdateGeneration(int generationId, GenerationUpdateDto generation);
     Task<Result<bool>> DeleteGeneration(int id);
+    Task<bool> GenerationNameExists(string name, int? id = null);
 }

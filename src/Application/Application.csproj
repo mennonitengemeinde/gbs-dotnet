@@ -11,14 +11,17 @@
     <ItemGroup>
       <PackageReference Include="AutoMapper" Version="12.0.0" />
       <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Common\Interfaces" />
+      <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Domain\Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="Microsoft.AspNetCore.Mvc.Core">
+        <HintPath>..\..\..\..\..\..\..\..\usr\local\share\dotnet\shared\Microsoft.AspNetCore.App\6.0.11\Microsoft.AspNetCore.Mvc.Core.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
 </Project>

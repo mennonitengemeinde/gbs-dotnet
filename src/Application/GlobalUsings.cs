@@ -1,5 +1,8 @@
 ﻿// Global using directives
 
+global using Gbs.Application.Common.Interfaces.Commands;
+global using Gbs.Application.Common.Interfaces.Queries;
+global using Gbs.Application.Common.Interfaces.Repositories;
 global using Gbs.Domain.Entities;
 global using Gbs.Shared.Dto.Churches;
 global using Gbs.Shared.Dto.Generations;

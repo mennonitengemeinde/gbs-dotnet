@@ -5,77 +5,59 @@ namespace Gbs.Api.Controllers
     [Authorize]
     public class StreamsController : ControllerBase
     {
-        private readonly IStreamRepository _streamRepo;
+        private readonly IStreamQueries _streamQueries;
+        private readonly IStreamCommands _streamCommands;
+        private readonly IHubContext<LivestreamHub> _streamHub;
 
-        public StreamsController(IStreamRepository streamRepo)
+        public StreamsController(IStreamQueries streamQueries, IStreamCommands streamCommands,
+            IHubContext<LivestreamHub> streamHub)
         {
-            _streamRepo = streamRepo;
+            _streamQueries = streamQueries;
+            _streamCommands = streamCommands;
+            _streamHub = streamHub;
         }
 
         [HttpGet]
         [Authorize(Policy = Policies.RequireAdminsSoundAndTeachers)]
         public async Task<ActionResult<Result<List<StreamDto>>>> GetStreams()
         {
-            var response = await _streamRepo.GetLiveStreams();
-            if (!response.Success)
-            {
-                return BadRequest(response);
-            }
-
-            return Ok(response);
+            var response = await _streamQueries.GetAllStreams();
+            return response.ToActionResult();
         }
-        
+
         [HttpGet("{id:int}")]
         [Authorize(Policy = Policies.RequireAdminsSoundAndTeachers)]
         public async Task<ActionResult<Result<StreamDto>>> GetStream(int id)
         {
-            var response = await _streamRepo.GetLiveStreamById(id);
-            if (!response.Success)
-            {
-                return BadRequest(response);
-            }
-
-            return Ok(response);
+            var response = await _streamQueries.GetStreamById(id);
+            return response.ToActionResult();
         }
-        
+
         [HttpGet("{id:int}/live")]
         [Authorize(Policy = Policies.RequireAdminsSoundAndTeachers)]
         public async Task<ActionResult<Result<StreamDto>>> GetOnlineStream(int id)
         {
-            var response = await _streamRepo.GetLiveStreamById(id, true);
-            if (!response.Success)
-            {
-                return BadRequest(response);
-            }
-
-            return Ok(response);
+            var response = await _streamQueries.GetStreamById(id, true);
+            return response.ToActionResult();
         }
 
         [HttpPost]
         [Authorize(Policy = Policies.RequireAdminsAndSound)]
         public async Task<ActionResult<Result<StreamDto>>> AddStream(StreamCreateDto streamCreateDto)
         {
-            var response = await _streamRepo.CreateLiveStream(streamCreateDto);
-            if (!response.Success)
-            {
-                return BadRequest(response);
-            }
-
-            return Ok(response);
+            var response = await _streamCommands.CreateStream(streamCreateDto);
+            await _streamHub.Clients.All.SendAsync("ReceiveStreams", await _streamQueries.GetAllStreams());
+            return response.ToActionResult();
         }
-        
+
         [HttpPut("{streamId:int}")]
         [Authorize(Policy = Policies.RequireAdminsAndSound)]
         public async Task<ActionResult<Result<StreamDto>>> UpdateStream(int streamId,
             StreamCreateDto liveDto)
         {
-            var response = await _streamRepo.UpdateStream(streamId, liveDto);
-            if (!response.Success)
-            {
-                return BadRequest(response);
-            }
-
-            return Ok(response);
+            var response = await _streamCommands.UpdateStream(streamId, liveDto);
+            await _streamHub.Clients.All.SendAsync("ReceiveStreams", await _streamQueries.GetAllStreams());
+            return response.ToActionResult();
         }
 
         [HttpPut("{streamId:int}/live")]
@@ -83,26 +65,18 @@ namespace Gbs.Api.Controllers
         public async Task<ActionResult<Result<StreamDto>>> UpdateStreamLiveStatus(int streamId,
             StreamUpdateLiveDto liveDto)
         {
-            var response = await _streamRepo.UpdateStreamLiveStatus(streamId, liveDto);
-            if (!response.Success)
-            {
-                return BadRequest(response);
-            }
-
-            return Ok(response);
+            var response = await _streamCommands.UpdateLiveStatus(streamId, liveDto);
+            await _streamHub.Clients.All.SendAsync("ReceiveStreams", await _streamQueries.GetAllStreams());
+            return response.ToActionResult();
         }
-        
+
         [HttpDelete("{streamId:int}")]
         [Authorize(Policy = Policies.RequireAdminsAndSound)]
-        public async Task<ActionResult<Result<int>>> DeleteStream(int streamId)
+        public async Task<ActionResult<Result<bool>>> DeleteStream(int streamId)
         {
-            var response = await _streamRepo.DeleteStream(streamId);
-            if (!response.Success)
-            {
-                return BadRequest(response);
-            }
-
-            return Ok(response);
+            var response = await _streamCommands.DeleteStream(streamId);
+            await _streamHub.Clients.All.SendAsync("ReceiveStreams", await _streamQueries.GetAllStreams());
+            return response.ToActionResult();
         }
     }
 }

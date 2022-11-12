@@ -1,10 +1,10 @@
-﻿using Gbs.Application.Common.Interfaces.Services;
-using gbs.Server.Api.Services;
+﻿using Gbs.Api.Services;
+using Gbs.Application.Common.Interfaces.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.IdentityModel.Tokens;
 
-namespace gbs.Server.Api;
+namespace Gbs.Api;
 
 public static class ConfigureServices
 {

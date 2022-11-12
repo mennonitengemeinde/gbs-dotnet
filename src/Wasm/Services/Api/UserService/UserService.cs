@@ -1,4 +1,5 @@
-﻿using Gbs.Wasm.Services.UiService;
+﻿using Gbs.Wasm.Extensions;
+using Gbs.Wasm.Services.UiService;
 
 namespace Gbs.Wasm.Services.Api.UserService;
 

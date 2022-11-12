@@ -1,7 +1,6 @@
+using Gbs.Api;
 using Gbs.Application;
 using Gbs.Infrastructure.Persistence;
-using gbs.Server.Api;
-using gbs.Server.Api.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 

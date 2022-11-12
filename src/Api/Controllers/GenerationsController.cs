@@ -6,66 +6,56 @@ namespace Gbs.Api.Controllers
     public class GenerationsController : ControllerBase
     {
         private readonly IGenerationRepository _generationRepo;
+        private readonly IGenerationQueries _generationQueries;
+        private readonly IGenerationCommands _generationCommands;
 
-        public GenerationsController(IGenerationRepository generationRepo)
+        public GenerationsController(IGenerationRepository generationRepo, IGenerationQueries generationQueries,
+            IGenerationCommands generationCommands)
         {
             _generationRepo = generationRepo;
+            _generationQueries = generationQueries;
+            _generationCommands = generationCommands;
         }
-        
+
         [HttpGet]
         [Authorize(Policy = Policies.RequireAdminsAndSound)]
         public async Task<ActionResult<Result<List<GenerationDto>>>> GetGenerations()
         {
-            var result = await _generationRepo.GetAllGenerations();
-            return Ok(result);
+            var result = await _generationQueries.GetAll();
+            return result.ToActionResult();
         }
-        
-        [HttpGet("{id:int}")]
-        [Authorize(Policy = Policies.RequireAdmins)]
-        public async Task<ActionResult<Result<GenerationDto>>> GetGenerationById(int id)
-        {
-            var result = await _generationRepo.GetGenerationById(id);
-            if (!result.Success)
-            {
-                return BadRequest(result);
-            }
-            return Ok(result);
-        }
-        
+
         [HttpPost]
         [Authorize(Policy = Policies.RequireAdmins)]
         public async Task<ActionResult<Result<GenerationDto>>> AddGeneration(GenerationCreateDto request)
         {
-            var result = await _generationRepo.AddGeneration(request);
-            if (!result.Success)
-            {
-                return BadRequest(result);
-            }
-            return Ok(result);
+            var result = await _generationCommands.Add(request);
+            return result.ToActionResult();
         }
-        
+
+        [HttpGet("{id:int}")]
+        [Authorize(Policy = Policies.RequireAdmins)]
+        public async Task<ActionResult<Result<GenerationDto>>> GetGenerationById(int id)
+        {
+            var result = await _generationQueries.GetById(id);
+            return result.ToActionResult();
+        }
+
         [HttpPut("{generationId:int}")]
         [Authorize(Policy = Policies.RequireAdmins)]
-        public async Task<ActionResult<Result<GenerationDto>>> UpdateGeneration(int generationId, GenerationUpdateDto generation)
+        public async Task<ActionResult<Result<GenerationDto>>> UpdateGeneration(int generationId,
+            GenerationUpdateDto generation)
         {
-            var result = await _generationRepo.UpdateGeneration(generationId, generation);
-            if (!result.Success)
-            {
-                return BadRequest(result);
-            }
-            return Ok(result);
+            var result = await _generationCommands.Update(generationId, generation);
+            return result.ToActionResult();
         }
-        
+
         [HttpDelete("{id:int}")]
         [Authorize(Policy = Policies.RequireAdmins)]
         public async Task<ActionResult<Result<bool>>> DeleteGeneration(int id)
         {
-            var result = await _generationRepo.DeleteGeneration(id);
-            if (!result.Success)
-            {
-                return BadRequest(result);
-            }
-            return Ok(result);
+            var result = await _generationCommands.Delete(id);
+            return result.ToActionResult();
         }
     }
 }

@@ -12,7 +12,7 @@ public class StreamCreateDto
     
     [Required]
     [Range(1, int.MaxValue, ErrorMessage = "Please select a generation")]
-    public int? GenerationId { get; set; }
+    public int GenerationId { get; set; }
 
     [Required, MinLength(1, ErrorMessage = "Please select at least one teacher")]
     public IEnumerable<int> Teachers { get; set; } = new HashSet<int>();

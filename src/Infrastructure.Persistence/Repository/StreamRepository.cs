@@ -3,21 +3,13 @@
 public class StreamRepository : IStreamRepository
 {
     private readonly DataContext _context;
-    // private readonly IHubContext<LivestreamHub> _streamHub;
 
     public StreamRepository(DataContext context)
     {
         _context = context;
-        // _streamHub = streamHub;
     }
-
-    // private async Task NotifyClients()
-    // {
-    //     var streams = await GetLiveStreams();
-    //     await _streamHub.Clients.All.SendAsync("ReceiveStreams", streams);
-    // }
-
-    public async Task<Result<List<StreamDto>>> GetLiveStreams()
+    
+    public async Task<List<StreamDto>> GetLiveStreams()
     {
         var result = await _context.Streams
             .Select(s => new StreamDto
@@ -37,10 +29,10 @@ public class StreamRepository : IStreamRepository
             })
             .ToListAsync();
 
-        return Result.Ok(result);
+        return result;
     }
 
-    public async Task<Result<StreamDto>> GetLiveStreamById(int id, bool onlyLive = false)
+    public async Task<StreamDto?> GetLiveStreamById(int id, bool onlyLive = false)
     {
         var liveStream = await _context.Streams
             .Where(s => s.Id == id)
@@ -60,20 +52,16 @@ public class StreamRepository : IStreamRepository
                 })
             })
             .FirstOrDefaultAsync();
-        return liveStream == null || (onlyLive && !liveStream.IsLive)
-            ? Result.BadRequest<StreamDto>("Stream not found")
-            : Result.Ok(liveStream);
+
+        return liveStream;
     }
 
-    public async Task<Result<StreamDto>> CreateLiveStream(StreamCreateDto streamCreateDto)
+    public async Task<Result<int>> CreateLiveStream(StreamCreateDto streamCreateDto)
     {
-        if (await _context.Streams.AnyAsync(s => s.Title.ToLower().Equals(streamCreateDto.Title.ToLower())))
-            return Result.BadRequest<StreamDto>("Stream with this title already exists");
-
         var generation = await _context.Generations.FirstOrDefaultAsync(g => g.Id == streamCreateDto.GenerationId);
         if (generation == null)
-            return Result.NotFound<StreamDto>("Generation not found");
-
+            return Result.NotFound<int>("Generation not found");
+        
         var stream = new LiveStream
         {
             Title = streamCreateDto.Title,
@@ -90,25 +78,21 @@ public class StreamRepository : IStreamRepository
         stream.StreamTeachers.AddRange(streamTeachers);
         _context.Streams.Add(stream);
         await _context.SaveChangesAsync();
-        // await NotifyClients();
-        return await GetLiveStreamById(stream.Id);
+        return Result.Ok(stream.Id);
     }
 
-    public async Task<Result<StreamDto>> UpdateStream(int streamId, StreamCreateDto liveDto)
+    public async Task<Result<bool>> UpdateStream(int streamId, StreamCreateDto liveDto)
     {
         var stream = await _context.Streams
             .Include(s => s.StreamTeachers)
             .FirstOrDefaultAsync(s => s.Id == streamId);
 
         if (stream == null)
-            return Result.NotFound<StreamDto>("Stream not found");
-
-        if (await _context.Streams.AnyAsync(s => s.Title.ToLower().Equals(liveDto.Title.ToLower()) && s.Id != streamId))
-            return Result.BadRequest<StreamDto>("Title already exists");
+            return Result.NotFound<bool>("Stream not found");
 
         var generation = await _context.Generations.FirstOrDefaultAsync(g => g.Id == liveDto.GenerationId);
         if (generation == null)
-            return Result.NotFound<StreamDto>("Generation not found");
+            return Result.NotFound<bool>("Generation not found");
 
         foreach (var streamTeacher in stream.StreamTeachers
                      .Where(streamTeacher => !liveDto.Teachers.Contains(streamTeacher.TeacherId)))
@@ -128,22 +112,18 @@ public class StreamRepository : IStreamRepository
         stream.Generation = generation;
         _context.Streams.Update(stream);
         await _context.SaveChangesAsync();
-        // await NotifyClients();
-        return await GetLiveStreamById(stream.Id);
+        return Result.Ok(true);
     }
 
-    public async Task<Result<StreamDto>> UpdateStreamLiveStatus(int streamId, StreamUpdateLiveDto liveDto)
+    public async Task<Result<bool>> UpdateStreamLiveStatus(int streamId, StreamUpdateLiveDto liveDto)
     {
         var dbStream = await _context.Streams.FirstOrDefaultAsync(s => s.Id == streamId);
         if (dbStream == null)
-        {
-            return Result.NotFound<StreamDto>("Stream not found");
-        }
+            return Result.NotFound<bool>("Stream not found");
 
         dbStream.IsLive = liveDto.IsLive;
         await _context.SaveChangesAsync();
-        // await NotifyClients();
-        return await GetLiveStreamById(dbStream.Id);
+        return Result.Ok(true);
     }
 
     public async Task<Result<bool>> DeleteStream(int streamId)
@@ -153,7 +133,11 @@ public class StreamRepository : IStreamRepository
             return Result.BadRequest<bool>("Stream not found");
         _context.Streams.Remove(stream);
         await _context.SaveChangesAsync();
-        // await NotifyClients();
         return Result.Ok(true, "Stream deleted successfully");
+    }
+
+    public async Task<bool> StreamWithTitleExists(string title)
+    {
+        return await _context.Streams.AnyAsync(s => s.Title.ToLower().Equals(title.ToLower()));
     }
 }

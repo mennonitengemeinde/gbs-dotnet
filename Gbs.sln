@@ -10,7 +10,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "src\Shared\Shared
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "src\Domain\Domain.csproj", "{85F836F6-41B6-4FAD-90DD-640527B101FD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.Persistence", "src\Persistence\Infrastructure.Persistence.csproj", "{95F798DE-1339-4985-A328-AD6D59A03B0E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.Persistence", "src\Infrastructure.Persistence\Infrastructure.Persistence.csproj", "{95F798DE-1339-4985-A328-AD6D59A03B0E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application", "src\Application\Application.csproj", "{3D5EABCB-EA90-4C19-B21D-768F4D3FCD16}"
 EndProject

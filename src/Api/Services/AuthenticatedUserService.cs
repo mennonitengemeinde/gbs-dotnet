@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using Gbs.Application.Common.Interfaces.Services;
 
-namespace gbs.Server.Api.Services;
+namespace Gbs.Api.Services;
 
 public class AuthenticatedUserService : IAuthenticatedUserService
 {

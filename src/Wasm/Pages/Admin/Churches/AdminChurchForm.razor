@@ -3,6 +3,7 @@
 @using Gbs.Wasm.Services.Api.ChurchService
 @using Gbs.Wasm.Services.UiService
 @attribute [Authorize(Policy = Policies.RequireAdmins)]
+
 @inject NavigationManager NavigationManager
 @inject IChurchService ChurchService
 @inject IUiService UiService

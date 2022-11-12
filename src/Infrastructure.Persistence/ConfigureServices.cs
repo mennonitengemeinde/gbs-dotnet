@@ -18,7 +18,7 @@ public static class ConfigureServices
             var username = configuration.GetConnectionString("Username");
             var password = configuration.GetConnectionString("Password");
             options.UseNpgsql($"Host={host};Port={port};Database={db};Username={username};Password={password}",
-                b => b.MigrationsAssembly("Server.Persistence"));
+                b => b.MigrationsAssembly("Gbs.Infrastructure.Persistence"));
         });
 
         services.AddDefaultIdentity<User>()

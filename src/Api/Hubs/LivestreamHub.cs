@@ -1,4 +1,4 @@
-﻿namespace gbs.Server.Api.Hubs;
+﻿namespace Gbs.Api.Hubs;
 
 public class LivestreamHub : Hub
 {
@@ -12,6 +12,6 @@ public class LivestreamHub : Hub
     public async Task BroadcastActiveStreams()
     {
         var streams = await _streamRepo.GetLiveStreams();
-        await Clients.All.SendAsync("ReceiveStreams", streams);
+        await Clients.All.SendAsync(LiveStreamHubRoutes.ReceiveStreams, streams);
     }
 }

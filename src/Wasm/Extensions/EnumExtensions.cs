@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Gbs.Client.Wasm.Extensions;
+namespace Gbs.Wasm.Extensions;
 
 public static class EnumExtensions
 {

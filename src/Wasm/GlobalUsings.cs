@@ -1,8 +1,6 @@
 ﻿// Global using directives
 
 global using System.Net.Http.Json;
-global using Gbs.Client.Wasm;
-global using Gbs.Client.Wasm.Extensions;
 global using Gbs.Shared.Dto.Churches;
 global using Gbs.Shared.Dto.Generations;
 global using Gbs.Shared.Dto.Identity;

@@ -1,5 +1,9 @@
 ﻿// Global using directives
 
+global using Gbs.Api.Hubs;
+global using Gbs.Application.Common.Extensions;
+global using Gbs.Application.Common.Interfaces.Commands;
+global using Gbs.Application.Common.Interfaces.Queries;
 global using Gbs.Application.Common.Interfaces.Repositories;
 global using Gbs.Shared.Const;
 global using Gbs.Shared.Dto.Churches;

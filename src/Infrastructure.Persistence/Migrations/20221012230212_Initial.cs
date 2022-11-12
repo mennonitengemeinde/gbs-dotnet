@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Gbs.Server.Persistence.Migrations
+namespace Gbs.Infrastructure.Persistence.Migrations
 {
     public partial class Initial : Migration
     {

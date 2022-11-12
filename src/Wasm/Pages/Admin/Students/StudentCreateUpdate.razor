@@ -67,6 +67,7 @@
                                    AnchorOrigin="Origin.BottomCenter"
                                    For="@(() => _model.ChurchId)"
                                    @bind-Value="_model.ChurchId">
+                            <MudSelectItem Disabled="true" T="int" Value="0">Select Church</MudSelectItem>
                             @foreach (var item in _churches)
                             {
                                 <MudSelectItem T="int" Value="@item.Id">@item.Name</MudSelectItem>
