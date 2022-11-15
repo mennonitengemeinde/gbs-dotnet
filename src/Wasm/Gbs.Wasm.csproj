@@ -20,5 +20,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Shared\Gbs.Shared.csproj" />
   </ItemGroup>
+	
+  <ItemGroup>
+    <Folder Include="Pages\Admin\Subjects" />
+  </ItemGroup>
 
 </Project>

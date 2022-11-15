@@ -1,5 +1,7 @@
 ﻿using System.Runtime.Serialization;
 using AutoMapper;
+using Gbs.Shared.Dto.Streams;
+using Gbs.Shared.Dto.Subjects;
 
 namespace Gbs.Application.UnitTests.Common;
 
@@ -25,7 +27,12 @@ public class MappingTests
     [InlineData(typeof(Student), typeof(StudentDto))]
     [InlineData(typeof(Generation), typeof(GenerationDto))]
     [InlineData(typeof(Grade), typeof(GradeDto))]
+    [InlineData(typeof(Lesson), typeof(SubjectLessonDto))]
+    [InlineData(typeof(LiveStream), typeof(StreamDto))]
+    [InlineData(typeof(LiveStreamTeacher), typeof(TeacherDto))]
+    [InlineData(typeof(StreamCreateDto), typeof(LiveStream))]
     [InlineData(typeof(StudentCreateDto), typeof(Student))]
+    [InlineData(typeof(Subject), typeof(SubjectDto))]
     [InlineData(typeof(Teacher), typeof(TeacherDto))]
     public void ShouldSupportMappingFromSourceToDestination(Type source, Type destination)
     {

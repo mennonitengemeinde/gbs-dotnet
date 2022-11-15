@@ -1,3 +1,5 @@
+using Gbs.Application.Common.Entities;
+
 namespace Gbs.Infrastructure.Persistence.Configurations;
 
 public class QuestionConfiguration : IEntityTypeConfiguration<Question>

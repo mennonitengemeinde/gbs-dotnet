@@ -4,7 +4,6 @@ global using AutoMapper;
 global using Gbs.Application.Common.Interfaces.Repositories;
 global using Gbs.Application.Common.Interfaces.Services;
 global using Gbs.Domain.Entities;
-global using Gbs.Infrastructure.Persistence.Identity;
 global using Gbs.Shared.Const;
 global using Gbs.Shared.Dto.Churches;
 global using Gbs.Shared.Dto.Generations;

@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Gbs.Shared.Enums;
 
 namespace Gbs.Shared.Dto.Students;
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Gbs.Application.Common.Entities;
+using Microsoft.AspNetCore.Identity;
 
 namespace Gbs.Infrastructure.Persistence.Repository;
 

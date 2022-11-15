@@ -7,4 +7,5 @@ public class Generation
     public bool IsActive { get; set; } = true;
 
     public List<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
+    public List<Lesson> Lessons { get; set; } = new List<Lesson>();
 }

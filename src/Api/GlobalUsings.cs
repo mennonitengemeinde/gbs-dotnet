@@ -11,6 +11,7 @@ global using Gbs.Shared.Dto.Generations;
 global using Gbs.Shared.Dto.Identity;
 global using Gbs.Shared.Dto.Streams;
 global using Gbs.Shared.Dto.Students;
+global using Gbs.Shared.Dto.Subjects;
 global using Gbs.Shared.Dto.Teachers;
 global using Gbs.Shared.Wrapper;
 global using Microsoft.AspNetCore.Authorization;

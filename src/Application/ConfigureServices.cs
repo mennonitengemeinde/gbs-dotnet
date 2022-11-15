@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Gbs.Application.Subjects;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Gbs.Application;
@@ -11,6 +12,8 @@ public static class ConfigureServices
         
         services.AddScoped<IGenerationQueries, GenerationQueries>();
         services.AddScoped<IGenerationCommands, GenerationCommands>();
+        services.AddScoped<ISubjectQueries, SubjectQueries>();
+        services.AddScoped<ISubjectCommands, SubjectCommands>();
         services.AddScoped<IStreamQueries, StreamQueries>();
         services.AddScoped<IStreamCommands, StreamCommands>();
 

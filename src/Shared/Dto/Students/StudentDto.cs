@@ -1,6 +1,4 @@
-﻿using Gbs.Shared.Enums;
-
-namespace Gbs.Shared.Dto.Students;
+﻿namespace Gbs.Shared.Dto.Students;
 
 public class StudentDto
 {

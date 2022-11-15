@@ -2,24 +2,33 @@ namespace Gbs.Application.Streams;
 
 public class StreamQueries : IStreamQueries
 {
-    private readonly IStreamRepository _streamRepo;
+    private readonly IGbsDbContext _context;
+    private readonly IMapper _mapper;
 
-    public StreamQueries(IStreamRepository streamRepo)
+    public StreamQueries(IGbsDbContext context, IMapper mapper)
     {
-        _streamRepo = streamRepo;
+        _context = context;
+        _mapper = mapper;
     }
 
     public async Task<Result<List<StreamDto>>> GetAllStreams()
     {
-        var streams = await _streamRepo.GetLiveStreams();
+        var streams = await _context.Streams
+            .ProjectTo<StreamDto>(_mapper.ConfigurationProvider)
+            .ToListAsync();
+
         return Result.Ok(streams);
     }
 
     public async Task<Result<StreamDto>> GetStreamById(int id, bool liveOnly = false)
     {
-        var stream = await _streamRepo.GetLiveStreamById(id);
-        return stream == null 
-            ? Result.NotFound<StreamDto>("Stream not found") 
-            : Result.Ok(stream);
+        var liveStream = await _context.Streams
+            .Where(s => s.Id == id)
+            .ProjectTo<StreamDto>(_mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync();
+
+        return liveStream == null
+            ? Result.NotFound<StreamDto>("Stream not found")
+            : Result.Ok(liveStream);
     }
 }

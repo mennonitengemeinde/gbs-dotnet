@@ -1,6 +1,4 @@
-﻿using Gbs.Shared.Enums;
-
-namespace Gbs.Shared.Dto.Generations;
+﻿namespace Gbs.Shared.Dto.Generations;
 
 public class GenerationEnrollmentDto
 {

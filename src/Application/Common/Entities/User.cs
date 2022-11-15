@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace Gbs.Infrastructure.Persistence.Identity;
+namespace Gbs.Application.Common.Entities;
 
 public class User : IdentityUser
 {
