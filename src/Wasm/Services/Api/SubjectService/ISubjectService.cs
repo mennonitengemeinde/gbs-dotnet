@@ -6,7 +6,7 @@ public interface ISubjectService
 {
     List<SubjectDto> Subjects { get; set; }
     event Action SubjectsChanged;
-    Task FetchSubjects();
+    Task<Result<List<SubjectDto>>> FetchSubjects();
     Task<Result<SubjectDto>> FetchSubject(int id);
-    Task AddSubject(SubjectCreateDto subject);
+    Task<Result<SubjectDto>> AddSubject(SubjectCreateDto subject);
 }
