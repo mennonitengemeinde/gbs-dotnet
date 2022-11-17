@@ -1,7 +1,4 @@
-﻿using Gbs.Wasm.Extensions;
-using Gbs.Wasm.Services.UiService;
-
-namespace Gbs.Wasm.Services.Api.GenerationService;
+﻿namespace Gbs.Wasm.Services.Api.GenerationService;
 
 public class GenerationService : IGenerationService
 {

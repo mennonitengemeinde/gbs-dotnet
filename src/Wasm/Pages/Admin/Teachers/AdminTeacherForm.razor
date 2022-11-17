@@ -1,7 +1,6 @@
 @page "/admin/teachers/create"
 @page "/admin/teachers/{Id:int}/edit"
 @using Gbs.Wasm.Services.Api.TeacherService
-@using Gbs.Wasm.Services.UiService
 @attribute [Authorize(Policy = Policies.RequireAdminsAndSound)]
 @inject NavigationManager NavigationManager
 @inject ITeacherService TeacherService

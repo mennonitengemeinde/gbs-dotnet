@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using MudBlazor;
 
-namespace Gbs.Wasm.Services.UiService;
+namespace Gbs.Wasm.Services;
 
 public class UiService : IUiService
 {

@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using Gbs.Wasm.Extensions;
 using Microsoft.AspNetCore.Components.Authorization;
 
 namespace Gbs.Wasm.Services.Api.AuthService;

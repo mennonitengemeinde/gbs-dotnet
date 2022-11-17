@@ -1,4 +1,4 @@
-namespace Gbs.Wasm.Services.UiService;
+namespace Gbs.Wasm.Common.Interfaces;
 
 public interface IUiService
 {

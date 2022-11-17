@@ -1,10 +1,8 @@
 ﻿@page "/admin/generations"
 @attribute [Authorize(Policy = Policies.RequireAdmins)]
-@inject IGenerationService GenerationService
-@inject IUiService UiService
-@using Gbs.Wasm.Services.Api.GenerationService
-@using Gbs.Wasm.Services.UiService
 @implements IDisposable
+
+@inject IStore<GenerationDto, GenerationCreateDto> GenerationStore
 
 <PageTitle>Generations - GBS</PageTitle>
 
@@ -15,7 +13,7 @@
     </MudButton>
 </div>
 
-<MudTable Items="@GenerationService.Generations" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading" LoadingProgressColor="Color.Info">
+<MudTable Items="@GenerationStore.Value" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading" LoadingProgressColor="Color.Info">
     <HeaderContent>
         <MudTh>Name</MudTh>
         <MudTh></MudTh>
@@ -35,14 +33,14 @@
     protected override async Task OnInitializedAsync()
     {
         _loading = true;
-        await GenerationService.LoadGenerations();
-        GenerationService.GenerationsChanged += StateHasChanged;
+        await GenerationStore.Fetch();
+        GenerationStore.OnChange += StateHasChanged;
         _loading = false;
     }
 
     public void Dispose()
     {
-        GenerationService.GenerationsChanged -= StateHasChanged;
+        GenerationStore.OnChange -= StateHasChanged;
     }
 
 }

@@ -9,3 +9,6 @@ global using Gbs.Shared.Dto.Students;
 global using Gbs.Shared.Dto.Teachers;
 global using Gbs.Shared.Const;
 global using Gbs.Shared.Wrapper;
+global using Gbs.Wasm.Common.Extensions;
+global using Gbs.Wasm.Common.Interfaces;
+global using Gbs.Wasm.Services;

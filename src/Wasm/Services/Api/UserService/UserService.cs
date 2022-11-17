@@ -1,7 +1,4 @@
-﻿using Gbs.Wasm.Extensions;
-using Gbs.Wasm.Services.UiService;
-
-namespace Gbs.Wasm.Services.Api.UserService;
+﻿namespace Gbs.Wasm.Services.Api.UserService;
 
 public class UserService : IUserService
 {
