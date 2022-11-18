@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using Blazored.LocalStorage;
+using Gbs.Wasm.Common.Interfaces.Store;
 using Gbs.Wasm.Services.Api.AuthService;
 using Gbs.Wasm.Services.Api.ChurchService;
 using Gbs.Wasm.Services.Api.GenerationService;
@@ -31,7 +32,8 @@ public static class ConfigureServices
         services.AddTransient<IDateTimeService, DateTimeService>();
 
         services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(hostEnvironment.BaseAddress) });
-        services.AddScoped<IStore<GenerationDto, GenerationCreateDto>, GenerationStore>();
+        services.AddScoped<IGenerationStore, GenerationStore>();
+        services.AddScoped<ISubjectStore, SubjectStore>();
         services.AddScoped<IAuthService, AuthApiService>();
         services.AddScoped<IChurchService, ChurchService>();
         services.AddScoped<IUiService, UiService>();

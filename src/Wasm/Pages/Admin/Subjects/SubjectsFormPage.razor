@@ -1,22 +1,22 @@
-@page "/admin/generations/create"
-@page "/admin/generations/{Id:int}/edit"
+@page "/admin/subjects/create"
+@page "/admin/subjects/{Id:int}/edit"
 @attribute [Authorize(Policy = Policies.RequireAdmins)]
 
 @inject NavigationManager NavigationManager
-@inject IGenerationStore GenerationStore
+@inject ISubjectStore SubjectStore
 @inject IUiService UiService
 
-<PageTitle>Generations Form - GBS</PageTitle>
+<PageTitle>Subjects Form - GBS</PageTitle>
 
 <EditForm Model="_model" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator />
     <MudGrid Justify="Justify.Center" Class="tw-pt-8">
         <MudItem xs="12" sm="8" md="5">
-            <MatFormCard Label="Generation"
+            <MatFormCard Label="Subject"
                          IsEdit="@_isEdit"
-                         IsLoading="@GenerationStore.IsLoading"
+                         IsLoading="@SubjectStore.IsLoading"
                          IsProcessing="@_isProcessing"
-                         ReturnUrl="/admin/generations">
+                         ReturnUrl="/admin/subjects">
                 <MudTextField Label="Name"
                               @bind-Value="_model.Name"
                               For="() => _model.Name" />
@@ -26,7 +26,7 @@
 </EditForm>
 
 @code {
-    GenerationCreateDto _model = new();
+    SubjectCreateDto _model = new();
     bool _isEdit;
     bool _isProcessing;
 
@@ -38,12 +38,12 @@
         if (Id.HasValue)
         {
             _isEdit = true;
-            var generation = await GenerationStore.GetById(Id.Value);
-            if (generation != null)
+            var subject = await SubjectStore.GetById(Id.Value);
+            if (subject != null)
             {
-                _model = new GenerationCreateDto
+                _model = new SubjectCreateDto
                 {
-                    Name = generation.Name
+                    Name = subject.Name
                 };
             }
         }
@@ -54,18 +54,18 @@
         _isProcessing = true;
         if (_isEdit)
         {
-            await GenerationStore.Update(Id!.Value, _model);
+            await SubjectStore.Update(Id!.Value, _model);
         }
         else
         {
-            await GenerationStore.Add(_model);
+            await SubjectStore.Add(_model);
         }
 
-        if (!GenerationStore.HasError)
+        if (!SubjectStore.HasError)
         {
             _isProcessing = false;
-            UiService.ShowSuccessAlert("Generation added successfully");
-            NavigationManager.NavigateTo("admin/generations");
+            UiService.ShowSuccessAlert("Subject added successfully");
+            NavigationManager.NavigateTo("admin/subjects");
         }
         _isProcessing = false;
     }

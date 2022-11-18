@@ -33,6 +33,7 @@ public class MappingTests
     [InlineData(typeof(StreamCreateDto), typeof(LiveStream))]
     [InlineData(typeof(StudentCreateDto), typeof(Student))]
     [InlineData(typeof(Subject), typeof(SubjectDto))]
+    [InlineData(typeof(SubjectCreateDto), typeof(Subject))]
     [InlineData(typeof(Teacher), typeof(TeacherDto))]
     public void ShouldSupportMappingFromSourceToDestination(Type source, Type destination)
     {

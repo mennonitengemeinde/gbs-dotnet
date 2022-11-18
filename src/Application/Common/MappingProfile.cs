@@ -57,6 +57,10 @@ public class MappingProfile : Profile
         
         // Subject Mapping
         CreateMap<Subject, SubjectDto>();
+        CreateMap<SubjectCreateDto, Subject>()
+            .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.Lessons, opt => opt.Ignore())
+            .ForMember(dest => dest.Questions, opt => opt.Ignore());
         
         // Teacher Mapping
         CreateMap<Teacher, TeacherDto>();
