@@ -11,8 +11,14 @@ public class UiService : IUiService
     private readonly ILocalStorageService _localStorage;
     private readonly AuthenticationStateProvider _authenticationStateProvider;
     private readonly ISnackbar _snackbar;
+    private bool _loading = false;
 
-    public bool Loading { get; set; }
+    public bool Loading
+    {
+        get => _loading;
+        set { _loading = value; LoadingChanged?.Invoke(); }
+    }
+
     public event Action? LoadingChanged;
 
     public UiService(NavigationManager navManager, ILocalStorageService localStorage,

@@ -1,10 +1,9 @@
 @page "/school"
 @attribute [Authorize(Policy = Policies.RequireAdminsSoundAndTeachers)]
 @using Gbs.Wasm.Pages.School.Components
-@using Gbs.Wasm.Services.Api.StreamService
 @implements IAsyncDisposable
 
-@inject IStreamService StreamService
+@inject IStreamStore StreamStore
 @inject IUiService UiService
 @inject NavigationManager NavigationManager
 
@@ -19,7 +18,7 @@
 <MudDivider Light="true"/>
 
 <MudGrid Class="tw-relative tw-pt-2">
-    @foreach (var liveStream in StreamService.Streams.Where(s => s.IsLive == true))
+    @foreach (var liveStream in StreamStore.Value.Where(s => s.IsLive))
     {
         <MudItem xs="12" md="6" xl="4">
             <LiveStreamCard LiveStream="@liveStream" />
@@ -28,38 +27,43 @@
 </MudGrid>
 
 @code {
-    private HubConnection? hubConnection;
+    private HubConnection? _hubConnection;
     
     protected override async Task OnInitializedAsync()
     {
-        UiService.LoadingStart();
+        await StreamStore.Initialize();
         
-        hubConnection = new HubConnectionBuilder()
+        _hubConnection = new HubConnectionBuilder()
             .WithUrl(NavigationManager.ToAbsoluteUri("/hubs/streamshub"))
             .Build();
 
-        hubConnection.On<Result<List<StreamDto>>>("ReceiveStreams", OnReceiveStreams);
+        _hubConnection.On<Result<List<StreamDto>>>("ReceiveStreams", OnReceiveStreams);
 
-        await hubConnection.StartAsync();
-        
-        await StreamService.LoadStreams();
-        UiService.LoadingStop();
+        await _hubConnection.StartAsync();
     }
     
-    private async Task OnReceiveStreams(Result<List<StreamDto>> streams)
+    protected override void OnAfterRender(bool firstRender)
+    {
+        UiService.Loading = StreamStore.IsLoading;
+    }
+    
+    private void OnReceiveStreams(Result<List<StreamDto>> streams)
     {
         if (streams.Success)
         {
-            await StreamService.CacheStreams(streams);
+            if (streams.Data != null)
+            {
+                StreamStore.CacheData(streams.Data);
+            }
         }
         StateHasChanged();
     }
 
     public async ValueTask DisposeAsync()
     {
-        if (hubConnection is not null)
+        if (_hubConnection is not null)
         {
-            await hubConnection.DisposeAsync();
+            await _hubConnection.DisposeAsync();
         }
     }
 

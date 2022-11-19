@@ -19,7 +19,8 @@
                          ReturnUrl="/admin/subjects">
                 <MudTextField Label="Name"
                               @bind-Value="_model.Name"
-                              For="() => _model.Name" />
+                              For="() => _model.Name"
+                              OnlyValidateIfDirty="true" />
             </MatFormCard>
         </MudItem>
     </MudGrid>
@@ -64,10 +65,11 @@
         if (!SubjectStore.HasError)
         {
             _isProcessing = false;
-            UiService.ShowSuccessAlert("Subject added successfully");
+            UiService.ShowSuccessAlert(_isEdit ? "Subject updated successfully" : "Subject added successfully");
             NavigationManager.NavigateTo("admin/subjects");
         }
         _isProcessing = false;
+        SubjectStore.ReadError();
     }
 
 }

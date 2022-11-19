@@ -1,5 +1,4 @@
 ﻿using Gbs.Shared.Dto.Subjects;
-using Gbs.Wasm.Common.Interfaces.Store;
 
 namespace Gbs.Wasm.Store;
 

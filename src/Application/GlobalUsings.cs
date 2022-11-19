@@ -14,6 +14,7 @@ global using Gbs.Shared.Dto.Churches;
 global using Gbs.Shared.Dto.Generations;
 global using Gbs.Shared.Dto.Grades;
 global using Gbs.Shared.Dto.Identity;
+global using Gbs.Shared.Dto.Lessons;
 global using Gbs.Shared.Dto.Streams;
 global using Gbs.Shared.Dto.Students;
 global using Gbs.Shared.Dto.Subjects;

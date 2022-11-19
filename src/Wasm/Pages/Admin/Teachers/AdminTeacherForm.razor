@@ -1,34 +1,33 @@
 @page "/admin/teachers/create"
 @page "/admin/teachers/{Id:int}/edit"
-@using Gbs.Wasm.Services.Api.TeacherService
 @attribute [Authorize(Policy = Policies.RequireAdminsAndSound)]
+
 @inject NavigationManager NavigationManager
-@inject ITeacherService TeacherService
+@inject ITeacherStore TeacherStore
 @inject IUiService UiService
 
 <PageTitle>Teachers Form - GBS</PageTitle>
 
 <EditForm Model="_newTeacher" OnValidSubmit="HandleValidSubmit">
-    <DataAnnotationsValidator/>
+    <DataAnnotationsValidator />
     <MudGrid Justify="Justify.Center" Class="tw-pt-8">
         <MudItem xs="12" sm="8" md="5">
             <MatFormCard Label="Teacher"
                          IsEdit="@_isEdit"
-                         IsLoading="@_isLoading"
+                         IsLoading="@TeacherStore.IsLoading"
                          IsProcessing="@_isProcessing"
                          ReturnUrl="/admin/teachers">
                 <MudTextField Label="Name"
                               @bind-Value="_newTeacher.Name"
-                              For="() => _newTeacher.Name"/>
+                              For="() => _newTeacher.Name" />
             </MatFormCard>
         </MudItem>
     </MudGrid>
 </EditForm>
 
 @code {
-    TeacherCreateDto _newTeacher = new TeacherCreateDto();
+    TeacherCreateDto _newTeacher = new();
     bool _isProcessing;
-    bool _isLoading;
     bool _isEdit;
 
     [Parameter]
@@ -39,34 +38,37 @@
         if (Id != null)
         {
             _isEdit = true;
-            _isLoading = true;
-            var teacher = await TeacherService.FetchTeacher(Id.Value);
-            _newTeacher = new TeacherCreateDto
+            var teacher = await TeacherStore.GetById(Id.Value);
+            if (teacher != null)
             {
-                Name = teacher.Data.Name
-            };
-            _isLoading = false;
+                _newTeacher = new TeacherCreateDto
+                {
+                    Name = teacher.Name
+                };
+            }
         }
     }
 
     async Task HandleValidSubmit()
     {
         _isProcessing = true;
-        var response = _isEdit == false 
-            ? await TeacherService.AddTeacher(_newTeacher) 
-            : await TeacherService.UpdateTeacher(Id!.Value, _newTeacher);
+        if (_isEdit)
+        {
+            await TeacherStore.Update(Id!.Value, _newTeacher);
+        }
+        else
+        {
+            await TeacherStore.Add(_newTeacher);
+        }
 
-        if (response.Success)
+        if (!TeacherStore.HasError)
         {
             _isProcessing = false;
             UiService.ShowSuccessAlert(_isEdit ? "Teacher updated successfully" : "Teacher added successfully");
             NavigationManager.NavigateTo("admin/teachers");
         }
-        else
-        {
-            _isProcessing = false;
-            await UiService.ShowErrorAlert(response.Message, response.StatusCode);
-        }
+        _isProcessing = false;
+        TeacherStore.ReadError();
     }
 
 }

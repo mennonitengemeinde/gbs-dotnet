@@ -1,9 +1,8 @@
 ﻿@page "/school/{Id:int}/live"
 @attribute [Authorize(Policy = Policies.RequireAdminsSoundAndTeachers)]
 @using Gbs.Wasm.Pages.School.Components
-@using Gbs.Wasm.Services.Api.StreamService
 
-@inject IStreamService StreamService
+@inject IStreamStore StreamStore
 @inject IUiService UiService
 @inject NavigationManager NavigationManager
 
@@ -23,17 +22,19 @@
 
     protected override async Task OnInitializedAsync()
     {
-        UiService.LoadingStart();
-        var liveStream = await StreamService.GetStreamById(Id, true);
-        if (!liveStream.Success)
+        var liveStream = await StreamStore.GetOnlyLiveById(Id);
+        if (liveStream == null)
         {
-            UiService.LoadingStop();
             NavigationManager.NavigateTo("school");
         }
         else
         {
-            LiveStream = liveStream.Data;
-            UiService.LoadingStop();
+            LiveStream = liveStream;
         }
+    }
+    
+    protected override void OnAfterRender(bool firstRender)
+    {
+        UiService.Loading = StreamStore.IsLoading;
     }
 }

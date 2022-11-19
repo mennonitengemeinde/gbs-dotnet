@@ -1,0 +1,119 @@
+﻿@page "/admin/lessons/create"
+@page "/admin/lessons/{Id:int}/edit"
+@attribute [Authorize(Policy = Policies.RequireAdminsAndSound)]
+
+@inject NavigationManager NavigationManager
+@inject IGenerationStore GenerationStore
+@inject ISubjectStore SubjectStore
+@inject ILessonStore LessonStore
+@inject IUiService UiService
+
+<PageTitle>Lessons Form - GBS</PageTitle>
+
+<EditForm Model="_model" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <MudGrid Justify="Justify.Center" Class="tw-pt-8">
+        <MudItem xs="12" sm="8" md="5">
+            <MatFormCard Label="Lesson"
+                         IsEdit="@_isEdit"
+                         IsLoading="@LessonStore.IsLoading"
+                         IsProcessing="@_isProcessing"
+                         ReturnUrl="/admin/subjects">
+                <MudTextField Label="Name"
+                              @bind-Value="_model.Name"
+                              For="() => _model.Name"
+                              OnlyValidateIfDirty="true" />
+                <MudTextField Label="VideoUrl"
+                              @bind-Value="_model.VideoUrl"
+                              For="() => _model.VideoUrl"
+                              OnlyValidateIfDirty="true" />
+                <MudSelect Label="Generation"
+                           AnchorOrigin="Origin.BottomCenter"
+                           Disabled="@GenerationStore.IsLoading"
+                           For="@(() => _model.GenerationId)"
+                           @bind-Value="_model.GenerationId">
+                    <MudSelectItem Disabled="true" T="int" Value="0">Select Generation</MudSelectItem>
+                    @foreach (var item in GenerationStore.Value)
+                    {
+                        <MudSelectItem T="int" Value="@item.Id">@item.Name</MudSelectItem>
+                    }
+                </MudSelect>
+                <MudSelect Label="Subject"
+                           AnchorOrigin="Origin.BottomCenter"
+                           Disabled="@SubjectStore.IsLoading"
+                           For="@(() => _model.SubjectId)"
+                           @bind-Value="_model.SubjectId">
+                    <MudSelectItem Disabled="true" T="int" Value="0">Select Subject</MudSelectItem>
+                    @foreach (var item in SubjectStore.Value)
+                    {
+                        <MudSelectItem T="int" Value="@item.Id">@item.Name</MudSelectItem>
+                    }
+                </MudSelect>
+            </MatFormCard>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+
+@code {
+    LessonCreateDto _model = new();
+    // IEnumerable<GenerationDto> _generations = new HashSet<GenerationDto>();
+    // IEnumerable<SubjectDto> _subjects = new HashSet<SubjectDto>();
+    // IEnumerable<TeacherDto> _teachers = new HashSet<TeacherDto>();
+    bool _isEdit;
+    bool _isProcessing;
+
+    [Parameter]
+    public int? Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+    // UiService.Loading = true;
+        await GenerationStore.Initialize();
+        await SubjectStore.Initialize();
+
+        if (Id.HasValue)
+        {
+            _isEdit = true;
+            var lesson = await LessonStore.GetById(Id.Value);
+            if (lesson != null)
+            {
+                _model = new LessonCreateDto
+                {
+                    Name = lesson.Name,
+                    VideoUrl = lesson.VideoUrl,
+                    Order = lesson.Order,
+                    IsVisible = lesson.IsVisible,
+                    GenerationId = lesson.GenerationId,
+                    SubjectId = lesson.SubjectId,
+                    TeacherId = lesson.TeacherId
+                };
+            }
+        }
+    // UiService.Loading = false;
+    }
+
+    async Task HandleValidSubmit()
+    {
+        _isProcessing = true;
+        UiService.Loading = true;
+        if (_isEdit)
+        {
+            await LessonStore.Update(Id!.Value, _model);
+        }
+        else
+        {
+            await LessonStore.Add(_model);
+        }
+
+        if (!LessonStore.HasError)
+        {
+            _isProcessing = false;
+            UiService.ShowSuccessAlert("Lesson added successfully");
+    // UiService.Loading = false;
+            NavigationManager.NavigateTo("admin/lessons");
+        }
+        _isProcessing = false;
+    // UiService.Loading = false;
+    }
+
+}

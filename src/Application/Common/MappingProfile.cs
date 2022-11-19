@@ -32,6 +32,12 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.SubjectName, opt => opt.MapFrom(src => src.Subject.Name));
         
         // Lesson Mapping
+        CreateMap<Lesson, LessonDto>();
+        CreateMap<LessonCreateDto, Lesson>()
+            .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.Generation, opt => opt.Ignore())
+            .ForMember(dest => dest.Subject, opt => opt.Ignore())
+            .ForMember(dest => dest.Teacher, opt => opt.Ignore());
         CreateMap<Lesson, SubjectLessonDto>();
         
         // Livestream Mapping

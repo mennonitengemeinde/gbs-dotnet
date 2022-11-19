@@ -36,5 +36,13 @@ namespace Gbs.Api.Controllers
             var result = await _subjectCommands.Add(subjectCreateDto);
             return result.ToActionResult();
         }
+        
+        [HttpPut("{id:int}")]
+        [Authorize(Policy = Policies.RequireAdmins)]
+        public async Task<ActionResult<Result<SubjectDto>>> UpdateSubject(int id, SubjectCreateDto subjectUpdateDto)
+        {
+            var result = await _subjectCommands.Update(id, subjectUpdateDto);
+            return result.ToActionResult();
+        }
     }
 }

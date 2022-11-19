@@ -1,6 +1,4 @@
-﻿using Gbs.Wasm.Common.Interfaces.Store;
-
-namespace Gbs.Wasm.Store;
+﻿namespace Gbs.Wasm.Store;
 
 public class GenerationStore : BaseStore<GenerationDto, GenerationCreateDto, GenerationCreateDto>, IGenerationStore
 {

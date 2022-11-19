@@ -1,5 +1,6 @@
 ﻿using System.Runtime.Serialization;
 using AutoMapper;
+using Gbs.Shared.Dto.Lessons;
 using Gbs.Shared.Dto.Streams;
 using Gbs.Shared.Dto.Subjects;
 
@@ -27,6 +28,8 @@ public class MappingTests
     [InlineData(typeof(Student), typeof(StudentDto))]
     [InlineData(typeof(Generation), typeof(GenerationDto))]
     [InlineData(typeof(Grade), typeof(GradeDto))]
+    [InlineData(typeof(Lesson), typeof(LessonDto))]
+    [InlineData(typeof(LessonCreateDto), typeof(Lesson))]
     [InlineData(typeof(Lesson), typeof(SubjectLessonDto))]
     [InlineData(typeof(LiveStream), typeof(StreamDto))]
     [InlineData(typeof(LiveStreamTeacher), typeof(TeacherDto))]

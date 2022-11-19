@@ -2,9 +2,8 @@
 @attribute [Authorize(Policy = Policies.RequireAdminsAndSound)]
 @implements IDisposable
 @using Gbs.Wasm.Pages.Admin.Streams.Components
-@using Gbs.Wasm.Services.Api.StreamService
 
-@inject IStreamService StreamService
+@inject IStreamStore StreamStore
 @inject IUiService UiService
 @inject IDialogService DialogService
 
@@ -18,7 +17,7 @@
 </div>
 
 <MudGrid Justify="Justify.FlexStart">
-    @foreach (var liveStream in StreamService.Streams)
+    @foreach (var liveStream in StreamStore.Value)
     {
         <MudItem xs="12" sm="6" lg="4" xl="3">
             <AdminStreamCard LiveStream="@liveStream" OnDelete="HandleDelete" />
@@ -30,10 +29,13 @@
 
     protected override async Task OnInitializedAsync()
     {
-        UiService.LoadingStart();
-        await StreamService.LoadStreams();
-        UiService.LoadingStop();
-        StreamService.StreamsChanged += StateHasChanged;
+        await StreamStore.Initialize();
+        StreamStore.OnChange += StateHasChanged;
+    }
+    
+    protected override void OnAfterRender(bool firstRender)
+    {
+        UiService.Loading = StreamStore.IsLoading;
     }
 
     async Task HandleDelete(StreamDto stream)
@@ -51,25 +53,21 @@
 
     async Task DeleteStream(StreamDto stream)
     {
-        UiService.LoadingStart();
-        var result = await StreamService.DeleteById(stream.Id);
-        if (result.Success)
+        // UiService.LoadingStart();
+        await StreamStore.Delete(stream.Id);
+        if (!StreamStore.HasError)
         {
-            await StreamService.LoadStreams();
-            UiService.ShowSuccessAlert(result.Message);
-            UiService.LoadingStop();
+            UiService.ShowSuccessAlert("Stream deleted successfully");
         }
         else
         {
-            await StreamService.LoadStreams();
-            await UiService.ShowErrorAlert(result.Message, result.StatusCode);
-            UiService.LoadingStop();
+            StreamStore.ReadError();
         }
     }
 
     public void Dispose()
     {
-        StreamService.StreamsChanged -= StateHasChanged;
+        StreamStore.OnChange -= StateHasChanged;
     }
 
 }

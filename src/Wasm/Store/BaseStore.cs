@@ -1,9 +1,15 @@
-﻿using Gbs.Wasm.Common.Interfaces.Store;
-
-namespace Gbs.Wasm.Store;
+﻿namespace Gbs.Wasm.Store;
 
 public abstract class BaseStore<T> : IStore<T>
 {
+    protected BaseStore(HttpClient http, IDateTimeService dateTime, IUiService uiService)
+    {
+        Http = http;
+        DateTimeService = dateTime;
+        UiService = uiService;
+        LastUpdated = new DateTime(2000, 1, 1);
+    }
+    
     private bool _isLoading;
     private List<T> _value = new();
 
@@ -47,12 +53,17 @@ public abstract class BaseStore<T> : IStore<T>
         }
     }
 
-    protected BaseStore(HttpClient http, IDateTimeService dateTime, IUiService uiService)
+    public async Task Initialize()
     {
-        Http = http;
-        DateTimeService = dateTime;
-        UiService = uiService;
-        LastUpdated = new DateTime(2000, 1, 1);
+        if (DateTimeService.UtcNow - LastUpdated > TimeSpan.FromMinutes(5) || Value.Count == 0)
+        {
+            await Fetch();
+        }
+    }
+
+    public void CacheData(List<T> value)
+    {
+        Value = value;
     }
 
     public void ReadError()
@@ -83,10 +94,7 @@ public abstract class BaseStore<T> : IStore<T>
 
     public async Task<T?> GetById(int id)
     {
-        if (DateTimeService.UtcNow - LastUpdated > TimeSpan.FromMinutes(5) || Value.Count == 0)
-        {
-            await Fetch();
-        }
+        await Initialize();
 
         var result = GetByIdQuery(id);
         if (result == null)

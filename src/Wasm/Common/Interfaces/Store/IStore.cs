@@ -9,6 +9,8 @@ public interface IStore<T>
     event Action OnChange;
     List<T> Value { get; }
     DateTime LastUpdated { get; }
+    Task Initialize();
+    void CacheData(List<T> value);
     void ReadError();
     Task Fetch();
     T? GetByIdQuery(int id);
