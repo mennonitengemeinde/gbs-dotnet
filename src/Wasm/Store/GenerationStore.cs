@@ -1,6 +1,6 @@
 ﻿namespace Gbs.Wasm.Store;
 
-public class GenerationStore : BaseStore<GenerationDto, GenerationCreateDto, GenerationCreateDto>, IGenerationStore
+public class GenerationStore : BaseStore<GenerationDto, int, GenerationCreateDto, GenerationCreateDto>, IGenerationStore
 {
     public GenerationStore(HttpClient http, IDateTimeService dateTime, IUiService uiService) : base(http, dateTime,
         uiService) { }

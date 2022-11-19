@@ -1,6 +1,6 @@
 ﻿namespace Gbs.Wasm.Store;
 
-public class StreamStore : BaseStore<StreamDto, StreamCreateDto, StreamCreateDto>, IStreamStore
+public class StreamStore : BaseStore<StreamDto, int, StreamCreateDto, StreamCreateDto>, IStreamStore
 {
     public StreamStore(HttpClient http, IDateTimeService dateTime, IUiService uiService) : base(http, dateTime,
         uiService) { }

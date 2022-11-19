@@ -1,10 +1,8 @@
 @page "/register"
 @using Gbs.Wasm.Pages.Auth.Components
-@using Gbs.Wasm.Services.Api.AuthService
 @layout AuthLayout
 
-@inject IAuthService AuthService
-@inject IUiService UiService
+@inject IUserStore UserStore
 @inject NavigationManager NavigationManager
 
 <PageTitle>Register - GBS</PageTitle>
@@ -63,21 +61,21 @@
 </EditForm>
 
 @code {
-    RegisterDto _registerDto = new RegisterDto();
+    RegisterDto _registerDto = new();
     bool _isProcessing;
 
     async Task HandleRegistration()
     {
         _isProcessing = true;
-        var response = await AuthService.Register(_registerDto);
-        if (response.Success)
+        await UserStore.Add(_registerDto);
+        if (UserStore.HasError)
         {
             _isProcessing = false;
             NavigationManager.NavigateTo("login");
         }
         else
         {
-            await UiService.ShowErrorAlert(response.Message);
+            UserStore.ClearErrors();
             _isProcessing = false;
         }
     }

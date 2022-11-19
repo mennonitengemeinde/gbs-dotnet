@@ -27,7 +27,7 @@ public class UserRepository : IUserRepository
             var superAdminRole = await _context.Roles.FirstOrDefaultAsync(r => r.Name == Roles.SuperAdmin);
             if (superAdminRole == null)
                 return Result.BadRequest<List<UserDto>>("Your role is not valid");
-
+    
             var users = await _context.Users
                 .Where(u => u.UserRoles.Any(ur => ur.RoleId != superAdminRole.Id) || u.UserRoles.Count == 0)
                 .Select(u => new UserDto
@@ -44,10 +44,10 @@ public class UserRepository : IUserRepository
                 })
                 .OrderBy(u => u.FirstName)
                 .ToListAsync();
-
+    
             return Result.Ok(users);
         }
-
+    
         var data = await _context.Users
             .Select(u => new UserDto
             {
@@ -63,16 +63,16 @@ public class UserRepository : IUserRepository
             })
             .OrderBy(u => u.FirstName)
             .ToListAsync();
-
+    
         return Result.Ok(data);
     }
-
+    
     public async Task<Result<UserDto>> GetUserById(string userId)
     {
         if (_authenticatedUserService.GetUserId() != userId &&
             !_authenticatedUserService.GetUserRoles().Contains(Roles.SuperAdmin))
             return Result.NotFound<UserDto>("User not found");
-
+    
         var user = await _context.Users.Select(u => new UserDto
         {
             Id = u.Id,
@@ -86,7 +86,7 @@ public class UserRepository : IUserRepository
             ChurchId = u.ChurchId,
             ChurchName = u.Church!.Name,
         }).FirstOrDefaultAsync(u => u.Id == userId);
-
+    
         return user == null
             ? Result.NotFound<UserDto>("User not found")
             : Result.Ok(user);
@@ -97,9 +97,9 @@ public class UserRepository : IUserRepository
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
         if (user == null)
             return Result.NotFound<List<UserDto>>("User not found");
-
+    
         var userRoles = await _userManager.GetRolesAsync(user);
-
+    
         var rolesToRemove = userRoles.Except(newRoles).ToList();
         if (rolesToRemove.Any())
         {
@@ -107,7 +107,7 @@ public class UserRepository : IUserRepository
             if (!result.Succeeded)
                 return Result.BadRequest<List<UserDto>>("Failed to remove roles");
         }
-
+    
         var rolesToAdd = newRoles.Except(userRoles).ToList();
         if (!rolesToAdd.Any()) return await GetUsers();
         {
@@ -122,7 +122,7 @@ public class UserRepository : IUserRepository
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
         if (user == null)
             return Result.BadRequest<List<UserDto>>("User not found");
-
+    
         user.IsActive = newActiveState;
         await _context.SaveChangesAsync();
         return await GetUsers();
@@ -133,7 +133,7 @@ public class UserRepository : IUserRepository
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
         if (user == null)
             return Result.NotFound<List<UserDto>>("User not found");
-
+    
         user.ChurchId = updateDto.ChurchId;
         await _context.SaveChangesAsync();
         return await GetUsers();

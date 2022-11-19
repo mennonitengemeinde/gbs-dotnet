@@ -7,9 +7,9 @@
 
         <IsPackable>false</IsPackable>
 
-        <RootNamespace>Gbs.Persistence.UnitTests</RootNamespace>
+        <RootNamespace>Gbs.Tests.Persistence.UnitTests</RootNamespace>
 
-        <AssemblyName>Gbs.Persistence.UnitTests</AssemblyName>
+        <AssemblyName>Gbs.Tests.Persistence.UnitTests</AssemblyName>
     </PropertyGroup>
 
     <ItemGroup>

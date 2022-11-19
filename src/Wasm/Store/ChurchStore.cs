@@ -1,6 +1,6 @@
 namespace Gbs.Wasm.Store;
 
-public class ChurchStore : BaseStore<ChurchDto, ChurchCreateDto, ChurchCreateDto>, IChurchStore
+public class ChurchStore : BaseStore<ChurchDto, int, ChurchCreateDto, ChurchCreateDto>, IChurchStore
 {
     public ChurchStore(HttpClient http, IDateTimeService dateTime, IUiService uiService) : base(http, dateTime,
         uiService) { }

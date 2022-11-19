@@ -1,7 +1,5 @@
 ﻿using System.Reflection;
 using Blazored.LocalStorage;
-using Gbs.Wasm.Services.Api.AuthService;
-using Gbs.Wasm.Services.Api.UserService;
 using Gbs.Wasm.Store;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -33,9 +31,9 @@ public static class ConfigureServices
         services.AddScoped<ISubjectStore, SubjectStore>();
         services.AddScoped<IStudentStore, StudentStore>();
         services.AddScoped<ITeacherStore, TeacherStore>();
+        services.AddScoped<IUserStore, UserStore>();
         services.AddScoped<IAuthService, AuthApiService>();
         services.AddScoped<IUiService, UiService>();
-        services.AddScoped<IUserService, UserService>();
         
         services.AddOptions();
         services.AddAuthorizationCore(options =>

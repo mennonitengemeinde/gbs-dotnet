@@ -1,6 +1,6 @@
 ﻿namespace Gbs.Wasm.Store;
 
-public class TeacherStore : BaseStore<TeacherDto, TeacherCreateDto, TeacherCreateDto>, ITeacherStore
+public class TeacherStore : BaseStore<TeacherDto, int, TeacherCreateDto, TeacherCreateDto>, ITeacherStore
 {
     public TeacherStore(
         HttpClient http,

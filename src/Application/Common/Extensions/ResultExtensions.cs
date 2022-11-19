@@ -7,11 +7,6 @@ public static class ResultExtensions
 {
     public static ActionResult<Result<T>> ToActionResult<T>(this Result<T> result)
     {
-        if (result == null)
-        {
-            throw new ArgumentNullException(nameof(result));
-        }
-
         if (result.Success)
         {
             return new OkObjectResult(result);

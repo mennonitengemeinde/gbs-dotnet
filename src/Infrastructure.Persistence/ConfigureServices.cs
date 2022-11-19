@@ -31,8 +31,8 @@ public static class ConfigureServices
             .PersistKeysToDbContext<DataContext>();
         
         services.AddScoped<IAuthRepository, AuthRepository>();
-        services.AddScoped<IChurchRepository, ChurchRepository>();
-        services.AddScoped<IUserRepository, UserRepository>();
+        // services.AddScoped<IChurchRepository, ChurchRepository>();
+        // services.AddScoped<IUserRepository, UserRepository>();
         // services.AddScoped<IGenerationRepository, GenerationRepository>();
         // services.AddScoped<IStreamRepository, StreamRepository>();
         services.AddScoped<IStudentRepository, StudentRepository>();

@@ -56,7 +56,7 @@ public class AuthRepository : IAuthRepository
 
     public async Task<bool> UserExists(string email)
     {
-        return await _context.Users.AnyAsync(u => u.Email.ToLower().Equals(email.ToLower()));
+        return await _context.Users.AnyAsync(u => u.Email != null && u.Email.ToLower().Equals(email.ToLower()));
     }
 
     public async Task<Result<string>> Login(string email, string password)

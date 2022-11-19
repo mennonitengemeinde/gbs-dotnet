@@ -1,6 +1,8 @@
 ﻿using System.Reflection;
+using Gbs.Application.Churches;
 using Gbs.Application.Lessons;
 using Gbs.Application.Subjects;
+using Gbs.Application.Users;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Gbs.Application;
@@ -11,6 +13,8 @@ public static class ConfigureServices
     {
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
         
+        services.AddScoped<IChurchQueries, ChurchQueries>();
+        services.AddScoped<IChurchCommands, ChurchCommands>();
         services.AddScoped<IGenerationQueries, GenerationQueries>();
         services.AddScoped<IGenerationCommands, GenerationCommands>();
         services.AddScoped<ILessonQueries, LessonQueries>();
@@ -19,7 +23,8 @@ public static class ConfigureServices
         services.AddScoped<ISubjectCommands, SubjectCommands>();
         services.AddScoped<IStreamQueries, StreamQueries>();
         services.AddScoped<IStreamCommands, StreamCommands>();
-
+        services.AddScoped<IUserQueries, UserQueries>();
+        services.AddScoped<IUserCommands, UserCommands>();
 
         return services;
     }

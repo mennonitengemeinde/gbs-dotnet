@@ -1,10 +1,7 @@
-using AutoMapper;
 using Gbs.Application.Streams;
-using Gbs.Infrastructure.Persistence.Repository;
-using Gbs.Infrastructure.Persistence.Seeds;
 using Gbs.Shared.Dto.Streams;
 
-namespace Gbs.Application.UnitTests.Streams;
+namespace Gbs.Tests.Application.UnitTests.Streams;
 
 public class StreamCommandsTests
 {

@@ -1,6 +1,6 @@
 ﻿namespace Gbs.Wasm.Store;
 
-public abstract class BaseStore<T> : IStore<T>
+public abstract class BaseStore<T, TId> : IStore<T, TId>
 {
     protected BaseStore(HttpClient http, IDateTimeService dateTime, IUiService uiService)
     {
@@ -26,9 +26,10 @@ public abstract class BaseStore<T> : IStore<T>
     public bool IsLoading
     {
         get => _isLoading;
-        private set
+        protected set
         {
-            _isLoading = value;
+            if (value == _isLoading) return;
+            
             if (value)
             {
                 OnChange?.Invoke(); 
@@ -37,6 +38,7 @@ public abstract class BaseStore<T> : IStore<T>
             {
                 OnChangeDebounce();
             }
+            _isLoading = value;
         }
     }
 
@@ -90,9 +92,9 @@ public abstract class BaseStore<T> : IStore<T>
         Data = result.Data;
     }
 
-    public abstract T? GetByIdQuery(int id);
+    public abstract T? GetByIdQuery(TId id);
 
-    public async Task<T?> GetById(int id)
+    public async Task<T?> GetById(TId id)
     {
         await Fetch();
 
@@ -105,8 +107,9 @@ public abstract class BaseStore<T> : IStore<T>
         return result;
     }
 
-    public async Task Delete(int id)
+    public async Task Delete(TId id)
     {
+        IsLoading = true;
         var result = await Http.DeleteAsync($"{BaseUrl}/{id}")
             .EnsureSuccess<bool>();
         if (!result.Success)
@@ -118,11 +121,9 @@ public abstract class BaseStore<T> : IStore<T>
         }
 
         await ForceFetch();
+        IsLoading = false;
     }
     
-    // private method
-    // call onChange once if more then 1 change happens within 500 milliseconds
-    // this is to prevent multiple renders
     private void OnChangeDebounce()
     {
         _debounceTimer?.Dispose();
@@ -134,13 +135,14 @@ public abstract class BaseStore<T> : IStore<T>
     }
 }
 
-public abstract class BaseStore<T, TCreate, TUpdate> : BaseStore<T>, IStore<T, TCreate, TUpdate>
+public abstract class BaseStore<T, TId, TCreate, TUpdate> : BaseStore<T, TId>, IStore<T, TId, TCreate, TUpdate>
 {
     protected BaseStore(HttpClient http, IDateTimeService dateTime, IUiService uiService) : base(http, dateTime,
         uiService) { }
 
     public async Task Add(TCreate item)
     {
+        IsLoading = true;
         var result = await Http.PostAsJsonAsync(BaseUrl, item)
             .EnsureSuccess<T>();
         if (!result.Success)
@@ -152,12 +154,14 @@ public abstract class BaseStore<T, TCreate, TUpdate> : BaseStore<T>, IStore<T, T
         }
 
         await ForceFetch();
+        IsLoading = false;
     }
 
-    public async Task Update(int id, TUpdate item)
+    public async Task Update(TId id, TUpdate item)
     {
+        IsLoading = true;
         var result = await Http.PutAsJsonAsync($"{BaseUrl}/{id}", item)
-            .EnsureSuccess<GenerationDto>();
+            .EnsureSuccess<T>();
         if (!result.Success)
         {
             await UiService.ShowErrorAlert(result.Message, result.StatusCode);
@@ -167,5 +171,6 @@ public abstract class BaseStore<T, TCreate, TUpdate> : BaseStore<T>, IStore<T, T
         }
 
         await ForceFetch();
+        IsLoading = false;
     }
 }

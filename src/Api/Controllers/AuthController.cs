@@ -5,21 +5,19 @@ namespace Gbs.Api.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IAuthRepository _authRepo;
+    private readonly IUserCommands _userCommands;
 
-    public AuthController(IAuthRepository authRepo)
+    public AuthController(IAuthRepository authRepo, IUserCommands userCommands)
     {
         _authRepo = authRepo;
+        _userCommands = userCommands;
     }
 
     [HttpPost("register")]
     public async Task<ActionResult<Result<string>>> RegisterUser(RegisterDto request)
     {
-        var result = await _authRepo.Register(request);
-        if (!result.Success)
-        {
-            return BadRequest(result);
-        }
-        return Ok(result);
+        var result = await _userCommands.Add(request);
+        return result.ToActionResult();
     }
     
     [HttpPost("login")]

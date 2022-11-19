@@ -37,13 +37,14 @@
                     }
                 </MudSelect>
                 <MudSelect Label="Teachers"
+                           T="List<string>"
                            MultiSelection="true"
                            AnchorOrigin="Origin.BottomCenter"
                            @bind-SelectedDatas="_newStream.Teachers"
                            MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiSelectionText))">
                     @foreach (var item in TeacherStore.Data)
                     {
-                        <MudSelectItem Value="@item.Id">@item.Name</MudSelectItem>
+                        <MudSelectItem T="string" Value="@item.Id.ToString()">@item.Name</MudSelectItem>
                     }
                 </MudSelect>
                 <MudSwitch Label="Live"

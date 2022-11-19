@@ -1,7 +1,7 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Components.Authorization;
 
-namespace Gbs.Wasm.Services.Api.AuthService;
+namespace Gbs.Wasm.Services;
 
 public class AuthApiService : IAuthService
 {
@@ -12,12 +12,6 @@ public class AuthApiService : IAuthService
     {
         _http = http;
         _authStateProvider = authStateProvider;
-    }
-
-    public async Task<Result<string>> Register(RegisterDto userRegister)
-    {
-        return await _http.PostAsJsonAsync("api/auth/register", userRegister)
-            .EnsureSuccess<string>();
     }
 
     public async Task<Result<string>> Login(LoginDto userLogin)

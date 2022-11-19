@@ -2,7 +2,7 @@
 
 namespace Gbs.Wasm.Store;
 
-public class SubjectStore : BaseStore<SubjectDto, SubjectCreateDto, SubjectCreateDto>, ISubjectStore
+public class SubjectStore : BaseStore<SubjectDto, int, SubjectCreateDto, SubjectCreateDto>, ISubjectStore
 {
     public SubjectStore(HttpClient http, IDateTimeService dateTime, IUiService uiService) : base(http, dateTime,
         uiService) { }

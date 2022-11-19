@@ -1,8 +1,7 @@
-namespace Gbs.Wasm.Services.Api.AuthService;
+namespace Gbs.Wasm.Common.Interfaces;
 
 public interface IAuthService
 {
-    Task<Result<string>> Register(RegisterDto userRegister);
     Task<Result<string>> Login(LoginDto userLogin);
     // Task<ServiceResponse<bool>> ChangePassword(PasswordC changePasswordDto);
     Task<Result<List<RolesDto>>> FetchRoles();

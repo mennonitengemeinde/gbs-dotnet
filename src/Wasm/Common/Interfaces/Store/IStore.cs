@@ -1,6 +1,6 @@
 ﻿namespace Gbs.Wasm.Common.Interfaces.Store;
 
-public interface IStore<T>
+public interface IStore<T, in TId>
 {
     public string BaseUrl { get; }
     public bool HasError { get; }
@@ -13,13 +13,13 @@ public interface IStore<T>
     void CacheData(List<T> value);
     void ClearErrors();
     Task ForceFetch();
-    T? GetByIdQuery(int id);
-    Task<T?> GetById(int id);
-    Task Delete(int id);
+    T? GetByIdQuery(TId id);
+    Task<T?> GetById(TId id);
+    Task Delete(TId id);
 }
 
-public interface IStore<T, in TCreate, in TUpdate> : IStore<T>
+public interface IStore<T, in TId, in TCreate, in TUpdate> : IStore<T, TId>
 {
     Task Add(TCreate item);
-    Task Update(int id, TUpdate item);
+    Task Update(TId id, TUpdate item);
 }
