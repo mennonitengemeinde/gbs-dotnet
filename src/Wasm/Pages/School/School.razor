@@ -18,7 +18,7 @@
 <MudDivider Light="true"/>
 
 <MudGrid Class="tw-relative tw-pt-2">
-    @foreach (var liveStream in StreamStore.Value.Where(s => s.IsLive))
+    @foreach (var liveStream in StreamStore.Data.Where(s => s.IsLive))
     {
         <MudItem xs="12" md="6" xl="4">
             <LiveStreamCard LiveStream="@liveStream" />
@@ -31,7 +31,7 @@
     
     protected override async Task OnInitializedAsync()
     {
-        await StreamStore.Initialize();
+        await StreamStore.Fetch();
         
         _hubConnection = new HubConnectionBuilder()
             .WithUrl(NavigationManager.ToAbsoluteUri("/hubs/streamshub"))

@@ -1,13 +1,11 @@
 @page "/admin/students/create"
 @page "/admin/students/{Id:int}/edit"
-@using Gbs.Wasm.Services.Api.StudentService
-@using Gbs.Wasm.Services.Api.ChurchService
 @using Gbs.Wasm.Services.Api.AuthService
 @using Gbs.Shared.Enums
 @attribute [Authorize(Policy = Policies.RequireAdminsAndTeachers)]
 
-@inject IStudentService StudentService
-@inject IChurchService ChurchService
+@inject IStudentStore StudentStore
+@inject IChurchStore ChurchStore
 @inject IAuthService AuthService
 @inject IUiService UiService
 @inject NavigationManager NavigationManager
@@ -22,11 +20,11 @@
             <MudItem xs="12" sm="8" md="5">
                 <MatFormCard Label="Student"
                              IsEdit="false"
-                             IsLoading="false"
+                             IsLoading="StudentStore.IsLoading"
                              IsProcessing="@_isProcessing"
                              ReturnUrl="/admin/students">
                     <MudTextField Label="Name"
-                                  @bind-Value="_model.Name"
+                                  @bind-Data="_model.Name"
                                   For="() => _model.Name" />
                     <MudDatePicker Label="Date of Birth"
                                    @bind-Date="_model.DateOfBirth"
@@ -40,34 +38,34 @@
                         </MudRadioGroup>
                     </MudField>
                     <MudTextField Label="Address"
-                                  @bind-Value="_model.Address"
+                                  @bind-Data="_model.Address"
                                   For="() => _model.Address" />
                     <MudTextField Label="City"
-                                  @bind-Value="_model.City"
+                                  @bind-Data="_model.City"
                                   For="() => _model.City" />
                     <MudTextField Label="Province/State"
-                                  @bind-Value="_model.State"
+                                  @bind-Data="_model.State"
                                   For="() => _model.State" />
                     <MudTextField Label="Country"
-                                  @bind-Value="_model.Country"
+                                  @bind-Data="_model.Country"
                                   For="() => _model.Country" />
                     <MudTextField Label="Postal Code"
-                                  @bind-Value="_model.PostalCode"
+                                  @bind-Data="_model.PostalCode"
                                   For="() => _model.PostalCode" />
                     <MudTextField Label="Email"
-                                  @bind-Value="_model.Email"
+                                  @bind-Data="_model.Email"
                                   For="() => _model.Email" />
                     <MudTextField Label="Phone"
-                                  @bind-Value="_model.Phone"
+                                  @bind-Data="_model.Phone"
                                   For="() => _model.Phone" />
                     @if (_isAdmin)
                     {
                         <MudSelect Label="Church"
                                    AnchorOrigin="Origin.BottomCenter"
                                    For="@(() => _model.ChurchId)"
-                                   @bind-Value="_model.ChurchId">
+                                   @bind-Data="_model.ChurchId">
                             <MudSelectItem Disabled="true" T="int" Value="0">Select Church</MudSelectItem>
-                            @foreach (var item in _churches)
+                            @foreach (var item in ChurchStore.Data)
                             {
                                 <MudSelectItem T="int" Value="@item.Id">@item.Name</MudSelectItem>
                             }
@@ -85,14 +83,13 @@
     bool _isProcessing;
     bool _isAdmin;
     bool _isEdit;
-    IEnumerable<ChurchDto> _churches = new HashSet<ChurchDto>();
+    // IEnumerable<ChurchDto> _churches = new HashSet<ChurchDto>();
 
     [Parameter]
     public int? Id { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        UiService.LoadingStart();
         _isAdmin = await AuthService.UserIsAdmin();
 
         var isUpdate = await InitUpdatePage();
@@ -100,33 +97,36 @@
         {
             if (_isAdmin)
             {
-                var result = await ChurchService.GetChurches();
-                if (result.Success)
-                {
-                    _churches = result.Data.ToHashSet();
-                }
+                await ChurchStore.Fetch();
             }
         }
+    }
 
-        UiService.LoadingStop();
+    protected override void OnAfterRender(bool firstRender)
+    {
+        // UiService.Loading = StudentChurch.IsLoading
     }
 
     async Task HandleValidSubmit()
     {
         _isProcessing = true;
-        Result<List<StudentDto>> response;
         if (_isEdit && Id.HasValue)
         {
-            response = await StudentService.UpdateStudent(Id.Value, _model);
+            await StudentStore.Update(Id.Value, _model);
         }
         else
         {
-            response = await StudentService.AddStudent(_model);
+            await StudentStore.Add(_model);
         }
         _isProcessing = false;
-        if (response.Success)
+        
+        if (!StudentStore.HasError)
         {
             NavigationManager.NavigateTo("admin/students");
+        }
+        else
+        {
+            StudentStore.ClearErrors();
         }
     }
 
@@ -138,51 +138,46 @@
         }
 
         _isEdit = true;
-        var student = await StudentService.GetStudentById(Id.Value);
-        if (!student.Success)
+        var student = await StudentStore.GetById(Id.Value);
+        if (student == null)
         {
-            UiService.LoadingStop();
-            await UiService.ShowErrorAlert(student.Message);
             NavigationManager.NavigateTo("/admin/students");
             return false;
         }
         if (_isAdmin)
         {
-            var result = await ChurchService.GetChurches();
-            if (result.Success)
-            {
-                _churches = result.Data;
-            }
+            await ChurchStore.Fetch();
+
             _model = new StudentCreateDto
             {
-                Name = student.Data.Name,
-                DateOfBirth = student.Data.DateOfBirth,
-                MaritalStatus = student.Data.MaritalStatus,
-                Address = student.Data.Address,
-                City = student.Data.City,
-                State = student.Data.State,
-                Country = student.Data.Country,
-                PostalCode = student.Data.PostalCode,
-                Email = student.Data.Email,
-                Phone = student.Data.Phone,
-                ChurchId = student.Data.ChurchId
+                Name = student.Name,
+                DateOfBirth = student.DateOfBirth,
+                MaritalStatus = student.MaritalStatus,
+                Address = student.Address,
+                City = student.City,
+                State = student.State,
+                Country = student.Country,
+                PostalCode = student.PostalCode,
+                Email = student.Email,
+                Phone = student.Phone,
+                ChurchId = student.ChurchId
             };
         }
         else
         {
             _model = new StudentCreateDto
             {
-                Name = student.Data.Name,
-                DateOfBirth = student.Data.DateOfBirth,
-                MaritalStatus = student.Data.MaritalStatus,
-                Address = student.Data.Address,
-                City = student.Data.City,
-                State = student.Data.State,
-                Country = student.Data.Country,
-                PostalCode = student.Data.PostalCode,
-                Email = student.Data.Email,
-                Phone = student.Data.Phone,
-                ChurchId = student.Data.ChurchId
+                Name = student.Name,
+                DateOfBirth = student.DateOfBirth,
+                MaritalStatus = student.MaritalStatus,
+                Address = student.Address,
+                City = student.City,
+                State = student.State,
+                Country = student.Country,
+                PostalCode = student.PostalCode,
+                Email = student.Email,
+                Phone = student.Phone,
+                ChurchId = student.ChurchId
             };
         }
         return true;

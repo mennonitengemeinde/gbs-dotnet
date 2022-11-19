@@ -11,7 +11,7 @@ public abstract class BaseStore<T> : IStore<T>
     }
     
     private bool _isLoading;
-    private List<T> _value = new();
+    private List<T> _data = new();
 
     protected readonly HttpClient Http;
     protected readonly IDateTimeService DateTimeService;
@@ -42,36 +42,36 @@ public abstract class BaseStore<T> : IStore<T>
 
     public DateTime LastUpdated { get; private set; }
 
-    public List<T> Value
+    public List<T> Data
     {
-        get => _value;
+        get => _data;
         private set
         {
-            _value = value;
+            _data = value;
             OnChangeDebounce();
             LastUpdated = DateTimeService.UtcNow;
         }
     }
 
-    public async Task Initialize()
+    public async Task Fetch()
     {
-        if (DateTimeService.UtcNow - LastUpdated > TimeSpan.FromMinutes(5) || Value.Count == 0)
+        if (DateTimeService.UtcNow - LastUpdated > TimeSpan.FromMinutes(5) || Data.Count == 0)
         {
-            await Fetch();
+            await ForceFetch();
         }
     }
 
     public void CacheData(List<T> value)
     {
-        Value = value;
+        Data = value;
     }
 
-    public void ReadError()
+    public void ClearErrors()
     {
         HasError = false;
     }
 
-    public async Task Fetch()
+    public async Task ForceFetch()
     {
         IsLoading = true;
         var result = await Http.GetAsync(BaseUrl)
@@ -81,20 +81,20 @@ public abstract class BaseStore<T> : IStore<T>
             await UiService.ShowErrorAlert(result.Message, result.StatusCode);
             HasError = true;
             ErrorMessage = result.Message;
-            Value = new List<T>();
+            Data = new List<T>();
             IsLoading = false;
             return;
         }
 
         IsLoading = false;
-        Value = result.Data;
+        Data = result.Data;
     }
 
     public abstract T? GetByIdQuery(int id);
 
     public async Task<T?> GetById(int id)
     {
-        await Initialize();
+        await Fetch();
 
         var result = GetByIdQuery(id);
         if (result == null)
@@ -117,7 +117,7 @@ public abstract class BaseStore<T> : IStore<T>
             return;
         }
 
-        await Fetch();
+        await ForceFetch();
     }
     
     // private method
@@ -151,7 +151,7 @@ public abstract class BaseStore<T, TCreate, TUpdate> : BaseStore<T>, IStore<T, T
             return;
         }
 
-        await Fetch();
+        await ForceFetch();
     }
 
     public async Task Update(int id, TUpdate item)
@@ -166,6 +166,6 @@ public abstract class BaseStore<T, TCreate, TUpdate> : BaseStore<T>, IStore<T, T
             return;
         }
 
-        await Fetch();
+        await ForceFetch();
     }
 }

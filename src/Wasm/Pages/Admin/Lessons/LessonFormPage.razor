@@ -20,20 +20,20 @@
                          IsProcessing="@_isProcessing"
                          ReturnUrl="/admin/subjects">
                 <MudTextField Label="Name"
-                              @bind-Value="_model.Name"
+                              @bind-Data="_model.Name"
                               For="() => _model.Name"
                               OnlyValidateIfDirty="true" />
                 <MudTextField Label="VideoUrl"
-                              @bind-Value="_model.VideoUrl"
+                              @bind-Data="_model.VideoUrl"
                               For="() => _model.VideoUrl"
                               OnlyValidateIfDirty="true" />
                 <MudSelect Label="Generation"
                            AnchorOrigin="Origin.BottomCenter"
                            Disabled="@GenerationStore.IsLoading"
                            For="@(() => _model.GenerationId)"
-                           @bind-Value="_model.GenerationId">
+                           @bind-Data="_model.GenerationId">
                     <MudSelectItem Disabled="true" T="int" Value="0">Select Generation</MudSelectItem>
-                    @foreach (var item in GenerationStore.Value)
+                    @foreach (var item in GenerationStore.Data)
                     {
                         <MudSelectItem T="int" Value="@item.Id">@item.Name</MudSelectItem>
                     }
@@ -42,9 +42,9 @@
                            AnchorOrigin="Origin.BottomCenter"
                            Disabled="@SubjectStore.IsLoading"
                            For="@(() => _model.SubjectId)"
-                           @bind-Value="_model.SubjectId">
+                           @bind-Data="_model.SubjectId">
                     <MudSelectItem Disabled="true" T="int" Value="0">Select Subject</MudSelectItem>
-                    @foreach (var item in SubjectStore.Value)
+                    @foreach (var item in SubjectStore.Data)
                     {
                         <MudSelectItem T="int" Value="@item.Id">@item.Name</MudSelectItem>
                     }
@@ -68,8 +68,8 @@
     protected override async Task OnInitializedAsync()
     {
     // UiService.Loading = true;
-        await GenerationStore.Initialize();
-        await SubjectStore.Initialize();
+        await GenerationStore.Fetch();
+        await SubjectStore.Fetch();
 
         if (Id.HasValue)
         {

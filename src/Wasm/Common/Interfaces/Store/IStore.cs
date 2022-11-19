@@ -7,12 +7,12 @@ public interface IStore<T>
     public string? ErrorMessage { get; }
     public bool IsLoading { get; }
     event Action OnChange;
-    List<T> Value { get; }
+    List<T> Data { get; }
     DateTime LastUpdated { get; }
-    Task Initialize();
-    void CacheData(List<T> value);
-    void ReadError();
     Task Fetch();
+    void CacheData(List<T> value);
+    void ClearErrors();
+    Task ForceFetch();
     T? GetByIdQuery(int id);
     Task<T?> GetById(int id);
     Task Delete(int id);

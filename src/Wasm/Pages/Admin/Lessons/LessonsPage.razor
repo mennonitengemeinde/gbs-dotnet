@@ -13,7 +13,7 @@
     </MudButton>
 </div>
 
-<MudTable Items="@LessonStore.Value" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@LessonStore.IsLoading" LoadingProgressColor="Color.Info">
+<MudTable Items="@LessonStore.Data" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@LessonStore.IsLoading" LoadingProgressColor="Color.Info">
     <HeaderContent>
         <MudTh>Name</MudTh>
         <MudTh>Actions</MudTh>
@@ -32,7 +32,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await LessonStore.Fetch();
+        await LessonStore.ForceFetch();
         LessonStore.OnChange += StateHasChanged;
     }
 

@@ -9,5 +9,5 @@ public class SubjectStore : BaseStore<SubjectDto, SubjectCreateDto, SubjectCreat
 
     public override string BaseUrl { get; } = "api/subjects";
 
-    public override SubjectDto? GetByIdQuery(int id) => Value.FirstOrDefault(x => x.Id == id);
+    public override SubjectDto? GetByIdQuery(int id) => Data.FirstOrDefault(x => x.Id == id);
 }

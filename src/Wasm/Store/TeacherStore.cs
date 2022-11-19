@@ -8,5 +8,5 @@ public class TeacherStore : BaseStore<TeacherDto, TeacherCreateDto, TeacherCreat
         IUiService uiService) : base(http, dateTime, uiService) { }
 
     public override string BaseUrl { get; } = "api/teachers";
-    public override TeacherDto? GetByIdQuery(int id) => Value.FirstOrDefault(x => x.Id == id);
+    public override TeacherDto? GetByIdQuery(int id) => Data.FirstOrDefault(x => x.Id == id);
 }

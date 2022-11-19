@@ -7,5 +7,5 @@ public class LessonStore : BaseStore<LessonDto, LessonCreateDto, LessonCreateDto
 
     public override string BaseUrl { get; } = "api/lessons";
 
-    public override LessonDto? GetByIdQuery(int id) => Value.FirstOrDefault(l => l.Id == id);
+    public override LessonDto? GetByIdQuery(int id) => Data.FirstOrDefault(l => l.Id == id);
 }

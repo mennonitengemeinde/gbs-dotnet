@@ -1,18 +1,18 @@
 @page "/admin/students"
 @attribute [Authorize(Policy = Policies.RequireAdminsAndTeachers)]
-@using Gbs.Wasm.Services.Api.StudentService
 @using Gbs.Wasm.Services.Api.AuthService
 @implements IDisposable
-@inject IStudentService StudentService
+
+@inject IStudentStore StudentStore
 @inject IAuthService AuthService
 
 <PageTitle>Students - GBS</PageTitle>
 
 <div class="tw-py-4">
     <MudText Typo="Typo.h4">Students</MudText>
-    @if (!_userIsAdmin && StudentService.Students.Count > 0)
+    @if (!_userIsAdmin && StudentStore.Data.Count > 0)
     {
-        <MudText Typo="Typo.subtitle1">@StudentService.Students.FirstOrDefault()?.ChurchName</MudText>
+        <MudText Typo="Typo.subtitle1">@StudentStore.Data.FirstOrDefault()?.ChurchName</MudText>
     }
     <MudButton StartIcon="@Icons.Filled.Add" 
                Color="Color.Primary" 
@@ -23,7 +23,7 @@
     </MudButton>
 </div>
 
-<MudTable Items="@StudentService.Students" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading" LoadingProgressColor="Color.Info">
+<MudTable Items="@StudentStore.Data" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@StudentStore.IsLoading" LoadingProgressColor="Color.Info">
     <HeaderContent>
         <MudTh>Name</MudTh>
         @if (_userIsAdmin)
@@ -47,21 +47,18 @@
 </MudTable>
 
 @code {
-    bool _loading;
     bool _userIsAdmin;
 
     protected override async Task OnInitializedAsync()
     {
-        _loading = true;
-        await StudentService.FetchStudents();
+        await StudentStore.Fetch();
         _userIsAdmin = await AuthService.UserIsAdmin();
-        StudentService.StudentsChanged += StateHasChanged;
-        _loading = false;
+        StudentStore.OnChange += StateHasChanged;
     }
 
     public void Dispose()
     {
-        StudentService.StudentsChanged -= StateHasChanged;
+        StudentStore.OnChange -= StateHasChanged;
     }
 
 }

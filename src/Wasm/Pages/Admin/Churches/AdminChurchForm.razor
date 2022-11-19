@@ -1,10 +1,9 @@
 @page "/admin/churches/create"
 @page "/admin/churches/{Id:int}/edit"
-@using Gbs.Wasm.Services.Api.ChurchService
 @attribute [Authorize(Policy = Policies.RequireAdmins)]
 
 @inject NavigationManager NavigationManager
-@inject IChurchService ChurchService
+@inject IChurchStore ChurchStore
 @inject IUiService UiService
 
 <PageTitle>Churches Form - GBS</PageTitle>
@@ -15,28 +14,28 @@
         <MudItem xs="12" sm="8" md="5">
             <MatFormCard Label="Church"
                          IsEdit="@_isEdit"
-                         IsLoading="@_isLoading"
+                         IsLoading="@ChurchStore.IsLoading"
                          IsProcessing="@_isProcessing"
                          ReturnUrl="/admin/churches">
                 <MudTextField Label="Name"
-                              @bind-Value="_model.Name"
+                              @bind-Data="_model.Name"
                               Required="true"
                               For="() => _model.Name"/>
                 <MudTextField Label="Address"
-                              @bind-Value="_model.Address"
+                              @bind-Data="_model.Address"
                               For="() => _model.Address"/>
                 <MudTextField Label="City"
-                              @bind-Value="_model.City"
+                              @bind-Data="_model.City"
                               For="() => _model.City"/>
                 <MudTextField Label="State"
-                              @bind-Value="_model.State"
+                              @bind-Data="_model.State"
                               For="() => _model.State"/>
                 <MudTextField Label="Country"
-                              @bind-Value="_model.Country"
+                              @bind-Data="_model.Country"
                               Required="true"
                               For="() => _model.Country"/>
                 <MudTextField Label="PostalCode"
-                              @bind-Value="_model.PostalCode"
+                              @bind-Data="_model.PostalCode"
                               For="() => _model.PostalCode"/>
             </MatFormCard>
         </MudItem>
@@ -44,8 +43,7 @@
 </EditForm>
 
 @code {
-    ChurchCreateDto _model = new ChurchCreateDto();
-    bool _isLoading;
+    ChurchCreateDto _model = new ();
     bool _isProcessing;
     bool _isEdit;
 
@@ -57,15 +55,16 @@
         if (Id != null)
         {
             _isEdit = true;
-            _isLoading = true;
-            var church = await ChurchService.GetChurch(Id.Value);
-            _model.Name = church.Data.Name;
-            _model.Address = church.Data.Address;
-            _model.City = church.Data.City;
-            _model.State = church.Data.State;
-            _model.PostalCode = church.Data.PostalCode;
-            _model.Country = church.Data.Country;
-            _isLoading = false;
+            var church = await ChurchStore.GetById(Id.Value);
+            if (church != null)
+            {
+                _model.Name = church.Name;
+                _model.Address = church.Address;
+                _model.City = church.City;
+                _model.State = church.State;
+                _model.PostalCode = church.PostalCode;
+                _model.Country = church.Country;
+            }
         }
     }
 
@@ -73,11 +72,16 @@
     {
         _isProcessing = true;
 
-        var response = _isEdit
-            ? await ChurchService.UpdateChurch(Id!.Value, _model)
-            : await ChurchService.AddChurch(_model);
+        if (_isEdit)
+        {
+            await ChurchStore.Update(Id!.Value, _model);
+        }
+        else
+        {
+            await ChurchStore.Add(_model);
+        }
 
-        if (response.Success)
+        if (!ChurchStore.HasError)
         {
             _isProcessing = false;
             UiService.ShowSuccessAlert(_isEdit ? "Church updated successfully" : "Church added successfully");
@@ -86,7 +90,7 @@
         else
         {
             _isProcessing = false;
-            await UiService.ShowErrorAlert(response.Message, response.StatusCode);
+            ChurchStore.ClearErrors();
         }
     }
 

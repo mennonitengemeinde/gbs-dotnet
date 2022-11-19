@@ -1,10 +1,6 @@
 ﻿using System.Reflection;
 using Blazored.LocalStorage;
 using Gbs.Wasm.Services.Api.AuthService;
-using Gbs.Wasm.Services.Api.ChurchService;
-using Gbs.Wasm.Services.Api.GenerationService;
-using Gbs.Wasm.Services.Api.StudentService;
-using Gbs.Wasm.Services.Api.TeacherService;
 using Gbs.Wasm.Services.Api.UserService;
 using Gbs.Wasm.Store;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -30,18 +26,16 @@ public static class ConfigureServices
         services.AddTransient<IDateTimeService, DateTimeService>();
 
         services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(hostEnvironment.BaseAddress) });
+        services.AddScoped<IChurchStore, ChurchStore>();
         services.AddScoped<IGenerationStore, GenerationStore>();
+        services.AddScoped<ILessonStore, LessonStore>();
         services.AddScoped<IStreamStore, StreamStore>();
         services.AddScoped<ISubjectStore, SubjectStore>();
-        services.AddScoped<ILessonStore, LessonStore>();
+        services.AddScoped<IStudentStore, StudentStore>();
         services.AddScoped<ITeacherStore, TeacherStore>();
         services.AddScoped<IAuthService, AuthApiService>();
-        services.AddScoped<IChurchService, ChurchService>();
         services.AddScoped<IUiService, UiService>();
         services.AddScoped<IUserService, UserService>();
-        services.AddScoped<IGenerationService, GenerationService>();
-        services.AddScoped<IStudentService, StudentService>();
-        services.AddScoped<ITeacherService, TeacherService>();
         
         services.AddOptions();
         services.AddAuthorizationCore(options =>

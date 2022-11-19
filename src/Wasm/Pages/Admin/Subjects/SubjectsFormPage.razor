@@ -18,7 +18,7 @@
                          IsProcessing="@_isProcessing"
                          ReturnUrl="/admin/subjects">
                 <MudTextField Label="Name"
-                              @bind-Value="_model.Name"
+                              @bind-Data="_model.Name"
                               For="() => _model.Name"
                               OnlyValidateIfDirty="true" />
             </MatFormCard>
@@ -69,7 +69,7 @@
             NavigationManager.NavigateTo("admin/subjects");
         }
         _isProcessing = false;
-        SubjectStore.ReadError();
+        SubjectStore.ClearErrors();
     }
 
 }

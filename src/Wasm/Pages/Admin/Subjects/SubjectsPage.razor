@@ -14,7 +14,7 @@
     </MudButton>
 </div>
 
-<MudTable Items="@SubjectStore.Value" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@SubjectStore.IsLoading" LoadingProgressColor="Color.Info">
+<MudTable Items="@SubjectStore.Data" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@SubjectStore.IsLoading" LoadingProgressColor="Color.Info">
     <HeaderContent>
         <MudTh>Name</MudTh>
         <MudTh>Actions</MudTh>
@@ -30,7 +30,7 @@
 </MudTable>
 
 @* <MudGrid> *@
-@*     @foreach (var subject in SubjectStore.Value) *@
+@*     @foreach (var subject in SubjectStore.Data) *@
 @*     { *@
 @*         <MudItem xs="6"> *@
 @*             <MudCard> *@
@@ -59,7 +59,7 @@
     protected override async Task OnInitializedAsync()
     {
         // UiService.Loading = SubjectStore.IsLoading;
-        await SubjectStore.Fetch();
+        await SubjectStore.ForceFetch();
         SubjectStore.OnChange += StateHasChanged;
     }
 

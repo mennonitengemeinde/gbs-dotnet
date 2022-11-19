@@ -1,12 +1,12 @@
 ﻿@page "/admin/users"
+@attribute [Authorize(Policy = Policies.RequireAdmins)]
 @using Gbs.Wasm.Services.Api.AuthService
-@using Gbs.Wasm.Services.Api.ChurchService
 @using Gbs.Wasm.Services.Api.UserService
 @implements IDisposable
-@attribute [Authorize(Policy = Policies.RequireAdmins)]
+
 @inject IAuthService AuthService
 @inject IUserService UserService
-@inject IChurchService ChurchService
+@inject IChurchStore ChurchStore
 
 <PageTitle>Users - GBS</PageTitle>
 
@@ -30,7 +30,7 @@
                        Value="@context.ChurchId"
                        Label="Church"
                        ValueChanged="@((value) => HandleChurchChange(value, context))">
-                @foreach (var church in ChurchService.Churches)
+                @foreach (var church in ChurchStore.Data)
                 {
                     <MudSelectItem T="int?" Value="@church.Id">@church.Name</MudSelectItem>
                 }
@@ -76,13 +76,13 @@
     {
         _loading = true;
         await UserService.GetUsers();
-        await ChurchService.GetChurches();
+        await ChurchStore.Fetch();
         var roles = await AuthService.FetchRoles();
         _roles = roles.Data.Select(r => r.Name).ToList();
         _users = UserService.Users.Select(u => new LocalUserDto(u)).ToList();
 
         UserService.UsersChanged += OnUsersChanged;
-        ChurchService.ChurchesChanged += StateHasChanged;
+        ChurchStore.OnChange += StateHasChanged;
         _loading = false;
     }
 
@@ -137,7 +137,7 @@
     public void Dispose()
     {
         UserService.UsersChanged -= OnUsersChanged;
-        ChurchService.ChurchesChanged -= StateHasChanged;
+        ChurchStore.OnChange -= StateHasChanged;
     }
 
     class LocalUserDto : UserDto

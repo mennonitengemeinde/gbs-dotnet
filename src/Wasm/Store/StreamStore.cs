@@ -7,13 +7,13 @@ public class StreamStore : BaseStore<StreamDto, StreamCreateDto, StreamCreateDto
 
     public override string BaseUrl { get; } = "api/streams";
     
-    public override StreamDto? GetByIdQuery(int id) => Value.FirstOrDefault(x => x.Id == id);
+    public override StreamDto? GetByIdQuery(int id) => Data.FirstOrDefault(x => x.Id == id);
     
     public async Task<StreamDto?> GetOnlyLiveById(int id)
     {
-        await Initialize();
+        await Fetch();
 
-        var result = Value.FirstOrDefault(x => x.Id == id && x.IsLive);
+        var result = Data.FirstOrDefault(x => x.Id == id && x.IsLive);
         if (result == null)
         {
             await UiService.ShowErrorAlert("Could not find item with id " + id);
@@ -24,7 +24,7 @@ public class StreamStore : BaseStore<StreamDto, StreamCreateDto, StreamCreateDto
 
     public async Task ToggleLive(int id)
     {
-        var liveStream = Value.FirstOrDefault(s => s.Id == id);
+        var liveStream = Data.FirstOrDefault(s => s.Id == id);
         if (liveStream == null)
         {
             await UiService.ShowErrorAlert("Could not find item with id " + id);
@@ -44,6 +44,6 @@ public class StreamStore : BaseStore<StreamDto, StreamCreateDto, StreamCreateDto
             return;
         }
 
-        await Fetch();
+        await ForceFetch();
     }
 }

@@ -7,5 +7,5 @@ public class GenerationStore : BaseStore<GenerationDto, GenerationCreateDto, Gen
 
     public override string BaseUrl { get; } = "api/generations";
 
-    public override GenerationDto? GetByIdQuery(int id) => Value.FirstOrDefault(x => x.Id == id);
+    public override GenerationDto? GetByIdQuery(int id) => Data.FirstOrDefault(x => x.Id == id);
 }
