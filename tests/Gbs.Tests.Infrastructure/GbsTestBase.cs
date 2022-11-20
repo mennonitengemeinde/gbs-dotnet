@@ -21,6 +21,8 @@ public class GbsTestBase : IDisposable
         Context.Generations.AddRange(generationList);
         var subjectList = SubjectSeed.GetSubjects();
         Context.Subjects.AddRange(subjectList);
+        var teacherList = TeacherSeed.GetTeachers();
+        Context.Teachers.AddRange(teacherList);
         Context.SaveChanges();
     }
 
