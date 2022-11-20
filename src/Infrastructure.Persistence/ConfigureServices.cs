@@ -36,7 +36,7 @@ public static class ConfigureServices
         // services.AddScoped<IGenerationRepository, GenerationRepository>();
         // services.AddScoped<IStreamRepository, StreamRepository>();
         services.AddScoped<IStudentRepository, StudentRepository>();
-        services.AddScoped<ITeacherRepository, TeacherRepository>();
+        // services.AddScoped<ITeacherRepository, TeacherRepository>();
 
         return services;
     }

@@ -2,6 +2,7 @@
 using Gbs.Application.Churches;
 using Gbs.Application.Lessons;
 using Gbs.Application.Subjects;
+using Gbs.Application.Teachers;
 using Gbs.Application.Users;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -23,6 +24,8 @@ public static class ConfigureServices
         services.AddScoped<ISubjectCommands, SubjectCommands>();
         services.AddScoped<IStreamQueries, StreamQueries>();
         services.AddScoped<IStreamCommands, StreamCommands>();
+        services.AddScoped<ITeacherQueries, TeacherQueries>();
+        services.AddScoped<ITeacherCommands, TeacherCommands>();
         services.AddScoped<IUserQueries, UserQueries>();
         services.AddScoped<IUserCommands, UserCommands>();
 
