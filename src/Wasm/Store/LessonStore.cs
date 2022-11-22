@@ -8,4 +8,21 @@ public class LessonStore : BaseStore<LessonDto, int, LessonCreateDto, LessonCrea
     public override string BaseUrl { get; } = "api/lessons";
 
     public override LessonDto? GetByIdQuery(int id) => Data.FirstOrDefault(l => l.Id == id);
+
+    public async Task UpdateOrder(int id, int order)
+    {
+        IsLoading = true;
+        var result = await Http.PutAsJsonAsync($"{BaseUrl}/{id}/order", order)
+            .EnsureSuccess<LessonDto>();
+        if (!result.Success)
+        {
+            await UiService.ShowErrorAlert(result.Message, result.StatusCode);
+            HasError = true;
+            ErrorMessage = result.Message;
+            IsLoading = false;
+            return;
+        }
+
+        await ForceFetch();
+    }
 }

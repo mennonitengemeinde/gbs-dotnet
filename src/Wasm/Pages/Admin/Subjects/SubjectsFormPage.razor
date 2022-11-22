@@ -18,7 +18,7 @@
                          IsProcessing="@_isProcessing"
                          ReturnUrl="/admin/subjects">
                 <MudTextField Label="Name"
-                              @bind-Data="_model.Name"
+                              @bind-Value="_model.Name"
                               For="() => _model.Name"
                               OnlyValidateIfDirty="true" />
             </MatFormCard>

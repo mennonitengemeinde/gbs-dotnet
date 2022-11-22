@@ -23,7 +23,7 @@
                              IsProcessing="@_isProcessing"
                              ReturnUrl="/admin/students">
                     <MudTextField Label="Name"
-                                  @bind-Data="_model.Name"
+                                  @bind-Value="_model.Name"
                                   For="() => _model.Name" />
                     <MudDatePicker Label="Date of Birth"
                                    @bind-Date="_model.DateOfBirth"
@@ -37,32 +37,32 @@
                         </MudRadioGroup>
                     </MudField>
                     <MudTextField Label="Address"
-                                  @bind-Data="_model.Address"
+                                  @bind-Value="_model.Address"
                                   For="() => _model.Address" />
                     <MudTextField Label="City"
-                                  @bind-Data="_model.City"
+                                  @bind-Value="_model.City"
                                   For="() => _model.City" />
                     <MudTextField Label="Province/State"
-                                  @bind-Data="_model.State"
+                                  @bind-Value="_model.State"
                                   For="() => _model.State" />
                     <MudTextField Label="Country"
-                                  @bind-Data="_model.Country"
+                                  @bind-Value="_model.Country"
                                   For="() => _model.Country" />
                     <MudTextField Label="Postal Code"
-                                  @bind-Data="_model.PostalCode"
+                                  @bind-Value="_model.PostalCode"
                                   For="() => _model.PostalCode" />
                     <MudTextField Label="Email"
-                                  @bind-Data="_model.Email"
+                                  @bind-Value="_model.Email"
                                   For="() => _model.Email" />
                     <MudTextField Label="Phone"
-                                  @bind-Data="_model.Phone"
+                                  @bind-Value="_model.Phone"
                                   For="() => _model.Phone" />
                     @if (_isAdmin)
                     {
                         <MudSelect Label="Church"
                                    AnchorOrigin="Origin.BottomCenter"
                                    For="@(() => _model.ChurchId)"
-                                   @bind-Data="_model.ChurchId">
+                                   @bind-Value="_model.ChurchId">
                             <MudSelectItem Disabled="true" T="int" Value="0">Select Church</MudSelectItem>
                             @foreach (var item in ChurchStore.Data)
                             {

@@ -34,7 +34,7 @@ public static class ConfigureServices
         services.AddScoped<IUserStore, UserStore>();
         services.AddScoped<IAuthService, AuthApiService>();
         services.AddScoped<IUiService, UiService>();
-        
+
         services.AddOptions();
         services.AddAuthorizationCore(options =>
         {

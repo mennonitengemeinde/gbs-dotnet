@@ -1,7 +1,8 @@
 ﻿namespace Gbs.Application.Common.Interfaces.Commands;
 
-public interface IUserCommands
+public interface IIdentityCommands
 {
+    Task<Result<string>> Login(string email, string password);
     Task<Result<string>> Add(RegisterDto request);
     Task<Result<UserDto>> UpdateRoles(string id, List<string> request);
     Task<Result<UserDto>> UpdateActiveState(string id, bool request);

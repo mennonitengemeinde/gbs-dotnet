@@ -1,30 +1,57 @@
-﻿using Gbs.Application.Common.Interfaces.Services;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Gbs.Application.Common.Interfaces.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 
-namespace Gbs.Application.Users;
+namespace Gbs.Application.Identity;
 
-public class UserCommands : IUserCommands
+public class IdentityCommands : IIdentityCommands
 {
     private readonly IGbsDbContext _context;
     private readonly IMapper _mapper;
-    private readonly IUserQueries _userQueries;
-    private readonly IAuthenticatedUserService _authenticatedUserService;
+    private readonly IIdentityQueries _identityQueries;
+    private readonly IConfiguration _configuration;
     private readonly UserManager<User> _userManager;
+    private readonly SignInManager<User> _signInManager;
 
-    public UserCommands(
-        IGbsDbContext context, 
+    public IdentityCommands(
+        IGbsDbContext context,
         IMapper mapper,
-        IUserQueries userQueries,
-        IAuthenticatedUserService authenticatedUserService,
-        UserManager<User> userManager)
+        IIdentityQueries identityQueries,
+        IConfiguration configuration,
+        UserManager<User> userManager,
+        SignInManager<User> signInManager)
     {
         _context = context;
         _mapper = mapper;
-        _userQueries = userQueries;
-        _authenticatedUserService = authenticatedUserService;
+        _identityQueries = identityQueries;
+        _configuration = configuration;
         _userManager = userManager;
+        _signInManager = signInManager;
     }
-    
+
+    public async Task<Result<string>> Login(string email, string password)
+    {
+        var user = await _userManager.FindByNameAsync(email);
+        if (user == null)
+            return Result.BadRequest<string>("Incorrect email or password");
+
+        if (user.IsActive == false)
+            return Result.BadRequest<string>("You account needs to be verified. Please come back later.");
+
+        var result = await _signInManager.PasswordSignInAsync(user, password, false, false);
+        if (!result.Succeeded)
+            return Result.BadRequest<string>("Incorrect email or password");
+
+        user.LastLogin = DateTime.UtcNow;
+        _context.Users.Update(user);
+        await _context.SaveChangesAsync();
+
+        return Result.Ok(await CreateToken(user));
+    }
+
     public async Task<Result<string>> Add(RegisterDto request)
     {
         if (await _context.Users.AnyAsync(u => u.Email != null && u.Email.ToLower().Equals(request.Email.ToLower())))
@@ -60,14 +87,14 @@ public class UserCommands : IUserCommands
         }
 
         var rolesToAdd = newRoles.Except(userRoles).ToList();
-        if (!rolesToAdd.Any()) 
-            return await _userQueries.GetById(user.Id);
-        
+        if (!rolesToAdd.Any())
+            return await _identityQueries.GetById(user.Id);
+
         var result = await _userManager.AddToRolesAsync(user, rolesToAdd);
-        if (!result.Succeeded) 
+        if (!result.Succeeded)
             return Result.BadRequest<UserDto>("Failed to add roles");
-        
-        return await _userQueries.GetById(user.Id);
+
+        return await _identityQueries.GetById(user.Id);
     }
 
     public async Task<Result<UserDto>> UpdateActiveState(string id, bool request)
@@ -97,9 +124,36 @@ public class UserCommands : IUserCommands
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
         if (user == null)
             return Result.NotFound<bool>("User not found");
-        
+
         _context.Users.Remove(user);
         await _context.SaveChangesAsync();
         return Result.Ok(true);
+    }
+
+    private async Task<string> CreateToken(User user)
+    {
+        List<string> userRoles = (await _userManager.GetRolesAsync(user)).ToList();
+        var claims = new List<Claim>
+        {
+            new(ClaimTypes.NameIdentifier, user.Id),
+            new(ClaimTypes.Email, user.Email),
+            new(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
+        };
+        claims.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
+
+        var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8
+            .GetBytes(_configuration.GetSection("AppSettings:Secret").Value));
+
+        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
+
+        var token = new JwtSecurityToken(
+            claims: claims,
+            expires: DateTime.Now.AddDays(1),
+            signingCredentials: credentials
+        );
+
+        var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+
+        return jwt;
     }
 }

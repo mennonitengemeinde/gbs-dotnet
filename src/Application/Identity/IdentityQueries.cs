@@ -1,15 +1,14 @@
 ﻿using Gbs.Application.Common.Interfaces.Services;
-using Microsoft.AspNetCore.Identity;
 
-namespace Gbs.Application.Users;
+namespace Gbs.Application.Identity;
 
-public class UserQueries : IUserQueries
+public class IdentityQueries : IIdentityQueries
 {
     private readonly IGbsDbContext _context;
     private readonly IMapper _mapper;
     private readonly IAuthenticatedUserService _authenticatedUserService;
 
-    public UserQueries(
+    public IdentityQueries(
         IGbsDbContext context, 
         IMapper mapper, 
         IAuthenticatedUserService authenticatedUserService)
@@ -57,5 +56,31 @@ public class UserQueries : IUserQueries
         return user == null
             ? Result.NotFound<UserDto>("User not found")
             : Result.Ok(user);
+    }
+
+    public async Task<Result<List<RolesDto>>> GetRoles()
+    {
+        var userRoles = _authenticatedUserService.GetUserRoles();
+        List<RolesDto> roles;
+        if (userRoles.Contains(Roles.SuperAdmin))
+        {
+            roles = await _context.Roles.Select(x => new RolesDto
+            {
+                Id = x.Id,
+                Name = x.Name,
+                NormalizedName = x.NormalizedName
+            }).ToListAsync();
+        }
+        else
+        {
+            roles = await _context.Roles.Where(x => x.Name != Roles.SuperAdmin).Select(x => new RolesDto
+            {
+                Id = x.Id,
+                Name = x.Name,
+                NormalizedName = x.NormalizedName
+            }).ToListAsync();
+        }
+
+        return Result.Ok(roles);
     }
 }

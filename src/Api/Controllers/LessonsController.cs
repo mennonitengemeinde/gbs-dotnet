@@ -52,5 +52,13 @@ namespace Gbs.Api.Controllers
             var result = await _lessonCommands.Delete(id);
             return result.ToActionResult();
         }
+        
+        [HttpPut("{id:int}/order")]
+        [Authorize(Policy = Policies.RequireAdminsAndSound)]
+        public async Task<ActionResult<Result<LessonDto>>> UpdateOrder(int id, [FromBody] int order)
+        {
+            var result = await _lessonCommands.UpdateOrder(id, order);
+            return result.ToActionResult();
+        }
     }
 }

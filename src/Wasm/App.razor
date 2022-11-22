@@ -1,4 +1,5 @@
-﻿<CascadingAuthenticationState>
+﻿<Fluxor.Blazor.Web.StoreInitializer />
+<CascadingAuthenticationState>
     <Router AppAssembly="@typeof(App).Assembly">
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
@@ -7,7 +8,7 @@
                     <h5 class="text-lg">Please <a href="login" class="link text-info">login</a> or <a href="register" class="link text-info">register</a> a new account</h5>
                 </NotAuthorized>
             </AuthorizeRouteView>
-            <FocusOnNavigate RouteData="@routeData" Selector="h1"/>
+            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
         </Found>
         <NotFound>
             <PageTitle>Not found</PageTitle>

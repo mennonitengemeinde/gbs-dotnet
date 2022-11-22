@@ -16,14 +16,27 @@
 <MudTable Items="@LessonStore.Data" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@LessonStore.IsLoading" LoadingProgressColor="Color.Info">
     <HeaderContent>
         <MudTh>Name</MudTh>
-        <MudTh>Actions</MudTh>
+        <MudTh>Order</MudTh>
+        <MudTh></MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Name">@context.Name</MudTd>
-        <MudTd DataLabel="Actions" Class="tw-text-end">
+        <MudTd DataLabel="Order">@context.Order</MudTd>
+        <MudTd Class="tw-text-end">
+            <MudIconButton Icon="@Icons.Filled.ArrowDownward"
+                           Size="Size.Small"
+                           Color="Color.Primary"
+                           Disabled="@(context == LessonStore.Data.Last())"
+                           OnClick="() => MoveLessonDown(context)" />
+            <MudIconButton Icon="@Icons.Filled.ArrowUpward"
+                           Size="Size.Small"
+                           Color="Color.Primary"
+                           Disabled="@(context.Order <= 1)"
+                           OnClick="() => MoveLessonUp(context)" />
             <MudIconButton Icon="@Icons.Material.Filled.Edit"
                            Size="Size.Small"
-                           Href="@($"admin/lessons/{context.Id}/edit")" />
+                           Href="@($"admin/lessons/{context.Id}/edit")"
+                           Color="Color.Warning" />
         </MudTd>
     </RowTemplate>
 </MudTable>
@@ -34,6 +47,16 @@
     {
         await LessonStore.ForceFetch();
         LessonStore.OnChange += StateHasChanged;
+    }
+
+    private async Task MoveLessonUp(LessonDto lesson)
+    {
+        await LessonStore.UpdateOrder(lesson.Id, lesson.Order - 1);
+    }
+
+    private async Task MoveLessonDown(LessonDto lesson)
+    {
+        await LessonStore.UpdateOrder(lesson.Id, lesson.Order + 1);
     }
 
     public void Dispose()

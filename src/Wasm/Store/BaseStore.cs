@@ -28,7 +28,7 @@ public abstract class BaseStore<T, TId> : IStore<T, TId>
         get => _isLoading;
         protected set
         {
-            if (value == _isLoading) return;
+            if (value == _isLoading && value) return;
             
             if (value)
             {
@@ -117,11 +117,11 @@ public abstract class BaseStore<T, TId> : IStore<T, TId>
             await UiService.ShowErrorAlert(result.Message, result.StatusCode);
             HasError = true;
             ErrorMessage = result.Message;
+            IsLoading = false;
             return;
         }
 
         await ForceFetch();
-        IsLoading = false;
     }
     
     private void OnChangeDebounce()
@@ -150,11 +150,11 @@ public abstract class BaseStore<T, TId, TCreate, TUpdate> : BaseStore<T, TId>, I
             await UiService.ShowErrorAlert(result.Message, result.StatusCode);
             HasError = true;
             ErrorMessage = result.Message;
+            IsLoading = false;
             return;
         }
 
         await ForceFetch();
-        IsLoading = false;
     }
 
     public async Task Update(TId id, TUpdate item)
@@ -167,10 +167,10 @@ public abstract class BaseStore<T, TId, TCreate, TUpdate> : BaseStore<T, TId>, I
             await UiService.ShowErrorAlert(result.Message, result.StatusCode);
             HasError = true;
             ErrorMessage = result.Message;
+            IsLoading = false;
             return;
         }
 
         await ForceFetch();
-        IsLoading = false;
     }
 }

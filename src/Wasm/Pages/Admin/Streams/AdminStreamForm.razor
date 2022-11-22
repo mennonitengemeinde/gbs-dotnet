@@ -21,15 +21,15 @@
                          IsProcessing="_isProcessing"
                          ReturnUrl="/admin/streams">
                 <MudTextField Label="Title"
-                              @bind-Data="_newStream.Title"
+                              @bind-Value="_newStream.Title"
                               For="() => _newStream.Title" />
                 <MudTextField Label="Url"
-                              @bind-Data="_newStream.Url"
+                              @bind-Value="_newStream.Url"
                               For="() => _newStream.Url" />
                 <MudSelect Label="Generation"
                            AnchorOrigin="Origin.BottomCenter"
                            For="@(() => _newStream.GenerationId)"
-                           @bind-Data="_newStream.GenerationId">
+                           @bind-Value="_newStream.GenerationId">
                     <MudSelectItem Disabled="true" T="int" Value="0">Select Generation</MudSelectItem>
                     @foreach (var item in GenerationStore.Data)
                     {

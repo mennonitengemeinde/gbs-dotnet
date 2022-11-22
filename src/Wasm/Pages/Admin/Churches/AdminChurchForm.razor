@@ -18,24 +18,24 @@
                          IsProcessing="@_isProcessing"
                          ReturnUrl="/admin/churches">
                 <MudTextField Label="Name"
-                              @bind-Data="_model.Name"
+                              @bind-Value="_model.Name"
                               Required="true"
                               For="() => _model.Name"/>
                 <MudTextField Label="Address"
-                              @bind-Data="_model.Address"
+                              @bind-Value="_model.Address"
                               For="() => _model.Address"/>
                 <MudTextField Label="City"
-                              @bind-Data="_model.City"
+                              @bind-Value="_model.City"
                               For="() => _model.City"/>
                 <MudTextField Label="State"
-                              @bind-Data="_model.State"
+                              @bind-Value="_model.State"
                               For="() => _model.State"/>
                 <MudTextField Label="Country"
-                              @bind-Data="_model.Country"
+                              @bind-Value="_model.Country"
                               Required="true"
                               For="() => _model.Country"/>
                 <MudTextField Label="PostalCode"
-                              @bind-Data="_model.PostalCode"
+                              @bind-Value="_model.PostalCode"
                               For="() => _model.PostalCode"/>
             </MatFormCard>
         </MudItem>
