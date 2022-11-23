@@ -1,0 +1,57 @@
+@foreach (var lesson in Lessons)
+{
+    <MudCard>
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudText Typo="Typo.h6">@lesson.Name</MudText>
+            </CardHeaderContent>
+            <CardHeaderActions>
+                <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                               Href="@($"admin/lessons/{lesson.Id}/edit")"
+                               Color="Color.Warning" />
+            </CardHeaderActions>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudText>
+                <strong>Order:</strong> @lesson.Order
+            </MudText>
+            <MudText Typo="Typo.body2">The quick, brown fox jumps over a lazy dog.</MudText>
+        </MudCardContent>
+        <MudCardActions Class="tw-justify-end">
+            <MudIconButton Icon="@Icons.Filled.ArrowDownward"
+                           Color="Color.Primary"
+                           Disabled="@(lesson == Lessons.Last())"
+                           OnClick="() => HandleMoveLessonDown(lesson)" />
+            <MudIconButton Icon="@Icons.Filled.ArrowUpward"
+                           Color="Color.Primary"
+                           Disabled="@(lesson.Order <= 1)"
+                           OnClick="() => HandleMoveLessonUp(lesson)" />
+        </MudCardActions>
+    </MudCard>
+}
+
+@code {
+
+    [Parameter, EditorRequired]
+    public List<LessonDto> Lessons { get; set; } = new();
+
+    [Parameter, EditorRequired]
+    public bool IsLoading { get; set; }
+
+    [Parameter]
+    public EventCallback<LessonDto> MoveLessonDown { get; set; }
+
+    [Parameter]
+    public EventCallback<LessonDto> MoveLessonUp { get; set; }
+
+    private async Task HandleMoveLessonDown(LessonDto lesson)
+    {
+        await MoveLessonDown.InvokeAsync(lesson);
+    }
+
+    private async Task HandleMoveLessonUp(LessonDto lesson)
+    {
+        await MoveLessonUp.InvokeAsync(lesson);
+    }
+
+}
