@@ -1,13 +1,18 @@
 ﻿using System.Reflection;
+using Gbs.Application.Common.Entities;
+using Gbs.Application.Common.Interfaces;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Gbs.Infrastructure.Persistence;
 
 public class DataContext :
     IdentityDbContext<User, Role, string, IdentityUserClaim<string>, UserRole, IdentityUserLogin<string>,
-        IdentityRoleClaim<string>, IdentityUserToken<string>>, IDataProtectionKeyContext
+        IdentityRoleClaim<string>, IdentityUserToken<string>>, IDataProtectionKeyContext, IGbsDbContext
 {
     public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = null!;
 

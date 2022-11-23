@@ -1,0 +1,24 @@
+﻿<CascadingValue Value="this">
+    @ChildContent
+</CascadingValue>
+
+@code {
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    private bool _isPageLoading = false;
+
+    public bool IsPageLoading
+    {
+        get => _isPageLoading;
+        set
+        {
+            if (_isPageLoading == value) return;
+
+            _isPageLoading = value;
+            StateHasChanged();
+        }
+    }
+
+}

@@ -4,45 +4,33 @@ namespace Gbs.Api.Controllers;
 [ApiController]
 public class AuthController : ControllerBase
 {
-    private readonly IAuthRepository _authRepo;
+    private readonly IIdentityQueries _identityQueries;
+    private readonly IIdentityCommands _identityCommands;
 
-    public AuthController(IAuthRepository authRepo)
+    public AuthController(IIdentityQueries identityQueries, IIdentityCommands identityCommands)
     {
-        _authRepo = authRepo;
+        _identityQueries = identityQueries;
+        _identityCommands = identityCommands;
     }
 
     [HttpPost("register")]
     public async Task<ActionResult<Result<string>>> RegisterUser(RegisterDto request)
     {
-        var result = await _authRepo.Register(request);
-        if (!result.Success)
-        {
-            return BadRequest(result);
-        }
-        return Ok(result);
+        var result = await _identityCommands.Add(request);
+        return result.ToActionResult();
     }
-    
-    [HttpPost("login")]
-    public async Task<ActionResult<Result<int>>> Login(LoginDto request)
-    {
-        var result = await _authRepo.Login(request.Email, request.Password);
-        if (!result.Success)
-        {
-            return BadRequest(result);
-        }
 
-        return Ok(result);
+    [HttpPost("login")]
+    public async Task<ActionResult<Result<string>>> Login(LoginDto request)
+    {
+        var result = await _identityCommands.Login(request.Email, request.Password);
+        return result.ToActionResult();
     }
-    
+
     [HttpGet("roles")]
     public async Task<ActionResult<Result<List<RolesDto>>>> GetRoles()
     {
-        var result = await _authRepo.GetRoles();
-        if (!result.Success)
-        {
-            return BadRequest(result);
-        }
-
-        return Ok(result);
+        var result = await _identityQueries.GetRoles();
+        return result.ToActionResult();
     }
 }

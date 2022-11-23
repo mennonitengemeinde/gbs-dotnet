@@ -1,0 +1,162 @@
+﻿@page "/admin/lessons/create"
+@page "/admin/lessons/{Id:int}/edit"
+@attribute [Authorize(Policy = Policies.RequireAdminsAndSound)]
+@using Gbs.Shared.Enums
+@implements IDisposable
+
+@inject NavigationManager NavigationManager
+@inject IGenerationStore GenerationStore
+@inject ISubjectStore SubjectStore
+@inject ILessonStore LessonStore
+@inject ITeacherStore TeacherStore
+@inject IUiService UiService
+
+<PageTitle>Lessons Form - GBS</PageTitle>
+
+<EditForm Model="_model" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <MudGrid Justify="Justify.Center" Class="tw-pt-8">
+        <MudItem xs="12" sm="8" md="5">
+            <MatFormCard Label="Lesson"
+                         IsEdit="@_isEdit"
+                         IsLoading="@LessonStore.IsLoading"
+                         ReturnUrl="/admin/lessons" 
+                         IsProcessing="false">
+                <MudTextField Label="Name"
+                              @bind-Value="_model.Name"
+                              For="() => _model.Name"
+                              OnlyValidateIfDirty="true"/>
+                <MudTextField Label="VideoUrl"
+                              @bind-Value="_model.VideoUrl"
+                              For="() => _model.VideoUrl"
+                              OnlyValidateIfDirty="true" />
+                <div class="tw-flex tw-items-center">
+                    <MudSelect Label="Generation"
+                               AnchorOrigin="Origin.BottomCenter"
+                               Disabled="@GenerationStore.IsLoading"
+                               For="@(() => _model.GenerationId)"
+                               @bind-Value="_model.GenerationId">
+                        <MudSelectItem Disabled="true" T="int" Value="0">Select Generation</MudSelectItem>
+                        @foreach (var item in GenerationStore.Data)
+                        {
+                            <MudSelectItem T="int" Value="@item.Id">@item.Name</MudSelectItem>
+                        }
+                    </MudSelect>
+                    @if (GenerationStore.IsLoading)
+                    {
+                        <MudProgressCircular Color="Color.Default" Indeterminate="true" Size="Size.Small" Class="tw-ml-4" />
+                    }
+                </div>
+                <div class="tw-flex tw-items-end">
+                    <MudSelect Label="Subject"
+                               AnchorOrigin="Origin.BottomCenter"
+                               Disabled="@SubjectStore.IsLoading"
+                               For="@(() => _model.SubjectId)"
+                               @bind-Value="_model.SubjectId">
+                        <MudSelectItem Disabled="true" T="int" Value="0">Select Subject</MudSelectItem>
+                        @foreach (var item in SubjectStore.Data)
+                        {
+                            <MudSelectItem T="int" Value="@item.Id">@item.Name</MudSelectItem>
+                        }
+                    </MudSelect>
+                    @if (SubjectStore.IsLoading)
+                    {
+                        <MudProgressCircular Color="Color.Default" Indeterminate="true" Size="Size.Small" Class="tw-ml-4 tw-mb-1" />
+                    }
+                </div>
+                <div class="tw-flex tw-items-end">
+                    <MudSelect Label="Teacher"
+                               AnchorOrigin="Origin.BottomCenter"
+                               Disabled="@TeacherStore.IsLoading"
+                               For="@(() => _model.TeacherId)"
+                               @bind-Value="_model.TeacherId">
+                        <MudSelectItem Disabled="true" T="int" Value="0">Select Teacher</MudSelectItem>
+                        @foreach (var item in TeacherStore.Data)
+                        {
+                            <MudSelectItem T="int" Value="@item.Id">@item.Name</MudSelectItem>
+                        }
+                    </MudSelect>
+                    @if (SubjectStore.IsLoading)
+                    {
+                        <MudProgressCircular Color="Color.Default" Indeterminate="true" Size="Size.Small" Class="tw-ml-4 tw-mb-1" />
+                    }
+                </div>
+                <MudRadioGroup T="Visibility" @bind-SelectedOption="@_model.IsVisible">
+                    @foreach (var item in Enum.GetValues(typeof(Visibility)).Cast<Visibility>())
+                    {
+                        <MudRadio T="Visibility" Color="Color.Primary" Option="@item">@item.ToString()</MudRadio>
+                    }
+                </MudRadioGroup>
+            </MatFormCard>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+
+@code {
+    LessonCreateDto _model = new();
+    bool _isEdit;
+
+    [CascadingParameter]
+    CascadingUiState UiState { get; set; } = null!;
+    
+    [Parameter]
+    public int? Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.WhenAll(SubjectStore.Fetch(), GenerationStore.Fetch(), TeacherStore.Fetch());
+
+        if (Id.HasValue)
+        {
+            _isEdit = true;
+            var lesson = await LessonStore.GetById(Id.Value);
+            if (lesson != null)
+            {
+                _model = new LessonCreateDto
+                {
+                    Name = lesson.Name,
+                    VideoUrl = lesson.VideoUrl,
+                    IsVisible = lesson.IsVisible,
+                    GenerationId = lesson.GenerationId,
+                    SubjectId = lesson.SubjectId,
+                    TeacherId = lesson.TeacherId
+                };
+            }
+        }
+
+        SubjectStore.OnChange += StateHasChanged;
+        GenerationStore.OnChange += StateHasChanged;
+        LessonStore.OnChange += StateHasChanged;
+        TeacherStore.OnChange += StateHasChanged;
+    }
+
+    async Task HandleValidSubmit()
+    {
+        UiState.IsPageLoading = true;
+        if (_isEdit)
+        {
+            await LessonStore.Update(Id!.Value, _model);
+        }
+        else
+        {
+            await LessonStore.Add(_model);
+        }
+
+        if (!LessonStore.HasError)
+        {
+            UiState.IsPageLoading = false;
+            UiService.ShowSuccessAlert("Lesson added successfully");
+            NavigationManager.NavigateTo("admin/lessons");
+        }
+        UiState.IsPageLoading = false;
+    }
+
+    public void Dispose()
+    {
+        SubjectStore.OnChange -= StateHasChanged;
+        GenerationStore.OnChange -= StateHasChanged;
+        LessonStore.OnChange -= StateHasChanged;
+        TeacherStore.OnChange -= StateHasChanged;
+    }
+
+}

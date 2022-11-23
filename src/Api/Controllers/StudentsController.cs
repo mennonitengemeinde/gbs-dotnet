@@ -5,38 +5,42 @@ namespace Gbs.Api.Controllers;
 [Authorize(Policy = Policies.RequireAdminsAndTeachers)]
 public class StudentsController : ControllerBase
 {
-    private readonly IStudentRepository _studentRepo;
+    private readonly IStudentQueries _studentQueries;
+    private readonly IStudentCommands _studentCommands;
 
-    public StudentsController(IStudentRepository studentRepo)
+    public StudentsController(
+        IStudentQueries studentQueries,
+        IStudentCommands studentCommands)
     {
-        _studentRepo = studentRepo;
+        _studentQueries = studentQueries;
+        _studentCommands = studentCommands;
     }
 
     [HttpGet]
     public async Task<ActionResult<Result<List<StudentDto>>>> GetAllStudents()
     {
-        var students = await _studentRepo.GetStudents();
-        return Ok(students);
+        var result = await _studentQueries.GetAll();
+        return result.ToActionResult();
     }
 
     [HttpGet("{id:int}")]
     public async Task<ActionResult<Result<StudentDto>>> GetStudentById(int id)
     {
-        var student = await _studentRepo.GetStudentById(id);
-        return student.Success ? Ok(student) : NotFound(student);
+        var result = await _studentQueries.GetById(id);
+        return result.ToActionResult();
     }
 
     [HttpPost]
-    public async Task<ActionResult<Result<List<StudentDto>>>> AddStudent(StudentCreateDto student)
+    public async Task<ActionResult<Result<StudentDto>>> AddStudent(StudentCreateDto student)
     {
-        var newStudent = await _studentRepo.AddStudent(student);
-        return newStudent.Success ? Ok(newStudent) : BadRequest(newStudent);
+        var result = await _studentCommands.Add(student);
+        return result.ToActionResult();
     }
 
     [HttpPut("{id:int}")]
-    public async Task<ActionResult<Result<List<StudentDto>>>> UpdateStudent(int id, StudentCreateDto student)
+    public async Task<ActionResult<Result<StudentDto>>> UpdateStudent(int id, StudentCreateDto student)
     {
-        var updatedStudent = await _studentRepo.UpdateStudent(id, student);
-        return updatedStudent.Success ? Ok(updatedStudent) : BadRequest(updatedStudent);
+        var result = await _studentCommands.Update(id, student);
+        return result.ToActionResult();
     }
 }

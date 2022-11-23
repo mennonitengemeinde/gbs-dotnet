@@ -1,4 +1,6 @@
-﻿namespace Gbs.Infrastructure.Persistence.Configurations;
+﻿using Gbs.Application.Common.Entities;
+
+namespace Gbs.Infrastructure.Persistence.Configurations;
 
 public class TeacherConfiguration : IEntityTypeConfiguration<Teacher>
 {

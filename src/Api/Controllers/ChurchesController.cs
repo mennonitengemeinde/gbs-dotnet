@@ -5,70 +5,47 @@ namespace Gbs.Api.Controllers;
 [Authorize(Policy = Policies.RequireAdmins)]
 public class ChurchesController : ControllerBase
 {
-    private readonly IChurchRepository _churchRepo;
+    private readonly IChurchQueries _churchQueries;
+    private readonly IChurchCommands _churchCommands;
 
-    public ChurchesController(IChurchRepository churchRepo)
+    public ChurchesController(IChurchQueries churchQueries, IChurchCommands churchCommands)
     {
-        _churchRepo = churchRepo;
+        _churchQueries = churchQueries;
+        _churchCommands = churchCommands;
     }
 
     [HttpGet]
     public async Task<ActionResult<Result<List<ChurchDto>>>> GetChurches()
     {
-        var response = await _churchRepo.GetAllChurches();
-        if (!response.Success)
-        {
-            return BadRequest(response);
-        }
-
-        return Ok(response);
+        var result = await _churchQueries.GetAll();
+        return result.ToActionResult();
     }
 
     [HttpGet("{churchId:int}")]
     public async Task<ActionResult<Result<ChurchDto>>> GetChurch(int churchId)
     {
-        var response = await _churchRepo.GetChurchById(churchId);
-        if (!response.Success)
-        {
-            return BadRequest(response);
-        }
-
-        return Ok(response);
+        var result = await _churchQueries.GetById(churchId);
+        return result.ToActionResult();
     }
 
     [HttpPost]
     public async Task<ActionResult<Result<ChurchDto>>> AddChurch(ChurchCreateDto church)
     {
-        var response = await _churchRepo.AddChurch(church);
-        if (!response.Success)
-        {
-            return BadRequest(response);
-        }
-
-        return Ok(response);
+        var result = await _churchCommands.Add(church);
+        return result.ToActionResult();
     }
 
     [HttpPut("{churchId:int}")]
     public async Task<ActionResult<Result<ChurchDto>>> UpdateChurch(int churchId, ChurchCreateDto church)
     {
-        var response = await _churchRepo.UpdateChurch(churchId, church);
-        if (!response.Success)
-        {
-            return BadRequest(response);
-        }
-
-        return Ok(response);
+        var result = await _churchCommands.Update(churchId, church);
+        return result.ToActionResult();
     }
 
     [HttpDelete("{churchId:int}")]
-    public async Task<ActionResult<Result<List<ChurchDto>>>> DeleteChurch(int churchId)
+    public async Task<ActionResult<Result<bool>>> DeleteChurch(int churchId)
     {
-        var response = await _churchRepo.DeleteChurch(churchId);
-        if (!response.Success)
-        {
-            return BadRequest(response);
-        }
-
-        return Ok(response);
+        var result = await _churchCommands.Delete(churchId);
+        return result.ToActionResult();
     }
 }

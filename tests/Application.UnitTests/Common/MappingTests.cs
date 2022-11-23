@@ -1,7 +1,11 @@
 ﻿using System.Runtime.Serialization;
-using AutoMapper;
+using Gbs.Application.Common.Entities;
+using Gbs.Shared.Dto.Identity;
+using Gbs.Shared.Dto.Lessons;
+using Gbs.Shared.Dto.Streams;
+using Gbs.Shared.Dto.Subjects;
 
-namespace Gbs.Application.UnitTests.Common;
+namespace Gbs.Tests.Application.UnitTests.Common;
 
 public class MappingTests
 {
@@ -25,8 +29,18 @@ public class MappingTests
     [InlineData(typeof(Student), typeof(StudentDto))]
     [InlineData(typeof(Generation), typeof(GenerationDto))]
     [InlineData(typeof(Grade), typeof(GradeDto))]
+    [InlineData(typeof(Lesson), typeof(LessonDto))]
+    [InlineData(typeof(LessonCreateDto), typeof(Lesson))]
+    [InlineData(typeof(Lesson), typeof(SubjectLessonDto))]
+    [InlineData(typeof(LiveStream), typeof(StreamDto))]
+    [InlineData(typeof(LiveStreamTeacher), typeof(TeacherDto))]
+    [InlineData(typeof(StreamCreateDto), typeof(LiveStream))]
     [InlineData(typeof(StudentCreateDto), typeof(Student))]
+    [InlineData(typeof(Subject), typeof(SubjectDto))]
+    [InlineData(typeof(SubjectCreateDto), typeof(Subject))]
     [InlineData(typeof(Teacher), typeof(TeacherDto))]
+    [InlineData(typeof(User), typeof(UserDto))]
+    [InlineData(typeof(RegisterDto), typeof(User))]
     public void ShouldSupportMappingFromSourceToDestination(Type source, Type destination)
     {
         var configuration = new MapperConfiguration(config => 

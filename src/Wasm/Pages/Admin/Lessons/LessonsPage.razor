@@ -1,0 +1,56 @@
+﻿@page "/admin/lessons"
+@attribute [Authorize(Policy = Policies.RequireAdminsAndSound)]
+@using Gbs.Wasm.Pages.Admin.Lessons.Components
+@implements IDisposable
+
+@inject ILessonStore LessonStore
+
+<PageTitle>Lessons - GBS</PageTitle>
+
+<div class="tw-py-4 tw-space-y-4">
+    <MudText Typo="Typo.h4">Lessons</MudText>
+    <MudButton StartIcon="@Icons.Filled.Add" Color="Color.Primary" Variant="Variant.Filled" Href="/admin/lessons/create">
+        New
+    </MudButton>
+</div>
+
+<MudHidden Breakpoint="Breakpoint.MdAndUp">
+    <div class="tw-space-y-4">
+        <MobileLessonList Lessons="LessonStore.Data"
+                          IsLoading="LessonStore.IsLoading"
+                          MoveLessonDown="MoveLessonDown"
+                          MoveLessonUp="MoveLessonUp" />
+    </div>
+</MudHidden>
+
+<MudHidden Breakpoint="Breakpoint.SmAndDown">
+    <LessonsTable Lessons="LessonStore.Data"
+                  IsLoading="LessonStore.IsLoading"
+                  MoveLessonDown="MoveLessonDown"
+                  MoveLessonUp="MoveLessonUp" />
+</MudHidden>
+
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LessonStore.ForceFetch();
+        LessonStore.OnChange += StateHasChanged;
+    }
+
+    private async Task MoveLessonUp(LessonDto lesson)
+    {
+        await LessonStore.UpdateOrder(lesson.Id, lesson.Order - 1);
+    }
+
+    private async Task MoveLessonDown(LessonDto lesson)
+    {
+        await LessonStore.UpdateOrder(lesson.Id, lesson.Order + 1);
+    }
+
+    public void Dispose()
+    {
+        LessonStore.OnChange -= StateHasChanged;
+    }
+
+}

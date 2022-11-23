@@ -2,22 +2,30 @@ namespace Gbs.Application.Generations;
 
 public class GenerationQueries : IGenerationQueries
 {
-    private readonly IGenerationRepository _generationRepo;
+    private readonly IGbsDbContext _context;
+    private readonly IMapper _mapper;
 
-    public GenerationQueries(IGenerationRepository generationRepo)
+    public GenerationQueries(IGbsDbContext context, IMapper mapper)
     {
-        _generationRepo = generationRepo;
+        _context = context;
+        _mapper = mapper;
     }
 
     public async Task<Result<List<GenerationDto>>> GetAll()
     {
-        var response = await _generationRepo.GetAllGenerations();
+        var response = await _context.Generations
+            .ProjectTo<GenerationDto>(_mapper.ConfigurationProvider)
+            .ToListAsync();
         return Result.Ok(response);
     }
 
     public async Task<Result<GenerationDto>> GetById(int id)
     {
-        var response = await _generationRepo.GetGenerationById(id);
+        var response = await _context.Generations
+            .Where(g => g.Id == id)
+            .ProjectTo<GenerationDto>(_mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync();
+
         return response == null
             ? Result.NotFound<GenerationDto>("Generation not found")
             : Result.Ok(response);

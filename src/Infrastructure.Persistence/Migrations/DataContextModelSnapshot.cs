@@ -22,431 +22,7 @@ namespace Gbs.Infrastructure.Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Gbs.Domain.Entities.Church", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Address")
-                        .HasColumnType("text");
-
-                    b.Property<string>("City")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Country")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("PostalCode")
-                        .HasColumnType("text");
-
-                    b.Property<string>("State")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Churches");
-                });
-
-            modelBuilder.Entity("Gbs.Domain.Entities.Enrollment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("AgreedToGbsConcept")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateOnly?>("CompletionDate")
-                        .HasColumnType("date");
-
-                    b.Property<DateOnly>("EnrollmentDate")
-                        .HasColumnType("date");
-
-                    b.Property<int>("GenerationId")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("HasCompleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
-                    b.Property<int>("StudentId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Testimony")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GenerationId");
-
-                    b.HasIndex("StudentId");
-
-                    b.ToTable("Enrollments");
-                });
-
-            modelBuilder.Entity("Gbs.Domain.Entities.Generation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Generations");
-                });
-
-            modelBuilder.Entity("Gbs.Domain.Entities.Grade", b =>
-                {
-                    b.Property<int>("SubjectId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("EnrollmentId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateOnly>("Date")
-                        .HasColumnType("date");
-
-                    b.Property<int>("Percent")
-                        .HasColumnType("integer");
-
-                    b.HasKey("SubjectId", "EnrollmentId");
-
-                    b.HasIndex("EnrollmentId");
-
-                    b.ToTable("Grades");
-                });
-
-            modelBuilder.Entity("Gbs.Domain.Entities.Lesson", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("SubjectId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("TeacherId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SubjectId");
-
-                    b.HasIndex("TeacherId");
-
-                    b.ToTable("Lessons");
-                });
-
-            modelBuilder.Entity("Gbs.Domain.Entities.LiveStream", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("GenerationId")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("IsLive")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("character varying(150)");
-
-                    b.Property<string>("Url")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GenerationId");
-
-                    b.ToTable("Streams");
-                });
-
-            modelBuilder.Entity("Gbs.Domain.Entities.LiveStreamTeacher", b =>
-                {
-                    b.Property<int>("LiveStreamId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("TeacherId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("LiveStreamId", "TeacherId");
-
-                    b.HasIndex("TeacherId");
-
-                    b.ToTable("StreamTeachers");
-                });
-
-            modelBuilder.Entity("Gbs.Domain.Entities.Message", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<int>("MessageType")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("QuestionId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Timezone")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("QuestionId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Messages");
-                });
-
-            modelBuilder.Entity("Gbs.Domain.Entities.Question", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("ClosedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<bool>("IsClosed")
-                        .HasColumnType("boolean");
-
-                    b.Property<int?>("SubjectId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Timezone")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SubjectId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Questions");
-                });
-
-            modelBuilder.Entity("Gbs.Domain.Entities.Student", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<int>("ChurchId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<string>("Country")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<int>("MaritalStatus")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("Phone")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<string>("PostalCode")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("character varying(10)");
-
-                    b.Property<string>("State")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ChurchId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Students");
-                });
-
-            modelBuilder.Entity("Gbs.Domain.Entities.Subject", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Subjects");
-                });
-
-            modelBuilder.Entity("Gbs.Domain.Entities.SubjectDocument", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("SubjectDocumentType")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("SubjectId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SubjectId");
-
-                    b.ToTable("SubjectDocuments");
-                });
-
-            modelBuilder.Entity("Gbs.Domain.Entities.Teacher", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("Teachers");
-                });
-
-            modelBuilder.Entity("Gbs.Domain.Entities.WatchList", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
-
-                    b.Property<int>("QuestionId")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("IsAnswered")
-                        .HasColumnType("boolean");
-
-                    b.HasKey("UserId", "QuestionId");
-
-                    b.ToTable("WatchLists");
-                });
-
-            modelBuilder.Entity("Gbs.Infrastructure.Persistence.Identity.Role", b =>
+            modelBuilder.Entity("Gbs.Application.Common.Entities.Role", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -523,7 +99,7 @@ namespace Gbs.Infrastructure.Persistence.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Gbs.Infrastructure.Persistence.Identity.User", b =>
+            modelBuilder.Entity("Gbs.Application.Common.Entities.User", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -615,7 +191,7 @@ namespace Gbs.Infrastructure.Persistence.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("Gbs.Infrastructure.Persistence.Identity.UserRole", b =>
+            modelBuilder.Entity("Gbs.Application.Common.Entities.UserRole", b =>
                 {
                     b.Property<string>("UserId")
                         .HasColumnType("text");
@@ -628,6 +204,444 @@ namespace Gbs.Infrastructure.Persistence.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Gbs.Domain.Entities.Church", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .HasColumnType("text");
+
+                    b.Property<string>("City")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Country")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PostalCode")
+                        .HasColumnType("text");
+
+                    b.Property<string>("State")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Churches", (string)null);
+                });
+
+            modelBuilder.Entity("Gbs.Domain.Entities.Enrollment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("AgreedToGbsConcept")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateOnly?>("CompletionDate")
+                        .HasColumnType("date");
+
+                    b.Property<DateOnly>("EnrollmentDate")
+                        .HasColumnType("date");
+
+                    b.Property<int>("GenerationId")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("HasCompleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Testimony")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GenerationId");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("Enrollments", (string)null);
+                });
+
+            modelBuilder.Entity("Gbs.Domain.Entities.Generation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Generations", (string)null);
+                });
+
+            modelBuilder.Entity("Gbs.Domain.Entities.Grade", b =>
+                {
+                    b.Property<int>("SubjectId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("EnrollmentId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("date");
+
+                    b.Property<int>("Percent")
+                        .HasColumnType("integer");
+
+                    b.HasKey("SubjectId", "EnrollmentId");
+
+                    b.HasIndex("EnrollmentId");
+
+                    b.ToTable("Grades", (string)null);
+                });
+
+            modelBuilder.Entity("Gbs.Domain.Entities.Lesson", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("GenerationId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("IsVisible")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("SubjectId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TeacherId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("VideoUrl")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GenerationId");
+
+                    b.HasIndex("SubjectId");
+
+                    b.HasIndex("TeacherId");
+
+                    b.ToTable("Lessons", (string)null);
+                });
+
+            modelBuilder.Entity("Gbs.Domain.Entities.LiveStream", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("GenerationId")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsLive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GenerationId");
+
+                    b.ToTable("Streams", (string)null);
+                });
+
+            modelBuilder.Entity("Gbs.Domain.Entities.LiveStreamTeacher", b =>
+                {
+                    b.Property<int>("LiveStreamId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TeacherId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("LiveStreamId", "TeacherId");
+
+                    b.HasIndex("TeacherId");
+
+                    b.ToTable("StreamTeachers", (string)null);
+                });
+
+            modelBuilder.Entity("Gbs.Domain.Entities.Message", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("MessageType")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("QuestionId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Timezone")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QuestionId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Messages", (string)null);
+                });
+
+            modelBuilder.Entity("Gbs.Domain.Entities.Question", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("ClosedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("IsClosed")
+                        .HasColumnType("boolean");
+
+                    b.Property<int?>("SubjectId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Timezone")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SubjectId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Questions", (string)null);
+                });
+
+            modelBuilder.Entity("Gbs.Domain.Entities.Student", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<int>("ChurchId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("Country")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime>("DateOfBirth")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<int>("MaritalStatus")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("PostalCode")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
+
+                    b.Property<string>("State")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChurchId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Students", (string)null);
+                });
+
+            modelBuilder.Entity("Gbs.Domain.Entities.Subject", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Subjects", (string)null);
+                });
+
+            modelBuilder.Entity("Gbs.Domain.Entities.SubjectDocument", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("SubjectDocumentType")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("SubjectId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SubjectId");
+
+                    b.ToTable("SubjectDocuments", (string)null);
+                });
+
+            modelBuilder.Entity("Gbs.Domain.Entities.Teacher", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Teachers", (string)null);
+                });
+
+            modelBuilder.Entity("Gbs.Domain.Entities.WatchList", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
+
+                    b.Property<int>("QuestionId")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsAnswered")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("UserId", "QuestionId");
+
+                    b.ToTable("WatchLists", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.DataProtection.EntityFrameworkCore.DataProtectionKey", b =>
@@ -646,7 +660,7 @@ namespace Gbs.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DataProtectionKeys");
+                    b.ToTable("DataProtectionKeys", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -744,6 +758,40 @@ namespace Gbs.Infrastructure.Persistence.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Gbs.Application.Common.Entities.User", b =>
+                {
+                    b.HasOne("Gbs.Domain.Entities.Church", "Church")
+                        .WithMany()
+                        .HasForeignKey("ChurchId");
+
+                    b.HasOne("Gbs.Domain.Entities.Teacher", "Teacher")
+                        .WithOne()
+                        .HasForeignKey("Gbs.Application.Common.Entities.User", "TeacherId");
+
+                    b.Navigation("Church");
+
+                    b.Navigation("Teacher");
+                });
+
+            modelBuilder.Entity("Gbs.Application.Common.Entities.UserRole", b =>
+                {
+                    b.HasOne("Gbs.Application.Common.Entities.Role", "Role")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Gbs.Application.Common.Entities.User", "User")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Gbs.Domain.Entities.Enrollment", b =>
                 {
                     b.HasOne("Gbs.Domain.Entities.Generation", "Generation")
@@ -782,6 +830,12 @@ namespace Gbs.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Gbs.Domain.Entities.Lesson", b =>
                 {
+                    b.HasOne("Gbs.Domain.Entities.Generation", "Generation")
+                        .WithMany("Lessons")
+                        .HasForeignKey("GenerationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Gbs.Domain.Entities.Subject", "Subject")
                         .WithMany("Lessons")
                         .HasForeignKey("SubjectId")
@@ -789,10 +843,12 @@ namespace Gbs.Infrastructure.Persistence.Migrations
                         .IsRequired();
 
                     b.HasOne("Gbs.Domain.Entities.Teacher", "Teacher")
-                        .WithMany()
+                        .WithMany("Lessons")
                         .HasForeignKey("TeacherId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Generation");
 
                     b.Navigation("Subject");
 
@@ -837,7 +893,7 @@ namespace Gbs.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Gbs.Infrastructure.Persistence.Identity.User", null)
+                    b.HasOne("Gbs.Application.Common.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -852,7 +908,7 @@ namespace Gbs.Infrastructure.Persistence.Migrations
                         .WithMany("Questions")
                         .HasForeignKey("SubjectId");
 
-                    b.HasOne("Gbs.Infrastructure.Persistence.Identity.User", null)
+                    b.HasOne("Gbs.Application.Common.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -867,7 +923,7 @@ namespace Gbs.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Gbs.Infrastructure.Persistence.Identity.User", null)
+                    b.HasOne("Gbs.Application.Common.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId");
 
@@ -887,48 +943,14 @@ namespace Gbs.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Gbs.Domain.Entities.Teacher", b =>
                 {
-                    b.HasOne("Gbs.Infrastructure.Persistence.Identity.User", null)
+                    b.HasOne("Gbs.Application.Common.Entities.User", null)
                         .WithOne()
                         .HasForeignKey("Gbs.Domain.Entities.Teacher", "UserId");
                 });
 
-            modelBuilder.Entity("Gbs.Infrastructure.Persistence.Identity.User", b =>
-                {
-                    b.HasOne("Gbs.Domain.Entities.Church", "Church")
-                        .WithMany()
-                        .HasForeignKey("ChurchId");
-
-                    b.HasOne("Gbs.Domain.Entities.Teacher", "Teacher")
-                        .WithOne()
-                        .HasForeignKey("Gbs.Infrastructure.Persistence.Identity.User", "TeacherId");
-
-                    b.Navigation("Church");
-
-                    b.Navigation("Teacher");
-                });
-
-            modelBuilder.Entity("Gbs.Infrastructure.Persistence.Identity.UserRole", b =>
-                {
-                    b.HasOne("Gbs.Infrastructure.Persistence.Identity.Role", "Role")
-                        .WithMany("UserRoles")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Gbs.Infrastructure.Persistence.Identity.User", "User")
-                        .WithMany("UserRoles")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Role");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.HasOne("Gbs.Infrastructure.Persistence.Identity.Role", null)
+                    b.HasOne("Gbs.Application.Common.Entities.Role", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -937,7 +959,7 @@ namespace Gbs.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Gbs.Infrastructure.Persistence.Identity.User", null)
+                    b.HasOne("Gbs.Application.Common.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -946,7 +968,7 @@ namespace Gbs.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Gbs.Infrastructure.Persistence.Identity.User", null)
+                    b.HasOne("Gbs.Application.Common.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -955,11 +977,21 @@ namespace Gbs.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Gbs.Infrastructure.Persistence.Identity.User", null)
+                    b.HasOne("Gbs.Application.Common.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Gbs.Application.Common.Entities.Role", b =>
+                {
+                    b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("Gbs.Application.Common.Entities.User", b =>
+                {
+                    b.Navigation("UserRoles");
                 });
 
             modelBuilder.Entity("Gbs.Domain.Entities.Church", b =>
@@ -975,6 +1007,8 @@ namespace Gbs.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("Gbs.Domain.Entities.Generation", b =>
                 {
                     b.Navigation("Enrollments");
+
+                    b.Navigation("Lessons");
                 });
 
             modelBuilder.Entity("Gbs.Domain.Entities.LiveStream", b =>
@@ -999,14 +1033,9 @@ namespace Gbs.Infrastructure.Persistence.Migrations
                     b.Navigation("Questions");
                 });
 
-            modelBuilder.Entity("Gbs.Infrastructure.Persistence.Identity.Role", b =>
+            modelBuilder.Entity("Gbs.Domain.Entities.Teacher", b =>
                 {
-                    b.Navigation("UserRoles");
-                });
-
-            modelBuilder.Entity("Gbs.Infrastructure.Persistence.Identity.User", b =>
-                {
-                    b.Navigation("UserRoles");
+                    b.Navigation("Lessons");
                 });
 #pragma warning restore 612, 618
         }

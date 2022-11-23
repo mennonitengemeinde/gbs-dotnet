@@ -1,8 +1,5 @@
-﻿@using Gbs.Wasm.Services.UiService
-@using Gbs.Wasm.Services.Api.StreamService
-
-@inject IUiService UiService
-@inject IStreamService StreamService
+﻿@inject IUiService UiService
+@inject IStreamStore StreamStore
 
 <MudCard Elevation="1">
     <MudCardHeader>
@@ -50,14 +47,10 @@
 
     async Task ToggleLive()
     {
-        var result = await StreamService.ToggleLive(LiveStream.Id);
-        if (result.Success)
+        await StreamStore.ToggleLive(LiveStream.Id);
+        if (StreamStore.HasError)
         {
-            await StreamService.LoadStreams();
-        }
-        else
-        {
-            await UiService.ShowErrorAlert(result.Message, result.StatusCode);
+            StreamStore.ClearErrors();
         }
     }
 
