@@ -27,6 +27,9 @@
 
 @code {
 
+    [CascadingParameter]
+    CascadingUiState UiState { get; set; } = null!;
+
     protected override async Task OnInitializedAsync()
     {
         await StreamStore.Fetch();
@@ -35,7 +38,7 @@
     
     protected override void OnAfterRender(bool firstRender)
     {
-        UiService.Loading = StreamStore.IsLoading;
+        UiState.IsPageLoading = StreamStore.IsLoading;
     }
 
     async Task HandleDelete(StreamDto stream)
@@ -53,7 +56,6 @@
 
     async Task DeleteStream(StreamDto stream)
     {
-        // UiService.LoadingStart();
         await StreamStore.Delete(stream.Id);
         if (!StreamStore.HasError)
         {

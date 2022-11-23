@@ -96,6 +96,9 @@
     LessonCreateDto _model = new();
     bool _isEdit;
 
+    [CascadingParameter]
+    CascadingUiState UiState { get; set; } = null!;
+    
     [Parameter]
     public int? Id { get; set; }
 
@@ -129,7 +132,7 @@
 
     async Task HandleValidSubmit()
     {
-        UiService.Loading = true;
+        UiState.IsPageLoading = true;
         if (_isEdit)
         {
             await LessonStore.Update(Id!.Value, _model);
@@ -141,11 +144,11 @@
 
         if (!LessonStore.HasError)
         {
-            UiService.Loading = false;
+            UiState.IsPageLoading = false;
             UiService.ShowSuccessAlert("Lesson added successfully");
             NavigationManager.NavigateTo("admin/lessons");
         }
-        UiService.Loading = false;
+        UiState.IsPageLoading = false;
     }
 
     public void Dispose()

@@ -1,8 +1,5 @@
-﻿@implements IDisposable
-@inject IUiService UiService
-
-<div class="tw-h-2 tw-mb-4">
-    @if (UiService.Loading)
+﻿<div class="tw-h-2 tw-mb-4">
+    @if (UiState.IsPageLoading)
     {
         <MudProgressLinear Color="Color.Secondary" Indeterminate="true" />
     }
@@ -10,15 +7,7 @@
 
 @code {
 
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-        UiService.LoadingChanged += StateHasChanged;
-    }
-
-    public void Dispose()
-    {
-        UiService.LoadingChanged -= StateHasChanged;
-    }
+    [CascadingParameter]
+    CascadingUiState UiState { get; set; } = null!;
 
 }

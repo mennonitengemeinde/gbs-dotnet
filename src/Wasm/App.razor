@@ -1,20 +1,21 @@
-﻿<Fluxor.Blazor.Web.StoreInitializer />
-<CascadingAuthenticationState>
-    <Router AppAssembly="@typeof(App).Assembly">
-        <Found Context="routeData">
-            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
-                <NotAuthorized>
-                    <h3 class="text-2xl font-bold">Whoops! You're not allowed to see this page.</h3>
-                    <h5 class="text-lg">Please <a href="login" class="link text-info">login</a> or <a href="register" class="link text-info">register</a> a new account</h5>
-                </NotAuthorized>
-            </AuthorizeRouteView>
-            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
-        </Found>
-        <NotFound>
-            <PageTitle>Not found</PageTitle>
-            <LayoutView Layout="@typeof(MainLayout)">
-                <p role="alert">Sorry, there's nothing at this address.</p>
-            </LayoutView>
-        </NotFound>
-    </Router>
+﻿<CascadingAuthenticationState>
+    <CascadingUiState>
+        <Router AppAssembly="@typeof(App).Assembly">
+            <Found Context="routeData">
+                <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                    <NotAuthorized>
+                        <h3 class="text-2xl font-bold">Whoops! You're not allowed to see this page.</h3>
+                        <h5 class="text-lg">Please <a href="login" class="link text-info">login</a> or <a href="register" class="link text-info">register</a> a new account</h5>
+                    </NotAuthorized>
+                </AuthorizeRouteView>
+                <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+            </Found>
+            <NotFound>
+                <PageTitle>Not found</PageTitle>
+                <LayoutView Layout="@typeof(MainLayout)">
+                    <p role="alert">Sorry, there's nothing at this address.</p>
+                </LayoutView>
+            </NotFound>
+        </Router>
+    </CascadingUiState>
 </CascadingAuthenticationState>

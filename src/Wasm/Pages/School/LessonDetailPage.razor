@@ -1,44 +1,44 @@
-﻿@page "/school/{Id:int}/live"
+﻿@page "/school/lessons/{id:int}"
 @attribute [Authorize(Policy = Policies.RequireAdminsSoundAndTeachers)]
 @using Gbs.Wasm.Pages.School.Components
 
-@inject IStreamStore StreamStore
+@inject ILessonStore LessonStore
 @inject NavigationManager NavigationManager
 
-<PageTitle>Live - GBS</PageTitle>
+<PageTitle>Lesson - GBS</PageTitle>
 
-@if (LiveStream != null)
+@if (Lesson != null)
 {
-    <LiveVideoPlayer Url="@LiveStream.Url" Title="@LiveStream.Title" GenerationName="@LiveStream.GenerationName" />
+    <LiveVideoPlayer Url="@Lesson.VideoUrl" Title="@Lesson.Name" GenerationName="@Lesson.SubjectName" />
 }
 
 @code {
-
+    
     [CascadingParameter]
     CascadingUiState UiState { get; set; } = null!;
-    
+
     [Parameter]
     public int Id { get; set; }
 
     [Parameter]
-    public StreamDto? LiveStream { get; set; }
+    public LessonDto? Lesson { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        var liveStream = await StreamStore.GetOnlyLiveById(Id);
-        if (liveStream == null)
+        var lesson = await LessonStore.GetById(Id);
+        if (lesson == null)
         {
             NavigationManager.NavigateTo("school");
         }
         else
         {
-            LiveStream = liveStream;
+            Lesson = lesson;
         }
     }
 
     protected override void OnAfterRender(bool firstRender)
     {
-        UiState.IsPageLoading = StreamStore.IsLoading;
+            UiState.IsPageLoading = LessonStore.IsLoading;
     }
 
 }

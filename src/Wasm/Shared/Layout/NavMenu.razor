@@ -7,7 +7,7 @@
 </MudDrawerHeader>
 <MudNavMenu Class="py-3" Color="Color.Primary">
     <AuthorizeView Policy="@Policies.RequireAdminsSoundAndTeachers">
-        <MudNavLink Href="school" Icon="@Icons.Filled.School" Match="NavLinkMatch.All">School</MudNavLink>
+        <MudNavLink Href="school" Icon="@Icons.Filled.School">School</MudNavLink>
     </AuthorizeView>
     <AuthorizeView Policy="@Policies.RequireAdminsAndTeachers">
         <MudNavLink Href="/admin/students" Icon="@Icons.Filled.People">Students</MudNavLink>

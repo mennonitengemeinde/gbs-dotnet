@@ -11,14 +11,6 @@ public class UiService : IUiService
     private readonly ILocalStorageService _localStorage;
     private readonly AuthenticationStateProvider _authenticationStateProvider;
     private readonly ISnackbar _snackbar;
-    private bool _loading = false;
-
-    public bool Loading
-    {
-        get => _loading;
-        set { _loading = value; LoadingChanged?.Invoke(); }
-    }
-
     public event Action? LoadingChanged;
 
     public UiService(NavigationManager navManager, ILocalStorageService localStorage,
@@ -44,17 +36,5 @@ public class UiService : IUiService
     public void ShowSuccessAlert(string message)
     {
         _snackbar.Add(message, Severity.Success);
-    }
-
-    public void LoadingStart()
-    {
-        Loading = true;
-        LoadingChanged?.Invoke();
-    }
-
-    public void LoadingStop()
-    {
-        Loading = false;
-        LoadingChanged?.Invoke();
     }
 }

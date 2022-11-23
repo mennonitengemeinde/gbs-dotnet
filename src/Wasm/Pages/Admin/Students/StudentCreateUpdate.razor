@@ -6,12 +6,12 @@
 @inject IStudentStore StudentStore
 @inject IChurchStore ChurchStore
 @inject IAuthService AuthService
-@inject IUiService UiService
+@* @inject IUiService UiService *@
 @inject NavigationManager NavigationManager
 
 <PageTitle>Students Form - GBS</PageTitle>
 
-@if (!UiService.Loading)
+@if (!UiState.IsPageLoading)
 {
     <EditForm Model="_model" OnValidSubmit="HandleValidSubmit">
         <DataAnnotationsValidator />
@@ -82,8 +82,10 @@
     bool _isProcessing;
     bool _isAdmin;
     bool _isEdit;
-    // IEnumerable<ChurchDto> _churches = new HashSet<ChurchDto>();
 
+    [CascadingParameter]
+    CascadingUiState UiState { get; set; } = null!;
+    
     [Parameter]
     public int? Id { get; set; }
 
@@ -103,7 +105,7 @@
 
     protected override void OnAfterRender(bool firstRender)
     {
-        // UiService.Loading = StudentChurch.IsLoading
+        UiState.IsPageLoading = StudentStore.IsLoading;
     }
 
     async Task HandleValidSubmit()
