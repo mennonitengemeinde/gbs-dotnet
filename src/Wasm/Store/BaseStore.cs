@@ -140,7 +140,7 @@ public abstract class BaseStore<T, TId, TCreate, TUpdate> : BaseStore<T, TId>, I
     protected BaseStore(HttpClient http, IDateTimeService dateTime, IUiService uiService) : base(http, dateTime,
         uiService) { }
 
-    public async Task Add(TCreate item)
+    public virtual async Task Add(TCreate item)
     {
         IsLoading = true;
         var result = await Http.PostAsJsonAsync(BaseUrl, item)

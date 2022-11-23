@@ -37,6 +37,7 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.Generation, opt => opt.Ignore())
             .ForMember(dest => dest.Subject, opt => opt.Ignore())
+            .ForMember(dest => dest.Order, opt => opt.Ignore())
             .ForMember(dest => dest.Teacher, opt => opt.Ignore());
         CreateMap<Lesson, SubjectLessonDto>();
         
@@ -73,8 +74,9 @@ public class MappingProfile : Profile
         
         // User Mapping
         CreateMap<User, UserDto>()
-            .ForMember(dest => dest.Roles, opt => opt.MapFrom(src => src.UserRoles));
+            .ForMember(dest => dest.Roles, opt => opt.MapFrom(src => src.UserRoles.Select(ur => ur.Role.Name)));
         CreateMap<RegisterDto, User>()
+            .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email))
             .ForMember(dest => dest.IsActive, opt => opt.Ignore())
             .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
             .ForMember(dest => dest.LastLogin, opt => opt.Ignore())
@@ -84,7 +86,6 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.Church, opt => opt.Ignore())
             .ForMember(dest => dest.UserRoles, opt => opt.Ignore())
             .ForMember(dest => dest.Id, opt => opt.Ignore())
-            .ForMember(dest => dest.UserName, opt => opt.Ignore())
             .ForMember(dest => dest.NormalizedUserName, opt => opt.Ignore())
             .ForMember(dest => dest.NormalizedEmail, opt => opt.Ignore())
             .ForMember(dest => dest.EmailConfirmed, opt => opt.Ignore())
@@ -99,6 +100,5 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.AccessFailedCount, opt => opt.Ignore());
 
         // User Role Mapping
-
     }
 }

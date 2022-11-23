@@ -13,13 +13,6 @@ public class AuthController : ControllerBase
         _identityCommands = identityCommands;
     }
 
-    [HttpPost("register")]
-    public async Task<ActionResult<Result<string>>> RegisterUser(RegisterDto request)
-    {
-        var result = await _identityCommands.Add(request);
-        return result.ToActionResult();
-    }
-
     [HttpPost("login")]
     public async Task<ActionResult<Result<string>>> Login(LoginDto request)
     {

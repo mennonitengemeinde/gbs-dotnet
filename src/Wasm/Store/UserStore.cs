@@ -8,6 +8,20 @@ public class UserStore : BaseStore<UserDto, string, RegisterDto, RegisterDto>, I
     public override string BaseUrl { get; } = "api/users";
     
     public override UserDto? GetByIdQuery(string id) => Data.FirstOrDefault(u => u.Id == id);
+
+    public override async Task Add(RegisterDto item)
+    {
+        IsLoading = true;
+        var result = await Http.PostAsJsonAsync(BaseUrl, item)
+            .EnsureSuccess<string>();
+        if (!result.Success)
+        {
+            await UiService.ShowErrorAlert(result.Message, result.StatusCode);
+            HasError = true;
+            ErrorMessage = result.Message;
+            IsLoading = false;
+        }
+    }
     
     public async Task UpdateChurch(string id, UserUpdateChurchDto request)
     {

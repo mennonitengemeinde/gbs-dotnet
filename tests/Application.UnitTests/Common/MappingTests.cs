@@ -41,6 +41,7 @@ public class MappingTests
     [InlineData(typeof(Teacher), typeof(TeacherDto))]
     [InlineData(typeof(User), typeof(UserDto))]
     [InlineData(typeof(RegisterDto), typeof(User))]
+    [InlineData(typeof(UserRole), typeof(string))]
     public void ShouldSupportMappingFromSourceToDestination(Type source, Type destination)
     {
         var configuration = new MapperConfiguration(config => 

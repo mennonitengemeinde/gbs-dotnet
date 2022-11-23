@@ -5,13 +5,11 @@ namespace Gbs.Api.Controllers
     [Authorize(Policy = Policies.RequireAdmins)]
     public class UsersController : ControllerBase
     {
-        private readonly IUserRepository _userRepo;
         private readonly IIdentityQueries _identityQueries;
         private readonly IIdentityCommands _identityCommands;
 
-        public UsersController(IUserRepository userRepo, IIdentityQueries identityQueries, IIdentityCommands identityCommands)
+        public UsersController(IIdentityQueries identityQueries, IIdentityCommands identityCommands)
         {
-            _userRepo = userRepo;
             _identityQueries = identityQueries;
             _identityCommands = identityCommands;
         }
@@ -20,6 +18,14 @@ namespace Gbs.Api.Controllers
         public async Task<ActionResult<Result<List<UserDto>>>> GetUsers()
         {
             var result = await _identityQueries.GetAll();
+            return result.ToActionResult();
+        }
+        
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<ActionResult<Result<string>>> RegisterUser(RegisterDto request)
+        {
+            var result = await _identityCommands.Add(request);
             return result.ToActionResult();
         }
 
