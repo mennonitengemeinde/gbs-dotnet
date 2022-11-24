@@ -68,7 +68,7 @@
     {
         _isProcessing = true;
         await UserStore.Add(_registerDto);
-        if (UserStore.HasError)
+        if (!UserStore.HasError)
         {
             _isProcessing = false;
             NavigationManager.NavigateTo("login");
