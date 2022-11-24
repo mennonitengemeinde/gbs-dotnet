@@ -53,10 +53,10 @@
                                Disabled="@SubjectStore.IsLoading"
                                For="@(() => _model.SubjectId)"
                                @bind-Value="_model.SubjectId">
-                        <MudSelectItem Disabled="true" T="int" Value="0">Select Subject</MudSelectItem>
+                        @* <MudSelectItem Disabled="true" T="int?" Value="0">Select Subject</MudSelectItem> *@
                         @foreach (var item in SubjectStore.Data)
                         {
-                            <MudSelectItem T="int" Value="@item.Id">@item.Name</MudSelectItem>
+                            <MudSelectItem T="int?" Value="@item.Id">@item.Name</MudSelectItem>
                         }
                     </MudSelect>
                     @if (SubjectStore.IsLoading)

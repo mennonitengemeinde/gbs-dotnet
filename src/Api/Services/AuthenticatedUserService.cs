@@ -13,7 +13,7 @@ public class AuthenticatedUserService : IAuthenticatedUserService
     }
     
     public string GetUserId() =>
-        _httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
     
     public List<string> GetUserRoles() =>
         _httpContextAccessor.HttpContext!.User

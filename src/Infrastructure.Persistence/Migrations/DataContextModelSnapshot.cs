@@ -17,7 +17,7 @@ namespace Gbs.Infrastructure.Persistence.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.11")
+                .HasAnnotation("ProductVersion", "7.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -236,7 +236,7 @@ namespace Gbs.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Churches", (string)null);
+                    b.ToTable("Churches");
                 });
 
             modelBuilder.Entity("Gbs.Domain.Entities.Enrollment", b =>
@@ -278,7 +278,7 @@ namespace Gbs.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("Enrollments", (string)null);
+                    b.ToTable("Enrollments");
                 });
 
             modelBuilder.Entity("Gbs.Domain.Entities.Generation", b =>
@@ -298,7 +298,7 @@ namespace Gbs.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Generations", (string)null);
+                    b.ToTable("Generations");
                 });
 
             modelBuilder.Entity("Gbs.Domain.Entities.Grade", b =>
@@ -319,7 +319,7 @@ namespace Gbs.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("EnrollmentId");
 
-                    b.ToTable("Grades", (string)null);
+                    b.ToTable("Grades");
                 });
 
             modelBuilder.Entity("Gbs.Domain.Entities.Lesson", b =>
@@ -343,7 +343,7 @@ namespace Gbs.Infrastructure.Persistence.Migrations
                     b.Property<int>("Order")
                         .HasColumnType("integer");
 
-                    b.Property<int>("SubjectId")
+                    b.Property<int?>("SubjectId")
                         .HasColumnType("integer");
 
                     b.Property<int>("TeacherId")
@@ -360,7 +360,7 @@ namespace Gbs.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("TeacherId");
 
-                    b.ToTable("Lessons", (string)null);
+                    b.ToTable("Lessons");
                 });
 
             modelBuilder.Entity("Gbs.Domain.Entities.LiveStream", b =>
@@ -390,7 +390,7 @@ namespace Gbs.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("GenerationId");
 
-                    b.ToTable("Streams", (string)null);
+                    b.ToTable("Streams");
                 });
 
             modelBuilder.Entity("Gbs.Domain.Entities.LiveStreamTeacher", b =>
@@ -405,7 +405,7 @@ namespace Gbs.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("TeacherId");
 
-                    b.ToTable("StreamTeachers", (string)null);
+                    b.ToTable("StreamTeachers");
                 });
 
             modelBuilder.Entity("Gbs.Domain.Entities.Message", b =>
@@ -443,7 +443,7 @@ namespace Gbs.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Messages", (string)null);
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("Gbs.Domain.Entities.Question", b =>
@@ -488,7 +488,7 @@ namespace Gbs.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Questions", (string)null);
+                    b.ToTable("Questions");
                 });
 
             modelBuilder.Entity("Gbs.Domain.Entities.Student", b =>
@@ -557,7 +557,7 @@ namespace Gbs.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Students", (string)null);
+                    b.ToTable("Students");
                 });
 
             modelBuilder.Entity("Gbs.Domain.Entities.Subject", b =>
@@ -574,7 +574,7 @@ namespace Gbs.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Subjects", (string)null);
+                    b.ToTable("Subjects");
                 });
 
             modelBuilder.Entity("Gbs.Domain.Entities.SubjectDocument", b =>
@@ -602,7 +602,7 @@ namespace Gbs.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("SubjectId");
 
-                    b.ToTable("SubjectDocuments", (string)null);
+                    b.ToTable("SubjectDocuments");
                 });
 
             modelBuilder.Entity("Gbs.Domain.Entities.Teacher", b =>
@@ -625,7 +625,7 @@ namespace Gbs.Infrastructure.Persistence.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Teachers", (string)null);
+                    b.ToTable("Teachers");
                 });
 
             modelBuilder.Entity("Gbs.Domain.Entities.WatchList", b =>
@@ -641,7 +641,7 @@ namespace Gbs.Infrastructure.Persistence.Migrations
 
                     b.HasKey("UserId", "QuestionId");
 
-                    b.ToTable("WatchLists", (string)null);
+                    b.ToTable("WatchLists");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.DataProtection.EntityFrameworkCore.DataProtectionKey", b =>
@@ -660,7 +660,7 @@ namespace Gbs.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DataProtectionKeys", (string)null);
+                    b.ToTable("DataProtectionKeys");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -838,9 +838,7 @@ namespace Gbs.Infrastructure.Persistence.Migrations
 
                     b.HasOne("Gbs.Domain.Entities.Subject", "Subject")
                         .WithMany("Lessons")
-                        .HasForeignKey("SubjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SubjectId");
 
                     b.HasOne("Gbs.Domain.Entities.Teacher", "Teacher")
                         .WithMany("Lessons")

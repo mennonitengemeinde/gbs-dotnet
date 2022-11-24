@@ -11,6 +11,6 @@ public class LessonCreateDto
     public string? VideoUrl { get; set; }
     [Required] public Visibility IsVisible { get; set; }
     [Required] public int GenerationId { get; set; }
-    [Required] public int SubjectId { get; set; }
+    public int? SubjectId { get; set; }
     [Required] public int TeacherId { get; set; }
 }

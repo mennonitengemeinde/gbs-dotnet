@@ -36,7 +36,7 @@ public static class ConfigureServices
                     // ValidAudience = Configuration["JwtAudience"],
                     IssuerSigningKey =
                         new SymmetricSecurityKey(
-                            System.Text.Encoding.UTF8.GetBytes(configuration.GetSection("AppSettings:Secret").Value))
+                            System.Text.Encoding.UTF8.GetBytes(configuration.GetSection("AppSettings:Secret").Value ?? throw new InvalidOperationException()))
                 };
             });
 

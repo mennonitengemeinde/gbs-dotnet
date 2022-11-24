@@ -13,7 +13,7 @@ public class LessonCommands : ILessonCommands
 
     public async Task<Result<LessonDto>> Add(LessonCreateDto request)
     {
-        if (await NameExists(request.Name, request.SubjectId, request.GenerationId))
+        if (await NameExists(request.Name, request.GenerationId, request.SubjectId))
             return Result.BadRequest<LessonDto>("Lesson name already exists");
 
         int lastOrder;
@@ -38,7 +38,7 @@ public class LessonCommands : ILessonCommands
 
     public async Task<Result<LessonDto>> Update(int id, LessonCreateDto request)
     {
-        if (await NameExists(request.Name, request.SubjectId, request.GenerationId, id))
+        if (await NameExists(request.Name, request.GenerationId, request.SubjectId, id))
             return Result.BadRequest<LessonDto>("Lesson name already exists");
 
         var lesson = await _context.Lessons.FindAsync(id);
@@ -91,19 +91,39 @@ public class LessonCommands : ILessonCommands
         return Result.Ok(_mapper.Map<LessonDto>(lesson));
     }
 
-    private async Task<bool> NameExists(string name, int subjectId, int generationId, int? id = null)
+    private async Task<bool> NameExists(string name, int generationId, int? subjectId, int? id = null)
     {
-        return id == null
-            ? await _context.Lessons
+        if (subjectId == null)
+        {
+            if (id == null)
+            {
+                return await _context.Lessons
+                    .AnyAsync(x =>
+                        x.Name == name
+                        && x.GenerationId == generationId);
+            }
+
+            return await _context.Lessons
+                .AnyAsync(x =>
+                    x.Name == name
+                    && x.Id != id
+                    && x.GenerationId == generationId);
+        }
+
+        if (id == null)
+        {
+            return await _context.Lessons
                 .AnyAsync(x =>
                     x.Name == name
                     && x.SubjectId == subjectId
-                    && x.GenerationId == generationId)
-            : await _context.Lessons
-                .AnyAsync(x =>
-                    x.Name == name
-                    && x.SubjectId == subjectId
-                    && x.GenerationId == generationId
-                    && x.Id != id);
+                    && x.GenerationId == generationId);
+        }
+
+        return await _context.Lessons
+            .AnyAsync(x =>
+                x.Name == name
+                && x.SubjectId == subjectId
+                && x.Id != id
+                && x.GenerationId == generationId);
     }
 }

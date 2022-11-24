@@ -18,7 +18,7 @@ public class ResultExtensionsTests
 
         // Assert
         Assert.Equal(typeof(ActionResult<Result<bool>>), result.GetType());
-        Assert.Equal(typeof(OkObjectResult), result.Result.GetType());
+        Assert.Equal(typeof(OkObjectResult), result.Result?.GetType());
     }
 
     [Fact]
@@ -32,7 +32,7 @@ public class ResultExtensionsTests
 
         // Assert
         Assert.Equal(typeof(ActionResult<Result<bool>>), result.GetType());
-        Assert.Equal(typeof(BadRequestObjectResult), result.Result.GetType());
+        Assert.Equal(typeof(BadRequestObjectResult), result.Result?.GetType());
     }
 
     [Fact]
@@ -46,7 +46,7 @@ public class ResultExtensionsTests
 
         // Assert
         Assert.Equal(typeof(ActionResult<Result<bool>>), result.GetType());
-        Assert.Equal(typeof(NotFoundObjectResult), result.Result.GetType());
+        Assert.Equal(typeof(NotFoundObjectResult), result.Result?.GetType());
     }
 
     [Fact]
@@ -60,7 +60,7 @@ public class ResultExtensionsTests
 
         // Assert
         Assert.Equal(typeof(ActionResult<Result<bool>>), result.GetType());
-        Assert.Equal(typeof(ObjectResult), result.Result.GetType());
+        Assert.Equal(typeof(ObjectResult), result.Result?.GetType());
     }
 
     [Fact]
@@ -74,7 +74,7 @@ public class ResultExtensionsTests
 
         // Assert
         Assert.Equal(typeof(ActionResult<Result<bool>>), result.GetType());
-        Assert.Equal(typeof(ObjectResult), result.Result.GetType());
+        Assert.Equal(typeof(ObjectResult), result.Result?.GetType());
     }
 
     [Fact]
