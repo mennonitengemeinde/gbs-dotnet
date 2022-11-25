@@ -11,7 +11,6 @@ public class UiService : IUiService
     private readonly ILocalStorageService _localStorage;
     private readonly AuthenticationStateProvider _authenticationStateProvider;
     private readonly ISnackbar _snackbar;
-    public event Action? LoadingChanged;
 
     public UiService(NavigationManager navManager, ILocalStorageService localStorage,
         AuthenticationStateProvider authenticationStateProvider, ISnackbar snackbar)

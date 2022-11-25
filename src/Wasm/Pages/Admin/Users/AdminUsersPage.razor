@@ -74,7 +74,10 @@
         await UserStore.Fetch();
         await ChurchStore.Fetch();
         var roles = await AuthService.FetchRoles();
-        _roles = roles.Data.Select(r => r.Name).ToList();
+        if (roles.Data != null)
+        {
+            _roles = roles.Data.Select(r => r.Name).ToList();
+        }
         _users = UserStore.Data.Select(u => new LocalUserDto(u)).ToList();
 
         UserStore.OnChange += OnUsersChanged;

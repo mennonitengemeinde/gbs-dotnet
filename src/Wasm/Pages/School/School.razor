@@ -11,7 +11,7 @@
 
 <WelcomeBanner />
 
-@if (StreamStore.Data.Count > 0)
+@if (StreamStore.Data.Any(s => s.IsLive))
 {
     <div class="tw-pt-8 tw-pb-2 tw-text-gray-600">
         <MudText Typo="Typo.h2" Class="tw-text-2xl tw-font-semibold">Live</MudText>
