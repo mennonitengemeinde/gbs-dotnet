@@ -13,9 +13,17 @@
         </MudCardHeader>
         <MudCardContent>
             <MudText>
+                <strong>Teacher:</strong> @lesson.TeacherName
+            </MudText>
+            @if (lesson.SubjectName != null)
+            {
+                <MudText>
+                    <strong>Subject:</strong> @lesson.SubjectName
+                </MudText>
+            }
+            <MudText>
                 <strong>Order:</strong> @lesson.Order
             </MudText>
-            <MudText Typo="Typo.body2">The quick, brown fox jumps over a lazy dog.</MudText>
         </MudCardContent>
         <MudCardActions Class="tw-justify-end">
             <MudIconButton Icon="@Icons.Filled.ArrowDownward"

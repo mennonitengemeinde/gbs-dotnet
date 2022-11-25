@@ -136,13 +136,13 @@ public class IdentityCommands : IIdentityCommands
         var claims = new List<Claim>
         {
             new(ClaimTypes.NameIdentifier, user.Id),
-            new(ClaimTypes.Email, user.Email),
+            new(ClaimTypes.Email, user.Email ?? string.Empty),
             new(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
         };
         claims.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
 
         var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8
-            .GetBytes(_configuration.GetSection("AppSettings:Secret").Value));
+            .GetBytes(_configuration.GetSection("AppSettings:Secret").Value ?? throw new InvalidOperationException()));
 
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
 

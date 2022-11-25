@@ -1,18 +1,21 @@
 <MudTable Items="@Lessons" Hover="true" Loading="@IsLoading" LoadingProgressColor="Color.Info">
     <ColGroup>
         <col />
+        <col />
         <col style="width: 70px;" />
         <col style="width: 90px;" />
         <col style="width: 150px;" />
     </ColGroup>
     <HeaderContent>
         <MudTh>Name</MudTh>
+        <MudTh>Subject</MudTh>
         <MudTh>Order</MudTh>
         <MudTh>Visibility</MudTh>
         <MudTh></MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd DataLabel="Name">@context.SubjectName</MudTd>
         <MudTd DataLabel="Order">@context.Order</MudTd>
         <MudTd DataLabel="Visibility">@context.IsVisible</MudTd>
         <MudTd Class="tw-text-end">

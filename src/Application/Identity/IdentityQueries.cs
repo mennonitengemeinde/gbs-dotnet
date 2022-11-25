@@ -67,8 +67,8 @@ public class IdentityQueries : IIdentityQueries
             roles = await _context.Roles.Select(x => new RolesDto
             {
                 Id = x.Id,
-                Name = x.Name,
-                NormalizedName = x.NormalizedName
+                Name = x.Name!,
+                NormalizedName = x.NormalizedName!
             }).ToListAsync();
         }
         else
@@ -76,8 +76,8 @@ public class IdentityQueries : IIdentityQueries
             roles = await _context.Roles.Where(x => x.Name != Roles.SuperAdmin).Select(x => new RolesDto
             {
                 Id = x.Id,
-                Name = x.Name,
-                NormalizedName = x.NormalizedName
+                Name = x.Name!,
+                NormalizedName = x.NormalizedName!
             }).ToListAsync();
         }
 

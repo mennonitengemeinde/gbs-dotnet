@@ -37,7 +37,7 @@ public class StreamCommands : IStreamCommands
 
     public async Task<Result<StreamDto>> UpdateStream(int streamId, StreamCreateDto streamCreateDto)
     {
-        if (await TitleExists(streamCreateDto.Title))
+        if (await TitleExists(streamCreateDto.Title, streamId))
             return Result.BadRequest<StreamDto>("Stream with this title already exists");
         
         var stream = await _context.Streams
@@ -95,8 +95,10 @@ public class StreamCommands : IStreamCommands
         return Result.Ok(_mapper.Map<StreamDto>(dbStream));
     }
     
-    private async Task<bool> TitleExists(string title)
+    private async Task<bool> TitleExists(string title, int? id = null)
     {
-        return await _context.Streams.AnyAsync(s => s.Title.ToLower().Equals(title.ToLower()));
+        return id == null
+            ? await _context.Streams.AnyAsync(s => s.Title.ToLower().Equals(title.ToLower()))
+            : await _context.Streams.AnyAsync(s => s.Id != id && s.Title.ToLower().Equals(title.ToLower()));
     }
 }
