@@ -46,7 +46,8 @@ public class StudentCommands : IStudentCommands
         if (student == null)
             return Result.NotFound<StudentDto>("Student not found");
 
-        student.Name = request.Name;
+        student.FirstName = request.FirstName;
+        student.LastName = request.LastName;
         student.Address = request.Address;
         student.City = request.City;
         student.State = request.State;

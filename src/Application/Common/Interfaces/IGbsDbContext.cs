@@ -7,7 +7,6 @@ public interface IGbsDbContext
 {
     DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
     DbSet<Generation> Generations { get; set; }
-    DbSet<Enrollment> Enrollments { get; set; }
     DbSet<Church> Churches { get; set; }
     DbSet<Student> Students { get; set; }
     DbSet<Teacher> Teachers { get; set; }

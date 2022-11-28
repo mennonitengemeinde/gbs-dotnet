@@ -6,5 +6,5 @@ public class GenerationDto
     public string Name { get; set; } = string.Empty;
     public bool IsActive { get; set; } = true;
 
-    public IEnumerable<StudentEnrollmentDto> Enrollments { get; set; } = null!;
+    public IEnumerable<StudentDto> Students { get; set; } = new List<StudentDto>();
 }

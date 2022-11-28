@@ -9,7 +9,8 @@ public static class StudentSeed
             new Student
             {
                 Id = 1,
-                Name = "Student 1",
+                FirstName = "Student",
+                LastName = "One",
                 DateOfBirth = new DateTime(2000, 1, 1),
                 Address = "Address 1",
                 City = "City 1",
@@ -24,7 +25,8 @@ public static class StudentSeed
             new Student
             {
                 Id = 2,
-                Name = "Student 2",
+                FirstName = "Student",
+                LastName = "Two",
                 DateOfBirth = new DateTime(2000, 1, 1),
                 Address = "Address 2",
                 City = "City 2",
@@ -39,7 +41,8 @@ public static class StudentSeed
             new Student
             {
                 Id = 3,
-                Name = "Student 3",
+                FirstName = "Student",
+                LastName = "Three",
                 DateOfBirth = new DateTime(2000, 1, 1),
                 Address = "Address 3",
                 City = "City 3",

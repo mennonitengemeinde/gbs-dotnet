@@ -8,18 +8,30 @@ public static class GradeSeed
         {
             new Grade
             {
-                SubjectId = 1, EnrollmentId = 1,
-                Date = new DateOnly(2021, 01, 01), Percent = 90
+                Id = 1,
+                SubjectId = 1,
+                StudentId = 1,
+                GradeType = GradeType.Exam,
+                Date = new DateOnly(2021, 01, 01),
+                Percent = 90,
             },
             new Grade
             {
-                SubjectId = 2, EnrollmentId = 1,
-                Date = new DateOnly(2021, 01, 01), Percent = 80
+                Id = 2,
+                SubjectId = 1,
+                StudentId = 1,
+                GradeType = GradeType.Homework,
+                Date = new DateOnly(2021, 01, 01),
+                Percent = 80
             },
             new Grade
             {
-                SubjectId = 3, EnrollmentId = 1,
-                Date = new DateOnly(2021, 01, 01), Percent = 70
+                Id = 3,
+                SubjectId = 1,
+                StudentId = 1,
+                GradeType = GradeType.Service,
+                Date = new DateOnly(2021, 01, 01),
+                Percent = 70
             }
         };
     }

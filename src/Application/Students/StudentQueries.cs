@@ -39,7 +39,7 @@ public class StudentQueries : IStudentQueries
         
         var students = await _context.Students
             .Where(s => s.ChurchId == user.Data.ChurchId)
-            .OrderBy(s => s.Name)
+            .OrderBy(s => s.FirstName)
             .ProjectTo<StudentDto>(_mapper.ConfigurationProvider)
             .ToListAsync();
         

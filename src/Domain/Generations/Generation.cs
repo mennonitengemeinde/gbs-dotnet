@@ -6,6 +6,6 @@ public class Generation
     public string Name { get; set; } = string.Empty;
     public bool IsActive { get; set; } = true;
 
-    public List<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
+    public List<Student> Students { get; set; } = new List<Student>();
     public List<Lesson> Lessons { get; set; } = new List<Lesson>();
 }

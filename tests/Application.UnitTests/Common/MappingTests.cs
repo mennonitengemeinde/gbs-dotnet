@@ -19,8 +19,6 @@ public class MappingTests
     [Theory]
     [InlineData(typeof(Church), typeof(ChurchDto))]
     [InlineData(typeof(ChurchCreateDto), typeof(Church))]
-    [InlineData(typeof(Enrollment), typeof(StudentEnrollmentDto))]
-    [InlineData(typeof(Enrollment), typeof(GenerationEnrollmentDto))]
     [InlineData(typeof(Student), typeof(StudentDto))]
     [InlineData(typeof(Generation), typeof(GenerationDto))]
     [InlineData(typeof(Grade), typeof(GradeDto))]

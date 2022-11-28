@@ -11,24 +11,14 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.Students, opt => opt.Ignore());
         
-        // Enrollment Mapping
-        CreateMap<Enrollment, StudentEnrollmentDto>()
-            .ForMember(dest => dest.GenerationName, opt => opt.MapFrom(src => src.Generation.Name));
-        CreateMap<Enrollment, GenerationEnrollmentDto>()
-            .ForMember(dest => dest.StudentId, opt => opt.MapFrom(src => src.Student.Id))
-            .ForMember(dest => dest.DateOfBirth, opt => opt.MapFrom(src => src.Student.DateOfBirth))
-            .ForMember(dest => dest.MaritalStatus, opt => opt.MapFrom(src => src.Student.MaritalStatus))
-            .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Student.Email))
-            .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.Student.Phone))
-            .ForMember(dest => dest.ChurchId, opt => opt.MapFrom(src => src.Student.ChurchId))
-            .ForMember(dest => dest.ChurchName, opt => opt.MapFrom(src => src.Student.Church.Name));
-        
         // Generation Mapping
         CreateMap<Generation, GenerationDto>();
             // .ForMember(dest => dest.Students, opt => opt.MapFrom(src => src.Enrollments));
         
         // Grade Mapping
         CreateMap<Grade, GradeDto>()
+            .ForMember(dest => dest.StudentFirstName, opt => opt.MapFrom(src => src.Student.FirstName))
+            .ForMember(dest => dest.StudentLastName, opt => opt.MapFrom(src => src.Student.LastName))
             .ForMember(dest => dest.SubjectName, opt => opt.MapFrom(src => src.Subject.Name));
         
         // Lesson Mapping
@@ -57,9 +47,11 @@ public class MappingProfile : Profile
         CreateMap<Student, StudentDto>()
             .ForMember(dest => dest.ChurchName, opt => opt.MapFrom(src => src.Church.Name));
         CreateMap<StudentCreateDto, Student>()
+            .ForMember(dest => dest.EnrollmentStatus, opt => opt.MapFrom(src => src.Status))
             .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.Generation, opt => opt.Ignore())
             .ForMember(dest => dest.Church, opt => opt.Ignore())
-            .ForMember(dest => dest.Enrollments, opt => opt.Ignore())
+            .ForMember(dest => dest.Grades, opt => opt.Ignore())
             .ForMember(dest => dest.UserId, opt => opt.Ignore());
         
         // Subject Mapping

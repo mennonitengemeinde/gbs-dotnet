@@ -32,7 +32,7 @@
         <MudTh></MudTh>
     </HeaderContent>
     <RowTemplate>
-        <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd DataLabel="Name">@context.FirstName @context.LastName</MudTd>
         @if (_userIsAdmin)
         {
             <MudTd DataLabel="Church">@context.ChurchName</MudTd>

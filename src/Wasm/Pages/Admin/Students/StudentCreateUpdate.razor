@@ -3,6 +3,7 @@
 @attribute [Authorize(Policy = Policies.RequireAdminsAndTeachers)]
 
 @inject IStudentStore StudentStore
+@inject IGenerationStore GenerationStore
 @inject IChurchStore ChurchStore
 @inject IAuthService AuthService
 @* @inject IUiService UiService *@
@@ -21,12 +22,22 @@
                              IsLoading="StudentStore.IsLoading"
                              IsProcessing="@_isProcessing"
                              ReturnUrl="/admin/students">
-                    <MudTextField Label="Name"
-                                  @bind-Value="_model.Name"
-                                  For="() => _model.Name" />
+                    <MudTextField Label="First Name"
+                                  @bind-Value="_model.FirstName"
+                                  For="() => _model.FirstName"
+                                  OnlyValidateIfDirty="true" />
+                    <MudTextField Label="Last Name"
+                                  @bind-Value="_model.LastName"
+                                  For="() => _model.LastName" />
                     <MudDatePicker Label="Date of Birth"
                                    @bind-Date="_model.DateOfBirth"
                                    For="() => _model.DateOfBirth" />
+                    <MudTextField Label="Email"
+                                  @bind-Value="_model.Email"
+                                  For="() => _model.Email" />
+                    <MudTextField Label="Phone"
+                                  @bind-Value="_model.Phone"
+                                  For="() => _model.Phone" />
                     <MudField Label="Marital status" Variant="Variant.Text" InnerPadding="false">
                         <MudRadioGroup T="MaritalStatus" @bind-SelectedOption="@_model.MaritalStatus">
                             @foreach (var maritalStatus in Enum.GetValues(typeof(MaritalStatus)).Cast<MaritalStatus>())
@@ -50,12 +61,16 @@
                     <MudTextField Label="Postal Code"
                                   @bind-Value="_model.PostalCode"
                                   For="() => _model.PostalCode" />
-                    <MudTextField Label="Email"
-                                  @bind-Value="_model.Email"
-                                  For="() => _model.Email" />
-                    <MudTextField Label="Phone"
-                                  @bind-Value="_model.Phone"
-                                  For="() => _model.Phone" />
+                    <MudSelect Label="Generation"
+                               AnchorOrigin="Origin.BottomCenter"
+                               For="@(() => _model.GenerationId)"
+                               @bind-Value="_model.GenerationId">
+                        <MudSelectItem Disabled="true" T="int" Value="0">Select Generation</MudSelectItem>
+                        @foreach (var item in GenerationStore.Data)
+                        {
+                            <MudSelectItem T="int" Value="@item.Id">@item.Name</MudSelectItem>
+                        }
+                    </MudSelect>
                     @if (_isAdmin)
                     {
                         <MudSelect Label="Church"
@@ -69,6 +84,19 @@
                             }
                         </MudSelect>
                     }
+
+                    <MudTextField T="string" Label="Testimony" Variant="Variant.Text" @bind-Value="_model.Testimony" Lines="5" />
+
+                    <MudField Label="Status" Variant="Variant.Text" InnerPadding="false">
+                        <MudRadioGroup T="EnrollmentState" @bind-SelectedOption="@_model.Status">
+                            @foreach (var status in Enum.GetValues(typeof(EnrollmentState)).Cast<EnrollmentState>())
+                            {
+                                <MudRadio T="EnrollmentState" Option="@status">@status.ToString()</MudRadio>
+                            }
+                        </MudRadioGroup>
+                    </MudField>
+
+                    <MudCheckBox @bind-Checked="@_model.AgreedToGbsConcept" Label="Agree to GBS Concept" Color="Color.Primary"></MudCheckBox>
 
                 </MatFormCard>
             </MudItem>
@@ -84,13 +112,14 @@
 
     [CascadingParameter]
     CascadingUiState UiState { get; set; } = null!;
-    
+
     [Parameter]
     public int? Id { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         _isAdmin = await AuthService.UserIsAdmin();
+        await GenerationStore.Fetch();
 
         var isUpdate = await InitUpdatePage();
         if (!isUpdate)
@@ -119,7 +148,7 @@
             await StudentStore.Add(_model);
         }
         _isProcessing = false;
-        
+
         if (!StudentStore.HasError)
         {
             NavigationManager.NavigateTo("admin/students");
@@ -150,7 +179,8 @@
 
             _model = new StudentCreateDto
             {
-                Name = student.Name,
+                FirstName = student.FirstName,
+                LastName = student.LastName,
                 DateOfBirth = student.DateOfBirth,
                 MaritalStatus = student.MaritalStatus,
                 Address = student.Address,
@@ -167,7 +197,8 @@
         {
             _model = new StudentCreateDto
             {
-                Name = student.Name,
+                FirstName = student.FirstName,
+                LastName = student.LastName,
                 DateOfBirth = student.DateOfBirth,
                 MaritalStatus = student.MaritalStatus,
                 Address = student.Address,

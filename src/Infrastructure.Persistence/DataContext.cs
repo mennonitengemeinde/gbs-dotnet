@@ -14,7 +14,6 @@ public class DataContext :
     public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = null!;
 
     public DbSet<Generation> Generations { get; set; } = null!;
-    public DbSet<Enrollment> Enrollments { get; set; } = null!;
     public DbSet<Church> Churches { get; set; } = null!;
     public DbSet<Student> Students { get; set; } = null!;
     public DbSet<Teacher> Teachers { get; set; } = null!;

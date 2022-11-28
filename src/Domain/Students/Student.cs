@@ -7,25 +7,31 @@ namespace Gbs.Domain.Students;
 public class Student
 {
     public int Id { get; set; }
-    [StringLength(100, MinimumLength = 3)] public string Name { get; set; } = string.Empty;
-
-    [Column(TypeName = "timestamp without time zone")]
+    public string FirstName { get; set; } = string.Empty;
+    public string LastName { get; set; } = string.Empty;
     public DateTime DateOfBirth { get; set; }
 
-    [StringLength(100, MinimumLength = 3)] public string Address { get; set; } = string.Empty;
-    [StringLength(50, MinimumLength = 3)] public string City { get; set; } = string.Empty;
-    [StringLength(50, MinimumLength = 3)] public string State { get; set; } = string.Empty;
-    [StringLength(50, MinimumLength = 3)] public string Country { get; set; } = string.Empty;
-    [StringLength(10, MinimumLength = 3)] public string PostalCode { get; set; } = string.Empty;
+    public string? Address { get; set; }
+    public string City { get; set; } = string.Empty;
+    public string State { get; set; } = string.Empty;
+    public string Country { get; set; } = string.Empty;
+    public string? PostalCode { get; set; }
+
     public MaritalStatus MaritalStatus { get; set; }
-    [StringLength(100, MinimumLength = 3)] public string Email { get; set; } = string.Empty;
-    [StringLength(50, MinimumLength = 3)] public string Phone { get; set; } = string.Empty;
+    public string? Email { get; set; }
+    public string? Phone { get; set; }
+    public EnrollmentState EnrollmentStatus { get; set; } = EnrollmentState.Active;
+    public string? Testimony { get; set; }
+    public bool AgreedToGbsConcept { get; set; } = false;
 
     public int ChurchId { get; set; }
     public Church Church { get; set; } = null!;
 
+    public int GenerationId { get; set; }
+    public Generation Generation { get; set; } = null!;
+
     public string? UserId { get; set; }
     // public User? User { get; set; }
 
-    public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
+    public ICollection<Grade> Grades { get; set; } = new List<Grade>();
 }
