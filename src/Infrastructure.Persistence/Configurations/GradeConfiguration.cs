@@ -1,4 +1,5 @@
-﻿namespace Gbs.Infrastructure.Persistence.Configurations;
+﻿
+namespace Gbs.Infrastructure.Persistence.Configurations;
 
 public class GradeConfiguration : IEntityTypeConfiguration<Grade>
 {

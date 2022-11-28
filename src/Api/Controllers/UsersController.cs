@@ -20,7 +20,7 @@ namespace Gbs.Api.Controllers
             var result = await _identityQueries.GetAll();
             return result.ToActionResult();
         }
-        
+
         [HttpPost]
         [AllowAnonymous]
         public async Task<ActionResult<Result<string>>> RegisterUser(RegisterDto request)
@@ -51,7 +51,7 @@ namespace Gbs.Api.Controllers
             var user = await _identityCommands.UpdateActiveState(id, updateActiveStateDto.IsActive);
             return user.ToActionResult();
         }
-        
+
         [HttpDelete("{id}")]
         public async Task<ActionResult<Result<bool>>> DeleteUser(string id)
         {

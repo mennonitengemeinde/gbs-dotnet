@@ -1,3 +1,5 @@
-﻿namespace Gbs.Application.Common.Interfaces.Queries;
+﻿using Gbs.Application.Churches;
+
+namespace Gbs.Application.Common.Interfaces.Queries;
 
 public interface IChurchQueries : ICrudQueries<ChurchDto> { }

@@ -1,5 +1,4 @@
-﻿@using Gbs.Shared.Enums
-<MudGrid Class="tw-relative tw-pt-2">
+﻿<MudGrid Class="tw-relative tw-pt-2">
     @foreach (var lesson in Lessons.Where(s => s.IsVisible != Visibility.Private))
     {
         <MudItem xs="12" md="6" xl="4">

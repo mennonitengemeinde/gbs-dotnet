@@ -1,5 +1,5 @@
 ﻿using Gbs.Application.Common.Extensions;
-using Gbs.Shared.Wrapper;
+using Gbs.Domain.Common.Wrapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

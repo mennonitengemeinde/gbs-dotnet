@@ -1,4 +1,7 @@
-﻿namespace Gbs.Application.Common.Interfaces.Queries;
+﻿using Gbs.Application.Identity;
+using Gbs.Domain.Common.Wrapper;
+
+namespace Gbs.Application.Common.Interfaces.Queries;
 
 public interface IIdentityQueries
 {

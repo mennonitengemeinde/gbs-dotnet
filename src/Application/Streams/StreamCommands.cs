@@ -1,4 +1,5 @@
 using Gbs.Application.Common.Extensions;
+using Gbs.Domain.Common.Wrapper;
 
 namespace Gbs.Application.Streams;
 

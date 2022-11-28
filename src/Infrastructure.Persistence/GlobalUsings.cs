@@ -1,17 +1,16 @@
 ﻿// Global using directives
 
 global using AutoMapper;
-global using Gbs.Application.Common.Interfaces.Repositories;
-global using Gbs.Application.Common.Interfaces.Services;
-global using Gbs.Domain.Entities;
-global using Gbs.Shared.Const;
-global using Gbs.Shared.Dto.Churches;
-global using Gbs.Shared.Dto.Generations;
-global using Gbs.Shared.Dto.Identity;
-global using Gbs.Shared.Dto.Streams;
-global using Gbs.Shared.Dto.Students;
-global using Gbs.Shared.Dto.Teachers;
-global using Gbs.Shared.Enums;
-global using Gbs.Shared.Wrapper;
+global using Gbs.Domain.Churches;
+global using Gbs.Domain.Common.Const;
+global using Gbs.Domain.Common.Enums;
+global using Gbs.Domain.Generations;
+global using Gbs.Domain.Grades;
+global using Gbs.Domain.Lessons;
+global using Gbs.Domain.QnA;
+global using Gbs.Domain.Streams;
+global using Gbs.Domain.Students;
+global using Gbs.Domain.Subjects;
+global using Gbs.Domain.Teachers;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Metadata.Builders;

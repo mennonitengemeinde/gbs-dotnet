@@ -236,7 +236,7 @@ namespace Gbs.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Churches");
+                    b.ToTable("Churches", (string)null);
                 });
 
             modelBuilder.Entity("Gbs.Domain.Entities.Enrollment", b =>
@@ -278,7 +278,7 @@ namespace Gbs.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("Enrollments");
+                    b.ToTable("Enrollments", (string)null);
                 });
 
             modelBuilder.Entity("Gbs.Domain.Entities.Generation", b =>
@@ -298,7 +298,7 @@ namespace Gbs.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Generations");
+                    b.ToTable("Generations", (string)null);
                 });
 
             modelBuilder.Entity("Gbs.Domain.Entities.Grade", b =>
@@ -319,7 +319,7 @@ namespace Gbs.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("EnrollmentId");
 
-                    b.ToTable("Grades");
+                    b.ToTable("Grades", (string)null);
                 });
 
             modelBuilder.Entity("Gbs.Domain.Entities.Lesson", b =>
@@ -360,7 +360,7 @@ namespace Gbs.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("TeacherId");
 
-                    b.ToTable("Lessons");
+                    b.ToTable("Lessons", (string)null);
                 });
 
             modelBuilder.Entity("Gbs.Domain.Entities.LiveStream", b =>
@@ -390,7 +390,7 @@ namespace Gbs.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("GenerationId");
 
-                    b.ToTable("Streams");
+                    b.ToTable("Streams", (string)null);
                 });
 
             modelBuilder.Entity("Gbs.Domain.Entities.LiveStreamTeacher", b =>
@@ -405,7 +405,7 @@ namespace Gbs.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("TeacherId");
 
-                    b.ToTable("StreamTeachers");
+                    b.ToTable("StreamTeachers", (string)null);
                 });
 
             modelBuilder.Entity("Gbs.Domain.Entities.Message", b =>
@@ -443,7 +443,7 @@ namespace Gbs.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Messages");
+                    b.ToTable("Messages", (string)null);
                 });
 
             modelBuilder.Entity("Gbs.Domain.Entities.Question", b =>
@@ -488,7 +488,7 @@ namespace Gbs.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Questions");
+                    b.ToTable("Questions", (string)null);
                 });
 
             modelBuilder.Entity("Gbs.Domain.Entities.Student", b =>
@@ -557,7 +557,7 @@ namespace Gbs.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Students");
+                    b.ToTable("Students", (string)null);
                 });
 
             modelBuilder.Entity("Gbs.Domain.Entities.Subject", b =>
@@ -574,7 +574,7 @@ namespace Gbs.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Subjects");
+                    b.ToTable("Subjects", (string)null);
                 });
 
             modelBuilder.Entity("Gbs.Domain.Entities.SubjectDocument", b =>
@@ -602,7 +602,7 @@ namespace Gbs.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("SubjectId");
 
-                    b.ToTable("SubjectDocuments");
+                    b.ToTable("SubjectDocuments", (string)null);
                 });
 
             modelBuilder.Entity("Gbs.Domain.Entities.Teacher", b =>
@@ -625,7 +625,7 @@ namespace Gbs.Infrastructure.Persistence.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Teachers");
+                    b.ToTable("Teachers", (string)null);
                 });
 
             modelBuilder.Entity("Gbs.Domain.Entities.WatchList", b =>
@@ -641,7 +641,7 @@ namespace Gbs.Infrastructure.Persistence.Migrations
 
                     b.HasKey("UserId", "QuestionId");
 
-                    b.ToTable("WatchLists");
+                    b.ToTable("WatchLists", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.DataProtection.EntityFrameworkCore.DataProtectionKey", b =>
@@ -660,7 +660,7 @@ namespace Gbs.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DataProtectionKeys");
+                    b.ToTable("DataProtectionKeys", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

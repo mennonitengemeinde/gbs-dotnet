@@ -1,4 +1,6 @@
-﻿namespace Gbs.Application.Common.Interfaces.Commands;
+﻿using Gbs.Domain.Common.Wrapper;
+
+namespace Gbs.Application.Common.Interfaces.Commands;
 
 public interface ICrudCommand<T, in TCreate, in TUpdate>
 {

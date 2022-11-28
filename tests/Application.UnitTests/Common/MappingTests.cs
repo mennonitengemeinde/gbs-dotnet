@@ -1,9 +1,4 @@
 ﻿using System.Runtime.Serialization;
-using Gbs.Application.Common.Entities;
-using Gbs.Shared.Dto.Identity;
-using Gbs.Shared.Dto.Lessons;
-using Gbs.Shared.Dto.Streams;
-using Gbs.Shared.Dto.Subjects;
 
 namespace Gbs.Tests.Application.UnitTests.Common;
 
