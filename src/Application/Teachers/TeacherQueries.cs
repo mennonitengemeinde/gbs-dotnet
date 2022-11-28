@@ -1,3 +1,5 @@
+using Gbs.Domain.Common.Wrapper;
+
 namespace Gbs.Application.Teachers;
 
 public class TeacherQueries : ITeacherQueries

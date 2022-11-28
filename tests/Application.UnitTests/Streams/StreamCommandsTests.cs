@@ -1,5 +1,5 @@
 using Gbs.Application.Streams;
-using Gbs.Shared.Dto.Streams;
+using Gbs.Tests.Infrastructure.Seeds;
 
 namespace Gbs.Tests.Application.UnitTests.Streams;
 

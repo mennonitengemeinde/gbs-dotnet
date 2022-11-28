@@ -1,5 +1,5 @@
 ﻿using Gbs.Infrastructure.Persistence;
-using Gbs.Infrastructure.Persistence.Seeds;
+using Gbs.Tests.Infrastructure.Seeds;
 using Microsoft.EntityFrameworkCore;
 
 namespace Gbs.Tests.Infrastructure;

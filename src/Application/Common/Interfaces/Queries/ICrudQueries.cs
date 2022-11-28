@@ -1,4 +1,6 @@
-﻿namespace Gbs.Application.Common.Interfaces.Queries;
+﻿using Gbs.Domain.Common.Wrapper;
+
+namespace Gbs.Application.Common.Interfaces.Queries;
 
 public interface ICrudQueries<T>
 {

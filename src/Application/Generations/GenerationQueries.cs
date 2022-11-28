@@ -1,3 +1,5 @@
+using Gbs.Domain.Common.Wrapper;
+
 namespace Gbs.Application.Generations;
 
 public class GenerationQueries : IGenerationQueries

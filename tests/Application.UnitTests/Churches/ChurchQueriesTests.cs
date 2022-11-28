@@ -1,6 +1,4 @@
-﻿using Gbs.Application.Churches;
-
-namespace Gbs.Tests.Application.UnitTests.Churches;
+﻿namespace Gbs.Tests.Application.UnitTests.Churches;
 
 public class ChurchQueriesTests : GbsTestBase
 {

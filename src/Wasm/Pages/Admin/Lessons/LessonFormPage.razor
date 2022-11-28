@@ -1,7 +1,6 @@
 ﻿@page "/admin/lessons/create"
 @page "/admin/lessons/{Id:int}/edit"
 @attribute [Authorize(Policy = Policies.RequireAdminsAndSound)]
-@using Gbs.Shared.Enums
 @implements IDisposable
 
 @inject NavigationManager NavigationManager

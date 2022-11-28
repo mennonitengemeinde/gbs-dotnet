@@ -1,4 +1,6 @@
-﻿namespace Gbs.Application.Lessons;
+﻿using Gbs.Domain.Common.Wrapper;
+
+namespace Gbs.Application.Lessons;
 
 public class LessonCommands : ILessonCommands
 {

@@ -1,3 +1,5 @@
+using Gbs.Domain.Common.Wrapper;
+
 namespace Gbs.Application.Common.Interfaces.Commands;
 
 public interface IStreamCommands

@@ -1,3 +1,5 @@
+using Gbs.Domain.Common.Wrapper;
+
 namespace Gbs.Application.Streams;
 
 public class StreamQueries : IStreamQueries

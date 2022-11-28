@@ -1,6 +1,4 @@
-﻿using Gbs.Shared.Dto.Subjects;
-
-namespace Gbs.Wasm.Store;
+﻿namespace Gbs.Wasm.Store;
 
 public class SubjectStore : BaseStore<SubjectDto, int, SubjectCreateDto, SubjectCreateDto>, ISubjectStore
 {

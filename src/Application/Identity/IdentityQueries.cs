@@ -1,4 +1,5 @@
 ﻿using Gbs.Application.Common.Interfaces.Services;
+using Gbs.Domain.Common.Wrapper;
 
 namespace Gbs.Application.Identity;
 

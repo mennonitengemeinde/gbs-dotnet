@@ -1,4 +1,6 @@
-﻿namespace Gbs.Application.Churches;
+﻿using Gbs.Domain.Common.Wrapper;
+
+namespace Gbs.Application.Churches;
 
 public class ChurchQueries : IChurchQueries
 {

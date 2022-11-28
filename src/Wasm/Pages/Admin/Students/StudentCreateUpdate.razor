@@ -1,6 +1,5 @@
 @page "/admin/students/create"
 @page "/admin/students/{Id:int}/edit"
-@using Gbs.Shared.Enums
 @attribute [Authorize(Policy = Policies.RequireAdminsAndTeachers)]
 
 @inject IStudentStore StudentStore

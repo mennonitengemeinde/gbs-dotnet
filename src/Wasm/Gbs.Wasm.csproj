@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>Gbs.Wasm</AssemblyName>
     <RootNamespace>Gbs.Wasm</RootNamespace>
+    <PublishTrimmed>true</PublishTrimmed>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,9 +17,9 @@
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="7.0.0" />
     <PackageReference Include="MudBlazor" Version="6.1.2" />
   </ItemGroup>
-	
+
   <ItemGroup>
-    <ProjectReference Include="..\Shared\Gbs.Shared.csproj" />
+    <ProjectReference Include="..\Domain\Gbs.Domain.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,4 @@
 ﻿using Gbs.Application.Subjects;
-using Gbs.Shared.Dto.Subjects;
 
 namespace Gbs.Tests.Application.UnitTests.Subjects;
 
