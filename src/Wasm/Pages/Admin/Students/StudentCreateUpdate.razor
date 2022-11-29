@@ -6,7 +6,6 @@
 @inject IGenerationStore GenerationStore
 @inject IChurchStore ChurchStore
 @inject IAuthService AuthService
-@* @inject IUiService UiService *@
 @inject NavigationManager NavigationManager
 
 <PageTitle>Students Form - GBS</PageTitle>
@@ -118,16 +117,40 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _isAdmin = await AuthService.UserIsAdmin();
-        await GenerationStore.Fetch();
-
-        var isUpdate = await InitUpdatePage();
-        if (!isUpdate)
+        var tasks = new[]
         {
-            if (_isAdmin)
+            GenerationStore.Fetch(),
+            ChurchStore.Fetch(),
+        };
+        _isAdmin = await AuthService.UserIsAdmin();
+        
+        await Task.WhenAll(tasks);
+
+        if (Id.HasValue)
+        {
+            _isEdit = true;
+            var student = await StudentStore.GetById(Id.Value);
+            if (student == null)
             {
-                await ChurchStore.Fetch();
+                NavigationManager.NavigateTo("/admin/students");
+                return;
             }
+            
+            _model = new StudentCreateDto
+            {
+                FirstName = student.FirstName,
+                LastName = student.LastName,
+                DateOfBirth = student.DateOfBirth,
+                MaritalStatus = student.MaritalStatus,
+                Address = student.Address,
+                City = student.City,
+                State = student.State,
+                Country = student.Country,
+                PostalCode = student.PostalCode,
+                Email = student.Email,
+                Phone = student.Phone,
+                ChurchId = student.ChurchId
+            };
         }
     }
 
@@ -157,61 +180,6 @@
         {
             StudentStore.ClearErrors();
         }
-    }
-
-    async Task<bool> InitUpdatePage()
-    {
-        if (!Id.HasValue)
-        {
-            return false;
-        }
-
-        _isEdit = true;
-        var student = await StudentStore.GetById(Id.Value);
-        if (student == null)
-        {
-            NavigationManager.NavigateTo("/admin/students");
-            return false;
-        }
-        if (_isAdmin)
-        {
-            await ChurchStore.Fetch();
-
-            _model = new StudentCreateDto
-            {
-                FirstName = student.FirstName,
-                LastName = student.LastName,
-                DateOfBirth = student.DateOfBirth,
-                MaritalStatus = student.MaritalStatus,
-                Address = student.Address,
-                City = student.City,
-                State = student.State,
-                Country = student.Country,
-                PostalCode = student.PostalCode,
-                Email = student.Email,
-                Phone = student.Phone,
-                ChurchId = student.ChurchId
-            };
-        }
-        else
-        {
-            _model = new StudentCreateDto
-            {
-                FirstName = student.FirstName,
-                LastName = student.LastName,
-                DateOfBirth = student.DateOfBirth,
-                MaritalStatus = student.MaritalStatus,
-                Address = student.Address,
-                City = student.City,
-                State = student.State,
-                Country = student.Country,
-                PostalCode = student.PostalCode,
-                Email = student.Email,
-                Phone = student.Phone,
-                ChurchId = student.ChurchId
-            };
-        }
-        return true;
     }
 
 }

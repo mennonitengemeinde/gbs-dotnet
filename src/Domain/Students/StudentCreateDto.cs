@@ -33,7 +33,7 @@ public class StudentCreateDto
 
     [Display(Name = "Postal Code")]
     [StringLength(10, MinimumLength = 3)]
-    public string PostalCode { get; set; } = string.Empty;
+    public string? PostalCode { get; set; } = string.Empty;
 
     [Display(Name = "Marital Status")]
     [Required]
