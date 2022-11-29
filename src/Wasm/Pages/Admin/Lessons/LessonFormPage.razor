@@ -1,14 +1,6 @@
 ﻿@page "/admin/lessons/create"
 @page "/admin/lessons/{Id:int}/edit"
 @attribute [Authorize(Policy = Policies.RequireAdminsAndSound)]
-@implements IDisposable
-
-@inject NavigationManager NavigationManager
-@inject IGenerationStore GenerationStore
-@inject ISubjectStore SubjectStore
-@inject ILessonStore LessonStore
-@inject ITeacherStore TeacherStore
-@inject IUiService UiService
 
 <PageTitle>Lessons Form - GBS</PageTitle>
 
@@ -90,72 +82,3 @@
         </MudItem>
     </MudGrid>
 </EditForm>
-
-@code {
-    LessonCreateDto _model = new();
-    bool _isEdit;
-
-    [CascadingParameter]
-    CascadingUiState UiState { get; set; } = null!;
-    
-    [Parameter]
-    public int? Id { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        await Task.WhenAll(SubjectStore.Fetch(), GenerationStore.Fetch(), TeacherStore.Fetch());
-
-        if (Id.HasValue)
-        {
-            _isEdit = true;
-            var lesson = await LessonStore.GetById(Id.Value);
-            if (lesson != null)
-            {
-                _model = new LessonCreateDto
-                {
-                    Name = lesson.Name,
-                    VideoUrl = lesson.VideoUrl,
-                    IsVisible = lesson.IsVisible,
-                    GenerationId = lesson.GenerationId,
-                    SubjectId = lesson.SubjectId,
-                    TeacherId = lesson.TeacherId
-                };
-            }
-        }
-
-        SubjectStore.OnChange += StateHasChanged;
-        GenerationStore.OnChange += StateHasChanged;
-        LessonStore.OnChange += StateHasChanged;
-        TeacherStore.OnChange += StateHasChanged;
-    }
-
-    async Task HandleValidSubmit()
-    {
-        UiState.IsPageLoading = true;
-        if (_isEdit)
-        {
-            await LessonStore.Update(Id!.Value, _model);
-        }
-        else
-        {
-            await LessonStore.Add(_model);
-        }
-
-        if (!LessonStore.HasError)
-        {
-            UiState.IsPageLoading = false;
-            UiService.ShowSuccessAlert("Lesson added successfully");
-            NavigationManager.NavigateTo("admin/lessons");
-        }
-        UiState.IsPageLoading = false;
-    }
-
-    public void Dispose()
-    {
-        SubjectStore.OnChange -= StateHasChanged;
-        GenerationStore.OnChange -= StateHasChanged;
-        LessonStore.OnChange -= StateHasChanged;
-        TeacherStore.OnChange -= StateHasChanged;
-    }
-
-}

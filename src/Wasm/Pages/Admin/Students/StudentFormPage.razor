@@ -2,12 +2,6 @@
 @page "/admin/students/{Id:int}/edit"
 @attribute [Authorize(Policy = Policies.RequireAdminsAndTeachers)]
 
-@inject IStudentStore StudentStore
-@inject IGenerationStore GenerationStore
-@inject IChurchStore ChurchStore
-@inject IAuthService AuthService
-@inject NavigationManager NavigationManager
-
 <PageTitle>Students Form - GBS</PageTitle>
 
 @if (!UiState.IsPageLoading)
@@ -101,85 +95,4 @@
             </MudItem>
         </MudGrid>
     </EditForm>
-}
-
-@code {
-    StudentCreateDto _model = new();
-    bool _isProcessing;
-    bool _isAdmin;
-    bool _isEdit;
-
-    [CascadingParameter]
-    CascadingUiState UiState { get; set; } = null!;
-
-    [Parameter]
-    public int? Id { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        var tasks = new[]
-        {
-            GenerationStore.Fetch(),
-            ChurchStore.Fetch(),
-        };
-        _isAdmin = await AuthService.UserIsAdmin();
-        
-        await Task.WhenAll(tasks);
-
-        if (Id.HasValue)
-        {
-            _isEdit = true;
-            var student = await StudentStore.GetById(Id.Value);
-            if (student == null)
-            {
-                NavigationManager.NavigateTo("/admin/students");
-                return;
-            }
-            
-            _model = new StudentCreateDto
-            {
-                FirstName = student.FirstName,
-                LastName = student.LastName,
-                DateOfBirth = student.DateOfBirth,
-                MaritalStatus = student.MaritalStatus,
-                Address = student.Address,
-                City = student.City,
-                State = student.State,
-                Country = student.Country,
-                PostalCode = student.PostalCode,
-                Email = student.Email,
-                Phone = student.Phone,
-                ChurchId = student.ChurchId
-            };
-        }
-    }
-
-    protected override void OnAfterRender(bool firstRender)
-    {
-        UiState.IsPageLoading = StudentStore.IsLoading;
-    }
-
-    async Task HandleValidSubmit()
-    {
-        _isProcessing = true;
-        if (_isEdit && Id.HasValue)
-        {
-            await StudentStore.Update(Id.Value, _model);
-        }
-        else
-        {
-            await StudentStore.Add(_model);
-        }
-        _isProcessing = false;
-
-        if (!StudentStore.HasError)
-        {
-            NavigationManager.NavigateTo("admin/students");
-        }
-        else
-        {
-            StudentStore.ClearErrors();
-        }
-    }
-
 }
