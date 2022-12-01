@@ -22,4 +22,8 @@
     <ProjectReference Include="..\Domain\Gbs.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\img\country-flags" />
+  </ItemGroup>
+
 </Project>

@@ -50,9 +50,7 @@ public class StudentCommands : IStudentCommands
         student.LastName = request.LastName;
         student.Address = request.Address;
         student.City = request.City;
-        student.State = request.State;
-        student.Country = request.Country;
-        student.PostalCode = request.PostalCode;
+        student.StateId = request.StateId;
         if (request.DateOfBirth != null) student.DateOfBirth = request.DateOfBirth.Value;
         student.MaritalStatus = request.MaritalStatus;
         student.Email = request.Email;

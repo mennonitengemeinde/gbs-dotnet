@@ -39,21 +39,12 @@
                             }
                         </MudRadioGroup>
                     </MudField>
-                    <MudTextField Label="Address"
-                                  @bind-Value="_model.Address"
-                                  For="() => _model.Address" />
                     <MudTextField Label="City"
                                   @bind-Value="_model.City"
                                   For="() => _model.City" />
-                    <MudTextField Label="Province/State"
-                                  @bind-Value="_model.State"
-                                  For="() => _model.State" />
-                    <MudTextField Label="Country"
-                                  @bind-Value="_model.Country"
-                                  For="() => _model.Country" />
-                    <MudTextField Label="Postal Code"
-                                  @bind-Value="_model.PostalCode"
-                                  For="() => _model.PostalCode" />
+                    <MudTextField Label="Address"
+                                  @bind-Value="_model.Address"
+                                  For="() => _model.Address" />
                     <MudSelect Label="Generation"
                                AnchorOrigin="Origin.BottomCenter"
                                For="@(() => _model.GenerationId)"

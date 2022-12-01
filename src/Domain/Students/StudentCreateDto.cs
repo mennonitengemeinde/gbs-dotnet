@@ -24,16 +24,8 @@ public class StudentCreateDto
 
     [Display(Name = "Province/State")]
     [Required]
-    [StringLength(50, MinimumLength = 3)]
-    public string State { get; set; } = string.Empty;
-
-    [Required]
-    [StringLength(50, MinimumLength = 3)]
-    public string Country { get; set; } = string.Empty;
-
-    [Display(Name = "Postal Code")]
-    [StringLength(10, MinimumLength = 3)]
-    public string? PostalCode { get; set; }
+    [Range(1, int.MaxValue, ErrorMessage = "You must select a province/state.")]
+    public int StateId { get; set; }
 
     [Display(Name = "Marital Status")]
     [Required]
@@ -43,6 +35,10 @@ public class StudentCreateDto
     [StringLength(100, MinimumLength = 3)]
     public string? Email { get; set; }
 
+    [Display(Name = "Country Code")]
+    [Range(1, int.MaxValue, ErrorMessage = "You must select a country code.")]
+    public int? PhoneCodeId { get; set; }
+    
     [StringLength(50, MinimumLength = 3)] public string? Phone { get; set; }
     
     [Display(Name = "Status")]

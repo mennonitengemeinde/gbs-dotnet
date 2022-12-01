@@ -1,6 +1,8 @@
 ﻿// Global using directives
 
+global using Gbs.Domain.Churches;
 global using Gbs.Domain.Common.Enums;
+global using Gbs.Domain.Countries;
 global using Gbs.Domain.Generations;
 global using Gbs.Domain.Grades;
 global using Gbs.Domain.Lessons;
