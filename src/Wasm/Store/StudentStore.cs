@@ -1,3 +1,5 @@
+using Gbs.Shared.Students;
+
 namespace Gbs.Wasm.Store;
 
 public class StudentStore : BaseStore<StudentDto, int, StudentCreateDto, StudentCreateDto>, IStudentStore

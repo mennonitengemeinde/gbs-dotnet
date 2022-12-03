@@ -1,10 +1,13 @@
 ﻿using System.Reflection;
+using FluentValidation;
 using Gbs.Application.Churches;
+using Gbs.Application.Common.Behaviours;
 using Gbs.Application.Identity;
 using Gbs.Application.Lessons;
 using Gbs.Application.Students;
 using Gbs.Application.Subjects;
 using Gbs.Application.Teachers;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Gbs.Application;
@@ -15,8 +18,15 @@ public static class ConfigureServices
     {
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
         
-        services.AddScoped<IChurchQueries, ChurchQueries>();
-        services.AddScoped<IChurchCommands, ChurchCommands>();
+        services.AddValidatorsFromAssemblyContaining<CreateChurchRequestValidator>();
+        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+        
+        services.AddMediatR(Assembly.GetExecutingAssembly());
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+        
+        // services.AddScoped<IChurchQueries, ChurchQueries>();
+        // services.AddScoped<IChurchCommands, ChurchCommands>();
         services.AddScoped<IGenerationQueries, GenerationQueries>();
         services.AddScoped<IGenerationCommands, GenerationCommands>();
         services.AddScoped<IIdentityQueries, IdentityQueries>();

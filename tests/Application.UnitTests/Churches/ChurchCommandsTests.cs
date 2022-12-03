@@ -1,4 +1,6 @@
-﻿namespace Gbs.Tests.Application.UnitTests.Churches;
+﻿using Gbs.Shared.Churches;
+
+namespace Gbs.Tests.Application.UnitTests.Churches;
 
 public class ChurchCommandsTests : GbsTestBase
 {

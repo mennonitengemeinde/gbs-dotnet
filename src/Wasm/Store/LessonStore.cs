@@ -1,4 +1,6 @@
-﻿namespace Gbs.Wasm.Store;
+﻿using Gbs.Shared.Lessons;
+
+namespace Gbs.Wasm.Store;
 
 public class LessonStore : BaseStore<LessonDto, int, LessonCreateDto, LessonCreateDto>, ILessonStore
 {

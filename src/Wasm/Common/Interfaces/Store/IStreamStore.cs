@@ -1,4 +1,6 @@
-﻿namespace Gbs.Wasm.Common.Interfaces.Store;
+﻿using Gbs.Shared.Streams;
+
+namespace Gbs.Wasm.Common.Interfaces.Store;
 
 public interface IStreamStore : IStore<StreamDto, int, StreamCreateDto, StreamCreateDto>
 {

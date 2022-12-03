@@ -1,3 +1,5 @@
+using Gbs.Shared.Subjects;
+
 namespace Gbs.Api.Controllers
 {
     [Route("api/[controller]")]

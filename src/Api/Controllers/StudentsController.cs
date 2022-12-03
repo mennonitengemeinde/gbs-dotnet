@@ -1,3 +1,5 @@
+using Gbs.Shared.Students;
+
 namespace Gbs.Api.Controllers;
 
 [Route("api/[controller]")]

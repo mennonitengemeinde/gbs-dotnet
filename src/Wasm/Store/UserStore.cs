@@ -1,4 +1,6 @@
-﻿namespace Gbs.Wasm.Store;
+﻿using Gbs.Shared.Identity;
+
+namespace Gbs.Wasm.Store;
 
 public class UserStore : BaseStore<UserDto, string, RegisterDto, RegisterDto>, IUserStore
 {

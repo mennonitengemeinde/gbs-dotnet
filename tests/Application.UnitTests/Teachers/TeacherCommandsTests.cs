@@ -1,4 +1,5 @@
 ﻿using Gbs.Application.Teachers;
+using Gbs.Shared.Teachers;
 
 namespace Gbs.Tests.Application.UnitTests.Teachers;
 

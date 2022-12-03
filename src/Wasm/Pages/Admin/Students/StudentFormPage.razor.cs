@@ -1,4 +1,5 @@
 ﻿using Gbs.Domain.Common.Extensions;
+using Gbs.Shared.Students;
 
 namespace Gbs.Wasm.Pages.Admin.Students;
 

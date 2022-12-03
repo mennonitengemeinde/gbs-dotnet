@@ -1,3 +1,5 @@
+using Gbs.Shared.Streams;
+
 namespace Gbs.Api.Controllers
 {
     [Route("api/[controller]")]

@@ -1,5 +1,6 @@
 @page "/admin/subjects/create"
 @page "/admin/subjects/{Id:int}/edit"
+@using Gbs.Shared.Subjects
 @attribute [Authorize(Policy = Policies.RequireAdmins)]
 
 @inject NavigationManager NavigationManager

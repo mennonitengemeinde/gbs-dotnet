@@ -1,3 +1,5 @@
+using Gbs.Shared.Identity;
+
 namespace Gbs.Api.Controllers
 {
     [Route("api/[controller]")]

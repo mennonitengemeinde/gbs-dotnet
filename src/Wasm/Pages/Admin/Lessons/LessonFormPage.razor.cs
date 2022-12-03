@@ -1,4 +1,6 @@
-﻿namespace Gbs.Wasm.Pages.Admin.Lessons;
+﻿using Gbs.Shared.Lessons;
+
+namespace Gbs.Wasm.Pages.Admin.Lessons;
 
 public partial class LessonFormPage : ComponentBase, IDisposable
 {

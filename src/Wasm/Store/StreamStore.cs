@@ -1,4 +1,6 @@
-﻿namespace Gbs.Wasm.Store;
+﻿using Gbs.Shared.Streams;
+
+namespace Gbs.Wasm.Store;
 
 public class StreamStore : BaseStore<StreamDto, int, StreamCreateDto, StreamCreateDto>, IStreamStore
 {

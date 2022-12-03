@@ -1,3 +1,5 @@
+using Gbs.Shared.Identity;
+
 namespace Gbs.Wasm.Common.Interfaces;
 
 public interface IAuthService

@@ -1,4 +1,6 @@
-﻿namespace Gbs.Wasm.Common.Interfaces.Store;
+﻿using Gbs.Shared.Identity;
+
+namespace Gbs.Wasm.Common.Interfaces.Store;
 
 public interface IUserStore : IStore<UserDto, string, RegisterDto, RegisterDto>
 {

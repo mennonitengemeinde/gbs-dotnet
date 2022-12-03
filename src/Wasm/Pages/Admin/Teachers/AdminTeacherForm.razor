@@ -1,5 +1,6 @@
 @page "/admin/teachers/create"
 @page "/admin/teachers/{Id:int}/edit"
+@using Gbs.Shared.Teachers
 @attribute [Authorize(Policy = Policies.RequireAdminsAndSound)]
 
 @inject NavigationManager NavigationManager

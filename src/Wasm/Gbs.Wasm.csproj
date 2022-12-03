@@ -19,11 +19,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Domain\Gbs.Domain.csproj" />
+    <Folder Include="wwwroot\img\country-flags" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\img\country-flags" />
+    <ProjectReference Include="..\Gbs.Shared\Gbs.Shared.csproj" />
   </ItemGroup>
 
 </Project>

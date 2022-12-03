@@ -1,4 +1,6 @@
-﻿namespace Gbs.Infrastructure.Persistence.Configurations;
+﻿using Gbs.Domain.Entities;
+
+namespace Gbs.Infrastructure.Persistence.Configurations;
 
 public class WatchListConfiguration : IEntityTypeConfiguration<WatchList>
 {

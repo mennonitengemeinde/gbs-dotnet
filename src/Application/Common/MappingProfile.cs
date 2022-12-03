@@ -1,11 +1,20 @@
-﻿namespace Gbs.Application.Common;
+﻿using Gbs.Shared.Generations;
+using Gbs.Shared.Grades;
+using Gbs.Shared.Identity;
+using Gbs.Shared.Lessons;
+using Gbs.Shared.Streams;
+using Gbs.Shared.Students;
+using Gbs.Shared.Subjects;
+using Gbs.Shared.Teachers;
+
+namespace Gbs.Application.Common;
 
 public class MappingProfile : Profile
 {
     public MappingProfile()
     {
         // Church Mapping
-        CreateMap<Church, ChurchDto>()
+        CreateMap<Church, ChurchResponse>()
             .ForMember(dest => dest.StudentCount, opt => opt.MapFrom(src => src.Students.Count));
         CreateMap<ChurchCreateDto, Church>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())

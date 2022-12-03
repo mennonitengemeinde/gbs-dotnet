@@ -13,23 +13,23 @@ public class ChurchQueries : IChurchQueries
         _mapper = mapper;
     }
     
-    public async Task<Result<List<ChurchDto>>> GetAll()
+    public async Task<Result<List<ChurchResponse>>> GetAll()
     {
         var churches = await _context.Churches
-            .ProjectTo<ChurchDto>(_mapper.ConfigurationProvider)
+            .ProjectTo<ChurchResponse>(_mapper.ConfigurationProvider)
             .ToListAsync();
             
         return Result.Ok(churches);
     }
 
-    public async Task<Result<ChurchDto>> GetById(int id)
+    public async Task<Result<ChurchResponse>> GetById(int id)
     {
         var church = await _context.Churches
-            .ProjectTo<ChurchDto>(_mapper.ConfigurationProvider)
+            .ProjectTo<ChurchResponse>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(c => c.Id == id);
         
         return church == null
-            ? Result.NotFound<ChurchDto>("Church not found")
+            ? Result.NotFound<ChurchResponse>("Church not found")
             : Result.Ok(church);
     }
 }

@@ -1,6 +1,7 @@
 @page "/admin/streams/create"
 @page "/admin/streams/{Id:int}/edit"
 @attribute [Authorize(Policy = Policies.RequireAdminsAndSound)]
+@using Gbs.Shared.Streams
 @implements IDisposable
 
 @inject IStreamStore StreamStore

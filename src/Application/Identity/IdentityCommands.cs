@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using Gbs.Application.Common.Interfaces.Services;
 using Gbs.Domain.Common.Wrapper;
+using Gbs.Shared.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;

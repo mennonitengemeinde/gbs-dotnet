@@ -13,30 +13,30 @@ public class ChurchCommands : IChurchCommands
         _mapper = mapper;
     }
 
-    public async Task<Result<ChurchDto>> Add(ChurchCreateDto request)
+    public async Task<Result<ChurchResponse>> Add(ChurchCreateDto request)
     {
         if (await NameExists(request.Name))
         {
-            return Result.BadRequest<ChurchDto>("A Church with that name already exists");
+            return Result.BadRequest<ChurchResponse>("A Church with that name already exists");
         }
 
         var newChurch = _mapper.Map<Church>(request);
         _context.Churches.Add(newChurch);
         await _context.SaveChangesAsync();
-        return Result.Ok(_mapper.Map<ChurchDto>(newChurch));
+        return Result.Ok(_mapper.Map<ChurchResponse>(newChurch));
     }
 
-    public async Task<Result<ChurchDto>> Update(int id, ChurchCreateDto request)
+    public async Task<Result<ChurchResponse>> Update(int id, ChurchCreateDto request)
     {
         var dbChurch = await _context.Churches.FirstOrDefaultAsync(c => c.Id == id);
         if (dbChurch == null)
         {
-            return Result.NotFound<ChurchDto>("Church not found");
+            return Result.NotFound<ChurchResponse>("Church not found");
         }
 
         if (await NameExists(request.Name, id))
         {
-            return Result.BadRequest<ChurchDto>("A Church with that name already exists");
+            return Result.BadRequest<ChurchResponse>("A Church with that name already exists");
         }
 
         dbChurch.Name = request.Name;
@@ -48,7 +48,7 @@ public class ChurchCommands : IChurchCommands
         _context.Churches.Update(dbChurch);
         await _context.SaveChangesAsync();
 
-        return Result.Ok(_mapper.Map<ChurchDto>(dbChurch));
+        return Result.Ok(_mapper.Map<ChurchResponse>(dbChurch));
     }
 
     public async Task<Result<bool>> Delete(int id)

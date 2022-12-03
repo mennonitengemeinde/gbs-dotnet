@@ -1,6 +1,7 @@
 ﻿@page "/school/lessons/{id:int}"
 @attribute [Authorize(Policy = Policies.RequireAdminsSoundAndTeachers)]
 @using Gbs.Wasm.Pages.School.Components
+@using Gbs.Shared.Lessons
 
 @inject ILessonStore LessonStore
 @inject NavigationManager NavigationManager

@@ -1,3 +1,5 @@
+using Gbs.Shared.Generations;
+
 namespace Gbs.Api.Controllers
 {
     [Route("api/[controller]")]

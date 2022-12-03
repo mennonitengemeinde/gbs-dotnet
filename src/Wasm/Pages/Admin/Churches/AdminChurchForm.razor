@@ -1,5 +1,6 @@
 @page "/admin/churches/create"
 @page "/admin/churches/{Id:int}/edit"
+@using Gbs.Shared.Churches
 @attribute [Authorize(Policy = Policies.RequireAdmins)]
 
 @inject NavigationManager NavigationManager
@@ -43,7 +44,7 @@
 </EditForm>
 
 @code {
-    ChurchCreateDto _model = new ();
+    CreateChurchRequest _model = new ();
     bool _isProcessing;
     bool _isEdit;
 

@@ -8,4 +8,8 @@
         <AssemblyName>Gbs.Domain</AssemblyName>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Gbs.Shared\Gbs.Shared.csproj" />
+    </ItemGroup>
+
 </Project>

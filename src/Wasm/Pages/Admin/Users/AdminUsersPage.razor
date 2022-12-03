@@ -1,5 +1,6 @@
 ﻿@page "/admin/users"
 @attribute [Authorize(Policy = Policies.RequireAdmins)]
+@using Gbs.Shared.Identity
 @implements IDisposable
 
 @inject IAuthService AuthService

@@ -1,4 +1,6 @@
 using Gbs.Application.Streams;
+using Gbs.Domain.Entities;
+using Gbs.Shared.Streams;
 using Gbs.Tests.Infrastructure.Seeds;
 
 namespace Gbs.Tests.Application.UnitTests.Streams;

@@ -1,5 +1,6 @@
 using Gbs.Application.Subjects;
 using Gbs.Domain.Common.Wrapper;
+using Gbs.Shared.Subjects;
 
 namespace Gbs.Application.Common.Interfaces.Commands;
 

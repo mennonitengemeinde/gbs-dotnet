@@ -1,4 +1,5 @@
 ﻿using Gbs.Application.Generations;
+using Gbs.Shared.Generations;
 
 namespace Gbs.Tests.Application.UnitTests.Generations;
 
