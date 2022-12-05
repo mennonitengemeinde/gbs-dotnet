@@ -25,8 +25,15 @@ public class StudentCreateDto
 
     [Display(Name = "Province/State")]
     [Required]
-    [Range(1, int.MaxValue, ErrorMessage = "You must select a province/state.")]
-    public int StateId { get; set; }
+    [StringLength(50, MinimumLength = 3)]
+    public string Province { get; set; } = string.Empty;
+    
+    [Required]
+    [StringLength(50, MinimumLength = 3)]
+    public string Country { get; set; } = string.Empty;
+    
+    [StringLength(10, MinimumLength = 3)]
+    public string? PostalCode { get; set; } = string.Empty;
 
     [Display(Name = "Marital Status")]
     [Required]

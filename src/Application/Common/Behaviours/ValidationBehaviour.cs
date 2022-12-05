@@ -1,6 +1,4 @@
-﻿using FluentValidation;
-using MediatR;
-using ValidationException = Gbs.Application.Common.Exceptions.ValidationException;
+﻿using ValidationException = Gbs.Application.Common.Exceptions.ValidationException;
 
 namespace Gbs.Application.Common.Behaviours;
 

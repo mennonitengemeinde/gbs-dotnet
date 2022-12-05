@@ -1,4 +1,4 @@
-﻿using Gbs.Domain.Common.Extensions;
+﻿using Gbs.Shared.Common.Extensions;
 using Gbs.Shared.Students;
 
 namespace Gbs.Wasm.Pages.Admin.Students;
@@ -48,7 +48,7 @@ public partial class StudentFormPage
                 MaritalStatus = student.MaritalStatus,
                 Address = student.Address,
                 City = student.City,
-                State = student.State,
+                Province = student.State,
                 Country = student.Country,
                 PostalCode = student.PostalCode,
                 Email = student.Email,

@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using FluentValidation;
 using Gbs.Application.Churches;
+using Gbs.Application.Churches.Commands;
 using Gbs.Application.Common.Behaviours;
 using Gbs.Application.Identity;
 using Gbs.Application.Lessons;

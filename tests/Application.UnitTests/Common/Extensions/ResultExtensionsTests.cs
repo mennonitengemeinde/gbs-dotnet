@@ -1,6 +1,5 @@
 ﻿using Gbs.Application.Common.Extensions;
-using Gbs.Domain.Common.Wrapper;
-using Microsoft.AspNetCore.Http;
+using Gbs.Shared.Common.Wrapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Gbs.Tests.Application.UnitTests.Common.Extensions;

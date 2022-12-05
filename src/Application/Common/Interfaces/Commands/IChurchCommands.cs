@@ -2,4 +2,4 @@
 
 namespace Gbs.Application.Common.Interfaces.Commands;
 
-public interface IChurchCommands : ICrudCommand<ChurchResponse, ChurchCreateDto, ChurchCreateDto> { }
+public interface IChurchCommands : ICrudCommand<ChurchDto, CreateChurchRequest, CreateChurchRequest> { }

@@ -1,5 +1,4 @@
-﻿using Gbs.Domain.Common.Wrapper;
-using Gbs.Shared.Lessons;
+﻿using Gbs.Shared.Lessons;
 
 namespace Gbs.Application.Lessons;
 

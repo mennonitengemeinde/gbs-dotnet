@@ -11,7 +11,7 @@ public class ChurchCommandsTests : GbsTestBase
         var config = new MapperConfiguration(cfg => { cfg.AddProfile(new MappingProfile()); });
         var mapper = config.CreateMapper();
         var churchCmd = new ChurchCommands(Context, mapper);
-        var church = new ChurchCreateDto { Name = "Test Church", Country = "Test Country" };
+        var church = new CreateChurchRequest { Name = "Test Church", Country = "Test Country" };
         // Act
         var result = await churchCmd.Add(church);
         var contextCount = Context.Churches.Count();
@@ -30,7 +30,7 @@ public class ChurchCommandsTests : GbsTestBase
         var config = new MapperConfiguration(cfg => { cfg.AddProfile(new MappingProfile()); });
         var mapper = config.CreateMapper();
         var churchCmd = new ChurchCommands(Context, mapper);
-        var church = new ChurchCreateDto { Name = "Church 1", Country = "Test Country" };
+        var church = new CreateChurchRequest { Name = "Church 1", Country = "Test Country" };
         // Act
         var result = await churchCmd.Add(church);
         var contextCount = Context.Churches.Count();
@@ -49,7 +49,7 @@ public class ChurchCommandsTests : GbsTestBase
 
         var churchCmd = new ChurchCommands(Context, mapper);
 
-        var church = new ChurchCreateDto { Name = "Test Church", Country = "Test Country" };
+        var church = new CreateChurchRequest { Name = "Test Church", Country = "Test Country" };
 
         var result = await churchCmd.Update(1, church);
         var contextCount = Context.Churches.Count();
@@ -68,7 +68,7 @@ public class ChurchCommandsTests : GbsTestBase
         var config = new MapperConfiguration(cfg => { cfg.AddProfile(new MappingProfile()); });
         var mapper = config.CreateMapper();
         var churchCmd = new ChurchCommands(Context, mapper);
-        var church = new ChurchCreateDto { Name = "Church 1", Country = "Test Country" };
+        var church = new CreateChurchRequest { Name = "Church 1", Country = "Test Country" };
         // Act
         var result = await churchCmd.Update(5, church);
         var contextCount = Context.Churches.Count();
@@ -86,7 +86,7 @@ public class ChurchCommandsTests : GbsTestBase
         var config = new MapperConfiguration(cfg => { cfg.AddProfile(new MappingProfile()); });
         var mapper = config.CreateMapper();
         var churchCmd = new ChurchCommands(Context, mapper);
-        var church = new ChurchCreateDto { Name = "Church 1", Country = "Test Country" };
+        var church = new CreateChurchRequest { Name = "Church 1", Country = "Test Country" };
         // Act
         var result = await churchCmd.Update(2, church);
         var contextCount = Context.Churches.Count();

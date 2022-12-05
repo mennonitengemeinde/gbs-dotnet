@@ -1,4 +1,3 @@
-using Gbs.Domain.Common.Wrapper;
 using Gbs.Shared.Teachers;
 
 namespace Gbs.Application.Teachers;

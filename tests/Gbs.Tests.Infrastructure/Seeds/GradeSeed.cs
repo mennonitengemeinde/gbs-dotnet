@@ -1,4 +1,5 @@
 using Gbs.Domain.Entities;
+using Gbs.Shared.Common.Enums;
 
 namespace Gbs.Tests.Infrastructure.Seeds;
 

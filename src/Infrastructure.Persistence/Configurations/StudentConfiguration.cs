@@ -1,5 +1,6 @@
 ﻿using Gbs.Application.Common.Entities;
 using Gbs.Domain.Entities;
+using Gbs.Shared.Common.Enums;
 
 namespace Gbs.Infrastructure.Persistence.Configurations;
 
@@ -22,7 +23,7 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
         builder.Property(s => s.Address)
             .HasMaxLength(100);
         
-        builder.Property(s => s.State)
+        builder.Property(s => s.Province)
             .HasMaxLength(50)
             .IsRequired();
         

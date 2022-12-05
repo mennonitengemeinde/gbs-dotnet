@@ -1,5 +1,4 @@
 ﻿using Gbs.Application.Common.Interfaces.Services;
-using Gbs.Domain.Common.Wrapper;
 using Gbs.Shared.Students;
 
 namespace Gbs.Application.Students;
@@ -51,7 +50,9 @@ public class StudentCommands : IStudentCommands
         student.LastName = request.LastName;
         student.Address = request.Address;
         student.City = request.City;
-        student.StateId = request.StateId;
+        student.Province = request.Province;
+        student.PostalCode = request.PostalCode;
+        student.Country = request.Country;
         if (request.DateOfBirth != null) student.DateOfBirth = request.DateOfBirth.Value;
         student.MaritalStatus = request.MaritalStatus;
         student.Email = request.Email;

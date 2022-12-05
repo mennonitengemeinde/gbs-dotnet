@@ -12,6 +12,9 @@ public class Student
 
     public string? Address { get; set; }
     public string City { get; set; } = string.Empty;
+    public string Province { get; set; } = string.Empty;
+    public string? PostalCode { get; set; }
+    public string Country { get; set; } = string.Empty;
 
     public MaritalStatus MaritalStatus { get; set; }
     public string? Email { get; set; }
@@ -19,10 +22,7 @@ public class Student
     public EnrollmentState EnrollmentStatus { get; set; } = EnrollmentState.Active;
     public string? Testimony { get; set; }
     public bool AgreedToGbsConcept { get; set; } = false;
-
-    public int StateId { get; set; }
-    public State State { get; set; } = null!;
-
+    
     public int ChurchId { get; set; }
     public Church Church { get; set; } = null!;
 

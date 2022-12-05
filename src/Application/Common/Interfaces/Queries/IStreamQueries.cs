@@ -1,4 +1,3 @@
-using Gbs.Domain.Common.Wrapper;
 using Gbs.Shared.Streams;
 
 namespace Gbs.Application.Common.Interfaces.Queries;

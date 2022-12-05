@@ -1,6 +1,6 @@
 namespace Gbs.Shared.Churches;
 
-public class ChurchResponse
+public class ChurchDto
 {
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;

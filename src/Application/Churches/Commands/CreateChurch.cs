@@ -1,9 +1,6 @@
-﻿using FluentValidation;
-using MediatR;
+﻿namespace Gbs.Application.Churches.Commands;
 
-namespace Gbs.Application.Churches.Commands;
-
-public record CreateChurchCommand(CreateChurchRequest Church) : IRequest<Result<ChurchResponse>>;
+public record CreateChurchCommand(CreateChurchRequest Church) : IRequest<Result<ChurchDto>>;
 
 public class CreateChurchCommandValidator : AbstractValidator<CreateChurchCommand>
 {
@@ -26,7 +23,7 @@ public class CreateChurchCommandValidator : AbstractValidator<CreateChurchComman
     }
 }
 
-public class CreateChurchCommandHandler : IRequestHandler<CreateChurchCommand, Result<ChurchResponse>>
+public class CreateChurchCommandHandler : IRequestHandler<CreateChurchCommand, Result<ChurchDto>>
 {
     private readonly IGbsDbContext _context;
     private readonly IMapper _mapper;
@@ -37,11 +34,11 @@ public class CreateChurchCommandHandler : IRequestHandler<CreateChurchCommand, R
         _mapper = mapper;
     }
     
-    public async Task<Result<ChurchResponse>> Handle(CreateChurchCommand request, CancellationToken cancellationToken)
+    public async Task<Result<ChurchDto>> Handle(CreateChurchCommand request, CancellationToken cancellationToken)
     {
         var newChurch = _mapper.Map<Church>(request);
         _context.Churches.Add(newChurch);
         await _context.SaveChangesAsync(cancellationToken);
-        return Result.Ok(_mapper.Map<ChurchResponse>(newChurch));
+        return Result.Ok(_mapper.Map<ChurchDto>(newChurch));
     }
 }
