@@ -1,4 +1,4 @@
-using Gbs.Shared.Subjects;
+using Gbs.Application.Features.Subjects.Interfaces;
 
 namespace Gbs.Application.Features.Subjects;
 
@@ -13,21 +13,21 @@ public class SubjectQueries : ISubjectQueries
         _mapper = mapper;
     }
 
-    public async Task<Result<List<SubjectDto>>> GetAll()
+    public async Task<Result<List<SubjectResponse>>> GetAll()
     {
         var subjects = await _context.Subjects
-            .ProjectTo<SubjectDto>(_mapper.ConfigurationProvider)
+            .ProjectTo<SubjectResponse>(_mapper.ConfigurationProvider)
             .ToListAsync();
         return Result.Ok(subjects);
     }
 
-    public async Task<Result<SubjectDto>> GetById(int id)
+    public async Task<Result<SubjectResponse>> GetById(int id)
     {
         var subject = await _context.Subjects
-            .ProjectTo<SubjectDto>(_mapper.ConfigurationProvider)
+            .ProjectTo<SubjectResponse>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync();
         return subject == null
-            ? Result.NotFound<SubjectDto>("Subject not found")
+            ? Result.NotFound<SubjectResponse>("Subject not found")
             : Result.Ok(subject);
     }
 }

@@ -1,4 +1,4 @@
-﻿using Gbs.Shared.Lessons;
+﻿using Gbs.Application.Features.Lessons.Interfaces;
 
 namespace Gbs.Application.Features.Lessons;
 
@@ -13,22 +13,22 @@ public class LessonQueries : ILessonQueries
         _mapper = mapper;
     }
 
-    public async Task<Result<List<LessonDto>>> GetAll()
+    public async Task<Result<List<LessonResponse>>> GetAll()
     {
         var lessons = await _context.Lessons
-            .ProjectTo<LessonDto>(_mapper.ConfigurationProvider)
+            .ProjectTo<LessonResponse>(_mapper.ConfigurationProvider)
             .OrderBy(l => l.Order)
             .ToListAsync();
         return Result.Ok(lessons);
     }
 
-    public async Task<Result<LessonDto>> GetById(int id)
+    public async Task<Result<LessonResponse>> GetById(int id)
     {
         var lesson = await _context.Lessons
-            .ProjectTo<LessonDto>(_mapper.ConfigurationProvider)
+            .ProjectTo<LessonResponse>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync();
         return lesson == null
-            ? Result.NotFound<LessonDto>("Lesson not found")
+            ? Result.NotFound<LessonResponse>("Lesson not found")
             : Result.Ok(lesson);
     }
 }

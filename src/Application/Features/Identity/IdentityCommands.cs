@@ -1,6 +1,6 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using Gbs.Shared.Identity;
+using Gbs.Application.Features.Identity.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -52,7 +52,7 @@ public class IdentityCommands : IIdentityCommands
         return Result.Ok(await CreateToken(user));
     }
 
-    public async Task<Result<string>> Add(RegisterDto request)
+    public async Task<Result<string>> Add(RegisterRequest request)
     {
         if (await _context.Users.AnyAsync(u => u.Email != null && u.Email.ToLower().Equals(request.Email.ToLower())))
         {
@@ -70,11 +70,11 @@ public class IdentityCommands : IIdentityCommands
         return Result.BadRequest<string>(error);
     }
 
-    public async Task<Result<UserDto>> UpdateRoles(string id, List<string> newRoles)
+    public async Task<Result<UserResponse>> UpdateRoles(string id, List<string> newRoles)
     {
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
         if (user == null)
-            return Result.NotFound<UserDto>("User not found");
+            return Result.NotFound<UserResponse>("User not found");
 
         var userRoles = await _userManager.GetRolesAsync(user);
 
@@ -83,7 +83,7 @@ public class IdentityCommands : IIdentityCommands
         {
             var removeResult = await _userManager.RemoveFromRolesAsync(user, rolesToRemove);
             if (!removeResult.Succeeded)
-                return Result.BadRequest<UserDto>("Failed to remove roles");
+                return Result.BadRequest<UserResponse>("Failed to remove roles");
         }
 
         var rolesToAdd = newRoles.Except(userRoles).ToList();
@@ -92,31 +92,31 @@ public class IdentityCommands : IIdentityCommands
 
         var result = await _userManager.AddToRolesAsync(user, rolesToAdd);
         if (!result.Succeeded)
-            return Result.BadRequest<UserDto>("Failed to add roles");
+            return Result.BadRequest<UserResponse>("Failed to add roles");
 
         return await _identityQueries.GetById(user.Id);
     }
 
-    public async Task<Result<UserDto>> UpdateActiveState(string id, bool request)
+    public async Task<Result<UserResponse>> UpdateActiveState(string id, bool request)
     {
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
         if (user == null)
-            return Result.BadRequest<UserDto>("User not found");
+            return Result.BadRequest<UserResponse>("User not found");
 
         user.IsActive = request;
         await _context.SaveChangesAsync();
-        return Result.Ok(_mapper.Map<UserDto>(user));
+        return Result.Ok(_mapper.Map<UserResponse>(user));
     }
 
-    public async Task<Result<UserDto>> UpdateChurch(string id, UserUpdateChurchDto request)
+    public async Task<Result<UserResponse>> UpdateChurch(string id, UpdateUserChurchRequest request)
     {
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
         if (user == null)
-            return Result.NotFound<UserDto>("User not found");
+            return Result.NotFound<UserResponse>("User not found");
 
         user.ChurchId = request.ChurchId;
         await _context.SaveChangesAsync();
-        return Result.Ok(_mapper.Map<UserDto>(user));
+        return Result.Ok(_mapper.Map<UserResponse>(user));
     }
 
     public async Task<Result<bool>> Delete(string id)

@@ -1,5 +1,4 @@
-﻿using Gbs.Application.Entities;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 
 namespace Gbs.Application.Common.Entities;
 

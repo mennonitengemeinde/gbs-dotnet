@@ -1,5 +1,6 @@
 ﻿using Gbs.Application.Common.Interfaces.Services;
-using Gbs.Shared.Students;
+using Gbs.Application.Features.Identity.Interfaces;
+using Gbs.Application.Features.Students.Interfaces;
 
 namespace Gbs.Application.Features.Students;
 
@@ -22,54 +23,54 @@ public class StudentQueries : IStudentQueries
         _authUserService = authUserService;
     }
     
-    public async Task<Result<List<StudentDto>>> GetAll()
+    public async Task<Result<List<StudentResponse>>> GetAll()
     {
         var roles = _authUserService.GetUserRoles();
         if (roles.Contains(Roles.Admin) || roles.Contains(Roles.SuperAdmin))
         {
             var result = await _context.Students
-                .ProjectTo<StudentDto>(_mapper.ConfigurationProvider)
+                .ProjectTo<StudentResponse>(_mapper.ConfigurationProvider)
                 .ToListAsync();
             return Result.Ok(result);
         }
 
         var user = await _identityQueries.GetById(_authUserService.GetUserId());
         if (user.Data == null)
-            return Result.NotFound<List<StudentDto>>("User not found");
+            return Result.NotFound<List<StudentResponse>>("User not found");
         
         var students = await _context.Students
             .Where(s => s.ChurchId == user.Data.ChurchId)
             .OrderBy(s => s.FirstName)
-            .ProjectTo<StudentDto>(_mapper.ConfigurationProvider)
+            .ProjectTo<StudentResponse>(_mapper.ConfigurationProvider)
             .ToListAsync();
         
         return Result.Ok(students);
     }
 
-    public async Task<Result<StudentDto>> GetById(int id)
+    public async Task<Result<StudentResponse>> GetById(int id)
     {
         var roles = _authUserService.GetUserRoles();
         if (roles.Contains(Roles.Admin) || roles.Contains(Roles.SuperAdmin))
         {
             var student = await _context.Students
-                .ProjectTo<StudentDto>(_mapper.ConfigurationProvider)
+                .ProjectTo<StudentResponse>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(s => s.Id == id);
             
             return student == null
-                ? Result.NotFound<StudentDto>("Student not found")
+                ? Result.NotFound<StudentResponse>("Student not found")
                 : Result.Ok(student);
         }
         else
         {
             var user = await _identityQueries.GetById(_authUserService.GetUserId());
             if (user.Data == null)
-                return Result.NotFound<StudentDto>("User not found");
+                return Result.NotFound<StudentResponse>("User not found");
             
             var student = await _context.Students
-                .ProjectTo<StudentDto>(_mapper.ConfigurationProvider)
+                .ProjectTo<StudentResponse>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(s => s.Id == id && s.ChurchId == user.Data.ChurchId);
             return student == null
-                ? Result.NotFound<StudentDto>("Student not found")
+                ? Result.NotFound<StudentResponse>("Student not found")
                 : Result.Ok(student);
         }
     }

@@ -5,11 +5,17 @@ using Gbs.Application.Features.Churches.Validators;
 using Gbs.Application.Features.Generations;
 using Gbs.Application.Features.Generations.Interfaces;
 using Gbs.Application.Features.Identity;
+using Gbs.Application.Features.Identity.Interfaces;
 using Gbs.Application.Features.Lessons;
+using Gbs.Application.Features.Lessons.Interfaces;
 using Gbs.Application.Features.Streams;
+using Gbs.Application.Features.Streams.Interfaces;
 using Gbs.Application.Features.Students;
+using Gbs.Application.Features.Students.Interfaces;
 using Gbs.Application.Features.Subjects;
+using Gbs.Application.Features.Subjects.Interfaces;
 using Gbs.Application.Features.Teachers;
+using Gbs.Application.Features.Teachers.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Gbs.Application;

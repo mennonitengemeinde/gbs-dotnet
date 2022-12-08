@@ -2,14 +2,12 @@
 
 namespace Gbs.Tests.Application.UnitTests.Features.Generations;
 
-public class GenerationQueriesTests : GbsTestBase
+public class GenerationQueriesTests : GenerationTestBase
 {
     [Fact]
     public async Task GetAll_ReturnsAllGenerations()
     {
-        var config = new MapperConfiguration(cfg => { cfg.AddProfile(new MappingProfile()); });
-        var mapper = config.CreateMapper();
-        var generationQ = new GenerationQueries(Context, mapper);
+        var generationQ = new GenerationQueries(Context, Mapper);
 
         var result = await generationQ.GetAll();
 
@@ -21,9 +19,7 @@ public class GenerationQueriesTests : GbsTestBase
     [Fact]
     public async Task GetById_ReturnsGeneration()
     {
-        var config = new MapperConfiguration(cfg => { cfg.AddProfile(new MappingProfile()); });
-        var mapper = config.CreateMapper();
-        var generationQ = new GenerationQueries(Context, mapper);
+        var generationQ = new GenerationQueries(Context, Mapper);
 
         var result = await generationQ.GetById(1);
 
@@ -35,9 +31,7 @@ public class GenerationQueriesTests : GbsTestBase
     [Fact]
     public async Task GetById_ReturnsNull()
     {
-        var config = new MapperConfiguration(cfg => { cfg.AddProfile(new MappingProfile()); });
-        var mapper = config.CreateMapper();
-        var generationQ = new GenerationQueries(Context, mapper);
+        var generationQ = new GenerationQueries(Context, Mapper);
 
         var result = await generationQ.GetById(4);
 

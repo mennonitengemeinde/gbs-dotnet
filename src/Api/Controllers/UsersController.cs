@@ -1,3 +1,4 @@
+using Gbs.Application.Features.Identity.Interfaces;
 using Gbs.Shared.Identity;
 
 namespace Gbs.Api.Controllers

@@ -1,6 +1,4 @@
-﻿using Gbs.Shared.Generations;
-
-namespace Gbs.Application.Features.Generations.Validators;
+﻿namespace Gbs.Application.Features.Generations.Validators;
 
 public class CreateGenerationValidator : AbstractValidator<CreateGenerationRequest>
 {

@@ -1,4 +1,4 @@
-using Gbs.Shared.Teachers;
+using Gbs.Application.Features.Teachers.Interfaces;
 
 namespace Gbs.Application.Features.Teachers;
 
@@ -13,22 +13,22 @@ public class TeacherQueries : ITeacherQueries
         _mapper = mapper;
     }
     
-    public async Task<Result<List<TeacherDto>>> GetAll()
+    public async Task<Result<List<TeacherResponse>>> GetAll()
     {
         var teachers = await _context.Teachers
-            .ProjectTo<TeacherDto>(_mapper.ConfigurationProvider)
+            .ProjectTo<TeacherResponse>(_mapper.ConfigurationProvider)
             .ToListAsync();
         return Result.Ok(teachers);
     }
 
-    public async Task<Result<TeacherDto>> GetById(int id)
+    public async Task<Result<TeacherResponse>> GetById(int id)
     {
         var teacher = await _context.Teachers
-            .ProjectTo<TeacherDto>(_mapper.ConfigurationProvider)
+            .ProjectTo<TeacherResponse>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(t => t.Id == id);
 
         return teacher == null
-            ? Result.NotFound<TeacherDto>("Teacher not found")
+            ? Result.NotFound<TeacherResponse>("Teacher not found")
             : Result.Ok(teacher);
     }
 }

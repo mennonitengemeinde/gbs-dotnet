@@ -3,15 +3,13 @@ using Gbs.Shared.Subjects;
 
 namespace Gbs.Tests.Application.UnitTests.Features.Subjects;
 
-public class SubjectCommandsTests : GbsTestBase
+public class SubjectCommandsTests : SubjectTestBase
 {
     [Fact]
     public async Task Add_AddsSubject()
     {
-        var config = new MapperConfiguration(cfg => { cfg.AddProfile(new MappingProfile()); });
-        var mapper = config.CreateMapper();
-        var cmd = new SubjectCommands(Context, mapper);
-        var subject = new SubjectCreateDto { Name = "Subject 4" };
+        var cmd = new SubjectCommands(Context, Mapper);
+        var subject = new CreateSubjectRequest { Name = "Subject 4" };
 
         var result = await cmd.Add(subject);
         var ctxCount = Context.Subjects.Count();
@@ -26,10 +24,8 @@ public class SubjectCommandsTests : GbsTestBase
     [Fact]
     public async Task Add_ReturnsBadRequest_WhenNameAlreadyExists()
     {
-        var config = new MapperConfiguration(cfg => { cfg.AddProfile(new MappingProfile()); });
-        var mapper = config.CreateMapper();
-        var cmd = new SubjectCommands(Context, mapper);
-        var subject = new SubjectCreateDto { Name = "Subject 1" };
+        var cmd = new SubjectCommands(Context, Mapper);
+        var subject = new CreateSubjectRequest { Name = "Subject 1" };
 
         var result = await cmd.Add(subject);
         var ctxCount = Context.Subjects.Count();
@@ -42,10 +38,8 @@ public class SubjectCommandsTests : GbsTestBase
     [Fact]
     public async Task Update_UpdatesSubject()
     {
-        var config = new MapperConfiguration(cfg => { cfg.AddProfile(new MappingProfile()); });
-        var mapper = config.CreateMapper();
-        var cmd = new SubjectCommands(Context, mapper);
-        var subject = new SubjectCreateDto { Name = "Subject 1 Updated" };
+        var cmd = new SubjectCommands(Context, Mapper);
+        var subject = new CreateSubjectRequest { Name = "Subject 1 Updated" };
 
         var result = await cmd.Update(1, subject);
         var ctxCount = Context.Subjects.Count();
@@ -60,10 +54,8 @@ public class SubjectCommandsTests : GbsTestBase
     [Fact]
     public async Task Update_ReturnsBadRequest_WhenNameAlreadyExists()
     {
-        var config = new MapperConfiguration(cfg => { cfg.AddProfile(new MappingProfile()); });
-        var mapper = config.CreateMapper();
-        var cmd = new SubjectCommands(Context, mapper);
-        var subject = new SubjectCreateDto { Name = "Subject 2" };
+        var cmd = new SubjectCommands(Context, Mapper);
+        var subject = new CreateSubjectRequest { Name = "Subject 2" };
 
         var result = await cmd.Update(1, subject);
         var ctxCount = Context.Subjects.Count();
@@ -76,10 +68,8 @@ public class SubjectCommandsTests : GbsTestBase
     [Fact]
     public async Task Update_ReturnsNotFound_WhenSubjectDoesNotExist()
     {
-        var config = new MapperConfiguration(cfg => { cfg.AddProfile(new MappingProfile()); });
-        var mapper = config.CreateMapper();
-        var cmd = new SubjectCommands(Context, mapper);
-        var subject = new SubjectCreateDto { Name = "Subject 1 Updated" };
+        var cmd = new SubjectCommands(Context, Mapper);
+        var subject = new CreateSubjectRequest { Name = "Subject 1 Updated" };
 
         var result = await cmd.Update(4, subject);
         var ctxCount = Context.Subjects.Count();

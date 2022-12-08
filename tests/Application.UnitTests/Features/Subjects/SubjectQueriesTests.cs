@@ -2,15 +2,13 @@
 
 namespace Gbs.Tests.Application.UnitTests.Features.Subjects;
 
-public class SubjectQueriesTests : GbsTestBase
+public class SubjectQueriesTests : SubjectTestBase
 {
     [Fact]
     public async Task GetAll_ShouldReturnAllSubjects()
     {
         // Arrange
-        var config = new MapperConfiguration(cfg => { cfg.AddProfile(new MappingProfile()); });
-        var mapper = config.CreateMapper();
-        var q = new SubjectQueries(Context, mapper);
+        var q = new SubjectQueries(Context, Mapper);
 
         // Act
         var result = await q.GetAll();
@@ -25,9 +23,7 @@ public class SubjectQueriesTests : GbsTestBase
     public async Task Get_ShouldReturnSubject()
     {
         // Arrange
-        var config = new MapperConfiguration(cfg => { cfg.AddProfile(new MappingProfile()); });
-        var mapper = config.CreateMapper();
-        var q = new SubjectQueries(Context, mapper);
+        var q = new SubjectQueries(Context, Mapper);
 
         // Act
         var result = await q.GetById(1);

@@ -1,5 +1,4 @@
-﻿using Gbs.Application.Entities;
-using Gbs.Application.Features.Churches.Interfaces;
+﻿using Gbs.Application.Features.Churches.Interfaces;
 
 namespace Gbs.Application.Features.Churches;
 
@@ -22,27 +21,27 @@ public class ChurchCommands : IChurchCommands
         _updateChurchValidator = updateChurchValidator;
     }
 
-    public async Task<Result<ChurchDto>> Add(CreateChurchRequest request)
+    public async Task<Result<ChurchResponse>> Add(CreateChurchRequest request)
     {
         var valResult = await _createChurchValidator.ValidateAsync(request);
         if (!valResult.IsValid)
-            return Result.ValidationError<ChurchDto>(valResult);
+            return Result.ValidationError<ChurchResponse>(valResult);
 
         var newChurch = _mapper.Map<Church>(request);
         _context.Churches.Add(newChurch);
         await _context.SaveChangesAsync();
-        return Result.Ok(_mapper.Map<ChurchDto>(newChurch));
+        return Result.Ok(_mapper.Map<ChurchResponse>(newChurch));
     }
 
-    public async Task<Result<ChurchDto>> Update(int id, UpdateChurchRequest request)
+    public async Task<Result<ChurchResponse>> Update(int id, UpdateChurchRequest request)
     {
         var dbChurch = await _context.Churches.FirstOrDefaultAsync(c => c.Id == id);
         if (dbChurch == null)
-            return Result.NotFound<ChurchDto>("Church not found");
+            return Result.NotFound<ChurchResponse>("Church not found");
         
         var valResult = await _updateChurchValidator.ValidateAsync(request);
         if (!valResult.IsValid)
-            return Result.ValidationError<ChurchDto>(valResult);
+            return Result.ValidationError<ChurchResponse>(valResult);
 
         dbChurch.Name = request.Name;
         dbChurch.Address = request.Address;
@@ -53,7 +52,7 @@ public class ChurchCommands : IChurchCommands
         _context.Churches.Update(dbChurch);
         await _context.SaveChangesAsync();
 
-        return Result.Ok(_mapper.Map<ChurchDto>(dbChurch));
+        return Result.Ok(_mapper.Map<ChurchResponse>(dbChurch));
     }
 
     public async Task<Result<bool>> Delete(int id)

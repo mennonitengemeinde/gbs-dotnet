@@ -4,20 +4,8 @@ using Gbs.Shared.Churches;
 
 namespace Gbs.Tests.Application.UnitTests.Features.Churches;
 
-public class ChurchCommandsTests : GbsTestBase
+public class ChurchCommandsTests : ChurchTestBase
 {
-    private CreateChurchValidator CreateChurchValidator { get; }
-    private UpdateChurchValidator UpdateChurchValidator { get; }
-    private IMapper Mapper { get; }
-    
-    public ChurchCommandsTests()
-    {
-        CreateChurchValidator = new CreateChurchValidator(Context);
-        UpdateChurchValidator = new UpdateChurchValidator(Context);
-        var config = new MapperConfiguration(cfg => { cfg.AddProfile(new ChurchMapping()); });
-        Mapper = config.CreateMapper();
-    }
-    
     [Fact]
     public async Task Add_AddsChurch()
     {

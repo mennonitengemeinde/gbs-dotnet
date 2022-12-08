@@ -1,5 +1,4 @@
-using Gbs.Application.Entities;
-using Gbs.Shared.Subjects;
+using Gbs.Application.Features.Subjects.Interfaces;
 
 namespace Gbs.Application.Features.Subjects;
 
@@ -14,30 +13,30 @@ public class SubjectCommands : ISubjectCommands
         _mapper = mapper;
     }
 
-    public async Task<Result<SubjectDto>> Add(SubjectCreateDto request)
+    public async Task<Result<SubjectResponse>> Add(CreateSubjectRequest request)
     {
         if (await NameExists(request.Name))
-            return Result.BadRequest<SubjectDto>("Subject name already exists");
+            return Result.BadRequest<SubjectResponse>("Subject name already exists");
         
         var subject = _mapper.Map<Subject>(request);
         _context.Subjects.Add(subject);
         await _context.SaveChangesAsync();
-        return Result.Ok(_mapper.Map<SubjectDto>(subject));
+        return Result.Ok(_mapper.Map<SubjectResponse>(subject));
     }
 
-    public async Task<Result<SubjectDto>> Update(int id, SubjectCreateDto request)
+    public async Task<Result<SubjectResponse>> Update(int id, CreateSubjectRequest request)
     {
         if (await NameExists(request.Name, id))
-            return Result.BadRequest<SubjectDto>("Subject name already exists");
+            return Result.BadRequest<SubjectResponse>("Subject name already exists");
         
         var subject = await _context.Subjects.FirstOrDefaultAsync(s => s.Id == id);
         if (subject == null)
-            return Result.NotFound<SubjectDto>("Subject not found");
+            return Result.NotFound<SubjectResponse>("Subject not found");
         
         subject.Name = request.Name;
         await _context.SaveChangesAsync();
 
-        return Result.Ok(_mapper.Map<SubjectDto>(subject));
+        return Result.Ok(_mapper.Map<SubjectResponse>(subject));
     }
 
     private async Task<bool> NameExists(string name, int? id = null)

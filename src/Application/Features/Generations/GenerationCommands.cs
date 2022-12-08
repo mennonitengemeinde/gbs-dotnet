@@ -1,6 +1,4 @@
-using Gbs.Application.Entities;
 using Gbs.Application.Features.Generations.Interfaces;
-using Gbs.Shared.Generations;
 
 namespace Gbs.Application.Features.Generations;
 
@@ -23,11 +21,11 @@ public class GenerationCommands : IGenerationCommands
         _updateGenerationValidator = updateGenerationValidator;
     }
 
-    public async Task<Result<GenerationDto>> Add(CreateGenerationRequest request)
+    public async Task<Result<GenerationResponse>> Add(CreateGenerationRequest request)
     {
         var resultVal = await _createGenerationValidator.ValidateAsync(request);
         if (!resultVal.IsValid)
-            return Result.ValidationError<GenerationDto>(resultVal);
+            return Result.ValidationError<GenerationResponse>(resultVal);
 
         var newGeneration = new Generation { Name = request.Name };
         await _context.Generations.AddAsync(newGeneration);
@@ -36,15 +34,15 @@ public class GenerationCommands : IGenerationCommands
         return await _generationQueries.GetById(newGeneration.Id);
     }
 
-    public async Task<Result<GenerationDto>> Update(int id, UpdateGenerationRequest request)
+    public async Task<Result<GenerationResponse>> Update(int id, UpdateGenerationRequest request)
     {
         var dbGeneration = await _context.Generations.FirstOrDefaultAsync(u => u.Id == id);
         if (dbGeneration == null)
-            return Result.NotFound<GenerationDto>("Generation not found");
+            return Result.NotFound<GenerationResponse>("Generation not found");
         
         var resultVal = await _updateGenerationValidator.ValidateAsync(request);
         if (!resultVal.IsValid)
-            return Result.ValidationError<GenerationDto>(resultVal);
+            return Result.ValidationError<GenerationResponse>(resultVal);
 
         dbGeneration.Name = request.Name;
         await _context.SaveChangesAsync();

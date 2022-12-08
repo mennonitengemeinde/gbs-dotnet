@@ -22,8 +22,4 @@
       <ProjectReference Include="..\Gbs.Shared\Gbs.Shared.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Features" />
-    </ItemGroup>
-
 </Project>

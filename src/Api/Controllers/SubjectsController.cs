@@ -1,3 +1,4 @@
+using Gbs.Application.Features.Subjects.Interfaces;
 using Gbs.Shared.Subjects;
 
 namespace Gbs.Api.Controllers

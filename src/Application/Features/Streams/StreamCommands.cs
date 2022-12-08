@@ -1,5 +1,4 @@
-using Gbs.Application.Entities;
-using Gbs.Shared.Streams;
+using Gbs.Application.Features.Streams.Interfaces;
 
 namespace Gbs.Application.Features.Streams;
 
@@ -14,14 +13,14 @@ public class StreamCommands : IStreamCommands
         _mapper = mapper;
     }
     
-    public async Task<Result<StreamDto>> CreateStream(StreamCreateDto streamCreateDto)
+    public async Task<Result<StreamResponse>> CreateStream(CreateStreamRequest streamCreateDto)
     {
         if (await TitleExists(streamCreateDto.Title))
-            return Result.BadRequest<StreamDto>("Stream with this title already exists");
+            return Result.BadRequest<StreamResponse>("Stream with this title already exists");
         
         var generation = await _context.Generations.FirstOrDefaultAsync(g => g.Id == streamCreateDto.GenerationId);
         if (generation == null)
-            return Result.NotFound<StreamDto>("Generation not found");
+            return Result.NotFound<StreamResponse>("Generation not found");
 
         var stream = _mapper.Map<LiveStream>(streamCreateDto);
 
@@ -33,24 +32,24 @@ public class StreamCommands : IStreamCommands
         stream.StreamTeachers.AddRange(streamTeachers);
         _context.Streams.Add(stream);
         await _context.SaveChangesAsync();
-        return Result.Ok(_mapper.Map<StreamDto>(stream));
+        return Result.Ok(_mapper.Map<StreamResponse>(stream));
     }
 
-    public async Task<Result<StreamDto>> UpdateStream(int streamId, StreamCreateDto streamCreateDto)
+    public async Task<Result<StreamResponse>> UpdateStream(int streamId, CreateStreamRequest streamCreateDto)
     {
         if (await TitleExists(streamCreateDto.Title, streamId))
-            return Result.BadRequest<StreamDto>("Stream with this title already exists");
+            return Result.BadRequest<StreamResponse>("Stream with this title already exists");
         
         var stream = await _context.Streams
             .Include(s => s.StreamTeachers)
             .FirstOrDefaultAsync(s => s.Id == streamId);
 
         if (stream == null)
-            return Result.NotFound<StreamDto>("Stream not found");
+            return Result.NotFound<StreamResponse>("Stream not found");
 
         var generation = await _context.Generations.FirstOrDefaultAsync(g => g.Id == streamCreateDto.GenerationId);
         if (generation == null)
-            return Result.NotFound<StreamDto>("Generation not found");
+            return Result.NotFound<StreamResponse>("Generation not found");
 
         foreach (var streamTeacher in stream.StreamTeachers
                      .Where(streamTeacher => !streamCreateDto.Teachers.Contains(streamTeacher.TeacherId)))
@@ -71,7 +70,7 @@ public class StreamCommands : IStreamCommands
         _context.Streams.Update(stream);
         await _context.SaveChangesAsync();
         
-        return Result.Ok(_mapper.Map<StreamDto>(stream));   
+        return Result.Ok(_mapper.Map<StreamResponse>(stream));   
     }
     
     public async Task<Result<bool>> DeleteStream(int streamId)
@@ -84,16 +83,16 @@ public class StreamCommands : IStreamCommands
         return Result.Ok(true, "Stream deleted successfully");
     }
     
-    public async Task<Result<StreamDto>> UpdateLiveStatus(int streamId, StreamUpdateLiveDto liveDto)
+    public async Task<Result<StreamResponse>> UpdateLiveStatus(int streamId, UpdateStreamLiveRequest liveDto)
     {
         var dbStream = await _context.Streams.FirstOrDefaultAsync(s => s.Id == streamId);
         if (dbStream == null)
-            return Result.NotFound<StreamDto>("Stream not found");
+            return Result.NotFound<StreamResponse>("Stream not found");
 
         dbStream.IsLive = liveDto.IsLive;
         await _context.SaveChangesAsync();
         
-        return Result.Ok(_mapper.Map<StreamDto>(dbStream));
+        return Result.Ok(_mapper.Map<StreamResponse>(dbStream));
     }
     
     private async Task<bool> TitleExists(string title, int? id = null)

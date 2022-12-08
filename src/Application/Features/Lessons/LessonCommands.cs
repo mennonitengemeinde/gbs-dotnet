@@ -1,5 +1,4 @@
-﻿using Gbs.Application.Entities;
-using Gbs.Shared.Lessons;
+﻿using Gbs.Application.Features.Lessons.Interfaces;
 
 namespace Gbs.Application.Features.Lessons;
 
@@ -14,10 +13,10 @@ public class LessonCommands : ILessonCommands
         _mapper = mapper;
     }
 
-    public async Task<Result<LessonDto>> Add(LessonCreateDto request)
+    public async Task<Result<LessonResponse>> Add(CreateLessonRequest request)
     {
         if (await NameExists(request.Name, request.GenerationId, request.SubjectId))
-            return Result.BadRequest<LessonDto>("Lesson name already exists");
+            return Result.BadRequest<LessonResponse>("Lesson name already exists");
 
         int lastOrder;
 
@@ -36,17 +35,17 @@ public class LessonCommands : ILessonCommands
         lesson.Order = lastOrder + 1;
         await _context.Lessons.AddAsync(lesson);
         await _context.SaveChangesAsync();
-        return Result.Ok(_mapper.Map<LessonDto>(lesson));
+        return Result.Ok(_mapper.Map<LessonResponse>(lesson));
     }
 
-    public async Task<Result<LessonDto>> Update(int id, LessonCreateDto request)
+    public async Task<Result<LessonResponse>> Update(int id, CreateLessonRequest request)
     {
         if (await NameExists(request.Name, request.GenerationId, request.SubjectId, id))
-            return Result.BadRequest<LessonDto>("Lesson name already exists");
+            return Result.BadRequest<LessonResponse>("Lesson name already exists");
 
         var lesson = await _context.Lessons.FindAsync(id);
         if (lesson == null)
-            return Result.NotFound<LessonDto>("Lesson not found");
+            return Result.NotFound<LessonResponse>("Lesson not found");
 
         lesson.Name = request.Name;
         lesson.SubjectId = request.SubjectId;
@@ -56,7 +55,7 @@ public class LessonCommands : ILessonCommands
 
         _context.Lessons.Update(lesson);
         await _context.SaveChangesAsync();
-        return Result.Ok(_mapper.Map<LessonDto>(lesson));
+        return Result.Ok(_mapper.Map<LessonResponse>(lesson));
     }
 
     public async Task<Result<bool>> Delete(int id)
@@ -70,14 +69,14 @@ public class LessonCommands : ILessonCommands
         return Result.Ok(true);
     }
 
-    public async Task<Result<LessonDto>> UpdateOrder(int id, int request)
+    public async Task<Result<LessonResponse>> UpdateOrder(int id, int request)
     {
         var lesson = await _context.Lessons.FindAsync(id);
         if (lesson == null)
-            return Result.NotFound<LessonDto>("Lesson not found");
+            return Result.NotFound<LessonResponse>("Lesson not found");
 
         if (lesson.Order == request)
-            return Result.Ok(_mapper.Map<LessonDto>(lesson));
+            return Result.Ok(_mapper.Map<LessonResponse>(lesson));
 
         var conflictLessons = await _context.Lessons
             .Where(l => l.GenerationId == lesson.GenerationId && l.Order == request)
@@ -91,7 +90,7 @@ public class LessonCommands : ILessonCommands
         lesson.Order = request;
         _context.Lessons.Update(lesson);
         await _context.SaveChangesAsync();
-        return Result.Ok(_mapper.Map<LessonDto>(lesson));
+        return Result.Ok(_mapper.Map<LessonResponse>(lesson));
     }
 
     private async Task<bool> NameExists(string name, int generationId, int? subjectId, int? id = null)

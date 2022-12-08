@@ -3,16 +3,14 @@ using Gbs.Shared.Teachers;
 
 namespace Gbs.Tests.Application.UnitTests.Features.Teachers;
 
-public class TeacherCommandsTests : GbsTestBase
+public class TeacherCommandsTests : TeacherTestBase
 {
     [Fact]
     public async Task Add_AddsTeacher()
     {
         // Arrange
-        var config = new MapperConfiguration(cfg => { cfg.AddProfile(new MappingProfile()); });
-        var mapper = config.CreateMapper();
-        var cmd = new TeacherCommands(Context, mapper);
-        var request = new TeacherCreateDto { Name = "Test Teacher" };
+        var cmd = new TeacherCommands(Context, Mapper);
+        var request = new CreateTeacherRequest { Name = "Test Teacher" };
         // Act
         var result = await cmd.Add(request);
         var contextCount = Context.Teachers.Count();
@@ -28,10 +26,8 @@ public class TeacherCommandsTests : GbsTestBase
     public async Task Add_ReturnsBadRequest()
     {
         // Arrange
-        var config = new MapperConfiguration(cfg => { cfg.AddProfile(new MappingProfile()); });
-        var mapper = config.CreateMapper();
-        var cmd = new TeacherCommands(Context, mapper);
-        var request = new TeacherCreateDto { Name = "Teacher 1" };
+        var cmd = new TeacherCommands(Context, Mapper);
+        var request = new CreateTeacherRequest { Name = "Teacher 1" };
         // Act
         var result = await cmd.Add(request);
         var contextCount = Context.Churches.Count();
@@ -45,16 +41,13 @@ public class TeacherCommandsTests : GbsTestBase
     [Fact]
     public async Task Update_UpdatesTeacher()
     {
-        var config = new MapperConfiguration(cfg => { cfg.AddProfile(new MappingProfile()); });
-        var mapper = config.CreateMapper();
-
-        var cmd = new TeacherCommands(Context, mapper);
-
-        var request = new TeacherCreateDto { Name = "Test Teacher" };
-
+        // Arrange
+        var cmd = new TeacherCommands(Context, Mapper);
+        var request = new CreateTeacherRequest { Name = "Test Teacher" };
+        // Act
         var result = await cmd.Update(1, request);
         var contextCount = Context.Teachers.Count();
-
+        // Assert
         Assert.True(result.Success);
         Assert.NotNull(result.Data);
         Assert.Equal(request.Name, result.Data.Name);
@@ -66,10 +59,8 @@ public class TeacherCommandsTests : GbsTestBase
     public async Task Update_ReturnsNotFound()
     {
         // Arrange
-        var config = new MapperConfiguration(cfg => { cfg.AddProfile(new MappingProfile()); });
-        var mapper = config.CreateMapper();
-        var cmd = new TeacherCommands(Context, mapper);
-        var request = new TeacherCreateDto { Name = "Teacher 5" };
+        var cmd = new TeacherCommands(Context, Mapper);
+        var request = new CreateTeacherRequest { Name = "Teacher 5" };
         // Act
         var result = await cmd.Update(5, request);
         var contextCount = Context.Teachers.Count();
@@ -84,10 +75,8 @@ public class TeacherCommandsTests : GbsTestBase
     public async Task Update_ReturnsBadRequest()
     {
         // Arrange
-        var config = new MapperConfiguration(cfg => { cfg.AddProfile(new MappingProfile()); });
-        var mapper = config.CreateMapper();
-        var cmd = new TeacherCommands(Context, mapper);
-        var request = new TeacherCreateDto { Name = "Teacher 1" };
+        var cmd = new TeacherCommands(Context, Mapper);
+        var request = new CreateTeacherRequest { Name = "Teacher 1" };
         // Act
         var result = await cmd.Update(2, request);
         var contextCount = Context.Teachers.Count();
@@ -102,9 +91,7 @@ public class TeacherCommandsTests : GbsTestBase
     public async Task Delete_DeletesChurch()
     {
         // Arrange
-        var config = new MapperConfiguration(cfg => { cfg.AddProfile(new MappingProfile()); });
-        var mapper = config.CreateMapper();
-        var cmd = new TeacherCommands(Context, mapper);
+        var cmd = new TeacherCommands(Context, Mapper);
         // Act
         var result = await cmd.Delete(1);
         var contextCount = Context.Teachers.Count();
@@ -118,9 +105,7 @@ public class TeacherCommandsTests : GbsTestBase
     public async Task Delete_ReturnsNotFound()
     {
         // Arrange
-        var config = new MapperConfiguration(cfg => { cfg.AddProfile(new MappingProfile()); });
-        var mapper = config.CreateMapper();
-        var cmd = new TeacherCommands(Context, mapper);
+        var cmd = new TeacherCommands(Context, Mapper);
         // Act
         var result = await cmd.Delete(5);
         var contextCount = Context.Teachers.Count();

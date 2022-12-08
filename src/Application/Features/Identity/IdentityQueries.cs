@@ -1,5 +1,5 @@
 ﻿using Gbs.Application.Common.Interfaces.Services;
-using Gbs.Shared.Identity;
+using Gbs.Application.Features.Identity.Interfaces;
 
 namespace Gbs.Application.Features.Identity;
 
@@ -19,17 +19,17 @@ public class IdentityQueries : IIdentityQueries
         _authenticatedUserService = authenticatedUserService;
     }
     
-    public async Task<Result<List<UserDto>>> GetAll()
+    public async Task<Result<List<UserResponse>>> GetAll()
     {
         if (!_authenticatedUserService.GetUserRoles().Contains(Roles.SuperAdmin))
         {
             var superAdminRole = await _context.Roles.FirstOrDefaultAsync(r => r.Name == Roles.SuperAdmin);
             if (superAdminRole == null)
-                return Result.BadRequest<List<UserDto>>("Your role is not valid");
+                return Result.BadRequest<List<UserResponse>>("Your role is not valid");
 
             var users = await _context.Users
                 .Where(u => u.UserRoles.Any(ur => ur.RoleId != superAdminRole.Id) || u.UserRoles.Count == 0)
-                .ProjectTo<UserDto>(_mapper.ConfigurationProvider)
+                .ProjectTo<UserResponse>(_mapper.ConfigurationProvider)
                 .OrderBy(u => u.FirstName)
                 .ToListAsync();
 
@@ -37,35 +37,35 @@ public class IdentityQueries : IIdentityQueries
         }
 
         var data = await _context.Users
-            .ProjectTo<UserDto>(_mapper.ConfigurationProvider)
+            .ProjectTo<UserResponse>(_mapper.ConfigurationProvider)
             .OrderBy(u => u.FirstName)
             .ToListAsync();
 
         return Result.Ok(data);
     }
 
-    public async Task<Result<UserDto>> GetById(string id)
+    public async Task<Result<UserResponse>> GetById(string id)
     {
         if (_authenticatedUserService.GetUserId() != id &&
             !_authenticatedUserService.GetUserRoles().Contains(Roles.SuperAdmin))
-            return Result.NotFound<UserDto>("User not found");
+            return Result.NotFound<UserResponse>("User not found");
 
         var user = await _context.Users
-            .ProjectTo<UserDto>(_mapper.ConfigurationProvider)
+            .ProjectTo<UserResponse>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(u => u.Id == id);
 
         return user == null
-            ? Result.NotFound<UserDto>("User not found")
+            ? Result.NotFound<UserResponse>("User not found")
             : Result.Ok(user);
     }
 
-    public async Task<Result<List<RolesDto>>> GetRoles()
+    public async Task<Result<List<RolesResponse>>> GetRoles()
     {
         var userRoles = _authenticatedUserService.GetUserRoles();
-        List<RolesDto> roles;
+        List<RolesResponse> roles;
         if (userRoles.Contains(Roles.SuperAdmin))
         {
-            roles = await _context.Roles.Select(x => new RolesDto
+            roles = await _context.Roles.Select(x => new RolesResponse
             {
                 Id = x.Id,
                 Name = x.Name!,
@@ -74,7 +74,7 @@ public class IdentityQueries : IIdentityQueries
         }
         else
         {
-            roles = await _context.Roles.Where(x => x.Name != Roles.SuperAdmin).Select(x => new RolesDto
+            roles = await _context.Roles.Where(x => x.Name != Roles.SuperAdmin).Select(x => new RolesResponse
             {
                 Id = x.Id,
                 Name = x.Name!,

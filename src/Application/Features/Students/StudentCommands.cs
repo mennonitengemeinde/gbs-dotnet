@@ -1,6 +1,6 @@
 ﻿using Gbs.Application.Common.Interfaces.Services;
-using Gbs.Application.Entities;
-using Gbs.Shared.Students;
+using Gbs.Application.Features.Identity.Interfaces;
+using Gbs.Application.Features.Students.Interfaces;
 
 namespace Gbs.Application.Features.Students;
 
@@ -23,7 +23,7 @@ public class StudentCommands : IStudentCommands
         _authUserService = authUserService;
     }
     
-    public async Task<Result<StudentDto>> Add(StudentCreateDto request)
+    public async Task<Result<StudentResponse>> Add(CreateStudentRequest request)
     {
         var student = _mapper.Map<Student>(request);
         
@@ -31,21 +31,21 @@ public class StudentCommands : IStudentCommands
         {
             var user = await _identityQueries.GetById(_authUserService.GetUserId());
             if (user.Data?.ChurchId == null)
-                return Result.BadRequest<StudentDto>("You are not assigned to a church");
+                return Result.BadRequest<StudentResponse>("You are not assigned to a church");
             
             student.ChurchId = user.Data.ChurchId.Value;
         }
         
         _context.Students.Add(student);
         await _context.SaveChangesAsync();
-        return Result.Ok(_mapper.Map<StudentDto>(student));
+        return Result.Ok(_mapper.Map<StudentResponse>(student));
     }
 
-    public async Task<Result<StudentDto>> Update(int id, StudentCreateDto request)
+    public async Task<Result<StudentResponse>> Update(int id, CreateStudentRequest request)
     {
         var student = await _context.Students.FirstOrDefaultAsync(s => s.Id == id);
         if (student == null)
-            return Result.NotFound<StudentDto>("Student not found");
+            return Result.NotFound<StudentResponse>("Student not found");
 
         student.FirstName = request.FirstName;
         student.LastName = request.LastName;
@@ -66,7 +66,7 @@ public class StudentCommands : IStudentCommands
 
         _context.Students.Update(student);
         await _context.SaveChangesAsync();
-        return Result.Ok(_mapper.Map<StudentDto>(student));
+        return Result.Ok(_mapper.Map<StudentResponse>(student));
     }
 
     public Task<Result<bool>> Delete(int id)

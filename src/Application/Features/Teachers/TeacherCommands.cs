@@ -1,5 +1,4 @@
-using Gbs.Application.Entities;
-using Gbs.Shared.Teachers;
+using Gbs.Application.Features.Teachers.Interfaces;
 
 namespace Gbs.Application.Features.Teachers;
 
@@ -14,11 +13,11 @@ public class TeacherCommands : ITeacherCommands
         _mapper = mapper;
     }
     
-    public async Task<Result<TeacherDto>> Add(TeacherCreateDto request)
+    public async Task<Result<TeacherResponse>> Add(CreateTeacherRequest request)
     {
         if (await NameExists(request.Name))
         {
-            return Result.BadRequest<TeacherDto>("Teacher already exists");
+            return Result.BadRequest<TeacherResponse>("Teacher already exists");
         }
 
         var teacher = new Teacher
@@ -28,24 +27,24 @@ public class TeacherCommands : ITeacherCommands
         _context.Teachers.Add(teacher);
         await _context.SaveChangesAsync();
 
-        return Result.Ok(_mapper.Map<TeacherDto>(teacher));
+        return Result.Ok(_mapper.Map<TeacherResponse>(teacher));
     }
 
-    public async Task<Result<TeacherDto>> Update(int id, TeacherCreateDto request)
+    public async Task<Result<TeacherResponse>> Update(int id, CreateTeacherRequest request)
     {
         if (await NameExists(request.Name, id))
-            return Result.BadRequest<TeacherDto>("Teacher already exists");
+            return Result.BadRequest<TeacherResponse>("Teacher already exists");
 
         var teacher = await _context.Teachers
             .FirstOrDefaultAsync(t => t.Id == id);
 
         if (teacher == null)
-            return Result.NotFound<TeacherDto>("Teacher not found");
+            return Result.NotFound<TeacherResponse>("Teacher not found");
 
         teacher.Name = request.Name;
         await _context.SaveChangesAsync();
 
-        return Result.Ok(_mapper.Map<TeacherDto>(teacher));
+        return Result.Ok(_mapper.Map<TeacherResponse>(teacher));
     }
 
     public async Task<Result<bool>> Delete(int id)

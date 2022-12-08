@@ -2,16 +2,8 @@
 
 namespace Gbs.Tests.Application.UnitTests.Features.Churches;
 
-public class ChurchQueriesTests : GbsTestBase
-{
-    IMapper Mapper { get; }
-    
-    public ChurchQueriesTests()
-    {
-        var config = new MapperConfiguration(cfg => { cfg.AddProfile(new ChurchMapping()); });
-        Mapper = config.CreateMapper();
-    }
-    
+public class ChurchQueriesTests : ChurchTestBase
+{   
     [Fact]
     public async Task GetAll_ReturnsAllChurches()
     {

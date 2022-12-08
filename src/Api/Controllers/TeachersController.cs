@@ -1,3 +1,4 @@
+using Gbs.Application.Features.Teachers.Interfaces;
 using Gbs.Shared.Teachers;
 
 namespace Gbs.Api.Controllers

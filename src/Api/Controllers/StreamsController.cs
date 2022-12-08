@@ -1,3 +1,4 @@
+using Gbs.Application.Features.Streams.Interfaces;
 using Gbs.Shared.Streams;
 
 namespace Gbs.Api.Controllers
