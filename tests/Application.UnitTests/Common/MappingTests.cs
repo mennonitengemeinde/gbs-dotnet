@@ -1,5 +1,6 @@
 ﻿using System.Runtime.Serialization;
-using Gbs.Domain.Entities;
+using Gbs.Application.Entities;
+using Gbs.Application.Features.Churches;
 using Gbs.Shared.Churches;
 using Gbs.Shared.Generations;
 using Gbs.Shared.Grades;
@@ -17,8 +18,11 @@ public class MappingTests
     [Fact]
     public void ShouldHaveValidConfiguration()
     {
-        var configuration = new MapperConfiguration(config => 
-            config.AddProfile<MappingProfile>());
+        var configuration = new MapperConfiguration(config =>
+        {
+            config.AddProfile<ChurchMapping>();
+            config.AddProfile<MappingProfile>();
+        });
         
         var mapper = configuration.CreateMapper();
         
@@ -27,8 +31,8 @@ public class MappingTests
     }
     
     [Theory]
-    // [InlineData(typeof(Church), typeof(ChurchResponse))]
-    // [InlineData(typeof(ChurchCreateDto), typeof(Church))]
+    [InlineData(typeof(Church), typeof(ChurchDto))]
+    [InlineData(typeof(CreateChurchRequest), typeof(Church))]
     [InlineData(typeof(Student), typeof(StudentDto))]
     [InlineData(typeof(Generation), typeof(GenerationDto))]
     [InlineData(typeof(Grade), typeof(GradeDto))]

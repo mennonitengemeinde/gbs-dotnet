@@ -19,8 +19,7 @@ public class LessonStore : BaseStore<LessonDto, int, LessonCreateDto, LessonCrea
         if (!result.Success)
         {
             await UiService.ShowErrorAlert(result.Message, result.StatusCode);
-            HasError = true;
-            ErrorMessage = result.Message;
+            SetErrors(result.Message, result.Errors);
             IsLoading = false;
             return;
         }

@@ -22,6 +22,7 @@ public abstract class BaseStore<T, TId> : IStore<T, TId>
     public abstract string BaseUrl { get; }
     public bool HasError { get; protected set; }
     public string? ErrorMessage { get; protected set; }
+    public string[]? Errors { get; private set; } = null;
 
     public bool IsLoading
     {
@@ -71,6 +72,15 @@ public abstract class BaseStore<T, TId> : IStore<T, TId>
     public void ClearErrors()
     {
         HasError = false;
+        ErrorMessage = null;
+        Errors = null;
+    }
+
+    protected void SetErrors(string message, string[]? errors)
+    {
+        HasError = true;
+        ErrorMessage = message;
+        Errors = errors;
     }
 
     public async Task ForceFetch()
@@ -81,8 +91,7 @@ public abstract class BaseStore<T, TId> : IStore<T, TId>
         if (result.Success == false || result.Data == null)
         {
             await UiService.ShowErrorAlert(result.Message, result.StatusCode);
-            HasError = true;
-            ErrorMessage = result.Message;
+            SetErrors(result.Message, result.Errors);
             Data = new List<T>();
             IsLoading = false;
             return;
@@ -115,8 +124,7 @@ public abstract class BaseStore<T, TId> : IStore<T, TId>
         if (!result.Success)
         {
             await UiService.ShowErrorAlert(result.Message, result.StatusCode);
-            HasError = true;
-            ErrorMessage = result.Message;
+            SetErrors(result.Message, result.Errors);
             IsLoading = false;
             return;
         }
@@ -148,8 +156,7 @@ public abstract class BaseStore<T, TId, TCreate, TUpdate> : BaseStore<T, TId>, I
         if (!result.Success)
         {
             await UiService.ShowErrorAlert(result.Message, result.StatusCode);
-            HasError = true;
-            ErrorMessage = result.Message;
+            SetErrors(result.Message, result.Errors);
             IsLoading = false;
             return;
         }
@@ -165,8 +172,7 @@ public abstract class BaseStore<T, TId, TCreate, TUpdate> : BaseStore<T, TId>, I
         if (!result.Success)
         {
             await UiService.ShowErrorAlert(result.Message, result.StatusCode);
-            HasError = true;
-            ErrorMessage = result.Message;
+            SetErrors(result.Message, result.Errors);
             IsLoading = false;
             return;
         }

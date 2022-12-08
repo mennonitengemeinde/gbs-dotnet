@@ -1,5 +1,4 @@
-﻿using Gbs.Application.Churches;
-using Gbs.Application.Teachers;
+﻿using Gbs.Application.Entities;
 using Microsoft.AspNetCore.Identity;
 
 namespace Gbs.Application.Common.Entities;

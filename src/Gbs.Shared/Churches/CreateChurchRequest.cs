@@ -11,12 +11,3 @@ public class CreateChurchRequest
     public string? PostalCode { get; set; }
     public string Country { get; set; } = string.Empty;
 }
-
-public class CreateChurchRequestValidator : AbstractValidator<CreateChurchRequest>
-{
-    public CreateChurchRequestValidator()
-    {
-        RuleFor(x => x.Name).NotEmpty().Length(3, 150);
-        RuleFor(x => x.Country).NotEmpty().Length(3, 150);
-    }
-}

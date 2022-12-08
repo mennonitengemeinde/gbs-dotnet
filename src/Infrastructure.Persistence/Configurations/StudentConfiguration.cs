@@ -1,5 +1,5 @@
 ﻿using Gbs.Application.Common.Entities;
-using Gbs.Domain.Entities;
+using Gbs.Application.Entities;
 using Gbs.Shared.Common.Enums;
 
 namespace Gbs.Infrastructure.Persistence.Configurations;

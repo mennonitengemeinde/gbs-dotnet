@@ -1,4 +1,5 @@
-﻿using Gbs.Shared.Generations;
+﻿using Gbs.Application.Entities;
+using Gbs.Shared.Generations;
 using Gbs.Shared.Grades;
 using Gbs.Shared.Identity;
 using Gbs.Shared.Lessons;

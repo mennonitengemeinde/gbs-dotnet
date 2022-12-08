@@ -1,4 +1,4 @@
-using Gbs.Shared.Generations;
+using Gbs.Application.Features.Generations.Interfaces;
 
 namespace Gbs.Api.Controllers
 {

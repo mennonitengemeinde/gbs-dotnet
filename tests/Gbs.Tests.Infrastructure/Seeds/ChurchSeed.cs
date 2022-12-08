@@ -1,4 +1,4 @@
-using Gbs.Domain.Entities;
+using Gbs.Application.Entities;
 
 namespace Gbs.Tests.Infrastructure.Seeds;
 

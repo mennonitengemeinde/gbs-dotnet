@@ -1,7 +1,6 @@
 // Global using directives
 
 global using AutoMapper;
-global using Gbs.Application.Churches;
 global using Gbs.Application.Common;
 global using Gbs.Application.Common.Entities;
 global using Gbs.Infrastructure.Persistence;

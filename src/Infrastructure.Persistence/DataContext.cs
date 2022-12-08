@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using Gbs.Application.Common.Entities;
 using Gbs.Application.Common.Interfaces;
-using Gbs.Domain.Entities;
+using Gbs.Application.Entities;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;

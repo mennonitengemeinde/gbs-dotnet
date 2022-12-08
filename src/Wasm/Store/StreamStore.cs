@@ -41,8 +41,7 @@ public class StreamStore : BaseStore<StreamDto, int, StreamCreateDto, StreamCrea
         if (!result.Success)
         {
             await UiService.ShowErrorAlert(result.Message, result.StatusCode);
-            HasError = true;
-            ErrorMessage = result.Message;
+            SetErrors(result.Message, result.Errors);
             return;
         }
 

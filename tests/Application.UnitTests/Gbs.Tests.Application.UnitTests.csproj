@@ -29,4 +29,8 @@
       <ProjectReference Include="..\Gbs.Tests.Infrastructure\Gbs.Tests.Infrastructure.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Features" />
+    </ItemGroup>
+
 </Project>

@@ -1,4 +1,3 @@
-using Gbs.Application.Teachers;
 using Gbs.Shared.Teachers;
 
 namespace Gbs.Application.Common.Interfaces.Commands;

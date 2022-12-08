@@ -8,6 +8,14 @@
         <MudOverlay Visible="IsLoading" DarkBackground="true" Absolute="true">
             <MudProgressCircular Color="Color.Primary" Indeterminate="true"/>
         </MudOverlay>
+        @if (ValidationErrors != null)
+        {
+            @foreach (var err in ValidationErrors)
+            {
+                <MudAlert Severity="Severity.Error" Class="tw-mt-4">@err</MudAlert>
+                @* <MudText Typo="Typo.body2" Color="Color.Error">@err</MudText> *@
+            }
+        }
         <MudFocusTrap DefaultFocus="DefaultFocus.FirstChild" Class="tw-space-y-4">
             @ChildContent
         </MudFocusTrap>
@@ -44,6 +52,9 @@
 
     [Parameter, EditorRequired]
     public string ReturnUrl { get; set; } = string.Empty;
+    
+    [Parameter, EditorRequired]
+    public string[]? ValidationErrors { get; set; }
 
     [Parameter]
     public RenderFragment? ChildContent { get; set; }

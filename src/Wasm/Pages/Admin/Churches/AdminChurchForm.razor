@@ -17,7 +17,8 @@
                          IsEdit="@_isEdit"
                          IsLoading="@ChurchStore.IsLoading"
                          IsProcessing="@_isProcessing"
-                         ReturnUrl="/admin/churches">
+                         ReturnUrl="/admin/churches"
+                         ValidationErrors="@ValidationErrors">
                 <MudTextField Label="Name"
                               @bind-Value="_model.Name"
                               Required="true"
@@ -42,11 +43,19 @@
         </MudItem>
     </MudGrid>
 </EditForm>
+@* @if (ValidationErrors != null) *@
+@* { *@
+@*     @foreach(var error in ValidationErrors) *@
+@*     { *@
+@*         <MudAlert Severity="Severity.Error" Class="tw-mt-4">@error</MudAlert> *@
+@*     } *@
+@* } *@
 
 @code {
     CreateChurchRequest _model = new ();
     bool _isProcessing;
     bool _isEdit;
+    string[]? ValidationErrors { get; set; }
 
     [Parameter]
     public int? Id { get; set; }
@@ -91,6 +100,10 @@
         else
         {
             _isProcessing = false;
+            if (ChurchStore.Errors != null)
+            {
+                ValidationErrors = ChurchStore.Errors;
+            }
             ChurchStore.ClearErrors();
         }
     }

@@ -1,5 +1,4 @@
-﻿using Gbs.Application.Students;
-using Gbs.Shared.Students;
+﻿using Gbs.Shared.Students;
 
 namespace Gbs.Application.Common.Interfaces.Queries;
 

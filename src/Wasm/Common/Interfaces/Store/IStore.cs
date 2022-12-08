@@ -5,6 +5,7 @@ public interface IStore<T, in TId>
     public string BaseUrl { get; }
     public bool HasError { get; }
     public string? ErrorMessage { get; }
+    public string[]? Errors { get; }
     public bool IsLoading { get; }
     event Action OnChange;
     List<T> Data { get; }
