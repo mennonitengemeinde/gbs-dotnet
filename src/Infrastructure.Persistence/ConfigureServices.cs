@@ -1,5 +1,5 @@
-﻿using Gbs.Application.Common.Entities;
-using Gbs.Application.Common.Interfaces;
+﻿using Gbs.Application.Common.Interfaces;
+using Gbs.Application.Entities;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

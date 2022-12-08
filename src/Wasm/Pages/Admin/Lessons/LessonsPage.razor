@@ -2,6 +2,10 @@
 @attribute [Authorize(Policy = Policies.RequireAdminsAndSound)]
 @using Gbs.Wasm.Pages.Admin.Lessons.Components
 
+@implements IDisposable
+
+@inject ILessonStore LessonStore
+
 <PageTitle>Lessons - GBS</PageTitle>
 
 <div class="tw-py-4 tw-space-y-4">
@@ -21,8 +25,33 @@
 </MudHidden>
 
 <MudHidden Breakpoint="Breakpoint.SmAndDown">
-    <LessonsTable Lessons="LessonStore.Data"
-                  IsLoading="LessonStore.IsLoading"
+    <LessonsTable Lessons="@LessonStore.Data"
+                  IsLoading="@LessonStore.IsLoading"
                   MoveLessonDown="MoveLessonDown"
                   MoveLessonUp="MoveLessonUp" />
 </MudHidden>
+
+@code {
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await LessonStore.ForceFetch();
+        LessonStore.OnChange += StateHasChanged;
+    }
+    
+    private async Task MoveLessonUp(LessonResponse lesson)
+    {
+        await LessonStore.UpdateOrder(lesson.Id, lesson.Order - 1);
+    }
+    
+    private async Task MoveLessonDown(LessonResponse lesson)
+    {
+        await LessonStore.UpdateOrder(lesson.Id, lesson.Order + 1);
+    }
+
+    public void Dispose()
+    {
+        LessonStore.OnChange -= StateHasChanged;
+    }
+
+}

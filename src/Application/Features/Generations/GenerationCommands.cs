@@ -34,9 +34,9 @@ public class GenerationCommands : IGenerationCommands
         return await _generationQueries.GetById(newGeneration.Id);
     }
 
-    public async Task<Result<GenerationResponse>> Update(int id, UpdateGenerationRequest request)
+    public async Task<Result<GenerationResponse>> Update(UpdateGenerationRequest request)
     {
-        var dbGeneration = await _context.Generations.FirstOrDefaultAsync(u => u.Id == id);
+        var dbGeneration = await _context.Generations.FirstOrDefaultAsync(u => u.Id == request.Id);
         if (dbGeneration == null)
             return Result.NotFound<GenerationResponse>("Generation not found");
         

@@ -2,4 +2,4 @@
 
 namespace Gbs.Wasm.Common.Interfaces.Store;
 
-public interface ISubjectStore : IStore<SubjectDto, int, SubjectCreateDto, SubjectCreateDto> { }
+public interface ISubjectStore : IStore<SubjectResponse, int, CreateSubjectRequest, UpdateSubjectRequest> { }

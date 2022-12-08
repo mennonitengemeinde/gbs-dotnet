@@ -23,7 +23,7 @@ public class TeacherCommandsTests : TeacherTestBase
     }
 
     [Fact]
-    public async Task Add_ReturnsBadRequest()
+    public async Task Add_ReturnsValidationError_WhenTeacherNameAlreadyExists()
     {
         // Arrange
         var cmd = new TeacherCommands(Context, Mapper);
@@ -34,7 +34,7 @@ public class TeacherCommandsTests : TeacherTestBase
         // Assert
         Assert.False(result.Success);
         Assert.Null(result.Data);
-        Assert.Equal(400, result.StatusCode);
+        Assert.Equal(422, result.StatusCode);
         Assert.Equal(3, contextCount);
     }
 
@@ -43,9 +43,9 @@ public class TeacherCommandsTests : TeacherTestBase
     {
         // Arrange
         var cmd = new TeacherCommands(Context, Mapper);
-        var request = new CreateTeacherRequest { Name = "Test Teacher" };
+        var request = new UpdateTeacherRequest { Id = 1, Name = "Test Teacher" };
         // Act
-        var result = await cmd.Update(1, request);
+        var result = await cmd.Update(request);
         var contextCount = Context.Teachers.Count();
         // Assert
         Assert.True(result.Success);
@@ -60,9 +60,9 @@ public class TeacherCommandsTests : TeacherTestBase
     {
         // Arrange
         var cmd = new TeacherCommands(Context, Mapper);
-        var request = new CreateTeacherRequest { Name = "Teacher 5" };
+        var request = new UpdateTeacherRequest { Id = 5, Name = "Teacher 5" };
         // Act
-        var result = await cmd.Update(5, request);
+        var result = await cmd.Update(request);
         var contextCount = Context.Teachers.Count();
         // Assert
         Assert.False(result.Success);
@@ -72,18 +72,18 @@ public class TeacherCommandsTests : TeacherTestBase
     }
 
     [Fact]
-    public async Task Update_ReturnsBadRequest()
+    public async Task Update_ReturnsValidationError_WhenNameAlreadyExists()
     {
         // Arrange
         var cmd = new TeacherCommands(Context, Mapper);
-        var request = new CreateTeacherRequest { Name = "Teacher 1" };
+        var request = new UpdateTeacherRequest { Id = 2, Name = "Teacher 1" };
         // Act
-        var result = await cmd.Update(2, request);
+        var result = await cmd.Update(request);
         var contextCount = Context.Teachers.Count();
         // Assert
         Assert.False(result.Success);
         Assert.Null(result.Data);
-        Assert.Equal(400, result.StatusCode);
+        Assert.Equal(422, result.StatusCode);
         Assert.Equal(3, contextCount);
     }
     

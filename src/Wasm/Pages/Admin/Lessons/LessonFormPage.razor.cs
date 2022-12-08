@@ -1,5 +1,3 @@
-﻿using Gbs.Shared.Lessons;
-
 namespace Gbs.Wasm.Pages.Admin.Lessons;
 
 public partial class LessonFormPage : ComponentBase, IDisposable
@@ -14,7 +12,7 @@ public partial class LessonFormPage : ComponentBase, IDisposable
     [CascadingParameter] CascadingUiState UiState { get; set; } = null!;
     [Parameter] public int? Id { get; set; }
 
-    LessonCreateDto _model = new();
+    // LessonCreateDto _model = new();
     bool _isEdit;
 
     protected override async Task OnInitializedAsync()

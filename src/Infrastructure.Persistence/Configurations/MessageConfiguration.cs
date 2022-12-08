@@ -1,5 +1,4 @@
-﻿using Gbs.Application.Common.Entities;
-using Gbs.Application.Entities;
+﻿using Gbs.Application.Entities;
 
 namespace Gbs.Infrastructure.Persistence.Configurations;
 

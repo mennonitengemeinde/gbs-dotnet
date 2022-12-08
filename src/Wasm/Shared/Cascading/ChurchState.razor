@@ -1,0 +1,17 @@
+﻿@inherits Gbs.Wasm.Shared.Cascading.BaseCascadingState<ChurchResponse, int, CreateChurchRequest, UpdateChurchRequest>
+
+<CascadingValue Value="this">
+    @ChildContent
+</CascadingValue>
+
+@code {
+
+    public override string BaseUrl => "api/churches";
+
+    public async Task<ChurchResponse?> GetById(int id)
+    {
+        await Fetch();
+        return Data.FirstOrDefault(c => c.Id == id);
+    }
+
+}

@@ -22,7 +22,7 @@ public class SubjectCommandsTests : SubjectTestBase
     }
 
     [Fact]
-    public async Task Add_ReturnsBadRequest_WhenNameAlreadyExists()
+    public async Task Add_ReturnsValidationError_WhenNameAlreadyExists()
     {
         var cmd = new SubjectCommands(Context, Mapper);
         var subject = new CreateSubjectRequest { Name = "Subject 1" };
@@ -31,7 +31,7 @@ public class SubjectCommandsTests : SubjectTestBase
         var ctxCount = Context.Subjects.Count();
 
         Assert.False(result.Success);
-        Assert.Equal(400, result.StatusCode);
+        Assert.Equal(422, result.StatusCode);
         Assert.Equal(3, ctxCount);
     }
 
@@ -52,7 +52,7 @@ public class SubjectCommandsTests : SubjectTestBase
     }
     
     [Fact]
-    public async Task Update_ReturnsBadRequest_WhenNameAlreadyExists()
+    public async Task Update_ReturnsValidationError_WhenNameAlreadyExists()
     {
         var cmd = new SubjectCommands(Context, Mapper);
         var subject = new CreateSubjectRequest { Name = "Subject 2" };
@@ -61,7 +61,7 @@ public class SubjectCommandsTests : SubjectTestBase
         var ctxCount = Context.Subjects.Count();
 
         Assert.False(result.Success);
-        Assert.Equal(400, result.StatusCode);
+        Assert.Equal(422, result.StatusCode);
         Assert.Equal(3, ctxCount);
     }
     

@@ -15,16 +15,16 @@ public class AuthApiService : IAuthService
         _authStateProvider = authStateProvider;
     }
 
-    public async Task<Result<string>> Login(LoginDto userLogin)
+    public async Task<Result<string>> Login(LoginRequest userLogin)
     {
         return await _http.PostAsJsonAsync("api/auth/login", userLogin)
             .EnsureSuccess<string>();
     }
 
-    public async Task<Result<List<RolesDto>>> FetchRoles()
+    public async Task<Result<List<RolesResponse>>> FetchRoles()
     {
         return await _http.GetAsync("api/auth/roles")
-            .EnsureSuccess<List<RolesDto>>();
+            .EnsureSuccess<List<RolesResponse>>();
     }
 
     public async Task<bool> IsUserAuthenticated()

@@ -1,110 +1,30 @@
 @page "/admin/churches/create"
 @page "/admin/churches/{Id:int}/edit"
-@using Gbs.Shared.Churches
 @attribute [Authorize(Policy = Policies.RequireAdmins)]
-
-@inject NavigationManager NavigationManager
-@inject IChurchStore ChurchStore
-@inject IUiService UiService
+@using Gbs.Wasm.Pages.Admin.Churches.Components
 
 <PageTitle>Churches Form - GBS</PageTitle>
 
-<EditForm Model="_model" OnValidSubmit="HandleValidSubmit">
-    <DataAnnotationsValidator/>
-    <MudGrid Justify="Justify.Center" Class="tw-pt-8">
-        <MudItem xs="12" sm="8" md="5">
-            <MatFormCard Label="Church"
-                         IsEdit="@_isEdit"
-                         IsLoading="@ChurchStore.IsLoading"
-                         IsProcessing="@_isProcessing"
-                         ReturnUrl="/admin/churches"
-                         ValidationErrors="@ValidationErrors">
-                <MudTextField Label="Name"
-                              @bind-Value="_model.Name"
-                              Required="true"
-                              For="() => _model.Name"/>
-                <MudTextField Label="Address"
-                              @bind-Value="_model.Address"
-                              For="() => _model.Address"/>
-                <MudTextField Label="City"
-                              @bind-Value="_model.City"
-                              For="() => _model.City"/>
-                <MudTextField Label="State"
-                              @bind-Value="_model.State"
-                              For="() => _model.State"/>
-                <MudTextField Label="Country"
-                              @bind-Value="_model.Country"
-                              Required="true"
-                              For="() => _model.Country"/>
-                <MudTextField Label="PostalCode"
-                              @bind-Value="_model.PostalCode"
-                              For="() => _model.PostalCode"/>
-            </MatFormCard>
-        </MudItem>
-    </MudGrid>
-</EditForm>
-@* @if (ValidationErrors != null) *@
-@* { *@
-@*     @foreach(var error in ValidationErrors) *@
-@*     { *@
-@*         <MudAlert Severity="Severity.Error" Class="tw-mt-4">@error</MudAlert> *@
-@*     } *@
-@* } *@
+@if (_isEdit)
+{
+    <ChurchUpdateForm Id="Id" />
+}
+else
+{
+    <ChurchCreateForm />
+}
 
 @code {
-    CreateChurchRequest _model = new ();
-    bool _isProcessing;
     bool _isEdit;
-    string[]? ValidationErrors { get; set; }
 
     [Parameter]
     public int? Id { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         if (Id != null)
         {
             _isEdit = true;
-            var church = await ChurchStore.GetById(Id.Value);
-            if (church != null)
-            {
-                _model.Name = church.Name;
-                _model.Address = church.Address;
-                _model.City = church.City;
-                _model.State = church.State;
-                _model.PostalCode = church.PostalCode;
-                _model.Country = church.Country;
-            }
-        }
-    }
-
-    async Task HandleValidSubmit()
-    {
-        _isProcessing = true;
-
-        if (_isEdit)
-        {
-            await ChurchStore.Update(Id!.Value, _model);
-        }
-        else
-        {
-            await ChurchStore.Add(_model);
-        }
-
-        if (!ChurchStore.HasError)
-        {
-            _isProcessing = false;
-            UiService.ShowSuccessAlert(_isEdit ? "Church updated successfully" : "Church added successfully");
-            NavigationManager.NavigateTo("admin/churches");
-        }
-        else
-        {
-            _isProcessing = false;
-            if (ChurchStore.Errors != null)
-            {
-                ValidationErrors = ChurchStore.Errors;
-            }
-            ChurchStore.ClearErrors();
         }
     }
 

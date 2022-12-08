@@ -33,9 +33,9 @@ public class ChurchCommands : IChurchCommands
         return Result.Ok(_mapper.Map<ChurchResponse>(newChurch));
     }
 
-    public async Task<Result<ChurchResponse>> Update(int id, UpdateChurchRequest request)
+    public async Task<Result<ChurchResponse>> Update(UpdateChurchRequest request)
     {
-        var dbChurch = await _context.Churches.FirstOrDefaultAsync(c => c.Id == id);
+        var dbChurch = await _context.Churches.FirstOrDefaultAsync(c => c.Id == request.Id);
         if (dbChurch == null)
             return Result.NotFound<ChurchResponse>("Church not found");
         

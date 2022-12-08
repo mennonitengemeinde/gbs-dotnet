@@ -25,7 +25,7 @@ public class ChurchCommandsTests : ChurchTestBase
     }
 
     [Fact]
-    public async Task Add_ReturnsBadRequest()
+    public async Task Add_ReturnsValidationError()
     {
         // Arrange
         var churchCmd = new ChurchCommands(Context, Mapper, CreateChurchValidator, UpdateChurchValidator);
@@ -47,7 +47,7 @@ public class ChurchCommandsTests : ChurchTestBase
         var churchCmd = new ChurchCommands(Context, Mapper, CreateChurchValidator, UpdateChurchValidator);
         var church = new UpdateChurchRequest { Id = 1, Name = "Test Church", Country = "Test Country" };
         // Act
-        var result = await churchCmd.Update(1, church);
+        var result = await churchCmd.Update(church);
         var contextCount = Context.Churches.Count();
         // Assert
         Assert.True(result.Success);
@@ -64,7 +64,7 @@ public class ChurchCommandsTests : ChurchTestBase
         var churchCmd = new ChurchCommands(Context, Mapper, CreateChurchValidator, UpdateChurchValidator);
         var church = new UpdateChurchRequest { Id = 5, Name = "Church 1", Country = "Test Country" };
         // Act
-        var result = await churchCmd.Update(5, church);
+        var result = await churchCmd.Update(church);
         var contextCount = Context.Churches.Count();
         // Assert
         Assert.False(result.Success);
@@ -74,13 +74,13 @@ public class ChurchCommandsTests : ChurchTestBase
     }
 
     [Fact]
-    public async Task Update_ReturnsBadRequest()
+    public async Task Update_ReturnsValidationError()
     {
         // Arrange
         var churchCmd = new ChurchCommands(Context, Mapper, CreateChurchValidator, UpdateChurchValidator);
         var church = new UpdateChurchRequest { Id = 2, Name = "Church 1", Country = "Test Country" };
         // Act
-        var result = await churchCmd.Update(2, church);
+        var result = await churchCmd.Update(church);
         var contextCount = Context.Churches.Count();
         // Assert
         Assert.False(result.Success);

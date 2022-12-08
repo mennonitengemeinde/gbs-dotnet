@@ -26,7 +26,7 @@ public class GenerationCommandsTests : GenerationTestBase
     }
 
     [Fact]
-    public async Task Add_ReturnsBadRequest_WhenNameAlreadyExists()
+    public async Task Add_ReturnsValidationError_WhenNameAlreadyExists()
     {
         var q = new GenerationQueries(Context, Mapper);
         var cmd = new GenerationCommands(Context, q, CreateGenerationRequestValidator,
@@ -37,6 +37,7 @@ public class GenerationCommandsTests : GenerationTestBase
 
         Assert.False(result.Success);
         Assert.Equal(422, result.StatusCode);
+        Assert.NotNull(result.Errors);
         Assert.Null(result.Data);
     }
 
@@ -48,7 +49,7 @@ public class GenerationCommandsTests : GenerationTestBase
             UpdateGenerationRequestValidator);
         var updateGen = new UpdateGenerationRequest { Id = 1, Name = "Generation 1 Updated" };
 
-        var result = await cmd.Update(1, updateGen);
+        var result = await cmd.Update(updateGen);
 
         Assert.True(result.Success);
         Assert.Equal(200, result.StatusCode);
@@ -62,9 +63,9 @@ public class GenerationCommandsTests : GenerationTestBase
         var q = new GenerationQueries(Context, Mapper);
         var cmd = new GenerationCommands(Context, q, CreateGenerationRequestValidator,
             UpdateGenerationRequestValidator);
-        var updateGen = new UpdateGenerationRequest { Id = 1, Name = "Generation 1 Updated" };
+        var updateGen = new UpdateGenerationRequest { Id = 999, Name = "Generation 1 Updated" };
 
-        var result = await cmd.Update(999, updateGen);
+        var result = await cmd.Update(updateGen);
 
         Assert.False(result.Success);
         Assert.Equal(404, result.StatusCode);
@@ -72,14 +73,14 @@ public class GenerationCommandsTests : GenerationTestBase
     }
 
     [Fact]
-    public async Task Update_ReturnsBadRequest_WhenNameAlreadyExists()
+    public async Task Update_ReturnsValidationError_WhenNameAlreadyExists()
     {
         var q = new GenerationQueries(Context, Mapper);
         var cmd = new GenerationCommands(Context, q, CreateGenerationRequestValidator,
             UpdateGenerationRequestValidator);
         var updateGen = new UpdateGenerationRequest { Id = 1, Name = "Generation 2" };
 
-        var result = await cmd.Update(1, updateGen);
+        var result = await cmd.Update(updateGen);
 
         Assert.False(result.Success);
         Assert.Equal(422, result.StatusCode);

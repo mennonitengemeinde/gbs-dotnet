@@ -3,7 +3,6 @@
 global using AutoMapper;
 global using AutoMapper.QueryableExtensions;
 global using FluentValidation;
-global using Gbs.Application.Common.Entities;
 global using Gbs.Application.Common.Interfaces;
 global using Gbs.Application.Entities;
 global using Gbs.Shared.Churches;

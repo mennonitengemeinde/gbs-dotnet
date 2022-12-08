@@ -2,16 +2,16 @@
 
 namespace Gbs.Wasm.Store;
 
-public class UserStore : BaseStore<UserDto, string, RegisterDto, RegisterDto>, IUserStore
+public class UserStore : BaseStore<UserResponse, string, RegisterRequest, RegisterRequest>, IUserStore
 {
     public UserStore(HttpClient http, IDateTimeService dateTime, IUiService uiService) :
         base(http, dateTime, uiService) { }
 
     public override string BaseUrl { get; } = "api/users";
     
-    public override UserDto? GetByIdQuery(string id) => Data.FirstOrDefault(u => u.Id == id);
+    public override UserResponse? GetByIdQuery(string id) => Data.FirstOrDefault(u => u.Id == id);
 
-    public override async Task Add(RegisterDto item)
+    public override async Task Add(RegisterRequest item)
     {
         IsLoading = true;
         var result = await Http.PostAsJsonAsync(BaseUrl, item)
@@ -24,11 +24,11 @@ public class UserStore : BaseStore<UserDto, string, RegisterDto, RegisterDto>, I
         }
     }
     
-    public async Task UpdateChurch(string id, UserUpdateChurchDto request)
+    public async Task UpdateChurch(string id, UpdateUserChurchRequest request)
     {
         var result = await Http
             .PutAsJsonAsync($"api/users/{id}/church", request)
-            .EnsureSuccess<UserDto>();
+            .EnsureSuccess<UserResponse>();
         
         if (!result.Success)
         {
@@ -40,10 +40,10 @@ public class UserStore : BaseStore<UserDto, string, RegisterDto, RegisterDto>, I
         await ForceFetch();
     }
 
-    public async Task UpdateRoles(string id, UserUpdateRoleDto request)
+    public async Task UpdateRoles(string id, UpdateUserRoleRequest request)
     {
         var result = await Http.PutAsJsonAsync($"api/users/{id}/roles", request)
-            .EnsureSuccess<UserDto>();
+            .EnsureSuccess<UserResponse>();
         
         if (!result.Success)
         {
@@ -55,10 +55,10 @@ public class UserStore : BaseStore<UserDto, string, RegisterDto, RegisterDto>, I
         await ForceFetch();
     }
 
-    public async Task UpdateActiveState(string id, UserUpdateActiveStateDto request)
+    public async Task UpdateActiveState(string id, UpdateUserActiveStateRequest request)
     {
         var result = await Http.PutAsJsonAsync($"api/users/{id}/active", request)
-            .EnsureSuccess<UserDto>();
+            .EnsureSuccess<UserResponse>();
         
         if (!result.Success)
         {

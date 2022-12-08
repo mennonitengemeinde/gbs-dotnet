@@ -2,8 +2,8 @@
 
 namespace Gbs.Wasm.Common.Interfaces.Store;
 
-public interface IStreamStore : IStore<StreamDto, int, StreamCreateDto, StreamCreateDto>
+public interface IStreamStore : IStore<StreamResponse, int, CreateStreamRequest, UpdateStreamRequest>
 {
-    Task<StreamDto?> GetOnlyLiveById(int id);
+    Task<StreamResponse?> GetOnlyLiveById(int id);
     Task ToggleLive(int id);
 }

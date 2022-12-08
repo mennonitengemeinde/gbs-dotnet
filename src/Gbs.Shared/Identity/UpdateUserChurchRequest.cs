@@ -2,5 +2,5 @@
 
 public class UpdateUserChurchRequest
 {
-    public int? ChurchId { get; set; }
+    public int ChurchId { get; set; }
 }

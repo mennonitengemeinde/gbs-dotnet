@@ -22,8 +22,8 @@
                     </CardHeaderContent>
                 </MudCardHeader>
                 <MudCardContent>
-                    <AuthTabNav/>
-                    
+                    <AuthTabNav />
+
                     <MudFocusTrap DefaultFocus="DefaultFocus.FirstChild" Class="tw-space-y-2">
                         <MudTextField Label="Email"
                                       InputType="InputType.Email"
@@ -44,7 +44,7 @@
                                Disabled="@(_isProcessing)">
                         @if (_isProcessing)
                         {
-                            <MudProgressCircular Class="-tw-ml-1 tw-mr-3" Size="Size.Small" Indeterminate="true"/>
+                            <MudProgressCircular Class="-tw-ml-1 tw-mr-3" Size="Size.Small" Indeterminate="true" />
                         }
                         <MudText>Login</MudText>
                     </MudButton>
@@ -56,7 +56,7 @@
 </EditForm>
 
 @code {
-    readonly LoginDto _loginDto = new LoginDto();
+    readonly LoginRequest _loginDto = new();
     bool _isProcessing;
 
     private async Task HandleValidSubmit()

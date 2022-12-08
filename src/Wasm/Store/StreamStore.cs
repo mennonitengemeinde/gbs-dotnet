@@ -2,16 +2,16 @@
 
 namespace Gbs.Wasm.Store;
 
-public class StreamStore : BaseStore<StreamDto, int, StreamCreateDto, StreamCreateDto>, IStreamStore
+public class StreamStore : BaseStore<StreamResponse, int, CreateStreamRequest, UpdateStreamRequest>, IStreamStore
 {
     public StreamStore(HttpClient http, IDateTimeService dateTime, IUiService uiService) : base(http, dateTime,
         uiService) { }
 
     public override string BaseUrl { get; } = "api/streams";
     
-    public override StreamDto? GetByIdQuery(int id) => Data.FirstOrDefault(x => x.Id == id);
+    public override StreamResponse? GetByIdQuery(int id) => Data.FirstOrDefault(x => x.Id == id);
     
-    public async Task<StreamDto?> GetOnlyLiveById(int id)
+    public async Task<StreamResponse?> GetOnlyLiveById(int id)
     {
         await Fetch();
 
@@ -33,10 +33,10 @@ public class StreamStore : BaseStore<StreamDto, int, StreamCreateDto, StreamCrea
             return;
         }
         
-        var streamDto = new StreamUpdateLiveDto {IsLive = !liveStream.IsLive};
+        var streamDto = new UpdateStreamLiveRequest {IsLive = !liveStream.IsLive};
         var result = await Http
             .PutAsJsonAsync($"api/streams/{id}/live", streamDto)
-            .EnsureSuccess<StreamDto>();
+            .EnsureSuccess<StreamResponse>();
         
         if (!result.Success)
         {

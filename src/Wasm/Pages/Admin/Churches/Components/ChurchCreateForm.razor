@@ -1,0 +1,67 @@
+﻿@inject IChurchStore ChurchStore
+@inject IUiService UiService
+@inject NavigationManager NavigationManager
+
+<EditForm Model="_model" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <MudGrid Justify="Justify.Center" Class="tw-pt-8">
+        <MudItem xs="12" sm="8" md="5">
+            <MatFormCard Label="Church"
+                         IsLoading="@ChurchStore.IsLoading"
+                         IsProcessing="@_isProcessing"
+                         ReturnUrl="/admin/churches"
+                         ValidationErrors="@ValidationErrors">
+                <MudTextField Label="Name"
+                              @bind-Value="_model.Name"
+                              Required="true"
+                              For="() => _model.Name" />
+                <MudTextField Label="Address"
+                              @bind-Value="_model.Address"
+                              For="() => _model.Address" />
+                <MudTextField Label="City"
+                              @bind-Value="_model.City"
+                              For="() => _model.City" />
+                <MudTextField Label="State"
+                              @bind-Value="_model.State"
+                              For="() => _model.State" />
+                <MudTextField Label="Country"
+                              @bind-Value="_model.Country"
+                              Required="true"
+                              For="() => _model.Country" />
+                <MudTextField Label="PostalCode"
+                              @bind-Value="_model.PostalCode"
+                              For="() => _model.PostalCode" />
+            </MatFormCard>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+
+@code {
+    CreateChurchRequest _model = new();
+    bool _isProcessing;
+    string[]? ValidationErrors { get; set; }
+
+    async Task HandleValidSubmit()
+    {
+        _isProcessing = true;
+
+        await ChurchStore.Add(_model);
+
+        if (!ChurchStore.HasError)
+        {
+            _isProcessing = false;
+            UiService.ShowSuccessAlert("Church added successfully");
+            NavigationManager.NavigateTo("admin/churches");
+        }
+        else
+        {
+            _isProcessing = false;
+            if (ChurchStore.Errors != null)
+            {
+                ValidationErrors = ChurchStore.Errors;
+            }
+            ChurchStore.ClearErrors();
+        }
+    }
+
+}

@@ -2,7 +2,7 @@
 
 namespace Gbs.Wasm.Store;
 
-public class TeacherStore : BaseStore<TeacherDto, int, TeacherCreateDto, TeacherCreateDto>, ITeacherStore
+public class TeacherStore : BaseStore<TeacherResponse, int, CreateTeacherRequest, UpdateTeacherRequest>, ITeacherStore
 {
     public TeacherStore(
         HttpClient http,
@@ -10,5 +10,5 @@ public class TeacherStore : BaseStore<TeacherDto, int, TeacherCreateDto, Teacher
         IUiService uiService) : base(http, dateTime, uiService) { }
 
     public override string BaseUrl { get; } = "api/teachers";
-    public override TeacherDto? GetByIdQuery(int id) => Data.FirstOrDefault(x => x.Id == id);
+    public override TeacherResponse? GetByIdQuery(int id) => Data.FirstOrDefault(x => x.Id == id);
 }

@@ -41,9 +41,9 @@ public class StudentCommands : IStudentCommands
         return Result.Ok(_mapper.Map<StudentResponse>(student));
     }
 
-    public async Task<Result<StudentResponse>> Update(int id, CreateStudentRequest request)
+    public async Task<Result<StudentResponse>> Update(UpdateStudentRequest request)
     {
-        var student = await _context.Students.FirstOrDefaultAsync(s => s.Id == id);
+        var student = await _context.Students.FirstOrDefaultAsync(s => s.Id == request.Id);
         if (student == null)
             return Result.NotFound<StudentResponse>("Student not found");
 

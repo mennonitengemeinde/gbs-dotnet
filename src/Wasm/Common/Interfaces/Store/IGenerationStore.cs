@@ -2,4 +2,4 @@
 
 namespace Gbs.Wasm.Common.Interfaces.Store;
 
-public interface IGenerationStore : IStore<GenerationDto, int, GenerationCreateDto, GenerationCreateDto> { }
+public interface IGenerationStore : IStore<GenerationResponse, int, CreateGenerationRequest, UpdateGenerationRequest> { }

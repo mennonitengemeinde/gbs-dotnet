@@ -30,13 +30,13 @@ public class TeacherCommands : ITeacherCommands
         return Result.Ok(_mapper.Map<TeacherResponse>(teacher));
     }
 
-    public async Task<Result<TeacherResponse>> Update(int id, CreateTeacherRequest request)
+    public async Task<Result<TeacherResponse>> Update(UpdateTeacherRequest request)
     {
-        if (await NameExists(request.Name, id))
+        if (await NameExists(request.Name, request.Id))
             return Result.BadRequest<TeacherResponse>("Teacher already exists");
 
         var teacher = await _context.Teachers
-            .FirstOrDefaultAsync(t => t.Id == id);
+            .FirstOrDefaultAsync(t => t.Id == request.Id);
 
         if (teacher == null)
             return Result.NotFound<TeacherResponse>("Teacher not found");

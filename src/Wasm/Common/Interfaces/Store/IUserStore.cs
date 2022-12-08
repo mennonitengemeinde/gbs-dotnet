@@ -2,9 +2,9 @@
 
 namespace Gbs.Wasm.Common.Interfaces.Store;
 
-public interface IUserStore : IStore<UserDto, string, RegisterDto, RegisterDto>
+public interface IUserStore : IStore<UserResponse, string, RegisterRequest, RegisterRequest>
 {
-    Task UpdateChurch(string id, UserUpdateChurchDto request);
-    Task UpdateRoles(string id, UserUpdateRoleDto request);
-    Task UpdateActiveState(string id, UserUpdateActiveStateDto request);
+    Task UpdateChurch(string id, UpdateUserChurchRequest request);
+    Task UpdateRoles(string id, UpdateUserRoleRequest request);
+    Task UpdateActiveState(string id, UpdateUserActiveStateRequest request);
 }

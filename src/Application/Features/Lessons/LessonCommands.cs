@@ -6,17 +6,26 @@ public class LessonCommands : ILessonCommands
 {
     private readonly IGbsDbContext _context;
     private readonly IMapper _mapper;
+    private readonly IValidator<CreateLessonRequest> _createLessonValidator;
+    private readonly IValidator<UpdateLessonRequest> _updateLessonValidator;
 
-    public LessonCommands(IGbsDbContext context, IMapper mapper)
+    public LessonCommands(
+        IGbsDbContext context, 
+        IMapper mapper,
+        IValidator<CreateLessonRequest> createLessonValidator,
+        IValidator<UpdateLessonRequest> updateLessonValidator)
     {
         _context = context;
         _mapper = mapper;
+        _createLessonValidator = createLessonValidator;
+        _updateLessonValidator = updateLessonValidator;
     }
 
     public async Task<Result<LessonResponse>> Add(CreateLessonRequest request)
     {
-        if (await NameExists(request.Name, request.GenerationId, request.SubjectId))
-            return Result.BadRequest<LessonResponse>("Lesson name already exists");
+        var resultVal = await _createLessonValidator.ValidateAsync(request);
+        if (!resultVal.IsValid)
+            return Result.ValidationError<LessonResponse>(resultVal);
 
         int lastOrder;
 
@@ -38,14 +47,15 @@ public class LessonCommands : ILessonCommands
         return Result.Ok(_mapper.Map<LessonResponse>(lesson));
     }
 
-    public async Task<Result<LessonResponse>> Update(int id, CreateLessonRequest request)
+    public async Task<Result<LessonResponse>> Update(UpdateLessonRequest request)
     {
-        if (await NameExists(request.Name, request.GenerationId, request.SubjectId, id))
-            return Result.BadRequest<LessonResponse>("Lesson name already exists");
-
-        var lesson = await _context.Lessons.FindAsync(id);
+        var lesson = await _context.Lessons.FindAsync(request.Id);
         if (lesson == null)
             return Result.NotFound<LessonResponse>("Lesson not found");
+        
+        var resultVal = await _updateLessonValidator.ValidateAsync(request);
+        if (!resultVal.IsValid)
+            return Result.ValidationError<LessonResponse>(resultVal);
 
         lesson.Name = request.Name;
         lesson.SubjectId = request.SubjectId;
@@ -91,41 +101,5 @@ public class LessonCommands : ILessonCommands
         _context.Lessons.Update(lesson);
         await _context.SaveChangesAsync();
         return Result.Ok(_mapper.Map<LessonResponse>(lesson));
-    }
-
-    private async Task<bool> NameExists(string name, int generationId, int? subjectId, int? id = null)
-    {
-        if (subjectId == null)
-        {
-            if (id == null)
-            {
-                return await _context.Lessons
-                    .AnyAsync(x =>
-                        x.Name == name
-                        && x.GenerationId == generationId);
-            }
-
-            return await _context.Lessons
-                .AnyAsync(x =>
-                    x.Name == name
-                    && x.Id != id
-                    && x.GenerationId == generationId);
-        }
-
-        if (id == null)
-        {
-            return await _context.Lessons
-                .AnyAsync(x =>
-                    x.Name == name
-                    && x.SubjectId == subjectId
-                    && x.GenerationId == generationId);
-        }
-
-        return await _context.Lessons
-            .AnyAsync(x =>
-                x.Name == name
-                && x.SubjectId == subjectId
-                && x.Id != id
-                && x.GenerationId == generationId);
     }
 }

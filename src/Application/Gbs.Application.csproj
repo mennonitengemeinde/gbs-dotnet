@@ -22,4 +22,8 @@
       <ProjectReference Include="..\Gbs.Shared\Gbs.Shared.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Features\Identity\Validators" />
+    </ItemGroup>
+
 </Project>

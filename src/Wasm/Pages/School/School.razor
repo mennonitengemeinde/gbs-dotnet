@@ -50,7 +50,7 @@
             .WithUrl(NavigationManager.ToAbsoluteUri("/hubs/streamshub"))
             .Build();
 
-        _hubConnection.On<Result<List<StreamDto>>>("ReceiveStreams", OnReceiveStreams);
+        _hubConnection.On<Result<List<StreamResponse>>>("ReceiveStreams", OnReceiveStreams);
 
         await _hubConnection.StartAsync();
         
@@ -63,7 +63,7 @@
         UiState.IsPageLoading = StreamStore.IsLoading;
     }
 
-    private void OnReceiveStreams(Result<List<StreamDto>> streams)
+    private void OnReceiveStreams(Result<List<StreamResponse>> streams)
     {
         if (!streams.Success) return;
         

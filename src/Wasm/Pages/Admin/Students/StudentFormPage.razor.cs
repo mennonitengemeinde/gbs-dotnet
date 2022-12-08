@@ -14,7 +14,7 @@ public partial class StudentFormPage
     [CascadingParameter] private CascadingUiState UiState { get; set; } = null!;
     [Parameter] public int? Id { get; set; }
 
-    private StudentCreateDto _model = new();
+    private CreateStudentRequest _model = new();
     private bool _isProcessing;
     private bool _isAdmin;
     private bool _isEdit;
@@ -40,7 +40,7 @@ public partial class StudentFormPage
                 return;
             }
 
-            _model = new StudentCreateDto
+            _model = new CreateStudentRequest
             {
                 FirstName = student.FirstName,
                 LastName = student.LastName,
