@@ -1,5 +1,4 @@
-﻿@inject IChurchStore ChurchStore
-@inject IUiService UiService
+﻿@inject IUiService UiService
 @inject NavigationManager NavigationManager
 
 <EditForm Model="_model" OnValidSubmit="HandleValidSubmit">
@@ -7,7 +6,7 @@
     <MudGrid Justify="Justify.Center" Class="tw-pt-8">
         <MudItem xs="12" sm="8" md="5">
             <MatFormCard Label="Church"
-                         IsLoading="@ChurchStore.IsLoading"
+                         IsLoading="@ChurchState.IsLoading"
                          IsProcessing="@_isProcessing"
                          ReturnUrl="/admin/churches"
                          ValidationErrors="@ValidationErrors">
@@ -37,6 +36,10 @@
 </EditForm>
 
 @code {
+
+    [CascadingParameter]
+    public ChurchState ChurchState { get; set; } = null!;
+
     CreateChurchRequest _model = new();
     bool _isProcessing;
     string[]? ValidationErrors { get; set; }
@@ -45,22 +48,20 @@
     {
         _isProcessing = true;
 
-        await ChurchStore.Add(_model);
+        await ChurchState.Add(_model);
 
-        if (!ChurchStore.HasError)
+        if (ChurchState.HasError)
         {
             _isProcessing = false;
-            UiService.ShowSuccessAlert("Church added successfully");
-            NavigationManager.NavigateTo("admin/churches");
+            ValidationErrors = ChurchState.Errors;
+            await UiService.ShowErrorAlert(ChurchState.ErrorMessage);
+            ChurchState.ClearErrors();
         }
         else
         {
             _isProcessing = false;
-            if (ChurchStore.Errors != null)
-            {
-                ValidationErrors = ChurchStore.Errors;
-            }
-            ChurchStore.ClearErrors();
+            UiService.ShowSuccessAlert("Church added successfully");
+            NavigationManager.NavigateTo("admin/churches");
         }
     }
 

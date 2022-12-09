@@ -27,7 +27,7 @@
 </EditForm>
 
 @code {
-    GenerationCreateDto _model = new();
+    CreateGenerationRequest _model = new();
     bool _isEdit;
     bool _isProcessing;
 
@@ -42,7 +42,7 @@
             var generation = await GenerationStore.GetById(Id.Value);
             if (generation != null)
             {
-                _model = new GenerationCreateDto
+                _model = new CreateGenerationRequest
                 {
                     Name = generation.Name
                 };
@@ -55,7 +55,7 @@
         _isProcessing = true;
         if (_isEdit)
         {
-            await GenerationStore.Update(Id!.Value, _model);
+            // await GenerationStore.Update(Id!.Value, _model);
         }
         else
         {

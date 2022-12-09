@@ -19,6 +19,6 @@ public class UpdateChurchValidator : AbstractValidator<UpdateChurchRequest>
     {
         return await _context.Churches
             .Where(c => c.Id != id)
-            .AllAsync(c => c.Name != name, cancellationToken);
+            .AllAsync(c => !c.Name.ToLower().Equals(name.ToLower()), cancellationToken);
     }
 }

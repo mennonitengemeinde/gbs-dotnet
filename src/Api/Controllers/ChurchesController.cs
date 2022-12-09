@@ -18,21 +18,21 @@ public class ChurchesController : ControllerBase
     }
     
     [HttpGet]
-    public async Task<ActionResult<Result<List<ChurchDto>>>> GetChurches()
+    public async Task<ActionResult<Result<List<ChurchResponse>>>> GetChurches()
     {
         var result = await _churchQueries.GetAll();
         return result.ToActionResult();
     }
 
     [HttpGet("{churchId:int}")]
-    public async Task<ActionResult<Result<ChurchDto>>> GetChurch(int churchId)
+    public async Task<ActionResult<Result<ChurchResponse>>> GetChurch(int churchId)
     {
         var result = await _churchQueries.GetById(churchId);
         return result.ToActionResult();
     }
 
     [HttpPost]
-    public async Task<ActionResult<Result<ChurchDto>>> AddChurch(CreateChurchRequest request)
+    public async Task<ActionResult<Result<ChurchResponse>>> AddChurch(CreateChurchRequest request)
     {
         var result = await _churchCommands.Add(request);
         // var result = await _churchCommands.Add(church);
@@ -40,9 +40,9 @@ public class ChurchesController : ControllerBase
     }
 
     [HttpPut("{churchId:int}")]
-    public async Task<ActionResult<Result<ChurchDto>>> UpdateChurch(int churchId, UpdateChurchRequest church)
+    public async Task<ActionResult<Result<ChurchResponse>>> UpdateChurch(int churchId, UpdateChurchRequest church)
     {
-        var result = await _churchCommands.Update(churchId, church);
+        var result = await _churchCommands.Update(church);
         return result.ToActionResult();
     }
 

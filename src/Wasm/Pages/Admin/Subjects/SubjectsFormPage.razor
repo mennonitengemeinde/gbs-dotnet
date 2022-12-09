@@ -1,6 +1,5 @@
 @page "/admin/subjects/create"
 @page "/admin/subjects/{Id:int}/edit"
-@using Gbs.Shared.Subjects
 @attribute [Authorize(Policy = Policies.RequireAdmins)]
 
 @inject NavigationManager NavigationManager
@@ -28,7 +27,7 @@
 </EditForm>
 
 @code {
-    SubjectCreateDto _model = new();
+    CreateSubjectRequest _model = new();
     bool _isEdit;
     bool _isProcessing;
 
@@ -43,7 +42,7 @@
             var subject = await SubjectStore.GetById(Id.Value);
             if (subject != null)
             {
-                _model = new SubjectCreateDto
+                _model = new CreateSubjectRequest
                 {
                     Name = subject.Name
                 };
@@ -56,7 +55,7 @@
         _isProcessing = true;
         if (_isEdit)
         {
-            await SubjectStore.Update(Id!.Value, _model);
+            // await SubjectStore.Update(Id!.Value, _model);
         }
         else
         {

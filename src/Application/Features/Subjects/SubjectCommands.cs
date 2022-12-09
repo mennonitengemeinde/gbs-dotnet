@@ -24,7 +24,7 @@ public class SubjectCommands : ISubjectCommands
         return Result.Ok(_mapper.Map<SubjectResponse>(subject));
     }
 
-    public async Task<Result<SubjectResponse>> Update(int id, CreateSubjectRequest request)
+    public async Task<Result<SubjectResponse>> Update(int id, UpdateSubjectRequest request)
     {
         if (await NameExists(request.Name, id))
             return Result.BadRequest<SubjectResponse>("Subject name already exists");

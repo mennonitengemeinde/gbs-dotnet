@@ -1,3 +1,5 @@
+using Gbs.Shared.Lessons;
+
 namespace Gbs.Wasm.Pages.Admin.Lessons;
 
 public partial class LessonFormPage : ComponentBase, IDisposable
@@ -12,7 +14,7 @@ public partial class LessonFormPage : ComponentBase, IDisposable
     [CascadingParameter] CascadingUiState UiState { get; set; } = null!;
     [Parameter] public int? Id { get; set; }
 
-    // LessonCreateDto _model = new();
+    CreateLessonRequest _model = new();
     bool _isEdit;
 
     protected override async Task OnInitializedAsync()
@@ -25,7 +27,7 @@ public partial class LessonFormPage : ComponentBase, IDisposable
             var lesson = await LessonStore.GetById(Id.Value);
             if (lesson != null)
             {
-                _model = new LessonCreateDto
+                _model = new CreateLessonRequest
                 {
                     Name = lesson.Name,
                     VideoUrl = lesson.VideoUrl,
@@ -48,11 +50,11 @@ public partial class LessonFormPage : ComponentBase, IDisposable
         UiState.IsPageLoading = true;
         if (_isEdit)
         {
-            await LessonStore.Update(Id!.Value, _model);
+            // await LessonStore.Update(Id!.Value, _model);
         }
         else
         {
-            await LessonStore.Add(_model);
+            // await LessonStore.Add(_model);
         }
 
         if (!LessonStore.HasError)

@@ -39,7 +39,7 @@ public class SubjectCommandsTests : SubjectTestBase
     public async Task Update_UpdatesSubject()
     {
         var cmd = new SubjectCommands(Context, Mapper);
-        var subject = new CreateSubjectRequest { Name = "Subject 1 Updated" };
+        var subject = new UpdateSubjectRequest { Name = "Subject 1 Updated" };
 
         var result = await cmd.Update(1, subject);
         var ctxCount = Context.Subjects.Count();
@@ -55,7 +55,7 @@ public class SubjectCommandsTests : SubjectTestBase
     public async Task Update_ReturnsValidationError_WhenNameAlreadyExists()
     {
         var cmd = new SubjectCommands(Context, Mapper);
-        var subject = new CreateSubjectRequest { Name = "Subject 2" };
+        var subject = new UpdateSubjectRequest { Name = "Subject 2" };
 
         var result = await cmd.Update(1, subject);
         var ctxCount = Context.Subjects.Count();
@@ -69,7 +69,7 @@ public class SubjectCommandsTests : SubjectTestBase
     public async Task Update_ReturnsNotFound_WhenSubjectDoesNotExist()
     {
         var cmd = new SubjectCommands(Context, Mapper);
-        var subject = new CreateSubjectRequest { Name = "Subject 1 Updated" };
+        var subject = new UpdateSubjectRequest { Name = "Subject 1 Updated" };
 
         var result = await cmd.Update(4, subject);
         var ctxCount = Context.Subjects.Count();

@@ -41,10 +41,10 @@
 @code {
 
     [Parameter, EditorRequired]
-    public StreamDto LiveStream { get; set; } = null!;
+    public StreamResponse LiveStream { get; set; } = null!;
 
     [Parameter]
-    public EventCallback<StreamDto> OnDelete { get; set; }
+    public EventCallback<StreamResponse> OnDelete { get; set; }
 
     async Task ToggleLive()
     {

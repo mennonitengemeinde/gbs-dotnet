@@ -1,7 +1,6 @@
 @page "/school"
 @attribute [Authorize(Policy = Policies.RequireAdminsSoundAndTeachers)]
 @using Gbs.Wasm.Pages.School.Components
-@using Gbs.Shared.Streams
 @implements IAsyncDisposable
 
 @inject IStreamStore StreamStore

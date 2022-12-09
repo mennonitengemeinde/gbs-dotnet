@@ -35,7 +35,7 @@ public class StreamCommands : IStreamCommands
         return Result.Ok(_mapper.Map<StreamResponse>(stream));
     }
 
-    public async Task<Result<StreamResponse>> UpdateStream(int streamId, CreateStreamRequest streamCreateDto)
+    public async Task<Result<StreamResponse>> UpdateStream(int streamId, UpdateStreamRequest streamCreateDto)
     {
         if (await TitleExists(streamCreateDto.Title, streamId))
             return Result.BadRequest<StreamResponse>("Stream with this title already exists");

@@ -1,6 +1,5 @@
 @page "/admin/teachers/create"
 @page "/admin/teachers/{Id:int}/edit"
-@using Gbs.Shared.Teachers
 @attribute [Authorize(Policy = Policies.RequireAdminsAndSound)]
 
 @inject NavigationManager NavigationManager
@@ -27,7 +26,7 @@
 </EditForm>
 
 @code {
-    TeacherCreateDto _newTeacher = new();
+    CreateTeacherRequest _newTeacher = new();
     bool _isProcessing;
     bool _isEdit;
 
@@ -42,7 +41,7 @@
             var teacher = await TeacherStore.GetById(Id.Value);
             if (teacher != null)
             {
-                _newTeacher = new TeacherCreateDto
+                _newTeacher = new CreateTeacherRequest
                 {
                     Name = teacher.Name
                 };
@@ -55,7 +54,7 @@
         _isProcessing = true;
         if (_isEdit)
         {
-            await TeacherStore.Update(Id!.Value, _newTeacher);
+            // await TeacherStore.Update(Id!.Value, _newTeacher);
         }
         else
         {

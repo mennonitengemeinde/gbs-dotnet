@@ -1,7 +1,6 @@
 @page "/admin/streams/create"
 @page "/admin/streams/{Id:int}/edit"
 @attribute [Authorize(Policy = Policies.RequireAdminsAndSound)]
-@using Gbs.Shared.Streams
 @implements IDisposable
 
 @inject IStreamStore StreamStore
@@ -56,7 +55,7 @@
 </EditForm>
 
 @code {
-    StreamCreateDto _newStream = new();
+    CreateStreamRequest _newStream = new();
     bool _isProcessing;
     bool _isEditMode;
 
@@ -81,7 +80,7 @@
             {
                 if (stream != null)
                 {
-                    _newStream = new StreamCreateDto
+                    _newStream = new CreateStreamRequest
                     {
                         Title = stream.Title,
                         Url = stream.Url,
@@ -102,7 +101,7 @@
         _isProcessing = true;
         if (_isEditMode)
         {
-            await StreamStore.Update(Id!.Value, _newStream);
+            // await StreamStore.Update(Id!.Value, _newStream);
         }
         else
         {

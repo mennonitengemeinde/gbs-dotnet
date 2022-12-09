@@ -1,5 +1,4 @@
-﻿@inject IChurchStore ChurchStore
-@inject IUiService UiService
+﻿@inject IUiService UiService
 @inject NavigationManager NavigationManager
 
 <EditForm Model="_model" OnValidSubmit="HandleValidSubmit">
@@ -8,7 +7,7 @@
         <MudItem xs="12" sm="8" md="5">
             <MatFormCard Label="Church"
                          IsEdit="true"
-                         IsLoading="@ChurchStore.IsLoading"
+                         IsLoading="@ChurchState.IsLoading"
                          IsProcessing="@_isProcessing"
                          ReturnUrl="/admin/churches"
                          ValidationErrors="@ValidationErrors">
@@ -42,20 +41,23 @@
     [Parameter, EditorRequired]
     public int Id { get; set; }
 
+    [CascadingParameter]
+    public ChurchState ChurchState { get; set; } = null!;
+
     UpdateChurchRequest _model = new();
     bool _isProcessing;
     string[]? ValidationErrors { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        var church = await ChurchStore.GetById(Id);
+        var church = await ChurchState.GetById(Id);
         if (church == null)
         {
             await UiService.ShowErrorAlert("Church not found");
             NavigationManager.NavigateTo("/admin/churches");
             return;
         }
-        
+
         _model.Name = church.Name;
         _model.Address = church.Address;
         _model.City = church.City;
@@ -68,22 +70,20 @@
     {
         _isProcessing = true;
 
-        await ChurchStore.Update(Id, _model);
+        await ChurchState.Update(Id, _model);
 
-        if (!ChurchStore.HasError)
+        if (ChurchState.HasError)
         {
             _isProcessing = false;
-            UiService.ShowSuccessAlert("Church updated successfully");
-            NavigationManager.NavigateTo("admin/churches");
+            ValidationErrors = ChurchState.Errors;
+            await UiService.ShowErrorAlert(ChurchState.ErrorMessage);
+            ChurchState.ClearErrors();
         }
         else
         {
             _isProcessing = false;
-            if (ChurchStore.Errors != null)
-            {
-                ValidationErrors = ChurchStore.Errors;
-            }
-            ChurchStore.ClearErrors();
+            UiService.ShowSuccessAlert("Church updated successfully");
+            NavigationManager.NavigateTo("admin/churches");
         }
     }
 

@@ -17,6 +17,6 @@ public class CreateChurchValidator : AbstractValidator<CreateChurchRequest>
     private async Task<bool> BeUniqueName(string name, CancellationToken cancellationToken)
     {
         return await _context.Churches
-            .AllAsync(c => !string.Equals(c.Name, name, StringComparison.CurrentCultureIgnoreCase), cancellationToken);
+            .AllAsync(c => !c.Name.ToLower().Equals(name.ToLower()), cancellationToken);
     }
 }

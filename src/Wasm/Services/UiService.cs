@@ -20,9 +20,9 @@ public class UiService : IUiService
         _snackbar = snackbar;
     }
 
-    public async Task ShowErrorAlert(string message, int statusCode = 400)
+    public async Task ShowErrorAlert(string? message, int statusCode = 400)
     {
-        _snackbar.Add(message, Severity.Error);
+        _snackbar.Add(message ?? "Something went wrong!", Severity.Error);
         if (statusCode == 401)
         {
             await _localStorage.RemoveItemAsync("authToken");

@@ -70,7 +70,7 @@ public partial class StudentFormPage
         _model.LastName = _model.LastName.CapitalizeFirstLetterOfEachWord();
         if (_isEdit && Id.HasValue)
         {
-            await StudentStore.Update(Id.Value, _model);
+            // await StudentStore.Update(Id.Value, _model);
         }
         else
         {

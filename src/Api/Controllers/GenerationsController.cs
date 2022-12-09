@@ -18,7 +18,7 @@ namespace Gbs.Api.Controllers
 
         [HttpGet]
         [Authorize(Policy = Policies.RequireAdminsAndSound)]
-        public async Task<ActionResult<Result<List<GenerationDto>>>> GetGenerations()
+        public async Task<ActionResult<Result<List<GenerationResponse>>>> GetGenerations()
         {
             var result = await _generationQueries.GetAll();
             return result.ToActionResult();
@@ -26,7 +26,7 @@ namespace Gbs.Api.Controllers
 
         [HttpPost]
         [Authorize(Policy = Policies.RequireAdmins)]
-        public async Task<ActionResult<Result<GenerationDto>>> AddGeneration(GenerationCreateDto request)
+        public async Task<ActionResult<Result<GenerationResponse>>> AddGeneration(CreateGenerationRequest request)
         {
             var result = await _generationCommands.Add(request);
             return result.ToActionResult();
@@ -34,7 +34,7 @@ namespace Gbs.Api.Controllers
 
         [HttpGet("{id:int}")]
         [Authorize(Policy = Policies.RequireAdmins)]
-        public async Task<ActionResult<Result<GenerationDto>>> GetGenerationById(int id)
+        public async Task<ActionResult<Result<GenerationResponse>>> GetGenerationById(int id)
         {
             var result = await _generationQueries.GetById(id);
             return result.ToActionResult();
@@ -42,10 +42,10 @@ namespace Gbs.Api.Controllers
 
         [HttpPut("{generationId:int}")]
         [Authorize(Policy = Policies.RequireAdmins)]
-        public async Task<ActionResult<Result<GenerationDto>>> UpdateGeneration(int generationId,
-            GenerationUpdateDto generation)
+        public async Task<ActionResult<Result<GenerationResponse>>> UpdateGeneration(int generationId,
+            UpdateGenerationRequest generation)
         {
-            var result = await _generationCommands.Update(generationId, generation);
+            var result = await _generationCommands.Update(generation);
             return result.ToActionResult();
         }
 

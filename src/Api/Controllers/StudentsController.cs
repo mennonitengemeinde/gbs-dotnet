@@ -20,30 +20,30 @@ public class StudentsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<Result<List<StudentDto>>>> GetAllStudents()
+    public async Task<ActionResult<Result<List<StudentResponse>>>> GetAllStudents()
     {
         var result = await _studentQueries.GetAll();
         return result.ToActionResult();
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<Result<StudentDto>>> GetStudentById(int id)
+    public async Task<ActionResult<Result<StudentResponse>>> GetStudentById(int id)
     {
         var result = await _studentQueries.GetById(id);
         return result.ToActionResult();
     }
 
     [HttpPost]
-    public async Task<ActionResult<Result<StudentDto>>> AddStudent(StudentCreateDto student)
+    public async Task<ActionResult<Result<StudentResponse>>> AddStudent(CreateStudentRequest student)
     {
         var result = await _studentCommands.Add(student);
         return result.ToActionResult();
     }
 
     [HttpPut("{id:int}")]
-    public async Task<ActionResult<Result<StudentDto>>> UpdateStudent(int id, StudentCreateDto student)
+    public async Task<ActionResult<Result<StudentResponse>>> UpdateStudent(int id, UpdateStudentRequest student)
     {
-        var result = await _studentCommands.Update(id, student);
+        var result = await _studentCommands.Update(student);
         return result.ToActionResult();
     }
 }

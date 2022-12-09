@@ -2,7 +2,6 @@
 @attribute [Authorize(Policy = Policies.RequireAdminsAndSound)]
 @implements IDisposable
 @using Gbs.Wasm.Pages.Admin.Streams.Components
-@using Gbs.Shared.Streams
 
 @inject IStreamStore StreamStore
 @inject IUiService UiService
@@ -42,7 +41,7 @@
         UiState.IsPageLoading = StreamStore.IsLoading;
     }
 
-    async Task HandleDelete(StreamDto stream)
+    async Task HandleDelete(StreamResponse stream)
     {
         bool? result = await DialogService.ShowMessageBox(
             $"Delete {stream.Title}?",
@@ -55,7 +54,7 @@
         StateHasChanged();
     }
 
-    async Task DeleteStream(StreamDto stream)
+    async Task DeleteStream(StreamResponse stream)
     {
         await StreamStore.Delete(stream.Id);
         if (!StreamStore.HasError)

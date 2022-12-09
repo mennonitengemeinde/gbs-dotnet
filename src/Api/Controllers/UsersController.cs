@@ -18,7 +18,7 @@ namespace Gbs.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<Result<List<UserDto>>>> GetUsers()
+        public async Task<ActionResult<Result<List<UserResponse>>>> GetUsers()
         {
             var result = await _identityQueries.GetAll();
             return result.ToActionResult();
@@ -26,30 +26,30 @@ namespace Gbs.Api.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ActionResult<Result<string>>> RegisterUser(RegisterDto request)
+        public async Task<ActionResult<Result<string>>> RegisterUser(RegisterRequest request)
         {
             var result = await _identityCommands.Add(request);
             return result.ToActionResult();
         }
 
         [HttpPut("{id}/church")]
-        public async Task<ActionResult<Result<UserDto>>> UpdateChurch(string id, UserUpdateChurchDto updateDto)
+        public async Task<ActionResult<Result<UserResponse>>> UpdateChurch(string id, UpdateUserChurchRequest updateDto)
         {
             var result = await _identityCommands.UpdateChurch(id, updateDto);
             return result.ToActionResult();
         }
 
         [HttpPut("{id}/roles")]
-        public async Task<ActionResult<Result<UserDto>>> UpdateRoles(string id,
-            [FromBody] UserUpdateRoleDto updateRoleDto)
+        public async Task<ActionResult<Result<UserResponse>>> UpdateRoles(string id,
+            [FromBody] UpdateUserRoleRequest updateRoleDto)
         {
             var user = await _identityCommands.UpdateRoles(id, updateRoleDto.Roles);
             return user.ToActionResult();
         }
 
         [HttpPut("{id}/active")]
-        public async Task<ActionResult<Result<UserDto>>> UpdateUserActiveState(string id,
-            UserUpdateActiveStateDto updateActiveStateDto)
+        public async Task<ActionResult<Result<UserResponse>>> UpdateUserActiveState(string id,
+            UpdateUserActiveStateRequest updateActiveStateDto)
         {
             var user = await _identityCommands.UpdateActiveState(id, updateActiveStateDto.IsActive);
             return user.ToActionResult();
