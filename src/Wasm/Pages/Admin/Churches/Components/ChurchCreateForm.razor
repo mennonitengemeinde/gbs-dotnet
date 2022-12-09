@@ -2,7 +2,7 @@
 @inject NavigationManager NavigationManager
 
 <EditForm Model="_model" OnValidSubmit="HandleValidSubmit">
-    <DataAnnotationsValidator />
+    <FluentValidationValidator />
     <MudGrid Justify="Justify.Center" Class="tw-pt-8">
         <MudItem xs="12" sm="8" md="5">
             <MatFormCard Label="Church"
