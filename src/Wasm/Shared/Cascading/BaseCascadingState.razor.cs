@@ -1,12 +1,17 @@
-﻿namespace Gbs.Wasm.Shared.Cascading;
+﻿using Blazored.LocalStorage;
+using Microsoft.AspNetCore.Components.Authorization;
+
+namespace Gbs.Wasm.Shared.Cascading;
 
 public abstract class BaseCascadingState<T, TCreate, TIdType, TUpdate> : ComponentBase, IApiState
 {
     [Parameter] public RenderFragment? ChildContent { get; set; }
 
     [Inject] protected HttpClient Http { get; set; } = null!;
-
     [Inject] protected IDateTimeService DateTimeService { get; set; } = null!;
+    [Inject] protected ILocalStorageService LocalStorage { get; set; } = null!;
+    [Inject] protected AuthenticationStateProvider AuthenticationStateProvider { get; set; } = null!;
+    [Inject] protected NavigationManager NavigationManager { get; set; } = null!;
 
     private List<T> _data = new();
     private bool _isLoading;
@@ -87,7 +92,7 @@ public abstract class BaseCascadingState<T, TCreate, TIdType, TUpdate> : Compone
             .EnsureSuccess<List<T>>();
         if (result.Success == false || result.Data == null)
         {
-            SetErrors(result.Message, result.Errors);
+            await SetErrors(result.Message, result.Errors, result.StatusCode);
             Data = new List<T>();
             IsLoading = false;
             return;
@@ -105,22 +110,29 @@ public abstract class BaseCascadingState<T, TCreate, TIdType, TUpdate> : Compone
         StateHasChanged();
     }
 
-    protected void SetErrors(string message, string[]? errors)
+    protected async Task SetErrors(string message, string[]? errors, int statusCode = 400)
     {
         _hasError = true;
         _errorMessage = message;
         _errors = errors;
+        if (statusCode == 401)
+        {
+            await LocalStorage.RemoveItemAsync("authToken");
+            await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            NavigationManager.NavigateTo("");
+        }
+
         StateHasChanged();
     }
 
-    public async Task Add(TCreate item)
+    public virtual async Task Add(TCreate item)
     {
         IsLoading = true;
         var result = await Http.PostAsJsonAsync(BaseUrl, item)
             .EnsureSuccess<T>();
         if (!result.Success)
         {
-            SetErrors(result.Message, result.Errors);
+            await SetErrors(result.Message, result.Errors, result.StatusCode);
             IsLoading = false;
             return;
         }
@@ -135,7 +147,7 @@ public abstract class BaseCascadingState<T, TCreate, TIdType, TUpdate> : Compone
             .EnsureSuccess<T>();
         if (!result.Success)
         {
-            SetErrors(result.Message, result.Errors);
+            await SetErrors(result.Message, result.Errors, result.StatusCode);
             IsLoading = false;
             return;
         }
@@ -150,7 +162,7 @@ public abstract class BaseCascadingState<T, TCreate, TIdType, TUpdate> : Compone
             .EnsureSuccess<bool>();
         if (!result.Success)
         {
-            SetErrors(result.Message, result.Errors);
+            await SetErrors(result.Message, result.Errors, result.StatusCode);
             IsLoading = false;
             return;
         }

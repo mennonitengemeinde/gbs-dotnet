@@ -54,7 +54,7 @@
         {
             _isProcessing = false;
             ValidationErrors = ChurchState.Errors;
-            await UiService.ShowErrorAlert(ChurchState.ErrorMessage);
+            UiService.ShowErrorAlert(ChurchState.ErrorMessage);
             ChurchState.ClearErrors();
         }
         else

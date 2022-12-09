@@ -18,7 +18,7 @@ public class StreamStore : BaseStore<StreamResponse, int, CreateStreamRequest, U
         var result = Data.FirstOrDefault(x => x.Id == id && x.IsLive);
         if (result == null)
         {
-            await UiService.ShowErrorAlert("Could not find item with id " + id);
+            UiService.ShowErrorAlert("Could not find item with id " + id);
         }
 
         return result;
@@ -29,7 +29,7 @@ public class StreamStore : BaseStore<StreamResponse, int, CreateStreamRequest, U
         var liveStream = Data.FirstOrDefault(s => s.Id == id);
         if (liveStream == null)
         {
-            await UiService.ShowErrorAlert("Could not find item with id " + id);
+            UiService.ShowErrorAlert("Could not find item with id " + id);
             return;
         }
         
@@ -40,7 +40,7 @@ public class StreamStore : BaseStore<StreamResponse, int, CreateStreamRequest, U
         
         if (!result.Success)
         {
-            await UiService.ShowErrorAlert(result.Message, result.StatusCode);
+            UiService.ShowErrorAlert(result.Message, result.StatusCode);
             SetErrors(result.Message, result.Errors);
             return;
         }

@@ -36,8 +36,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        // await ChurchStore.Fetch();
-        await ChurchState.ForceFetch();
+        await ChurchState.Fetch();
+        // await ChurchState.ForceFetch();
         // ChurchStore.OnChange += StateHasChanged;
     }
 

@@ -22,7 +22,7 @@ public abstract class BaseStore<T, TId> : IStore<T, TId>
     public abstract string BaseUrl { get; }
     public bool HasError { get; protected set; }
     public string? ErrorMessage { get; protected set; }
-    public string[]? Errors { get; private set; } = null;
+    public string[]? Errors { get; private set; }
 
     public bool IsLoading
     {
@@ -90,7 +90,7 @@ public abstract class BaseStore<T, TId> : IStore<T, TId>
             .EnsureSuccess<List<T>>();
         if (result.Success == false || result.Data == null)
         {
-            await UiService.ShowErrorAlert(result.Message, result.StatusCode);
+            UiService.ShowErrorAlert(result.Message, result.StatusCode);
             SetErrors(result.Message, result.Errors);
             Data = new List<T>();
             IsLoading = false;
@@ -110,7 +110,7 @@ public abstract class BaseStore<T, TId> : IStore<T, TId>
         var result = GetByIdQuery(id);
         if (result == null)
         {
-            await UiService.ShowErrorAlert("Could not find item with id " + id);
+            UiService.ShowErrorAlert("Could not find item with id " + id);
         }
 
         return result;
@@ -123,7 +123,7 @@ public abstract class BaseStore<T, TId> : IStore<T, TId>
             .EnsureSuccess<bool>();
         if (!result.Success)
         {
-            await UiService.ShowErrorAlert(result.Message, result.StatusCode);
+            UiService.ShowErrorAlert(result.Message, result.StatusCode);
             SetErrors(result.Message, result.Errors);
             IsLoading = false;
             return;
@@ -155,7 +155,7 @@ public abstract class BaseStore<T, TId, TCreate, TUpdate> : BaseStore<T, TId>, I
             .EnsureSuccess<T>();
         if (!result.Success)
         {
-            await UiService.ShowErrorAlert(result.Message, result.StatusCode);
+            UiService.ShowErrorAlert(result.Message, result.StatusCode);
             SetErrors(result.Message, result.Errors);
             IsLoading = false;
             return;
@@ -171,7 +171,7 @@ public abstract class BaseStore<T, TId, TCreate, TUpdate> : BaseStore<T, TId>, I
             .EnsureSuccess<T>();
         if (!result.Success)
         {
-            await UiService.ShowErrorAlert(result.Message, result.StatusCode);
+            UiService.ShowErrorAlert(result.Message, result.StatusCode);
             SetErrors(result.Message, result.Errors);
             IsLoading = false;
             return;

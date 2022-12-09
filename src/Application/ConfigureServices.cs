@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using Gbs.Application.Features.Churches;
 using Gbs.Application.Features.Churches.Interfaces;
-using Gbs.Application.Features.Churches.Validators;
 using Gbs.Application.Features.Generations;
 using Gbs.Application.Features.Generations.Interfaces;
 using Gbs.Application.Features.Identity;
@@ -26,7 +25,7 @@ public static class ConfigureServices
     {
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
         
-        services.AddValidatorsFromAssemblyContaining<CreateChurchValidator>();
+        services.AddValidatorsFromAssemblyContaining<ChurchValidator>();
         // services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
         
         // services.AddMediatR(Assembly.GetExecutingAssembly());

@@ -107,7 +107,7 @@
             UiState.IsPageLoading = false;
             
             if (LessonStore.ErrorMessage != null)
-                await UiService.ShowErrorAlert(LessonStore.ErrorMessage);
+                UiService.ShowErrorAlert(LessonStore.ErrorMessage);
 
             if (LessonStore.Errors != null)
                 ValidationErrors = LessonStore.Errors;

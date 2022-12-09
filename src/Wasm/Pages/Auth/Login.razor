@@ -1,7 +1,6 @@
 @page "/login"
 @layout AuthLayout
 @using Gbs.Wasm.Pages.Auth.Components
-@using Gbs.Shared.Identity
 
 @inject IAuthService AuthService
 @inject IUiService UiService
@@ -65,7 +64,7 @@
         var result = await AuthService.Login(_loginDto);
         if (result.Success == false)
         {
-            await UiService.ShowErrorAlert(result.Message, result.StatusCode);
+            UiService.ShowErrorAlert(result.Message, result.StatusCode);
             _isProcessing = false;
             return;
         }

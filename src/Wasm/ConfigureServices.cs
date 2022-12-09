@@ -24,7 +24,6 @@ public static class ConfigureServices
         services.AddTransient<IDateTimeService, DateTimeService>();
 
         services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(hostEnvironment.BaseAddress) });
-        services.AddScoped<IChurchStore, ChurchStore>();
         services.AddScoped<IGenerationStore, GenerationStore>();
         services.AddScoped<ILessonStore, LessonStore>();
         services.AddScoped<IStreamStore, StreamStore>();

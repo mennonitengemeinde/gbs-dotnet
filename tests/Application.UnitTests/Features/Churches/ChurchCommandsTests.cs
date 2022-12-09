@@ -1,5 +1,5 @@
 ﻿using Gbs.Application.Features.Churches;
-using Gbs.Application.Features.Churches.Validators;
+// using Gbs.Application.Features.Churches.Validators;
 using Gbs.Shared.Churches;
 
 namespace Gbs.Tests.Application.UnitTests.Features.Churches;
@@ -10,7 +10,7 @@ public class ChurchCommandsTests : ChurchTestBase
     public async Task Add_AddsChurch()
     {
         // Arrange
-        var churchCmd = new ChurchCommands(Context, Mapper, CreateChurchValidator, UpdateChurchValidator);
+        var churchCmd = new ChurchCommands(Context, Mapper, ChurchValidator);
         var church = new CreateChurchRequest { Name = "Test Church", Country = "Test Country" };
         // Act
         var result = await churchCmd.Add(church);
@@ -28,7 +28,7 @@ public class ChurchCommandsTests : ChurchTestBase
     public async Task Add_ReturnsValidationError()
     {
         // Arrange
-        var churchCmd = new ChurchCommands(Context, Mapper, CreateChurchValidator, UpdateChurchValidator);
+        var churchCmd = new ChurchCommands(Context, Mapper, ChurchValidator);
         var church = new CreateChurchRequest { Name = "Church 1", Country = "Test Country" };
         // Act
         var result = await churchCmd.Add(church);
@@ -44,7 +44,7 @@ public class ChurchCommandsTests : ChurchTestBase
     public async Task Update_UpdatesChurch()
     {
         // Arrange
-        var churchCmd = new ChurchCommands(Context, Mapper, CreateChurchValidator, UpdateChurchValidator);
+        var churchCmd = new ChurchCommands(Context, Mapper, ChurchValidator);
         var church = new UpdateChurchRequest { Id = 1, Name = "Test Church", Country = "Test Country" };
         // Act
         var result = await churchCmd.Update(church);
@@ -61,7 +61,7 @@ public class ChurchCommandsTests : ChurchTestBase
     public async Task Update_ReturnsNotFound()
     {
         // Arrange
-        var churchCmd = new ChurchCommands(Context, Mapper, CreateChurchValidator, UpdateChurchValidator);
+        var churchCmd = new ChurchCommands(Context, Mapper, ChurchValidator);
         var church = new UpdateChurchRequest { Id = 5, Name = "Church 1", Country = "Test Country" };
         // Act
         var result = await churchCmd.Update(church);
@@ -77,7 +77,7 @@ public class ChurchCommandsTests : ChurchTestBase
     public async Task Update_ReturnsValidationError()
     {
         // Arrange
-        var churchCmd = new ChurchCommands(Context, Mapper, CreateChurchValidator, UpdateChurchValidator);
+        var churchCmd = new ChurchCommands(Context, Mapper, ChurchValidator);
         var church = new UpdateChurchRequest { Id = 2, Name = "Church 1", Country = "Test Country" };
         // Act
         var result = await churchCmd.Update(church);
@@ -93,7 +93,7 @@ public class ChurchCommandsTests : ChurchTestBase
     public async Task Delete_DeletesChurch()
     {
         // Arrange
-        var churchCmd = new ChurchCommands(Context, Mapper, CreateChurchValidator, UpdateChurchValidator);
+        var churchCmd = new ChurchCommands(Context, Mapper, ChurchValidator);
         // Act
         var result = await churchCmd.Delete(1);
         var contextCount = Context.Churches.Count();
@@ -107,7 +107,7 @@ public class ChurchCommandsTests : ChurchTestBase
     public async Task Delete_ReturnsNotFound()
     {
         // Arrange
-        var churchCmd = new ChurchCommands(Context, Mapper, CreateChurchValidator, UpdateChurchValidator);
+        var churchCmd = new ChurchCommands(Context, Mapper, ChurchValidator);
         // Act
         var result = await churchCmd.Delete(5);
         var contextCount = Context.Churches.Count();

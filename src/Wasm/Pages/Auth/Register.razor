@@ -1,10 +1,9 @@
 @page "/register"
 @using Gbs.Wasm.Pages.Auth.Components
-@using Gbs.Shared.Identity
 @layout AuthLayout
 
-@inject IUserStore UserStore
 @inject NavigationManager NavigationManager
+@inject IUiService UiService
 
 <PageTitle>Register - GBS</PageTitle>
 
@@ -62,21 +61,28 @@
 </EditForm>
 
 @code {
+
+    [CascadingParameter]
+    private UserState UserState { get; set; } = null!;
+    
     RegisterRequest _registerDto = new();
     bool _isProcessing;
+    string[]? ValidationErrors { get; set; }
 
     async Task HandleRegistration()
     {
         _isProcessing = true;
-        await UserStore.Add(_registerDto);
-        if (!UserStore.HasError)
+        await UserState.Add(_registerDto);
+        if (!UserState.HasError)
         {
             _isProcessing = false;
             NavigationManager.NavigateTo("login");
         }
         else
         {
-            UserStore.ClearErrors();
+            ValidationErrors = UserState.Errors;
+            UiService.ShowErrorAlert(UserState.ErrorMessage);
+            UserState.ClearErrors();
             _isProcessing = false;
         }
     }

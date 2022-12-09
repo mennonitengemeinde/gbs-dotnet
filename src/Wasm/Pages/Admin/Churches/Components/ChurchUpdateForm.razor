@@ -53,11 +53,12 @@
         var church = await ChurchState.GetById(Id);
         if (church == null)
         {
-            await UiService.ShowErrorAlert("Church not found");
+            UiService.ShowErrorAlert("Church not found");
             NavigationManager.NavigateTo("/admin/churches");
             return;
         }
 
+        _model.Id = church.Id;
         _model.Name = church.Name;
         _model.Address = church.Address;
         _model.City = church.City;
@@ -76,7 +77,7 @@
         {
             _isProcessing = false;
             ValidationErrors = ChurchState.Errors;
-            await UiService.ShowErrorAlert(ChurchState.ErrorMessage);
+            UiService.ShowErrorAlert(ChurchState.ErrorMessage);
             ChurchState.ClearErrors();
         }
         else

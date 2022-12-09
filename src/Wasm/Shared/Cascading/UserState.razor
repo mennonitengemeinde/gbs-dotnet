@@ -1,16 +1,14 @@
-﻿using Gbs.Shared.Identity;
+﻿@inherits BaseCascadingState<UserResponse, RegisterRequest, string, RegisterRequest>
 
-namespace Gbs.Wasm.Store;
+<CascadingValue Value="this">
+    @ChildContent
+</CascadingValue>
 
-public class UserStore : BaseStore<UserResponse, string, RegisterRequest, RegisterRequest>, IUserStore
-{
-    public UserStore(HttpClient http, IDateTimeService dateTime, IUiService uiService) :
-        base(http, dateTime, uiService) { }
-
-    public override string BaseUrl { get; } = "api/users";
+@code {
+    public override string BaseUrl => "api/users";
     
-    public override UserResponse? GetByIdQuery(string id) => Data.FirstOrDefault(u => u.Id == id);
-
+    public UserResponse? GetByIdQuery(string id) => Data.FirstOrDefault(u => u.Id == id);
+    
     public override async Task Add(RegisterRequest item)
     {
         IsLoading = true;
@@ -18,8 +16,7 @@ public class UserStore : BaseStore<UserResponse, string, RegisterRequest, Regist
             .EnsureSuccess<string>();
         if (!result.Success)
         {
-            UiService.ShowErrorAlert(result.Message, result.StatusCode);
-            SetErrors(result.Message, result.Errors);
+            await SetErrors(result.Message, result.Errors, result.StatusCode);
             IsLoading = false;
         }
     }
@@ -32,14 +29,13 @@ public class UserStore : BaseStore<UserResponse, string, RegisterRequest, Regist
         
         if (!result.Success)
         {
-            UiService.ShowErrorAlert(result.Message, result.StatusCode);
-            SetErrors(result.Message, result.Errors);
+            await SetErrors(result.Message, result.Errors, result.StatusCode);
             return;
         }
 
         await ForceFetch();
     }
-
+    
     public async Task UpdateRoles(string id, UpdateUserRoleRequest request)
     {
         var result = await Http.PutAsJsonAsync($"api/users/{id}/roles", request)
@@ -47,14 +43,13 @@ public class UserStore : BaseStore<UserResponse, string, RegisterRequest, Regist
         
         if (!result.Success)
         {
-            UiService.ShowErrorAlert(result.Message, result.StatusCode);
-            SetErrors(result.Message, result.Errors);
+            await SetErrors(result.Message, result.Errors, result.StatusCode);
             return;
         }
 
         await ForceFetch();
     }
-
+    
     public async Task UpdateActiveState(string id, UpdateUserActiveStateRequest request)
     {
         var result = await Http.PutAsJsonAsync($"api/users/{id}/active", request)
@@ -62,8 +57,7 @@ public class UserStore : BaseStore<UserResponse, string, RegisterRequest, Regist
         
         if (!result.Success)
         {
-            UiService.ShowErrorAlert(result.Message, result.StatusCode);
-            SetErrors(result.Message, result.Errors);
+            await SetErrors(result.Message, result.Errors, result.StatusCode);
             return;
         }
 

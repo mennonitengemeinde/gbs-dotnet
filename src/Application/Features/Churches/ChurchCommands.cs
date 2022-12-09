@@ -6,28 +6,26 @@ public class ChurchCommands : IChurchCommands
 {
     private readonly IGbsDbContext _context;
     private readonly IMapper _mapper;
-    private readonly IValidator<CreateChurchRequest> _createChurchValidator;
-    private readonly IValidator<UpdateChurchRequest> _updateChurchValidator;
+    private readonly IValidator<Church> _churchValidator;
 
     public ChurchCommands(
         IGbsDbContext context, 
         IMapper mapper, 
-        IValidator<CreateChurchRequest> createChurchValidator,
-        IValidator<UpdateChurchRequest> updateChurchValidator)
+        IValidator<Church> churchValidator)
     {
         _context = context;
         _mapper = mapper;
-        _createChurchValidator = createChurchValidator;
-        _updateChurchValidator = updateChurchValidator;
+        _churchValidator = churchValidator;
     }
 
     public async Task<Result<ChurchResponse>> Add(CreateChurchRequest request)
     {
-        var valResult = await _createChurchValidator.ValidateAsync(request);
+        var newChurch = _mapper.Map<Church>(request);
+        
+        var valResult = await _churchValidator.ValidateAsync(newChurch);
         if (!valResult.IsValid)
             return Result.ValidationError<ChurchResponse>(valResult);
 
-        var newChurch = _mapper.Map<Church>(request);
         _context.Churches.Add(newChurch);
         await _context.SaveChangesAsync();
         return Result.Ok(_mapper.Map<ChurchResponse>(newChurch));
@@ -39,16 +37,12 @@ public class ChurchCommands : IChurchCommands
         if (dbChurch == null)
             return Result.NotFound<ChurchResponse>("Church not found");
         
-        var valResult = await _updateChurchValidator.ValidateAsync(request);
+        _mapper.Map(request, dbChurch);
+        
+        var valResult = await _churchValidator.ValidateAsync(dbChurch);
         if (!valResult.IsValid)
             return Result.ValidationError<ChurchResponse>(valResult);
 
-        dbChurch.Name = request.Name;
-        dbChurch.Address = request.Address;
-        dbChurch.City = request.City;
-        dbChurch.State = request.State;
-        dbChurch.PostalCode = request.PostalCode;
-        dbChurch.Country = request.Country;
         _context.Churches.Update(dbChurch);
         await _context.SaveChangesAsync();
 

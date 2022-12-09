@@ -20,15 +20,15 @@ public class UiService : IUiService
         _snackbar = snackbar;
     }
 
-    public async Task ShowErrorAlert(string? message, int statusCode = 400)
+    public void ShowErrorAlert(string? message, int statusCode = 400)
     {
         _snackbar.Add(message ?? "Something went wrong!", Severity.Error);
-        if (statusCode == 401)
-        {
-            await _localStorage.RemoveItemAsync("authToken");
-            await _authenticationStateProvider.GetAuthenticationStateAsync();
-            _navManager.NavigateTo("");
-        }
+        // if (statusCode == 401)
+        // {
+        //     await _localStorage.RemoveItemAsync("authToken");
+        //     await _authenticationStateProvider.GetAuthenticationStateAsync();
+        //     _navManager.NavigateTo("");
+        // }
     }
 
     public void ShowSuccessAlert(string message)
