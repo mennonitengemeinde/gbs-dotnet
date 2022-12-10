@@ -128,6 +128,7 @@
     {
         var updateRoleDto = new UpdateUserRoleRequest { Roles = _users.First(u => u.Id == userId).Roles.ToList() };
         await UserState.UpdateRoles(userId, updateRoleDto);
+        _users.First(u => u.Id == userId).RoleChanged = false;
     }
 
     class LocalUserDto : UserResponse

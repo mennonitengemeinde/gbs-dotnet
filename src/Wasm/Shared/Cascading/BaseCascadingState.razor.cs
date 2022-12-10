@@ -29,7 +29,7 @@ public abstract class BaseCascadingState<T, TCreate, TIdType, TUpdate> : Compone
         {
             _data = value;
             _lastUpdated = DateTimeService.UtcNow;
-            StateHasChanged();
+            // StateHasChanged();
         }
     }
 
@@ -40,7 +40,7 @@ public abstract class BaseCascadingState<T, TCreate, TIdType, TUpdate> : Compone
         {
             if (_errorMessage == value) return;
             _errorMessage = value;
-            StateHasChanged();
+            // StateHasChanged();
         }
     }
 
@@ -51,7 +51,7 @@ public abstract class BaseCascadingState<T, TCreate, TIdType, TUpdate> : Compone
         {
             if (_errors == value) return;
             _errors = value;
-            StateHasChanged();
+            // StateHasChanged();
         }
     }
 
@@ -62,7 +62,7 @@ public abstract class BaseCascadingState<T, TCreate, TIdType, TUpdate> : Compone
         {
             if (_hasError == value) return;
             _hasError = value;
-            StateHasChanged();
+            // StateHasChanged();
         }
     }
 
@@ -73,7 +73,7 @@ public abstract class BaseCascadingState<T, TCreate, TIdType, TUpdate> : Compone
         {
             if (_isLoading == value) return;
             _isLoading = value;
-            StateHasChanged();
+            // StateHasChanged();
         }
     }
 
@@ -107,7 +107,6 @@ public abstract class BaseCascadingState<T, TCreate, TIdType, TUpdate> : Compone
         _hasError = true;
         _errorMessage = null;
         _errors = null;
-        StateHasChanged();
     }
 
     protected async Task SetErrors(string message, string[]? errors, int statusCode = 400)
@@ -121,8 +120,6 @@ public abstract class BaseCascadingState<T, TCreate, TIdType, TUpdate> : Compone
             await AuthenticationStateProvider.GetAuthenticationStateAsync();
             NavigationManager.NavigateTo("");
         }
-
-        StateHasChanged();
     }
 
     public virtual async Task Add(TCreate item)
