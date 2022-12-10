@@ -8,5 +8,5 @@ public class GenerationResponse
     public string Name { get; set; } = string.Empty;
     public bool IsActive { get; set; } = true;
 
-    public IEnumerable<StudentResponse> Students { get; set; } = new List<StudentResponse>();
+    public IEnumerable<GenerationStudentResponse> Students { get; set; } = new List<GenerationStudentResponse>();
 }

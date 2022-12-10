@@ -4,10 +4,10 @@ using Gbs.Shared.Churches;
 
 namespace Gbs.Tests.Application.UnitTests.Features.Churches;
 
-public class ChurchCommandsTests : ChurchTestBase
+public class ChurchCommandsTests : ChurchTestBase, ICommandTests
 {
     [Fact]
-    public async Task Add_AddsChurch()
+    public async Task Add_AddsNewEntity()
     {
         // Arrange
         var churchCmd = new ChurchCommands(Context, Mapper, ChurchValidator);
@@ -25,7 +25,7 @@ public class ChurchCommandsTests : ChurchTestBase
     }
 
     [Fact]
-    public async Task Add_ReturnsValidationError()
+    public async Task Add_ReturnValidationError_WhenEntityAlreadyExists()
     {
         // Arrange
         var churchCmd = new ChurchCommands(Context, Mapper, ChurchValidator);
@@ -41,7 +41,7 @@ public class ChurchCommandsTests : ChurchTestBase
     }
 
     [Fact]
-    public async Task Update_UpdatesChurch()
+    public async Task Update_UpdatesEntity()
     {
         // Arrange
         var churchCmd = new ChurchCommands(Context, Mapper, ChurchValidator);
@@ -58,7 +58,7 @@ public class ChurchCommandsTests : ChurchTestBase
     }
     
     [Fact]
-    public async Task Update_ReturnsNotFound()
+    public async Task Update_ReturnsNotFound_WhenEntityDoesNotExist()
     {
         // Arrange
         var churchCmd = new ChurchCommands(Context, Mapper, ChurchValidator);
@@ -74,7 +74,7 @@ public class ChurchCommandsTests : ChurchTestBase
     }
 
     [Fact]
-    public async Task Update_ReturnsValidationError()
+    public async Task Update_ReturnValidationError_WhenEntityAlreadyExists()
     {
         // Arrange
         var churchCmd = new ChurchCommands(Context, Mapper, ChurchValidator);
@@ -90,7 +90,7 @@ public class ChurchCommandsTests : ChurchTestBase
     }
     
     [Fact]
-    public async Task Delete_DeletesChurch()
+    public async Task Delete_DeletesEntity()
     {
         // Arrange
         var churchCmd = new ChurchCommands(Context, Mapper, ChurchValidator);
@@ -104,7 +104,7 @@ public class ChurchCommandsTests : ChurchTestBase
     }
     
     [Fact]
-    public async Task Delete_ReturnsNotFound()
+    public async Task Delete_ReturnsNotFound_WhenEntityDoesNotExist()
     {
         // Arrange
         var churchCmd = new ChurchCommands(Context, Mapper, ChurchValidator);

@@ -1,9 +1,9 @@
-﻿using Gbs.Shared.Common.Enums;
+using Gbs.Shared.Common.Enums;
 using Gbs.Shared.Grades;
 
-namespace Gbs.Shared.Students;
+namespace Gbs.Shared.Generations;
 
-public class StudentResponse
+public class GenerationStudentResponse
 {
     public int Id { get; set; }
     public string FirstName { get; set; } = string.Empty;
@@ -25,9 +25,6 @@ public class StudentResponse
 
     public int ChurchId { get; set; }
     public string ChurchName { get; set; } = string.Empty;
-
-    public int GenerationId { get; set; }
-    public string GenerationName { get; set; } = string.Empty;
 
     public string? UserId { get; set; }
     // public User? User { get; set; }

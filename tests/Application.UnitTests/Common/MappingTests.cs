@@ -49,6 +49,7 @@ public class MappingTests
     [InlineData(typeof(Church), typeof(ChurchResponse))]
     [InlineData(typeof(CreateChurchRequest), typeof(Church))]
     [InlineData(typeof(Student), typeof(StudentResponse))]
+    [InlineData(typeof(Student), typeof(GenerationStudentResponse))]
     [InlineData(typeof(Generation), typeof(GenerationResponse))]
     [InlineData(typeof(Grade), typeof(GradeResponse))]
     [InlineData(typeof(Lesson), typeof(LessonResponse))]

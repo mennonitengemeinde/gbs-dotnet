@@ -1,22 +1,15 @@
-@page "/admin/generations/create"
-@page "/admin/generations/{Id:int}/edit"
-@using Gbs.Shared.Generations
-@attribute [Authorize(Policy = Policies.RequireAdmins)]
-
 @inject NavigationManager NavigationManager
-@inject IGenerationStore GenerationStore
 @inject IUiService UiService
-
-<PageTitle>Generations Form - GBS</PageTitle>
 
 <EditForm Model="_model" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator />
     <MudGrid Justify="Justify.Center" Class="tw-pt-8">
         <MudItem xs="12" sm="8" md="5">
             <MatFormCard Label="Generation"
-                         IsEdit="@_isEdit"
-                         IsLoading="@GenerationStore.IsLoading"
+                         IsEdit="true"
+                         IsLoading="@GenerationState.IsLoading"
                          IsProcessing="@_isProcessing"
+                         ValidationErrors="@_errors"
                          ReturnUrl="/admin/generations">
                 <MudTextField Label="Name"
                               @bind-Value="_model.Name"
@@ -27,48 +20,48 @@
 </EditForm>
 
 @code {
-    CreateGenerationRequest _model = new();
-    bool _isEdit;
-    bool _isProcessing;
 
-    [Parameter]
-    public int? Id { get; set; }
+    [CascadingParameter]
+    public GenerationState GenerationState { get; set; } = null!;
+
+    UpdateGenerationRequest _model = new();
+    bool _isProcessing;
+    string[]? _errors;
+
+    [Parameter, EditorRequired]
+    public int Id { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        if (Id.HasValue)
+        var generation = await GenerationState.GetById(Id);
+        if (generation != null)
         {
-            _isEdit = true;
-            var generation = await GenerationStore.GetById(Id.Value);
-            if (generation != null)
+            _model = new UpdateGenerationRequest
             {
-                _model = new CreateGenerationRequest
-                {
-                    Name = generation.Name
-                };
-            }
+                Id = generation.Id,
+                Name = generation.Name
+            };
         }
     }
 
     async Task HandleValidSubmit()
     {
         _isProcessing = true;
-        if (_isEdit)
+        await GenerationState.Update(Id, _model);
+
+        if (GenerationState.HasError)
         {
-            // await GenerationStore.Update(Id!.Value, _model);
+            _errors = GenerationState.Errors;
+            UiService.ShowErrorAlert(GenerationState.ErrorMessage);
+            GenerationState.ClearErrors();
+            _isProcessing = false;
         }
         else
-        {
-            await GenerationStore.Add(_model);
-        }
-
-        if (!GenerationStore.HasError)
         {
             _isProcessing = false;
             UiService.ShowSuccessAlert("Generation added successfully");
             NavigationManager.NavigateTo("admin/generations");
         }
-        _isProcessing = false;
     }
 
 }

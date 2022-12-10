@@ -6,28 +6,26 @@ public class GenerationCommands : IGenerationCommands
 {
     private readonly IGbsDbContext _context;
     private readonly IGenerationQueries _generationQueries;
-    private readonly IValidator<CreateGenerationRequest> _createGenerationValidator;
-    private readonly IValidator<UpdateGenerationRequest> _updateGenerationValidator;
+    private readonly IValidator<Generation> _validator;
 
     public GenerationCommands(
         IGbsDbContext context, 
         IGenerationQueries generationQueries,
-        IValidator<CreateGenerationRequest> createGenerationValidator,
-        IValidator<UpdateGenerationRequest> updateGenerationValidator)
+        IValidator<Generation> validator)
     {
         _context = context;
         _generationQueries = generationQueries;
-        _createGenerationValidator = createGenerationValidator;
-        _updateGenerationValidator = updateGenerationValidator;
+        _validator = validator;
     }
 
     public async Task<Result<GenerationResponse>> Add(CreateGenerationRequest request)
     {
-        var resultVal = await _createGenerationValidator.ValidateAsync(request);
+        var newGeneration = new Generation { Name = request.Name.Trim() };
+        
+        var resultVal = await _validator.ValidateAsync(newGeneration);
         if (!resultVal.IsValid)
             return Result.ValidationError<GenerationResponse>(resultVal);
 
-        var newGeneration = new Generation { Name = request.Name };
         await _context.Generations.AddAsync(newGeneration);
         await _context.SaveChangesAsync();
 
@@ -40,11 +38,12 @@ public class GenerationCommands : IGenerationCommands
         if (dbGeneration == null)
             return Result.NotFound<GenerationResponse>("Generation not found");
         
-        var resultVal = await _updateGenerationValidator.ValidateAsync(request);
+        dbGeneration.Name = request.Name.Trim();
+        
+        var resultVal = await _validator.ValidateAsync(dbGeneration);
         if (!resultVal.IsValid)
             return Result.ValidationError<GenerationResponse>(resultVal);
 
-        dbGeneration.Name = request.Name;
         await _context.SaveChangesAsync();
 
         return await _generationQueries.GetById(dbGeneration.Id);

@@ -6,6 +6,8 @@ public class StudentMapping : Profile
     {
         CreateMap<Student, StudentResponse>()
             .ForMember(dest => dest.ChurchName, opt => opt.MapFrom(src => src.Church.Name));
+        CreateMap<Student, GenerationStudentResponse>()
+            .ForMember(dest => dest.ChurchName, opt => opt.MapFrom(src => src.Church.Name));
         CreateMap<CreateStudentRequest, Student>()
             .ForMember(dest => dest.EnrollmentStatus, opt => opt.MapFrom(src => src.Status))
             .ForMember(dest => dest.Id, opt => opt.Ignore())

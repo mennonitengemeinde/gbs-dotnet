@@ -48,7 +48,7 @@ public partial class StudentFormPage
                 MaritalStatus = student.MaritalStatus,
                 Address = student.Address,
                 City = student.City,
-                Province = student.State,
+                Province = student.Province,
                 Country = student.Country,
                 PostalCode = student.PostalCode,
                 Email = student.Email,

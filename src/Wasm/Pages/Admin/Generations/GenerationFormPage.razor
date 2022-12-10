@@ -1,0 +1,22 @@
+@page "/admin/generations/create"
+@page "/admin/generations/{Id:int}/edit"
+@using Gbs.Wasm.Pages.Admin.Generations.Components
+@attribute [Authorize(Policy = Policies.RequireAdmins)]
+
+<PageTitle>Generations Form - GBS</PageTitle>
+
+@if (Id.HasValue)
+{
+    <GenerationUpdateForm Id="Id.Value" />
+}
+else
+{
+    <GenerationCreateForm />
+}
+
+@code {
+
+    [Parameter]
+    public int? Id { get; set; }
+
+}

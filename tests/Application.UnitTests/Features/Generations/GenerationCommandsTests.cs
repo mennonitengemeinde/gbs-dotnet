@@ -1,6 +1,4 @@
-﻿using FluentValidation;
-using Gbs.Application.Features.Generations;
-using Gbs.Application.Features.Generations.Validators;
+﻿using Gbs.Application.Features.Generations;
 using Gbs.Shared.Generations;
 
 namespace Gbs.Tests.Application.UnitTests.Features.Generations;
@@ -11,8 +9,7 @@ public class GenerationCommandsTests : GenerationTestBase
     public async Task Add_AddsGeneration()
     {
         var q = new GenerationQueries(Context, Mapper);
-        var cmd = new GenerationCommands(Context, q, CreateGenerationRequestValidator,
-            UpdateGenerationRequestValidator);
+        var cmd = new GenerationCommands(Context, q, Validator);
         var newGen = new CreateGenerationRequest { Name = "Generation 4" };
 
         var result = await cmd.Add(newGen);
@@ -29,8 +26,7 @@ public class GenerationCommandsTests : GenerationTestBase
     public async Task Add_ReturnsValidationError_WhenNameAlreadyExists()
     {
         var q = new GenerationQueries(Context, Mapper);
-        var cmd = new GenerationCommands(Context, q, CreateGenerationRequestValidator,
-            UpdateGenerationRequestValidator);
+        var cmd = new GenerationCommands(Context, q, Validator);
         var newGen = new CreateGenerationRequest { Name = "Generation 1" };
 
         var result = await cmd.Add(newGen);
@@ -45,8 +41,7 @@ public class GenerationCommandsTests : GenerationTestBase
     public async Task Update_UpdatesGeneration()
     {
         var q = new GenerationQueries(Context, Mapper);
-        var cmd = new GenerationCommands(Context, q, CreateGenerationRequestValidator,
-            UpdateGenerationRequestValidator);
+        var cmd = new GenerationCommands(Context, q, Validator);
         var updateGen = new UpdateGenerationRequest { Id = 1, Name = "Generation 1 Updated" };
 
         var result = await cmd.Update(updateGen);
@@ -61,8 +56,7 @@ public class GenerationCommandsTests : GenerationTestBase
     public async Task Update_ReturnsNotFound_WhenIdDoesNotExist()
     {
         var q = new GenerationQueries(Context, Mapper);
-        var cmd = new GenerationCommands(Context, q, CreateGenerationRequestValidator,
-            UpdateGenerationRequestValidator);
+        var cmd = new GenerationCommands(Context, q, Validator);
         var updateGen = new UpdateGenerationRequest { Id = 999, Name = "Generation 1 Updated" };
 
         var result = await cmd.Update(updateGen);
@@ -76,8 +70,7 @@ public class GenerationCommandsTests : GenerationTestBase
     public async Task Update_ReturnsValidationError_WhenNameAlreadyExists()
     {
         var q = new GenerationQueries(Context, Mapper);
-        var cmd = new GenerationCommands(Context, q, CreateGenerationRequestValidator,
-            UpdateGenerationRequestValidator);
+        var cmd = new GenerationCommands(Context, q, Validator);
         var updateGen = new UpdateGenerationRequest { Id = 1, Name = "Generation 2" };
 
         var result = await cmd.Update(updateGen);
@@ -91,8 +84,7 @@ public class GenerationCommandsTests : GenerationTestBase
     public async Task Delete_DeletesGeneration()
     {
         var q = new GenerationQueries(Context, Mapper);
-        var cmd = new GenerationCommands(Context, q, CreateGenerationRequestValidator,
-            UpdateGenerationRequestValidator);
+        var cmd = new GenerationCommands(Context, q, Validator);
 
         var result = await cmd.Delete(1);
         var ctxCount = Context.Generations.Count();
@@ -106,8 +98,7 @@ public class GenerationCommandsTests : GenerationTestBase
     public async Task Delete_ReturnsNotFound_WhenIdDoesNotExist()
     {
         var q = new GenerationQueries(Context, Mapper);
-        var cmd = new GenerationCommands(Context, q, CreateGenerationRequestValidator,
-            UpdateGenerationRequestValidator);
+        var cmd = new GenerationCommands(Context, q, Validator);
 
         var result = await cmd.Delete(999);
 
