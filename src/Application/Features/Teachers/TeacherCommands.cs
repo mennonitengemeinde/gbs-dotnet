@@ -6,24 +6,23 @@ public class TeacherCommands : ITeacherCommands
 {
     private readonly IGbsDbContext _context;
     private readonly IMapper _mapper;
+    private readonly IValidator<Teacher> _validator;
 
-    public TeacherCommands(IGbsDbContext context, IMapper mapper)
+    public TeacherCommands(IGbsDbContext context, IMapper mapper, IValidator<Teacher> validator)
     {
         _context = context;
         _mapper = mapper;
+        _validator = validator;
     }
-    
+
     public async Task<Result<TeacherResponse>> Add(CreateTeacherRequest request)
     {
-        if (await NameExists(request.Name))
-        {
-            return Result.BadRequest<TeacherResponse>("Teacher already exists");
-        }
+        var teacher = new Teacher { Name = request.Name.Trim() };
+        
+        var valResult = await _validator.ValidateAsync(teacher);
+        if (!valResult.IsValid)
+            return Result.ValidationError<TeacherResponse>(valResult);
 
-        var teacher = new Teacher
-        {
-            Name = request.Name
-        };
         _context.Teachers.Add(teacher);
         await _context.SaveChangesAsync();
 
@@ -32,16 +31,18 @@ public class TeacherCommands : ITeacherCommands
 
     public async Task<Result<TeacherResponse>> Update(UpdateTeacherRequest request)
     {
-        if (await NameExists(request.Name, request.Id))
-            return Result.BadRequest<TeacherResponse>("Teacher already exists");
-
         var teacher = await _context.Teachers
             .FirstOrDefaultAsync(t => t.Id == request.Id);
-
+        
         if (teacher == null)
             return Result.NotFound<TeacherResponse>("Teacher not found");
+        
+        teacher.Name = request.Name.Trim();
+        
+        var valResult = await _validator.ValidateAsync(teacher);
+        if (!valResult.IsValid)
+            return Result.ValidationError<TeacherResponse>(valResult);
 
-        teacher.Name = request.Name;
         await _context.SaveChangesAsync();
 
         return Result.Ok(_mapper.Map<TeacherResponse>(teacher));
@@ -57,7 +58,7 @@ public class TeacherCommands : ITeacherCommands
         await _context.SaveChangesAsync();
         return Result.Ok(true);
     }
-    
+
     private async Task<bool> NameExists(string name, int? id = null)
     {
         return id != null

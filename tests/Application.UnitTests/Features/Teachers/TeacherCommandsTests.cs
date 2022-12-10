@@ -9,7 +9,7 @@ public class TeacherCommandsTests : TeacherTestBase
     public async Task Add_AddsTeacher()
     {
         // Arrange
-        var cmd = new TeacherCommands(Context, Mapper);
+        var cmd = new TeacherCommands(Context, Mapper, Validator);
         var request = new CreateTeacherRequest { Name = "Test Teacher" };
         // Act
         var result = await cmd.Add(request);
@@ -26,7 +26,7 @@ public class TeacherCommandsTests : TeacherTestBase
     public async Task Add_ReturnsValidationError_WhenTeacherNameAlreadyExists()
     {
         // Arrange
-        var cmd = new TeacherCommands(Context, Mapper);
+        var cmd = new TeacherCommands(Context, Mapper, Validator);
         var request = new CreateTeacherRequest { Name = "Teacher 1" };
         // Act
         var result = await cmd.Add(request);
@@ -42,8 +42,25 @@ public class TeacherCommandsTests : TeacherTestBase
     public async Task Update_UpdatesTeacher()
     {
         // Arrange
-        var cmd = new TeacherCommands(Context, Mapper);
+        var cmd = new TeacherCommands(Context, Mapper, Validator);
         var request = new UpdateTeacherRequest { Id = 1, Name = "Test Teacher" };
+        // Act
+        var result = await cmd.Update(request);
+        var contextCount = Context.Teachers.Count();
+        // Assert
+        Assert.True(result.Success);
+        Assert.NotNull(result.Data);
+        Assert.Equal(request.Name, result.Data.Name);
+        Assert.Equal(1, result.Data.Id);
+        Assert.Equal(3, contextCount);
+    }
+    
+    [Fact]
+    public async Task Update_UpdatesTeacher_WhenNameDoesNotChange()
+    {
+        // Arrange
+        var cmd = new TeacherCommands(Context, Mapper, Validator);
+        var request = new UpdateTeacherRequest { Id = 1, Name = "Teacher 1" };
         // Act
         var result = await cmd.Update(request);
         var contextCount = Context.Teachers.Count();
@@ -59,7 +76,7 @@ public class TeacherCommandsTests : TeacherTestBase
     public async Task Update_ReturnsNotFound()
     {
         // Arrange
-        var cmd = new TeacherCommands(Context, Mapper);
+        var cmd = new TeacherCommands(Context, Mapper, Validator);
         var request = new UpdateTeacherRequest { Id = 5, Name = "Teacher 5" };
         // Act
         var result = await cmd.Update(request);
@@ -75,7 +92,7 @@ public class TeacherCommandsTests : TeacherTestBase
     public async Task Update_ReturnsValidationError_WhenNameAlreadyExists()
     {
         // Arrange
-        var cmd = new TeacherCommands(Context, Mapper);
+        var cmd = new TeacherCommands(Context, Mapper, Validator);
         var request = new UpdateTeacherRequest { Id = 2, Name = "Teacher 1" };
         // Act
         var result = await cmd.Update(request);
@@ -91,7 +108,7 @@ public class TeacherCommandsTests : TeacherTestBase
     public async Task Delete_DeletesChurch()
     {
         // Arrange
-        var cmd = new TeacherCommands(Context, Mapper);
+        var cmd = new TeacherCommands(Context, Mapper, Validator);
         // Act
         var result = await cmd.Delete(1);
         var contextCount = Context.Teachers.Count();
@@ -105,7 +122,7 @@ public class TeacherCommandsTests : TeacherTestBase
     public async Task Delete_ReturnsNotFound()
     {
         // Arrange
-        var cmd = new TeacherCommands(Context, Mapper);
+        var cmd = new TeacherCommands(Context, Mapper, Validator);
         // Act
         var result = await cmd.Delete(5);
         var contextCount = Context.Teachers.Count();

@@ -1,0 +1,52 @@
+@inject NavigationManager NavigationManager
+@inject IUiService UiService
+
+<EditForm Model="_newTeacher" OnValidSubmit="HandleValidSubmit">
+    <FluentValidationValidator />
+    <MudGrid Justify="Justify.Center" Class="tw-pt-8">
+        <MudItem xs="12" sm="8" md="5">
+            <MatFormCard Label="Teacher"
+                         IsLoading="@TeacherState.IsLoading"
+                         IsProcessing="@_isProcessing"
+                         ValidationErrors="@_validationErrors"
+                         ReturnUrl="/admin/teachers">
+                <MudTextField Label="Name"
+                              @bind-Value="_newTeacher.Name"
+                              For="() => _newTeacher.Name" />
+            </MatFormCard>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+
+@code {
+
+    [CascadingParameter]
+    public TeacherState TeacherState { get; set; } = null!;
+
+
+    CreateTeacherRequest _newTeacher = new();
+    bool _isProcessing;
+    string[]? _validationErrors;
+
+
+    async Task HandleValidSubmit()
+    {
+        _isProcessing = true;
+        await TeacherState.Add(_newTeacher);
+
+        if (TeacherState.HasError)
+        {
+            _isProcessing = false;
+            _validationErrors = TeacherState.Errors;
+            UiService.ShowErrorAlert(TeacherState.ErrorMessage);
+            TeacherState.ClearErrors();
+        }
+        else
+        {
+            _isProcessing = false;
+            UiService.ShowSuccessAlert("Teacher added successfully");
+            NavigationManager.NavigateTo("admin/teachers");
+        }
+    }
+
+}

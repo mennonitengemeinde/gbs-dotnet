@@ -1,74 +1,22 @@
 @page "/admin/teachers/create"
 @page "/admin/teachers/{Id:int}/edit"
 @attribute [Authorize(Policy = Policies.RequireAdminsAndSound)]
-
-@inject NavigationManager NavigationManager
-@inject ITeacherStore TeacherStore
-@inject IUiService UiService
+@using Gbs.Wasm.Pages.Admin.Teachers.Components
 
 <PageTitle>Teachers Form - GBS</PageTitle>
 
-<EditForm Model="_newTeacher" OnValidSubmit="HandleValidSubmit">
-    <DataAnnotationsValidator />
-    <MudGrid Justify="Justify.Center" Class="tw-pt-8">
-        <MudItem xs="12" sm="8" md="5">
-            <MatFormCard Label="Teacher"
-                         IsEdit="@_isEdit"
-                         IsLoading="@TeacherStore.IsLoading"
-                         IsProcessing="@_isProcessing"
-                         ReturnUrl="/admin/teachers">
-                <MudTextField Label="Name"
-                              @bind-Value="_newTeacher.Name"
-                              For="() => _newTeacher.Name" />
-            </MatFormCard>
-        </MudItem>
-    </MudGrid>
-</EditForm>
+@if (Id != null)
+{
+    <TeacherUpdateForm Id="Id.Value" />
+}
+else
+{
+    <TeacherCreateForm />
+}
 
 @code {
-    CreateTeacherRequest _newTeacher = new();
-    bool _isProcessing;
-    bool _isEdit;
 
     [Parameter]
     public int? Id { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        if (Id != null)
-        {
-            _isEdit = true;
-            var teacher = await TeacherStore.GetById(Id.Value);
-            if (teacher != null)
-            {
-                _newTeacher = new CreateTeacherRequest
-                {
-                    Name = teacher.Name
-                };
-            }
-        }
-    }
-
-    async Task HandleValidSubmit()
-    {
-        _isProcessing = true;
-        if (_isEdit)
-        {
-            // await TeacherStore.Update(Id!.Value, _newTeacher);
-        }
-        else
-        {
-            await TeacherStore.Add(_newTeacher);
-        }
-
-        if (!TeacherStore.HasError)
-        {
-            _isProcessing = false;
-            UiService.ShowSuccessAlert(_isEdit ? "Teacher updated successfully" : "Teacher added successfully");
-            NavigationManager.NavigateTo("admin/teachers");
-        }
-        _isProcessing = false;
-        TeacherStore.ClearErrors();
-    }
 
 }

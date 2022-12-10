@@ -1,8 +1,5 @@
 @page "/admin/teachers"
 @attribute [Authorize(Policy = Policies.RequireAdminsAndSound)]
-@implements IDisposable
-
-@inject ITeacherStore TeacherStore
 
 <PageTitle>Teachers - GBS</PageTitle>
 
@@ -13,7 +10,7 @@
     </MudButton>
 </div>
 
-<MudTable Items="@TeacherStore.Data" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@TeacherStore.IsLoading" LoadingProgressColor="Color.Info">
+<MudTable Items="@TeacherState.Data" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@TeacherState.IsLoading" LoadingProgressColor="Color.Info">
     <HeaderContent>
         <MudTh>Name</MudTh>
         <MudTh></MudTh>
@@ -30,15 +27,12 @@
 
 @code {
 
+    [CascadingParameter]
+    public TeacherState TeacherState { get; set; } = null!;
+
     protected override async Task OnInitializedAsync()
     {
-        await TeacherStore.Fetch();
-        TeacherStore.OnChange += StateHasChanged;
-    }
-
-    public void Dispose()
-    {
-        TeacherStore.OnChange -= StateHasChanged;
+        await TeacherState.Fetch();
     }
 
 }

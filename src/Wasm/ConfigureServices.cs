@@ -30,7 +30,6 @@ public static class ConfigureServices
         services.AddScoped<ISubjectStore, SubjectStore>();
         services.AddScoped<IStudentStore, StudentStore>();
         services.AddScoped<ITeacherStore, TeacherStore>();
-        services.AddScoped<IUserStore, UserStore>();
         services.AddScoped<IAuthService, AuthApiService>();
         services.AddScoped<IUiService, UiService>();
 
