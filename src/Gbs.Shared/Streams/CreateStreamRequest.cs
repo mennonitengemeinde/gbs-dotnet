@@ -2,7 +2,7 @@
 
 namespace Gbs.Shared.Streams;
 
-public class CreateStreamRequest
+public class CreateStreamRequest : IStreamRequest
 {
     public string Title { get; set; } = string.Empty;
     public string Url { get; set; } = string.Empty;

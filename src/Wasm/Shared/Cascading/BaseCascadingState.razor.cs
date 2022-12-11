@@ -1,4 +1,5 @@
 ﻿using Blazored.LocalStorage;
+using ErrorModel = Gbs.Wasm.Common.Models.Error;
 using Microsoft.AspNetCore.Components.Authorization;
 
 namespace Gbs.Wasm.Shared.Cascading;
@@ -12,12 +13,13 @@ public abstract class BaseCascadingState<T, TCreate, TIdType, TUpdate> : Compone
     [Inject] protected ILocalStorageService LocalStorage { get; set; } = null!;
     [Inject] protected AuthenticationStateProvider AuthenticationStateProvider { get; set; } = null!;
     [Inject] protected NavigationManager NavigationManager { get; set; } = null!;
+    [Inject] protected UiService UiService { get; set; } = null!;
 
     private List<T> _data = new();
     private bool _isLoading;
-    private string[]? _errors;
-    private string? _errorMessage;
-    private bool _hasError;
+
+    private ErrorModel? _error;
+
     private DateTime _lastUpdated = DateTime.MinValue;
 
     public abstract string BaseUrl { get; }
@@ -33,43 +35,23 @@ public abstract class BaseCascadingState<T, TCreate, TIdType, TUpdate> : Compone
         }
     }
 
-    public string? ErrorMessage
+    public ErrorModel? Error
     {
-        get => _errorMessage;
-        protected set
+        get => _error;
+        set
         {
-            if (_errorMessage == value) return;
-            _errorMessage = value;
-            // StateHasChanged();
+            if (value?.Errors == _error?.Errors
+                & value?.Message == _error?.Message
+                & value?.StatusCode == _error?.StatusCode) return;
+            _error = value;
         }
-    }
-
-    public string[]? Errors
-    {
-        get => _errors;
-        protected set
-        {
-            if (_errors == value) return;
-            _errors = value;
-            // StateHasChanged();
-        }
-    }
-
-    public bool HasError
-    {
-        get => _hasError;
-        protected set
-        {
-            if (_hasError == value) return;
-            _hasError = value;
-            // StateHasChanged();
-        }
+        // StateHasChanged();
     }
 
     public bool IsLoading
     {
         get => _isLoading;
-        set
+        protected set
         {
             if (_isLoading == value) return;
             _isLoading = value;
@@ -92,7 +74,7 @@ public abstract class BaseCascadingState<T, TCreate, TIdType, TUpdate> : Compone
             .EnsureSuccess<List<T>>();
         if (result.Success == false || result.Data == null)
         {
-            await SetErrors(result.Message, result.Errors, result.StatusCode);
+            await SetError(result.Message, result.Errors, result.StatusCode);
             Data = new List<T>();
             IsLoading = false;
             return;
@@ -102,18 +84,23 @@ public abstract class BaseCascadingState<T, TCreate, TIdType, TUpdate> : Compone
         Data = result.Data;
     }
 
-    public void ClearErrors()
+    public void ClearError()
     {
-        _hasError = true;
-        _errorMessage = null;
-        _errors = null;
+        Error = null;
     }
 
-    protected async Task SetErrors(string message, string[]? errors, int statusCode = 400)
+    protected async Task SetError(string message, string[]? errors, int statusCode = 400)
     {
-        _hasError = true;
-        _errorMessage = message;
-        _errors = errors;
+        Error = new ErrorModel
+        {
+            Errors = errors,
+            Message = message,
+            StatusCode = statusCode
+        };
+        
+        if (_error != null)
+            UiService.ShowErrorAlert(_error.Message, _error.StatusCode);
+        
         if (statusCode == 401)
         {
             await LocalStorage.RemoveItemAsync("authToken");
@@ -129,7 +116,7 @@ public abstract class BaseCascadingState<T, TCreate, TIdType, TUpdate> : Compone
             .EnsureSuccess<T>();
         if (!result.Success)
         {
-            await SetErrors(result.Message, result.Errors, result.StatusCode);
+            await SetError(result.Message, result.Errors, result.StatusCode);
             IsLoading = false;
             return;
         }
@@ -144,7 +131,7 @@ public abstract class BaseCascadingState<T, TCreate, TIdType, TUpdate> : Compone
             .EnsureSuccess<T>();
         if (!result.Success)
         {
-            await SetErrors(result.Message, result.Errors, result.StatusCode);
+            await SetError(result.Message, result.Errors, result.StatusCode);
             IsLoading = false;
             return;
         }
@@ -159,7 +146,7 @@ public abstract class BaseCascadingState<T, TCreate, TIdType, TUpdate> : Compone
             .EnsureSuccess<bool>();
         if (!result.Success)
         {
-            await SetErrors(result.Message, result.Errors, result.StatusCode);
+            await SetError(result.Message, result.Errors, result.StatusCode);
             IsLoading = false;
             return;
         }

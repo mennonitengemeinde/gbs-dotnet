@@ -1,9 +1,7 @@
 ﻿@page "/admin/streams"
 @attribute [Authorize(Policy = Policies.RequireAdminsAndSound)]
-@implements IDisposable
 @using Gbs.Wasm.Pages.Admin.Streams.Components
 
-@inject IStreamStore StreamStore
 @inject IUiService UiService
 @inject IDialogService DialogService
 
@@ -17,7 +15,7 @@
 </div>
 
 <MudGrid Justify="Justify.FlexStart">
-    @foreach (var liveStream in StreamStore.Data)
+    @foreach (var liveStream in StreamState.Data)
     {
         <MudItem xs="12" sm="6" lg="4" xl="3">
             <AdminStreamCard LiveStream="@liveStream" OnDelete="HandleDelete" />
@@ -29,16 +27,18 @@
 
     [CascadingParameter]
     CascadingUiState UiState { get; set; } = null!;
+    
+    [CascadingParameter]
+    StreamState StreamState { get; set; } = null!;
 
     protected override async Task OnInitializedAsync()
     {
-        await StreamStore.Fetch();
-        StreamStore.OnChange += StateHasChanged;
+        await StreamState.Fetch();
     }
     
     protected override void OnAfterRender(bool firstRender)
     {
-        UiState.IsPageLoading = StreamStore.IsLoading;
+        UiState.IsPageLoading = StreamState.IsLoading;
     }
 
     async Task HandleDelete(StreamResponse stream)
@@ -51,25 +51,21 @@
         {
             await DeleteStream(stream);
         }
-        StateHasChanged();
+        // StateHasChanged();
     }
 
     async Task DeleteStream(StreamResponse stream)
     {
-        await StreamStore.Delete(stream.Id);
-        if (!StreamStore.HasError)
+        await StreamState.Delete(stream.Id);
+        if (StreamState.HasError)
         {
-            UiService.ShowSuccessAlert("Stream deleted successfully");
+            UiService.ShowErrorAlert(StreamState.ErrorMessage);
+            StreamState.ClearErrors();
         }
         else
         {
-            StreamStore.ClearErrors();
+            UiService.ShowSuccessAlert("Stream deleted successfully");
         }
-    }
-
-    public void Dispose()
-    {
-        StreamStore.OnChange -= StateHasChanged;
     }
 
 }

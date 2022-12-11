@@ -16,7 +16,7 @@
             .EnsureSuccess<string>();
         if (!result.Success)
         {
-            await SetErrors(result.Message, result.Errors, result.StatusCode);
+            await SetError(result.Message, result.Errors, result.StatusCode);
             IsLoading = false;
         }
     }
@@ -29,7 +29,7 @@
         
         if (!result.Success)
         {
-            await SetErrors(result.Message, result.Errors, result.StatusCode);
+            await SetError(result.Message, result.Errors, result.StatusCode);
             return;
         }
 
@@ -43,7 +43,7 @@
         
         if (!result.Success)
         {
-            await SetErrors(result.Message, result.Errors, result.StatusCode);
+            await SetError(result.Message, result.Errors, result.StatusCode);
             return;
         }
 
@@ -57,7 +57,7 @@
         
         if (!result.Success)
         {
-            await SetErrors(result.Message, result.Errors, result.StatusCode);
+            await SetError(result.Message, result.Errors, result.StatusCode);
             return;
         }
 

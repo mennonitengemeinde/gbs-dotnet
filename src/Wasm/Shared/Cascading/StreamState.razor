@@ -1,0 +1,38 @@
+@inherits BaseCascadingState<StreamResponse, CreateStreamRequest, int, UpdateStreamRequest>
+
+<CascadingValue Value="this">
+    @ChildContent
+</CascadingValue>
+
+@code {
+    public override string BaseUrl => "api/streams";
+    
+    public async Task<StreamResponse?> GetById(int id)
+    {
+        await Fetch();
+        return Data.FirstOrDefault(c => c.Id == id);
+    }
+    
+    public async Task<StreamResponse?> GetOnlyLiveById(int id)
+    {
+        await Fetch();
+        return Data.FirstOrDefault(x => x.Id == id && x.IsLive);
+    }
+    
+    public async Task ToggleLive(int id)
+    {
+        var liveStream = Data.FirstOrDefault(s => s.Id == id);
+        if (liveStream == null)
+            return;
+        
+        var streamDto = new UpdateStreamLiveRequest {IsLive = !liveStream.IsLive};
+        var result = await Http
+            .PutAsJsonAsync($"api/streams/{id}/live", streamDto)
+            .EnsureSuccess<StreamResponse>();
+        
+        if (!result.Success)
+            SetError(result.Message, result.Errors, result.StatusCode);
+
+        await ForceFetch();
+    }
+}
