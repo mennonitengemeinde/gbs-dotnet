@@ -6,24 +6,23 @@ public class LessonCommands : ILessonCommands
 {
     private readonly IGbsDbContext _context;
     private readonly IMapper _mapper;
-    private readonly IValidator<CreateLessonRequest> _createLessonValidator;
-    private readonly IValidator<UpdateLessonRequest> _updateLessonValidator;
+    private readonly IValidator<Lesson> _validator;
 
     public LessonCommands(
         IGbsDbContext context, 
         IMapper mapper,
-        IValidator<CreateLessonRequest> createLessonValidator,
-        IValidator<UpdateLessonRequest> updateLessonValidator)
+        IValidator<Lesson> validator)
     {
         _context = context;
         _mapper = mapper;
-        _createLessonValidator = createLessonValidator;
-        _updateLessonValidator = updateLessonValidator;
+        _validator = validator;
     }
 
     public async Task<Result<LessonResponse>> Add(CreateLessonRequest request)
     {
-        var resultVal = await _createLessonValidator.ValidateAsync(request);
+        var lesson = _mapper.Map<Lesson>(request);
+        
+        var resultVal = await _validator.ValidateAsync(lesson);
         if (!resultVal.IsValid)
             return Result.ValidationError<LessonResponse>(resultVal);
 
@@ -40,28 +39,23 @@ public class LessonCommands : ILessonCommands
             lastOrder = 0;
         }
 
-        var lesson = _mapper.Map<Lesson>(request);
         lesson.Order = lastOrder + 1;
         await _context.Lessons.AddAsync(lesson);
         await _context.SaveChangesAsync();
         return Result.Ok(_mapper.Map<LessonResponse>(lesson));
     }
 
-    public async Task<Result<LessonResponse>> Update(UpdateLessonRequest request)
+    public async Task<Result<LessonResponse>> Update(int id, CreateLessonRequest request)
     {
-        var lesson = await _context.Lessons.FindAsync(request.Id);
+        var lesson = await _context.Lessons.FindAsync(id);
         if (lesson == null)
             return Result.NotFound<LessonResponse>("Lesson not found");
+
+        _mapper.Map(request, lesson);
         
-        var resultVal = await _updateLessonValidator.ValidateAsync(request);
+        var resultVal = await _validator.ValidateAsync(lesson);
         if (!resultVal.IsValid)
             return Result.ValidationError<LessonResponse>(resultVal);
-
-        lesson.Name = request.Name;
-        lesson.SubjectId = request.SubjectId;
-        lesson.GenerationId = request.GenerationId;
-        lesson.IsVisible = request.IsVisible;
-        lesson.VideoUrl = request.VideoUrl;
 
         _context.Lessons.Update(lesson);
         await _context.SaveChangesAsync();
