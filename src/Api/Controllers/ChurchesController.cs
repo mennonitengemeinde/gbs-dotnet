@@ -40,9 +40,9 @@ public class ChurchesController : ControllerBase
     }
 
     [HttpPut("{churchId:int}")]
-    public async Task<ActionResult<Result<ChurchResponse>>> UpdateChurch(int churchId, UpdateChurchRequest church)
+    public async Task<ActionResult<Result<ChurchResponse>>> UpdateChurch(int churchId, CreateChurchRequest church)
     {
-        var result = await _churchCommands.Update(church);
+        var result = await _churchCommands.Update(churchId, church);
         return result.ToActionResult();
     }
 
