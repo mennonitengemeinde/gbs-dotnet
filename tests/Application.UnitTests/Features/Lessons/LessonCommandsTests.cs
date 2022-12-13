@@ -10,7 +10,7 @@ public class LessonCommandsTests : LessonTestBase
     public async Task Add_AddsLesson()
     {
         // Arrange
-        var cmd = new LessonCommands(Context, Mapper, CreateLessonValidator, UpdateLessonValidator);
+        var cmd = new LessonCommands(Context, Mapper, Validator);
         var lesson = new CreateLessonRequest
             { Name = "Test Lesson", IsVisible = Visibility.Visible, GenerationId = 1, TeacherId = 1 };
         // Act
@@ -29,7 +29,7 @@ public class LessonCommandsTests : LessonTestBase
     public async Task Add_ReturnsValidationError_WhenNameAlreadyExists()
     {
         // Arrange
-        var cmd = new LessonCommands(Context, Mapper, CreateLessonValidator, UpdateLessonValidator);
+        var cmd = new LessonCommands(Context, Mapper, Validator);
         var lesson = new CreateLessonRequest
             { Name = "Lesson 1", IsVisible = Visibility.Visible, GenerationId = 1, TeacherId = 1 };
         // Act
@@ -45,7 +45,7 @@ public class LessonCommandsTests : LessonTestBase
     public async Task Add_AddsLesson_WhenItsTheFirstLesson()
     {
         // Arrange
-        var cmd = new LessonCommands(Context, Mapper, CreateLessonValidator, UpdateLessonValidator);
+        var cmd = new LessonCommands(Context, Mapper, Validator);
         var lesson = new CreateLessonRequest
             { Name = "Test Lesson", IsVisible = Visibility.Visible, GenerationId = 2, TeacherId = 1 };
         var lessons = await Context.Lessons.ToListAsync();
@@ -66,11 +66,11 @@ public class LessonCommandsTests : LessonTestBase
     public async Task Update_UpdatesLesson()
     {
         // Arrange
-        var cmd = new LessonCommands(Context, Mapper, CreateLessonValidator, UpdateLessonValidator);
-        var lesson = new UpdateLessonRequest
-            { Id = 1, Name = "Test Lesson", IsVisible = Visibility.Visible, GenerationId = 1, TeacherId = 1 };
+        var cmd = new LessonCommands(Context, Mapper, Validator);
+        var lesson = new CreateLessonRequest
+            { Name = "Test Lesson", IsVisible = Visibility.Visible, GenerationId = 1, TeacherId = 1 };
         // Act
-        var result = await cmd.Update(lesson);
+        var result = await cmd.Update(1, lesson);
         var ctxCount = Context.Lessons.Count();
         // Assert
         Assert.True(result.Success);
@@ -80,16 +80,16 @@ public class LessonCommandsTests : LessonTestBase
         Assert.Equal(1, result.Data.Order);
         Assert.Equal(5, ctxCount);
     }
-    
+
     [Fact]
     public async Task Update_ReturnsValidationError_WhenNameAlreadyExists()
     {
         // Arrange
-        var cmd = new LessonCommands(Context, Mapper, CreateLessonValidator, UpdateLessonValidator);
-        var lesson = new UpdateLessonRequest
-            { Id = 1, Name = "Lesson 2", IsVisible = Visibility.Visible, GenerationId = 1, TeacherId = 1 };
+        var cmd = new LessonCommands(Context, Mapper, Validator);
+        var lesson = new CreateLessonRequest
+            { Name = "Lesson 2", IsVisible = Visibility.Visible, GenerationId = 1, TeacherId = 1 };
         // Act
-        var result = await cmd.Update(lesson);
+        var result = await cmd.Update(1, lesson);
         // Assert
         Assert.False(result.Success);
         Assert.Equal(422, result.StatusCode);

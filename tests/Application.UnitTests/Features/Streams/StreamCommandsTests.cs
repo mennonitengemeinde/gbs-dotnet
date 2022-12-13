@@ -1,7 +1,5 @@
-using Gbs.Application.Entities;
 using Gbs.Application.Features.Streams;
 using Gbs.Shared.Streams;
-using Gbs.Tests.Infrastructure.Seeds;
 
 namespace Gbs.Tests.Application.UnitTests.Features.Streams;
 
@@ -10,7 +8,7 @@ public class StreamCommandsTests : StreamTestBase
     [Fact]
     public async Task CreateStream_ShouldCreateStream()
     {
-        var cmd = new StreamCommands(Context, Mapper);
+        var cmd = new StreamCommands(Context, Mapper, Validator);
         var stream = new CreateStreamRequest
         {
             Title = "Stream 4",

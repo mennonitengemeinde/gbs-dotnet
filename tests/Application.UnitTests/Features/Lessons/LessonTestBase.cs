@@ -1,15 +1,13 @@
-﻿using Gbs.Application.Features.Lessons.Validators;
+﻿using Gbs.Application.Features.Lessons;
 
 namespace Gbs.Tests.Application.UnitTests.Features.Lessons;
 
 public class LessonTestBase : GbsTestBase
 {
-    protected CreateLessonValidator CreateLessonValidator { get; }
-    protected UpdateLessonValidator UpdateLessonValidator { get; }
-
     protected LessonTestBase()
     {
-        CreateLessonValidator = new CreateLessonValidator(Context);
-        UpdateLessonValidator = new UpdateLessonValidator(Context);
+        Validator = new LessonValidator(Context);
     }
+
+    protected LessonValidator Validator { get; }
 }

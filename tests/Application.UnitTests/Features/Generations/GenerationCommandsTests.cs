@@ -42,9 +42,9 @@ public class GenerationCommandsTests : GenerationTestBase
     {
         var q = new GenerationQueries(Context, Mapper);
         var cmd = new GenerationCommands(Context, q, Validator);
-        var updateGen = new UpdateGenerationRequest { Id = 1, Name = "Generation 1 Updated" };
+        var updateGen = new CreateGenerationRequest { Name = "Generation 1 Updated" };
 
-        var result = await cmd.Update(updateGen);
+        var result = await cmd.Update(1, updateGen);
 
         Assert.True(result.Success);
         Assert.Equal(200, result.StatusCode);
@@ -57,9 +57,9 @@ public class GenerationCommandsTests : GenerationTestBase
     {
         var q = new GenerationQueries(Context, Mapper);
         var cmd = new GenerationCommands(Context, q, Validator);
-        var updateGen = new UpdateGenerationRequest { Id = 999, Name = "Generation 1 Updated" };
+        var updateGen = new CreateGenerationRequest { Name = "Generation 1 Updated" };
 
-        var result = await cmd.Update(updateGen);
+        var result = await cmd.Update(999, updateGen);
 
         Assert.False(result.Success);
         Assert.Equal(404, result.StatusCode);
@@ -71,9 +71,9 @@ public class GenerationCommandsTests : GenerationTestBase
     {
         var q = new GenerationQueries(Context, Mapper);
         var cmd = new GenerationCommands(Context, q, Validator);
-        var updateGen = new UpdateGenerationRequest { Id = 1, Name = "Generation 2" };
+        var updateGen = new CreateGenerationRequest { Name = "Generation 2" };
 
-        var result = await cmd.Update(updateGen);
+        var result = await cmd.Update(1, updateGen);
 
         Assert.False(result.Success);
         Assert.Equal(422, result.StatusCode);
