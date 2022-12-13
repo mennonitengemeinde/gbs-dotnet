@@ -1,11 +1,7 @@
 ﻿@page "/admin/streams"
-@attribute [Authorize(Policy = Policies.RequireAdminsAndSound)]
-@implements IDisposable
 @using Gbs.Wasm.Pages.Admin.Streams.Components
-@using Gbs.Shared.Streams
+@attribute [Authorize(Policy = Policies.RequireAdminsAndSound)]
 
-@inject IStreamStore StreamStore
-@inject IUiService UiService
 @inject IDialogService DialogService
 
 <PageTitle>Streams - GBS</PageTitle>
@@ -18,7 +14,7 @@
 </div>
 
 <MudGrid Justify="Justify.FlexStart">
-    @foreach (var liveStream in StreamStore.Data)
+    @foreach (var liveStream in StreamState.Data)
     {
         <MudItem xs="12" sm="6" lg="4" xl="3">
             <AdminStreamCard LiveStream="@liveStream" OnDelete="HandleDelete" />
@@ -31,46 +27,38 @@
     [CascadingParameter]
     CascadingUiState UiState { get; set; } = null!;
 
+    [CascadingParameter]
+    StreamState StreamState { get; set; } = null!;
+
     protected override async Task OnInitializedAsync()
     {
-        await StreamStore.Fetch();
-        StreamStore.OnChange += StateHasChanged;
-    }
-    
-    protected override void OnAfterRender(bool firstRender)
-    {
-        UiState.IsPageLoading = StreamStore.IsLoading;
+        await StreamState.Fetch();
     }
 
-    async Task HandleDelete(StreamDto stream)
+    protected override void OnAfterRender(bool firstRender)
     {
-        bool? result = await DialogService.ShowMessageBox(
+        UiState.IsPageLoading = StreamState.IsLoading;
+    }
+
+    async Task HandleDelete(StreamResponse stream)
+    {
+        var result = await DialogService.ShowMessageBox(
             $"Delete {stream.Title}?",
             "Are you sure you want to continue?",
-            yesText: "Delete!", cancelText: "Cancel");
+            "Delete!", cancelText: "Cancel");
         if (result != null)
         {
             await DeleteStream(stream);
         }
-        StateHasChanged();
     }
 
-    async Task DeleteStream(StreamDto stream)
+    async Task DeleteStream(StreamResponse stream)
     {
-        await StreamStore.Delete(stream.Id);
-        if (!StreamStore.HasError)
+        await StreamState.Delete(stream.Id);
+        if (StreamState.Error != null)
         {
-            UiService.ShowSuccessAlert("Stream deleted successfully");
+            StreamState.ClearError();
         }
-        else
-        {
-            StreamStore.ClearErrors();
-        }
-    }
-
-    public void Dispose()
-    {
-        StreamStore.OnChange -= StateHasChanged;
     }
 
 }

@@ -1,0 +1,16 @@
+﻿@inherits BaseCascadingState<SubjectResponse, CreateSubjectRequest, int, CreateSubjectRequest>
+
+<CascadingValue Value="this">
+    @ChildContent
+</CascadingValue>
+
+@code {
+    public override string BaseUrl => "api/subjects";
+
+    public async Task<SubjectResponse?> GetById(int id)
+    {
+        await Fetch();
+        return Data.FirstOrDefault(c => c.Id == id);
+    }
+
+}

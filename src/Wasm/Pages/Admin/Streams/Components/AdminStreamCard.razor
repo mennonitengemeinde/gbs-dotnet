@@ -1,17 +1,15 @@
-﻿@using Gbs.Shared.Streams
-@inject IUiService UiService
-@inject IStreamStore StreamStore
+﻿@inject IUiService UiService
 
 <MudCard Elevation="1">
     <MudCardHeader>
         <CardHeaderContent>
-                <MudText Typo="Typo.h6" Class="tw-truncate">@LiveStream.Title</MudText>
-                <MudText Typo="Typo.body2">@LiveStream.GenerationName</MudText>
+            <MudText Typo="Typo.h6" Class="tw-truncate">@LiveStream.Title</MudText>
+            <MudText Typo="Typo.body2">@LiveStream.GenerationName</MudText>
         </CardHeaderContent>
         <CardHeaderActions>
             <MudIconButton Color="Color.Error"
                            OnClick="ToggleLive"
-                           Icon="@(LiveStream.IsLive ? Icons.Material.Filled.Circle : Icons.Material.Outlined.Circle)"/>
+                           Icon="@(LiveStream.IsLive ? Icons.Material.Filled.Circle : Icons.Material.Outlined.Circle)" />
         </CardHeaderActions>
     </MudCardHeader>
     <MudCardContent>
@@ -19,7 +17,7 @@
         <MudList Dense="true">
             @foreach (var teacher in LiveStream.Teachers)
             {
-                <MudListItem Text="@teacher.Name" Icon="@Icons.Material.Filled.Mic" ExpandLessIcon="true"/>
+                <MudListItem Text="@teacher.Name" Icon="@Icons.Material.Filled.Mic" ExpandLessIcon="true" />
             }
         </MudList>
     </MudCardContent>
@@ -40,19 +38,21 @@
 
 @code {
 
-    [Parameter, EditorRequired]
-    public StreamDto LiveStream { get; set; } = null!;
+    [CascadingParameter]
+    StreamState StreamState { get; set; } = null!;
 
     [Parameter]
-    public EventCallback<StreamDto> OnDelete { get; set; }
+    [EditorRequired]
+    public StreamResponse LiveStream { get; set; } = null!;
+
+    [Parameter]
+    public EventCallback<StreamResponse> OnDelete { get; set; }
 
     async Task ToggleLive()
     {
-        await StreamStore.ToggleLive(LiveStream.Id);
-        if (StreamStore.HasError)
-        {
-            StreamStore.ClearErrors();
-        }
+        await StreamState.ToggleLive(LiveStream.Id);
+        if (StreamState.Error != null)
+            StreamState.ClearError();
     }
 
     private async Task HandleDelete()

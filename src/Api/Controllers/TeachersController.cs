@@ -1,3 +1,4 @@
+using Gbs.Application.Features.Teachers.Interfaces;
 using Gbs.Shared.Teachers;
 
 namespace Gbs.Api.Controllers
@@ -17,28 +18,28 @@ namespace Gbs.Api.Controllers
         }
         
         [HttpGet]
-        public async Task<ActionResult<Result<List<TeacherDto>>>> GetAllTeachers()
+        public async Task<ActionResult<Result<List<TeacherResponse>>>> GetAllTeachers()
         {
             var result = await _teacherQueries.GetAll();
             return result.ToActionResult();
         }
         
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<Result<TeacherDto>>> GetTeacher(int id)
+        public async Task<ActionResult<Result<TeacherResponse>>> GetTeacher(int id)
         {
             var result = await _teacherQueries.GetById(id);
             return result.ToActionResult();
         }
         
         [HttpPost]
-        public async Task<ActionResult<Result<TeacherDto>>> AddTeacher(TeacherCreateDto teacherAddDto)
+        public async Task<ActionResult<Result<TeacherResponse>>> AddTeacher(CreateTeacherRequest teacherAddDto)
         {
             var result = await _teacherCommands.Add(teacherAddDto);
             return result.ToActionResult();
         }
         
         [HttpPut("{id:int}")]
-        public async Task<ActionResult<Result<TeacherDto>>> UpdateTeacher(int id, TeacherCreateDto teacherDto)
+        public async Task<ActionResult<Result<TeacherResponse>>> UpdateTeacher(int id, CreateTeacherRequest teacherDto)
         {
             var result = await _teacherCommands.Update(id, teacherDto);
             return result.ToActionResult();

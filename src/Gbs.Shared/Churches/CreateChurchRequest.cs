@@ -16,7 +16,11 @@ public class CreateChurchRequestValidator : AbstractValidator<CreateChurchReques
 {
     public CreateChurchRequestValidator()
     {
-        RuleFor(x => x.Name).NotEmpty().Length(3, 150);
-        RuleFor(x => x.Country).NotEmpty().Length(3, 150);
+        Transform(x => x.Name, value => value.Trim())
+            .NotEmpty()
+            .Length(3, 150);
+        Transform(x => x.Country, value => value.Trim())
+            .NotEmpty()
+            .Length(3, 150);
     }
 }

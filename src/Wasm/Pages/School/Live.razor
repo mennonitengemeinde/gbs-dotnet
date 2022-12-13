@@ -1,9 +1,7 @@
 ﻿@page "/school/{Id:int}/live"
-@attribute [Authorize(Policy = Policies.RequireAdminsSoundAndTeachers)]
 @using Gbs.Wasm.Pages.School.Components
-@using Gbs.Shared.Streams
+@attribute [Authorize(Policy = Policies.RequireAdminsSoundAndTeachers)]
 
-@inject IStreamStore StreamStore
 @inject NavigationManager NavigationManager
 
 <PageTitle>Live - GBS</PageTitle>
@@ -16,17 +14,20 @@
 @code {
 
     [CascadingParameter]
+    StreamState StreamState { get; set; } = null!;
+
+    [CascadingParameter]
     CascadingUiState UiState { get; set; } = null!;
-    
+
     [Parameter]
     public int Id { get; set; }
 
     [Parameter]
-    public StreamDto? LiveStream { get; set; }
+    public StreamResponse? LiveStream { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        var liveStream = await StreamStore.GetOnlyLiveById(Id);
+        var liveStream = await StreamState.GetOnlyLiveById(Id);
         if (liveStream == null)
         {
             NavigationManager.NavigateTo("school");
@@ -35,11 +36,6 @@
         {
             LiveStream = liveStream;
         }
-    }
-
-    protected override void OnAfterRender(bool firstRender)
-    {
-        UiState.IsPageLoading = StreamStore.IsLoading;
     }
 
 }

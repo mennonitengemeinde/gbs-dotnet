@@ -1,8 +1,12 @@
 @page "/admin/students/create"
 @page "/admin/students/{Id:int}/edit"
+@using Gbs.Shared.Common.Extensions
+@inherits BaseMatForm
 @attribute [Authorize(Policy = Policies.RequireAdminsAndTeachers)]
 
 <PageTitle>Students Form - GBS</PageTitle>
+
+@inject IAuthService AuthService
 
 @if (!UiState.IsPageLoading)
 {
@@ -11,9 +15,10 @@
         <MudGrid Justify="Justify.Center" Class="tw-py-8">
             <MudItem xs="12" sm="8" md="5">
                 <MatFormCard Label="Student"
-                             IsEdit="false"
-                             IsLoading="StudentStore.IsLoading"
-                             IsProcessing="@_isProcessing"
+                             IsEdit="@Id.HasValue"
+                             IsLoading="@StudentState.IsLoading"
+                             IsProcessing="@IsProcessing"
+                             ValidationErrors="@ValidationErrors"
                              ReturnUrl="/admin/students">
                     <MudTextField Label="First Name"
                                   @bind-Value="_model.FirstName"
@@ -50,7 +55,7 @@
                                For="@(() => _model.GenerationId)"
                                @bind-Value="_model.GenerationId">
                         <MudSelectItem Disabled="true" T="int" Value="0">Select Generation</MudSelectItem>
-                        @foreach (var item in GenerationStore.Data)
+                        @foreach (var item in GenerationState.Data)
                         {
                             <MudSelectItem T="int" Value="@item.Id">@item.Name</MudSelectItem>
                         }
@@ -62,7 +67,7 @@
                                    For="@(() => _model.ChurchId)"
                                    @bind-Value="_model.ChurchId">
                             <MudSelectItem Disabled="true" T="int" Value="0">Select Church</MudSelectItem>
-                            @foreach (var item in ChurchStore.Data)
+                            @foreach (var item in ChurchState.Data)
                             {
                                 <MudSelectItem T="int" Value="@item.Id">@item.Name</MudSelectItem>
                             }
@@ -86,4 +91,77 @@
             </MudItem>
         </MudGrid>
     </EditForm>
+}
+
+@code {
+
+    [CascadingParameter]
+    StudentState StudentState { get; set; } = null!;
+
+    [CascadingParameter]
+    GenerationState GenerationState { get; set; } = null!;
+
+    [CascadingParameter]
+    ChurchState ChurchState { get; set; } = null!;
+
+    [CascadingParameter]
+    CascadingUiState UiState { get; set; } = null!;
+
+    bool _isAdmin;
+    CreateStudentRequest _model = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var tasks = new[] { GenerationState.Fetch(), ChurchState.Fetch() };
+        _isAdmin = await AuthService.UserIsAdmin();
+
+        await Task.WhenAll(tasks);
+
+        if (Id.HasValue)
+        {
+            var student = await StudentState.GetById(Id.Value);
+            if (student == null)
+            {
+                NavigationManager.NavigateTo("/admin/students");
+                return;
+            }
+
+            _model = new CreateStudentRequest
+            {
+                FirstName = student.FirstName,
+                LastName = student.LastName,
+                DateOfBirth = student.DateOfBirth,
+                MaritalStatus = student.MaritalStatus,
+                Address = student.Address,
+                City = student.City,
+                Province = student.Province,
+                Country = student.Country,
+                PostalCode = student.PostalCode,
+                Email = student.Email,
+                Phone = student.Phone,
+                ChurchId = student.ChurchId
+            };
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        IsProcessing = true;
+        _model.FirstName = _model.FirstName.CapitalizeFirstLetterOfEachWord();
+        _model.LastName = _model.LastName.CapitalizeFirstLetterOfEachWord();
+
+        if (Id.HasValue)
+            await StudentState.Update(Id.Value, _model);
+        else
+            await StudentState.Create(_model);
+
+        if (HasError(StudentState.Error))
+        {
+            StudentState.ClearError();
+            return;
+        }
+
+        NavigationManager.NavigateTo("admin/students");
+    }
+
 }

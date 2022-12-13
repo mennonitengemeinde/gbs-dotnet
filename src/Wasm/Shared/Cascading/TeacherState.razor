@@ -1,0 +1,16 @@
+@inherits BaseCascadingState<TeacherResponse, CreateTeacherRequest, int, CreateTeacherRequest>
+
+<CascadingValue Value="this">
+    @ChildContent
+</CascadingValue>
+
+@code {
+    public override string BaseUrl => "api/teachers";
+
+    public async Task<TeacherResponse?> GetById(int id)
+    {
+        await Fetch();
+        return Data.FirstOrDefault(c => c.Id == id);
+    }
+
+}

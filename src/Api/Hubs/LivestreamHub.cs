@@ -1,4 +1,6 @@
-﻿namespace Gbs.Api.Hubs;
+﻿using Gbs.Application.Features.Streams.Interfaces;
+
+namespace Gbs.Api.Hubs;
 
 public class LivestreamHub : Hub
 {

@@ -1,3 +1,4 @@
+using Gbs.Application.Features.Lessons.Interfaces;
 using Gbs.Shared.Lessons;
 
 namespace Gbs.Api.Controllers
@@ -17,7 +18,7 @@ namespace Gbs.Api.Controllers
 
         [HttpGet]
         [Authorize(Policy = Policies.RequireAdminsSoundAndTeachers)]
-        public async Task<ActionResult<Result<List<LessonDto>>>> GetAll()
+        public async Task<ActionResult<Result<List<LessonResponse>>>> GetAll()
         {
             var result = await _lessonQueries.GetAll();
             return result.ToActionResult();
@@ -25,7 +26,7 @@ namespace Gbs.Api.Controllers
 
         [HttpGet("{id:int}")]
         [Authorize(Policy = Policies.RequireAdminsSoundAndTeachers)]
-        public async Task<ActionResult<Result<LessonDto>>> Get(int id)
+        public async Task<ActionResult<Result<LessonResponse>>> Get(int id)
         {
             var result = await _lessonQueries.GetById(id);
             return result.ToActionResult();
@@ -33,7 +34,7 @@ namespace Gbs.Api.Controllers
 
         [HttpPost]
         [Authorize(Policy = Policies.RequireAdminsAndSound)]
-        public async Task<ActionResult<Result<LessonDto>>> Create(LessonCreateDto dto)
+        public async Task<ActionResult<Result<LessonResponse>>> Create(CreateLessonRequest dto)
         {
             var result = await _lessonCommands.Add(dto);
             return result.ToActionResult();
@@ -41,7 +42,7 @@ namespace Gbs.Api.Controllers
 
         [HttpPut("{id:int}")]
         [Authorize(Policy = Policies.RequireAdminsAndSound)]
-        public async Task<ActionResult<Result<LessonDto>>> Update(int id, LessonCreateDto dto)
+        public async Task<ActionResult<Result<LessonResponse>>> Update(int id, CreateLessonRequest dto)
         {
             var result = await _lessonCommands.Update(id, dto);
             return result.ToActionResult();
@@ -57,7 +58,7 @@ namespace Gbs.Api.Controllers
         
         [HttpPut("{id:int}/order")]
         [Authorize(Policy = Policies.RequireAdminsAndSound)]
-        public async Task<ActionResult<Result<LessonDto>>> UpdateOrder(int id, [FromBody] int order)
+        public async Task<ActionResult<Result<LessonResponse>>> UpdateOrder(int id, [FromBody] int order)
         {
             var result = await _lessonCommands.UpdateOrder(id, order);
             return result.ToActionResult();

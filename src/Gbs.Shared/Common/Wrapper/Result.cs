@@ -1,7 +1,14 @@
-﻿namespace Gbs.Shared.Common.Wrapper;
+﻿using FluentValidation.Results;
 
-public static class Result
+namespace Gbs.Shared.Common.Wrapper;
+
+public class Result
 {
+    public bool Success { get; set; }
+    public string Message { get; set; } = string.Empty;
+    public int StatusCode { get; set; }
+    public string[]? Errors { get; set; }
+
     public static Result<T> Ok<T>(T data)
     {
         return new Result<T> { Success = true, Message = "Success", StatusCode = 200, Data = data };
@@ -17,15 +24,15 @@ public static class Result
         return new Result<T> { Success = true, Message = message, StatusCode = 200 };
     }
 
-    public static Result<T> BadRequest<T>(string message)
+    public static Result<T> BadRequest<T>(string message, string[]? errors = null)
     {
-
-        return new Result<T>{Success = false, Message = message, StatusCode = 400};
+        return new Result<T> { Success = false, Message = message, StatusCode = 400 };
     }
 
     public static Result<T> Forbidden<T>()
     {
-        return new Result<T> { Success = false, Message = "You are not authorized to access this resource", StatusCode = 403 };
+        return new Result<T>
+            { Success = false, Message = "You are not authorized to access this resource", StatusCode = 403 };
     }
 
     public static Result<T> InternalError<T>()
@@ -42,12 +49,18 @@ public static class Result
     {
         return new Result<T> { Success = false, Message = "Unauthorized", StatusCode = 401 };
     }
+
+    public static Result<T> ValidationError<T>(ValidationResult errors)
+    {
+        var errArray = errors.Errors.Select(x => x.ErrorMessage).ToArray();
+        return new Result<T>
+        {
+            Success = false, Message = "One or more validation errors occurred.", StatusCode = 422, Errors = errArray
+        };
+    }
 }
 
-public class Result<T>
+public class Result<T> : Result
 {
     public T? Data { get; set; }
-    public bool Success { get; set; }
-    public string Message { get; set; } = string.Empty;
-    public int StatusCode { get; set; }
 }

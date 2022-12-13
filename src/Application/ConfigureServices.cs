@@ -1,14 +1,20 @@
 ﻿using System.Reflection;
-using FluentValidation;
-using Gbs.Application.Churches;
-using Gbs.Application.Churches.Commands;
-using Gbs.Application.Common.Behaviours;
-using Gbs.Application.Identity;
-using Gbs.Application.Lessons;
-using Gbs.Application.Students;
-using Gbs.Application.Subjects;
-using Gbs.Application.Teachers;
-using MediatR;
+using Gbs.Application.Features.Churches;
+using Gbs.Application.Features.Churches.Interfaces;
+using Gbs.Application.Features.Generations;
+using Gbs.Application.Features.Generations.Interfaces;
+using Gbs.Application.Features.Identity;
+using Gbs.Application.Features.Identity.Interfaces;
+using Gbs.Application.Features.Lessons;
+using Gbs.Application.Features.Lessons.Interfaces;
+using Gbs.Application.Features.Streams;
+using Gbs.Application.Features.Streams.Interfaces;
+using Gbs.Application.Features.Students;
+using Gbs.Application.Features.Students.Interfaces;
+using Gbs.Application.Features.Subjects;
+using Gbs.Application.Features.Subjects.Interfaces;
+using Gbs.Application.Features.Teachers;
+using Gbs.Application.Features.Teachers.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Gbs.Application;
@@ -19,15 +25,15 @@ public static class ConfigureServices
     {
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
         
-        services.AddValidatorsFromAssemblyContaining<CreateChurchRequestValidator>();
-        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+        services.AddValidatorsFromAssemblyContaining<ChurchValidator>();
+        // services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
         
-        services.AddMediatR(Assembly.GetExecutingAssembly());
-        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
-        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+        // services.AddMediatR(Assembly.GetExecutingAssembly());
+        // services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
+        // services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
         
-        // services.AddScoped<IChurchQueries, ChurchQueries>();
-        // services.AddScoped<IChurchCommands, ChurchCommands>();
+        services.AddScoped<IChurchQueries, ChurchQueries>();
+        services.AddScoped<IChurchCommands, ChurchCommands>();
         services.AddScoped<IGenerationQueries, GenerationQueries>();
         services.AddScoped<IGenerationCommands, GenerationCommands>();
         services.AddScoped<IIdentityQueries, IdentityQueries>();

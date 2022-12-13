@@ -1,11 +1,7 @@
 ﻿@page "/admin/users"
 @attribute [Authorize(Policy = Policies.RequireAdmins)]
-@using Gbs.Shared.Identity
-@implements IDisposable
 
 @inject IAuthService AuthService
-@inject IUserStore UserStore
-@inject IChurchStore ChurchStore
 
 <PageTitle>Users - GBS</PageTitle>
 
@@ -13,7 +9,7 @@
     <MudText Typo="Typo.h4">Users</MudText>
 </div>
 
-<MudTable Items="@UserStore.Data" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@UserStore.IsLoading" LoadingProgressColor="Color.Info">
+<MudTable Items="@UserState.Data" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@UserState.IsLoading" LoadingProgressColor="Color.Info">
     <HeaderContent>
         <MudTh>Name</MudTh>
         <MudTh>Email</MudTh>
@@ -28,8 +24,9 @@
             <MudSelect T="int?"
                        Value="@context.ChurchId"
                        Label="Church"
+                       Disabled="@(ChurchProcessing == context.Id)"
                        ValueChanged="@((value) => HandleChurchChange(value, context))">
-                @foreach (var church in ChurchStore.Data)
+                @foreach (var church in ChurchState.Data)
                 {
                     <MudSelectItem T="int?" Value="@church.Id">@church.Name</MudSelectItem>
                 }
@@ -66,52 +63,54 @@
 </MudTable>
 
 @code {
-    UserUpdateChurchDto _updateChurchDto = new();
-    List<LocalUserDto> _users = new();
-    List<string> _roles = new();
+    [CascadingParameter]
+    private UserState UserState { get; set; } = null!;
+    
+    [CascadingParameter]
+    private ChurchState ChurchState { get; set; } = null!;
+    
+    UpdateUserChurchRequest _updateChurchDto = new();
+    
+    List<LocalUserDto> _users { get; set; } = new();
+    List<string> _roles { get; set; } = new();
+    string ChurchProcessing { get; set; } = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
-        await UserStore.Fetch();
-        await ChurchStore.Fetch();
+        await UserState.Fetch();
+        await ChurchState.Fetch();
         var roles = await AuthService.FetchRoles();
         if (roles.Data != null)
         {
             _roles = roles.Data.Select(r => r.Name).ToList();
         }
-        _users = UserStore.Data.Select(u => new LocalUserDto(u)).ToList();
-
-        UserStore.OnChange += OnUsersChanged;
-        ChurchStore.OnChange += StateHasChanged;
-    }
-
-    private void OnUsersChanged()
-    {
-        _users = UserStore.Data.Select(u => new LocalUserDto(u)).ToList();
-        StateHasChanged();
+        _users = UserState.Data.Select(u => new LocalUserDto(u)).ToList();
     }
 
     async Task HandleActiveChange(bool e, string userId)
     {
-        var updateActiveDto = new UserUpdateActiveStateDto { IsActive = e };
-        await UserStore.UpdateActiveState(userId, updateActiveDto);
+        var updateActiveDto = new UpdateUserActiveStateRequest { IsActive = e };
+        await UserState.UpdateActiveState(userId, updateActiveDto);
     }
 
-    async Task HandleChurchChange(int? value, UserDto user)
+    async Task HandleChurchChange(int? value, UserResponse user)
     {
+        ChurchProcessing = user.Id;
         if (value == null)
         {
+            ChurchProcessing = string.Empty;
             return;
         }
-        _updateChurchDto.ChurchId = value;
-        await UserStore.UpdateChurch(user.Id, _updateChurchDto);
+        _updateChurchDto.ChurchId = value.Value;
+        await UserState.UpdateChurch(user.Id, _updateChurchDto);
+        ChurchProcessing = string.Empty;
     }
 
-    void HandleRoleChange(IEnumerable<string> value, UserDto user)
+    void HandleRoleChange(IEnumerable<string> value, UserResponse user)
     {
         var roles = value.ToList();
 
-        var dbUser = UserStore.Data.First(u => u.Id == user.Id);
+        var dbUser = UserState.Data.First(u => u.Id == user.Id);
         var localUser = _users.First(u => u.Id == user.Id);
         if (roles.Count == dbUser.Roles.ToList().Count && !roles.Except(dbUser.Roles).Any())
         {
@@ -125,19 +124,14 @@
 
     async Task SubmitRoleChange(string userId)
     {
-        var updateRoleDto = new UserUpdateRoleDto { Roles = _users.First(u => u.Id == userId).Roles.ToList() };
-        await UserStore.UpdateRoles(userId, updateRoleDto);
+        var updateRoleDto = new UpdateUserRoleRequest { Roles = _users.First(u => u.Id == userId).Roles.ToList() };
+        await UserState.UpdateRoles(userId, updateRoleDto);
+        _users.First(u => u.Id == userId).RoleChanged = false;
     }
 
-    public void Dispose()
+    class LocalUserDto : UserResponse
     {
-        UserStore.OnChange -= OnUsersChanged;
-        ChurchStore.OnChange -= StateHasChanged;
-    }
-
-    class LocalUserDto : UserDto
-    {
-        public LocalUserDto(UserDto userDto)
+        public LocalUserDto(UserResponse userDto)
         {
             Id = userDto.Id;
             FirstName = userDto.FirstName;
