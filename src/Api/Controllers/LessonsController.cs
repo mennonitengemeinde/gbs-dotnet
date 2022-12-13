@@ -42,9 +42,9 @@ namespace Gbs.Api.Controllers
 
         [HttpPut("{id:int}")]
         [Authorize(Policy = Policies.RequireAdminsAndSound)]
-        public async Task<ActionResult<Result<LessonResponse>>> Update(int id, UpdateLessonRequest dto)
+        public async Task<ActionResult<Result<LessonResponse>>> Update(int id, CreateLessonRequest dto)
         {
-            var result = await _lessonCommands.Update(dto);
+            var result = await _lessonCommands.Update(id, dto);
             return result.ToActionResult();
         }
 
