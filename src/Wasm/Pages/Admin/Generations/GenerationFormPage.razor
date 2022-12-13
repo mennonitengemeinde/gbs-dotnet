@@ -23,15 +23,6 @@
     </MudGrid>
 </EditForm>
 
-@if (Id.HasValue)
-{
-    <GenerationUpdateForm Id="Id.Value" />
-}
-else
-{
-    <GenerationCreateForm />
-}
-
 @code {
 
     [CascadingParameter]

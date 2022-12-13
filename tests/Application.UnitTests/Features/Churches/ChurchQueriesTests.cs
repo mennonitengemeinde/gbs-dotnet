@@ -4,13 +4,12 @@ using Gbs.Tests.Application.UnitTests.Common;
 namespace Gbs.Tests.Application.UnitTests.Features.Churches;
 
 public class ChurchQueriesTests : ChurchTestBase, IQueryTests
-{   
+{
     [Fact]
     public async Task GetAll_ReturnsAllRecords()
     {
-        
         var churchQ = new ChurchQueries(Context, Mapper);
-        
+
         var result = await churchQ.GetAll();
 
         Assert.True(result.Success);
@@ -37,7 +36,7 @@ public class ChurchQueriesTests : ChurchTestBase, IQueryTests
     public async Task GetById_ReturnsRecord()
     {
         var churchQ = new ChurchQueries(Context, Mapper);
-        
+
         var result = await churchQ.GetById(1);
 
         Assert.True(result.Success);
@@ -45,7 +44,7 @@ public class ChurchQueriesTests : ChurchTestBase, IQueryTests
         Assert.Equal(1, result.Data.Id);
     }
 
-    public async Task GetById_ReturnsNull_WhenNoRecord()
+    public Task GetById_ReturnsNull_WhenNoRecord()
     {
         throw new NotImplementedException();
     }

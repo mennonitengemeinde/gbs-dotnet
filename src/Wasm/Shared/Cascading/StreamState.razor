@@ -32,7 +32,7 @@
             .EnsureSuccess<StreamResponse>();
 
         if (!result.Success)
-            SetError(result.Message, result.Errors, result.StatusCode);
+            await SetError(result.Message, result.Errors, result.StatusCode);
 
         await ForceFetch();
     }

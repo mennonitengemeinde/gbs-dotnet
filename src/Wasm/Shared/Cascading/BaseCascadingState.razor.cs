@@ -12,14 +12,15 @@ public abstract class BaseCascadingState<T, TCreate, TIdType, TUpdate> : Compone
     private bool _isLoading;
 
     private DateTime _lastUpdated = DateTime.MinValue;
-    [Parameter] public RenderFragment? ChildContent { get; set; }
 
+    [Inject] protected IUiService UiService { get; set; } = null!;
     [Inject] protected HttpClient Http { get; set; } = null!;
     [Inject] protected IDateTimeService DateTimeService { get; set; } = null!;
     [Inject] protected ILocalStorageService LocalStorage { get; set; } = null!;
     [Inject] protected AuthenticationStateProvider AuthenticationStateProvider { get; set; } = null!;
     [Inject] protected NavigationManager NavigationManager { get; set; } = null!;
-    [Inject] protected UiService UiService { get; set; } = null!;
+
+    [Parameter] public RenderFragment? ChildContent { get; set; }
 
     public List<T> Data
     {
@@ -39,7 +40,7 @@ public abstract class BaseCascadingState<T, TCreate, TIdType, TUpdate> : Compone
         {
             if (value?.Errors == _error?.Errors
                 && value?.Message == _error?.Message
-                && value?.StatusCode == _error.StatusCode) return;
+                && value?.StatusCode == _error?.StatusCode) return;
             _error = value;
         }
         // StateHasChanged();

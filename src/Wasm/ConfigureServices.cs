@@ -23,8 +23,8 @@ public static class ConfigureServices
         services.AddTransient<IDateTimeService, DateTimeService>();
 
         services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(hostEnvironment.BaseAddress) });
-        services.AddScoped<IAuthService, AuthApiService>();
         services.AddScoped<IUiService, UiService>();
+        services.AddScoped<IAuthService, AuthApiService>();
 
         services.AddOptions();
         services.AddAuthorizationCore(options =>
