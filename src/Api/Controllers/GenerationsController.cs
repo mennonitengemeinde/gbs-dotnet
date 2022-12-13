@@ -43,9 +43,9 @@ namespace Gbs.Api.Controllers
         [HttpPut("{generationId:int}")]
         [Authorize(Policy = Policies.RequireAdmins)]
         public async Task<ActionResult<Result<GenerationResponse>>> UpdateGeneration(int generationId,
-            UpdateGenerationRequest generation)
+            CreateGenerationRequest generation)
         {
-            var result = await _generationCommands.Update(generation);
+            var result = await _generationCommands.Update(generationId, generation);
             return result.ToActionResult();
         }
 
