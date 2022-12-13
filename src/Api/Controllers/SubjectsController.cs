@@ -42,7 +42,7 @@ namespace Gbs.Api.Controllers
         
         [HttpPut("{id:int}")]
         [Authorize(Policy = Policies.RequireAdmins)]
-        public async Task<ActionResult<Result<SubjectResponse>>> UpdateSubject(int id, UpdateSubjectRequest subjectUpdateDto)
+        public async Task<ActionResult<Result<SubjectResponse>>> UpdateSubject(int id, CreateSubjectRequest subjectUpdateDto)
         {
             var result = await _subjectCommands.Update(id, subjectUpdateDto);
             return result.ToActionResult();

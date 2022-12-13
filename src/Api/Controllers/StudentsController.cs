@@ -41,9 +41,9 @@ public class StudentsController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    public async Task<ActionResult<Result<StudentResponse>>> UpdateStudent(int id, UpdateStudentRequest student)
+    public async Task<ActionResult<Result<StudentResponse>>> UpdateStudent(int id, CreateStudentRequest student)
     {
-        var result = await _studentCommands.Update(student);
+        var result = await _studentCommands.Update(id, student);
         return result.ToActionResult();
     }
 }

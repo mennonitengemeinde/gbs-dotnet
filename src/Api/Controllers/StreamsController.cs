@@ -56,7 +56,7 @@ namespace Gbs.Api.Controllers
         [HttpPut("{streamId:int}")]
         [Authorize(Policy = Policies.RequireAdminsAndSound)]
         public async Task<ActionResult<Result<StreamResponse>>> UpdateStream(int streamId,
-            UpdateStreamRequest liveDto)
+            CreateStreamRequest liveDto)
         {
             var response = await _streamCommands.UpdateStream(streamId, liveDto);
             await _streamHub.Clients.All.SendAsync("ReceiveStreams", await _streamQueries.GetAllStreams());

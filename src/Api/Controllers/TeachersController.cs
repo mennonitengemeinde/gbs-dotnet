@@ -39,9 +39,9 @@ namespace Gbs.Api.Controllers
         }
         
         [HttpPut("{id:int}")]
-        public async Task<ActionResult<Result<TeacherResponse>>> UpdateTeacher(int id, UpdateTeacherRequest teacherDto)
+        public async Task<ActionResult<Result<TeacherResponse>>> UpdateTeacher(int id, CreateTeacherRequest teacherDto)
         {
-            var result = await _teacherCommands.Update(teacherDto);
+            var result = await _teacherCommands.Update(id, teacherDto);
             return result.ToActionResult();
         }
         
