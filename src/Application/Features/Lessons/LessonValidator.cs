@@ -12,7 +12,7 @@ public class LessonValidator : AbstractValidator<Lesson>
             .NotEmpty()
             .MinimumLength(3).WithMessage("Name must be at least 3 characters long")
             .MustAsync((x, name, cancellation) => BeUniqueName(x.Id, name, cancellation))
-            .WithMessage("The specified name already exists.");;
+            .WithMessage("The specified name already exists.");
         
         RuleFor(x => x.IsVisible)
             .NotEmpty();

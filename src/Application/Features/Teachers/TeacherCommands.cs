@@ -18,7 +18,7 @@ public class TeacherCommands : ITeacherCommands
     public async Task<Result<TeacherResponse>> Add(CreateTeacherRequest request)
     {
         var teacher = new Teacher { Name = request.Name.Trim() };
-        
+
         var valResult = await _validator.ValidateAsync(teacher);
         if (!valResult.IsValid)
             return Result.ValidationError<TeacherResponse>(valResult);
@@ -29,16 +29,16 @@ public class TeacherCommands : ITeacherCommands
         return Result.Ok(_mapper.Map<TeacherResponse>(teacher));
     }
 
-    public async Task<Result<TeacherResponse>> Update(UpdateTeacherRequest request)
+    public async Task<Result<TeacherResponse>> Update(int id, CreateTeacherRequest request)
     {
         var teacher = await _context.Teachers
-            .FirstOrDefaultAsync(t => t.Id == request.Id);
-        
+            .FirstOrDefaultAsync(t => t.Id == id);
+
         if (teacher == null)
             return Result.NotFound<TeacherResponse>("Teacher not found");
-        
+
         teacher.Name = request.Name.Trim();
-        
+
         var valResult = await _validator.ValidateAsync(teacher);
         if (!valResult.IsValid)
             return Result.ValidationError<TeacherResponse>(valResult);
@@ -57,12 +57,5 @@ public class TeacherCommands : ITeacherCommands
         _context.Teachers.Remove(dbResult);
         await _context.SaveChangesAsync();
         return Result.Ok(true);
-    }
-
-    private async Task<bool> NameExists(string name, int? id = null)
-    {
-        return id != null
-            ? await _context.Teachers.AnyAsync(t => t.Name == name && t.Id != id)
-            : await _context.Teachers.AnyAsync(t => t.Name == name);
     }
 }

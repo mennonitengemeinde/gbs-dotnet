@@ -18,10 +18,6 @@ public class StreamCommands : IStreamCommands
     public async Task<Result<StreamResponse>> CreateStream(CreateStreamRequest streamCreateDto)
     {
         var stream = _mapper.Map<LiveStream>(streamCreateDto);
-        
-        var resultVal = await _validator.ValidateAsync(stream);
-        if (!resultVal.IsValid)
-            return Result.ValidationError<StreamResponse>(resultVal);
 
         var generation = await _context.Generations.FirstOrDefaultAsync(g => g.Id == streamCreateDto.GenerationId);
         if (generation == null)
@@ -33,6 +29,11 @@ public class StreamCommands : IStreamCommands
             .Select(teacherId => new LiveStreamTeacher { TeacherId = teacherId, LiveStreamId = stream.Id })
             .ToList();
         stream.StreamTeachers.AddRange(streamTeachers);
+        
+        var resultVal = await _validator.ValidateAsync(stream);
+        if (!resultVal.IsValid)
+            return Result.ValidationError<StreamResponse>(resultVal);
+        
         _context.Streams.Add(stream);
         await _context.SaveChangesAsync();
         return Result.Ok(_mapper.Map<StreamResponse>(stream));

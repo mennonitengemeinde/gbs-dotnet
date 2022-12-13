@@ -6,19 +6,23 @@ public class SubjectCommands : ISubjectCommands
 {
     private readonly IGbsDbContext _context;
     private readonly IMapper _mapper;
+    private readonly IValidator<Subject> _validator;
 
-    public SubjectCommands(IGbsDbContext context, IMapper mapper)
+    public SubjectCommands(IGbsDbContext context, IMapper mapper, IValidator<Subject> validator)
     {
         _context = context;
         _mapper = mapper;
+        _validator = validator;
     }
 
     public async Task<Result<SubjectResponse>> Add(CreateSubjectRequest request)
     {
-        if (await NameExists(request.Name))
-            return Result.BadRequest<SubjectResponse>("Subject name already exists");
-        
         var subject = _mapper.Map<Subject>(request);
+
+        var resultVal = await _validator.ValidateAsync(subject);
+        if (!resultVal.IsValid)
+            return Result.ValidationError<SubjectResponse>(resultVal);
+
         _context.Subjects.Add(subject);
         await _context.SaveChangesAsync();
         return Result.Ok(_mapper.Map<SubjectResponse>(subject));
@@ -26,23 +30,18 @@ public class SubjectCommands : ISubjectCommands
 
     public async Task<Result<SubjectResponse>> Update(int id, CreateSubjectRequest request)
     {
-        if (await NameExists(request.Name, id))
-            return Result.BadRequest<SubjectResponse>("Subject name already exists");
-        
         var subject = await _context.Subjects.FirstOrDefaultAsync(s => s.Id == id);
         if (subject == null)
             return Result.NotFound<SubjectResponse>("Subject not found");
-        
+
         subject.Name = request.Name;
+
+        var resultVal = await _validator.ValidateAsync(subject);
+        if (!resultVal.IsValid)
+            return Result.ValidationError<SubjectResponse>(resultVal);
+
         await _context.SaveChangesAsync();
 
         return Result.Ok(_mapper.Map<SubjectResponse>(subject));
-    }
-
-    private async Task<bool> NameExists(string name, int? id = null)
-    {
-        return id == null
-            ? await _context.Subjects.AnyAsync(x => x.Name.ToLower().Equals(name.ToLower()))
-            : await _context.Subjects.AnyAsync(x => x.Name.ToLower().Equals(name.ToLower()) && x.Id != id); 
     }
 }
