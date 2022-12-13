@@ -1,22 +1,69 @@
 @page "/admin/teachers/create"
 @page "/admin/teachers/{Id:int}/edit"
+@inherits BaseMatForm
 @attribute [Authorize(Policy = Policies.RequireAdminsAndSound)]
-@using Gbs.Wasm.Pages.Admin.Teachers.Components
 
 <PageTitle>Teachers Form - GBS</PageTitle>
 
-@if (Id != null)
-{
-    <TeacherUpdateForm Id="Id.Value" />
-}
-else
-{
-    <TeacherCreateForm />
-}
+<EditForm Model="_model" OnValidSubmit="HandleValidSubmit">
+    <FluentValidationValidator />
+    <MudGrid Justify="Justify.Center" Class="tw-pt-8">
+        <MudItem xs="12" sm="8" md="5">
+            <MatFormCard Label="Teacher"
+                         IsEdit="@Id.HasValue"
+                         IsLoading="@TeacherState.IsLoading"
+                         IsProcessing="@IsProcessing"
+                         ValidationErrors="@ValidationErrors"
+                         ReturnUrl="/admin/teachers">
+                <MudTextField Label="Name"
+                              @bind-Value="_model.Name"
+                              For="() => _model.Name" />
+            </MatFormCard>
+        </MudItem>
+    </MudGrid>
+</EditForm>
 
 @code {
 
-    [Parameter]
-    public int? Id { get; set; }
+    TeacherState TeacherState { get; } = null!;
+
+    CreateTeacherRequest _model = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Id.HasValue)
+        {
+            var teacher = await TeacherState.GetById(Id.Value);
+            if (teacher != null)
+            {
+                _model = new CreateTeacherRequest
+                {
+                    Name = teacher.Name
+                };
+            }
+        }
+    }
+
+    async Task HandleValidSubmit()
+    {
+        IsProcessing = true;
+
+        if (Id.HasValue)
+        {
+            await TeacherState.Update(Id.Value, _model);
+        }
+        else
+        {
+            await TeacherState.Create(_model);
+        }
+
+        if (HasError(TeacherState.Error))
+        {
+            TeacherState.ClearError();
+            return;
+        }
+
+        NavigationManager.NavigateTo("admin/teachers");
+    }
 
 }

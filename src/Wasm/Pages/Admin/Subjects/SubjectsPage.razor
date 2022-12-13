@@ -1,9 +1,6 @@
 ﻿@page "/admin/subjects"
 @attribute [Authorize(Policy = Policies.RequireAdmins)]
-@implements IDisposable
-
-@inject ISubjectStore SubjectStore
-@* @inject IUiService UiService *@
+@inherits BaseMatForm
 
 <PageTitle>Subjects - GBS</PageTitle>
 
@@ -14,7 +11,7 @@
     </MudButton>
 </div>
 
-<MudTable Items="@SubjectStore.Data" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@SubjectStore.IsLoading" LoadingProgressColor="Color.Info">
+<MudTable Items="@SubjectState.Data" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@SubjectState.IsLoading" LoadingProgressColor="Color.Info">
     <HeaderContent>
         <MudTh>Name</MudTh>
         <MudTh>Actions</MudTh>
@@ -29,48 +26,14 @@
     </RowTemplate>
 </MudTable>
 
-@* <MudGrid> *@
-@*     @foreach (var subject in SubjectStore.Data) *@
-@*     { *@
-@*         <MudItem xs="6"> *@
-@*             <MudCard> *@
-@*                 <MudCardHeader> *@
-@*                     <CardHeaderContent> *@
-@*                         <MudText Typo="Typo.h6">@subject.Name</MudText> *@
-@*                     </CardHeaderContent> *@
-@*                     <CardHeaderActions> *@
-@*                         <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Default" Href="@($"admin/subjects/{subject.Id}/edit")" /> *@
-@*                     </CardHeaderActions> *@
-@*                 </MudCardHeader> *@
-@*                 <MudCardContent> *@
-@*                     <MudText>This day everything happend.</MudText> *@
-@*                     <MudText Typo="Typo.body2">The quick, brown fox jumps over a lazy dog.</MudText> *@
-@*                 </MudCardContent> *@
-@*                 <MudCardActions> *@
-@*                     <MudButton Variant="Variant.Text" Color="Color.Primary">Add Lesson</MudButton> *@
-@*                 </MudCardActions> *@
-@*             </MudCard> *@
-@*         </MudItem> *@
-@*     } *@
-@* </MudGrid> *@
-
 @code {
+
+    [CascadingParameter]
+    public SubjectState SubjectState { get; set; } = null!;
 
     protected override async Task OnInitializedAsync()
     {
-        // UiService.Loading = SubjectStore.IsLoading;
-        await SubjectStore.ForceFetch();
-        SubjectStore.OnChange += StateHasChanged;
-    }
-
-    // protected override void OnAfterRender(bool firstRender)
-    // {
-    //     UiService.Loading = SubjectStore.IsLoading;
-    // }
-
-    public void Dispose()
-    {
-        SubjectStore.OnChange -= StateHasChanged;
+        await SubjectState.ForceFetch();
     }
 
 }

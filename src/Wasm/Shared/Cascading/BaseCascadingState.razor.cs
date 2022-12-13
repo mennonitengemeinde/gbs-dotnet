@@ -1,11 +1,17 @@
 ﻿using Blazored.LocalStorage;
-using ErrorModel = Gbs.Wasm.Common.Models.Error;
 using Microsoft.AspNetCore.Components.Authorization;
+using ErrorModel = Gbs.Wasm.Common.Models.Error;
 
 namespace Gbs.Wasm.Shared.Cascading;
 
 public abstract class BaseCascadingState<T, TCreate, TIdType, TUpdate> : ComponentBase, IApiState
 {
+    private List<T> _data = new();
+
+    private ErrorModel? _error;
+    private bool _isLoading;
+
+    private DateTime _lastUpdated = DateTime.MinValue;
     [Parameter] public RenderFragment? ChildContent { get; set; }
 
     [Inject] protected HttpClient Http { get; set; } = null!;
@@ -14,15 +20,6 @@ public abstract class BaseCascadingState<T, TCreate, TIdType, TUpdate> : Compone
     [Inject] protected AuthenticationStateProvider AuthenticationStateProvider { get; set; } = null!;
     [Inject] protected NavigationManager NavigationManager { get; set; } = null!;
     [Inject] protected UiService UiService { get; set; } = null!;
-
-    private List<T> _data = new();
-    private bool _isLoading;
-
-    private ErrorModel? _error;
-
-    private DateTime _lastUpdated = DateTime.MinValue;
-
-    public abstract string BaseUrl { get; }
 
     public List<T> Data
     {
@@ -38,11 +35,11 @@ public abstract class BaseCascadingState<T, TCreate, TIdType, TUpdate> : Compone
     public ErrorModel? Error
     {
         get => _error;
-        set
+        private set
         {
             if (value?.Errors == _error?.Errors
-                & value?.Message == _error?.Message
-                & value?.StatusCode == _error?.StatusCode) return;
+                && value?.Message == _error?.Message
+                && value?.StatusCode == _error.StatusCode) return;
             _error = value;
         }
         // StateHasChanged();
@@ -59,12 +56,11 @@ public abstract class BaseCascadingState<T, TCreate, TIdType, TUpdate> : Compone
         }
     }
 
+    public abstract string BaseUrl { get; }
+
     public async Task Fetch()
     {
-        if (DateTimeService.UtcNow - _lastUpdated > TimeSpan.FromMinutes(5) || Data.Count == 0)
-        {
-            await ForceFetch();
-        }
+        if (DateTimeService.UtcNow - _lastUpdated > TimeSpan.FromMinutes(5) || Data.Count == 0) await ForceFetch();
     }
 
     public async Task ForceFetch()
@@ -97,10 +93,10 @@ public abstract class BaseCascadingState<T, TCreate, TIdType, TUpdate> : Compone
             Message = message,
             StatusCode = statusCode
         };
-        
+
         if (_error != null)
             UiService.ShowErrorAlert(_error.Message, _error.StatusCode);
-        
+
         if (statusCode == 401)
         {
             await LocalStorage.RemoveItemAsync("authToken");
@@ -109,7 +105,7 @@ public abstract class BaseCascadingState<T, TCreate, TIdType, TUpdate> : Compone
         }
     }
 
-    public virtual async Task Add(TCreate item)
+    public virtual async Task Create(TCreate item)
     {
         IsLoading = true;
         var result = await Http.PostAsJsonAsync(BaseUrl, item)

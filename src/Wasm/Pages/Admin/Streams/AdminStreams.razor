@@ -1,8 +1,7 @@
 ﻿@page "/admin/streams"
-@attribute [Authorize(Policy = Policies.RequireAdminsAndSound)]
 @using Gbs.Wasm.Pages.Admin.Streams.Components
+@attribute [Authorize(Policy = Policies.RequireAdminsAndSound)]
 
-@inject IUiService UiService
 @inject IDialogService DialogService
 
 <PageTitle>Streams - GBS</PageTitle>
@@ -27,7 +26,7 @@
 
     [CascadingParameter]
     CascadingUiState UiState { get; set; } = null!;
-    
+
     [CascadingParameter]
     StreamState StreamState { get; set; } = null!;
 
@@ -35,7 +34,7 @@
     {
         await StreamState.Fetch();
     }
-    
+
     protected override void OnAfterRender(bool firstRender)
     {
         UiState.IsPageLoading = StreamState.IsLoading;
@@ -43,28 +42,22 @@
 
     async Task HandleDelete(StreamResponse stream)
     {
-        bool? result = await DialogService.ShowMessageBox(
+        var result = await DialogService.ShowMessageBox(
             $"Delete {stream.Title}?",
             "Are you sure you want to continue?",
-            yesText: "Delete!", cancelText: "Cancel");
+            "Delete!", cancelText: "Cancel");
         if (result != null)
         {
             await DeleteStream(stream);
         }
-        // StateHasChanged();
     }
 
     async Task DeleteStream(StreamResponse stream)
     {
         await StreamState.Delete(stream.Id);
-        if (StreamState.HasError)
+        if (StreamState.Error != null)
         {
-            UiService.ShowErrorAlert(StreamState.ErrorMessage);
-            StreamState.ClearErrors();
-        }
-        else
-        {
-            UiService.ShowSuccessAlert("Stream deleted successfully");
+            StreamState.ClearError();
         }
     }
 

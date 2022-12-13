@@ -1,24 +1,19 @@
 @page "/admin/streams/create"
 @page "/admin/streams/{Id:int}/edit"
+@inherits BaseMatForm
 @attribute [Authorize(Policy = Policies.RequireAdminsAndSound)]
-@implements IDisposable
-
-@* @inject IStreamStore StreamStore *@
-@* @inject ITeacherStore TeacherStore *@
-@* @inject IGenerationStore GenerationStore *@
-@inject IUiService UiService
-@inject NavigationManager NavigationManager
 
 <PageTitle>Streams Form - GBS</PageTitle>
 
 <EditForm Model="_model" OnValidSubmit="HandleValidSubmit">
-    <DataAnnotationsValidator />
+    <FluentValidationValidator />
     <MudGrid Justify="Justify.Center" Class="tw-pt-8">
         <MudItem xs="12" sm="8" md="5">
             <MatFormCard Label="Stream"
-                         IsEdit="_isEditMode"
+                         IsEdit="@Id.HasValue"
                          IsLoading="@StreamState.IsLoading"
-                         IsProcessing="_isProcessing"
+                         IsProcessing="IsProcessing"
+                         ValidationErrors="ValidationErrors"
                          ReturnUrl="/admin/streams">
                 <MudTextField Label="Title"
                               @bind-Value="_model.Title"
@@ -31,7 +26,7 @@
                            For="@(() => _model.GenerationId)"
                            @bind-Value="_model.GenerationId">
                     <MudSelectItem Disabled="true" T="int" Value="0">Select Generation</MudSelectItem>
-                    @foreach (var item in GenerationStore.Data)
+                    @foreach (var item in GenerationState.Data)
                     {
                         <MudSelectItem T="int" Value="@item.Id">@item.Name</MudSelectItem>
                     }
@@ -41,7 +36,7 @@
                            AnchorOrigin="Origin.BottomCenter"
                            @bind-SelectedValues="_model.Teachers"
                            MultiSelectionTextFunc="@(new Func<List<string>, string>(GetMultiSelectionText))">
-                    @foreach (var item in TeacherStore.Data)
+                    @foreach (var item in TeacherState.Data)
                     {
                         <MudSelectItem T="int" Value="@item.Id">@item.Name</MudSelectItem>
                     }
@@ -56,9 +51,6 @@
 
 @code {
 
-    [Parameter]
-    public int? Id { get; set; }
-
     [CascadingParameter]
     GenerationState GenerationState { get; set; } = null!;
 
@@ -68,76 +60,54 @@
     [CascadingParameter]
     StreamState StreamState { get; set; } = null!;
 
-    IStreamRequest _model = null!;
-    bool _isProcessing;
-    bool _isEditMode;
-    string[]? _errors;
+    CreateStreamRequest _model = new();
 
 
     protected override async Task OnInitializedAsync()
     {
-        await TeacherState.Fetch();
-        await GenerationState.Fetch();
+        var tasks = new[] { TeacherState.Fetch(), GenerationState.Fetch() };
+        await Task.WhenAll(tasks);
 
-        if (Id != null)
+        if (Id.HasValue)
         {
-            _isEditMode = true;
             var stream = await StreamState.GetById(Id.Value);
-            if (StreamState.HasError)
+            if (stream == null)
             {
-                UiService.ShowErrorAlert(StreamState.ErrorMessage);
-                StreamState.ClearErrors();
+                UiService.ShowErrorAlert("Stream not found");
                 NavigationManager.NavigateTo("/admin/streams");
                 return;
             }
-            
-            if (stream != null)
-            {
-                _model = new UpdateStreamRequest
-                {
-                    Id = stream.Id,
-                    Title = stream.Title,
-                    Url = stream.Url,
-                    IsLive = stream.IsLive,
-                    GenerationId = stream.GenerationId,
-                    Teachers = stream.Teachers.Select(t => t.Id).ToHashSet()
-                };
-            }
-        }
-        else
-        {
-            _model = new CreateStreamRequest();
-        }
 
+            _model = new CreateStreamRequest
+            {
+                Title = stream.Title,
+                Url = stream.Url,
+                IsLive = stream.IsLive,
+                GenerationId = stream.GenerationId,
+                Teachers = stream.Teachers.Select(t => t.Id).ToHashSet()
+            };
+        }
     }
 
     async Task HandleValidSubmit()
     {
-        _isProcessing = true;
-        if (_isEditMode && _model is UpdateStreamRequest updateRequest)
+        IsProcessing = true;
+        if (Id.HasValue)
         {
-            await StreamState.Update(Id.Value, updateRequest);
-        }
-        else if (!_isEditMode && _model is CreateStreamRequest createRequest)
-        {
-            await StreamState.Add(createRequest);
-        }
-
-        if (StreamState.HasError)
-        {
-            _errors = StreamState.Errors;
-            UiService.ShowErrorAlert();
-            _isProcessing = false;
-            StreamStore.ClearErrors();
+            await StreamState.Update(Id.Value, _model);
         }
         else
         {
-            _isProcessing = false;
-            UiService.ShowSuccessAlert(_isEditMode ? "Stream updated" : "Stream created");
-            NavigationManager.NavigateTo("admin/streams");
+            await StreamState.Create(_model);
         }
-        
-        
+
+        if (HasError(StreamState.Error))
+        {
+            StreamState.ClearError();
+            return;
+        }
+
+        NavigationManager.NavigateTo("admin/streams");
     }
 
     private string GetMultiSelectionText(List<string> selectedValues)
@@ -146,16 +116,9 @@
         foreach (var value in selectedValues)
         {
             int.TryParse(value, out var id);
-            nameList.Add(TeacherStore.Data.FirstOrDefault(t => t.Id == id)!.Name);
+            nameList.Add(TeacherState.Data.FirstOrDefault(t => t.Id == id)!.Name);
         }
         return string.Join(", ", nameList);
-    }
-
-
-    public void Dispose()
-    {
-        TeacherStore.OnChange -= StateHasChanged;
-        GenerationStore.OnChange -= StateHasChanged;
     }
 
 }

@@ -27,4 +27,9 @@
     <ProjectReference Include="..\Gbs.Shared\Gbs.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Pages\Admin\Teachers\Components\TeacherCreateForm.razor" />
+    <_ContentIncludedByDefault Remove="Pages\Admin\Teachers\Components\TeacherUpdateForm.razor" />
+  </ItemGroup>
+
 </Project>

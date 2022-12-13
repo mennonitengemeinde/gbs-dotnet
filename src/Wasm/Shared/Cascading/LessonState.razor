@@ -1,0 +1,28 @@
+﻿@inherits BaseCascadingState<LessonResponse, CreateLessonRequest, int, CreateLessonRequest>
+
+<CascadingValue Value="this">
+    @ChildContent
+</CascadingValue>
+
+@code {
+    public override string BaseUrl => "api/lessons";
+
+    public async Task<LessonResponse?> GetById(int id)
+    {
+        await Fetch();
+        return Data.FirstOrDefault(c => c.Id == id);
+    }
+
+    public async Task UpdateOrder(int id, int order)
+    {
+        IsLoading = true;
+        var result = await Http.PutAsJsonAsync($"{BaseUrl}/{id}/order", order)
+            .EnsureSuccess<LessonResponse>();
+
+        if (!result.Success)
+            SetError(result.Message, result.Errors, result.StatusCode);
+
+        await ForceFetch();
+    }
+
+}
