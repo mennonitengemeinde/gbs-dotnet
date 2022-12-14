@@ -1,11 +1,9 @@
-﻿using Gbs.Shared.Common.Enums;
-
-namespace Gbs.Shared.Grades;
+﻿namespace Gbs.Shared.Grades;
 
 public class GradeResponse
 {
     public int Id { get; set; }
-    public GradeType GradeType { get; set; }
+    public string GradeType { get; set; } = string.Empty;
     public DateOnly Date { get; set; }
     public int Percent { get; set; }
     public int StudentId { get; set; }
