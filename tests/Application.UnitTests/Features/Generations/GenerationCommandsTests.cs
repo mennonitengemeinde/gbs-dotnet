@@ -3,10 +3,10 @@ using Gbs.Shared.Generations;
 
 namespace Gbs.Tests.Application.UnitTests.Features.Generations;
 
-public class GenerationCommandsTests : GenerationTestBase
+public class GenerationCommandsTests : GenerationTestBase, ICommandTests
 {
     [Fact]
-    public async Task Add_AddsGeneration()
+    public async Task Add_AddsNewEntity()
     {
         var q = new GenerationQueries(Context, Mapper);
         var cmd = new GenerationCommands(Context, q, Validator);
@@ -23,7 +23,7 @@ public class GenerationCommandsTests : GenerationTestBase
     }
 
     [Fact]
-    public async Task Add_ReturnsValidationError_WhenNameAlreadyExists()
+    public async Task Add_ReturnValidationError_WhenEntityAlreadyExists()
     {
         var q = new GenerationQueries(Context, Mapper);
         var cmd = new GenerationCommands(Context, q, Validator);
@@ -38,7 +38,7 @@ public class GenerationCommandsTests : GenerationTestBase
     }
 
     [Fact]
-    public async Task Update_UpdatesGeneration()
+    public async Task Update_UpdatesEntity()
     {
         var q = new GenerationQueries(Context, Mapper);
         var cmd = new GenerationCommands(Context, q, Validator);
@@ -53,7 +53,7 @@ public class GenerationCommandsTests : GenerationTestBase
     }
 
     [Fact]
-    public async Task Update_ReturnsNotFound_WhenIdDoesNotExist()
+    public async Task Update_ReturnsNotFound_WhenEntityDoesNotExist()
     {
         var q = new GenerationQueries(Context, Mapper);
         var cmd = new GenerationCommands(Context, q, Validator);
@@ -67,7 +67,7 @@ public class GenerationCommandsTests : GenerationTestBase
     }
 
     [Fact]
-    public async Task Update_ReturnsValidationError_WhenNameAlreadyExists()
+    public async Task Update_ReturnValidationError_WhenEntityAlreadyExists()
     {
         var q = new GenerationQueries(Context, Mapper);
         var cmd = new GenerationCommands(Context, q, Validator);
@@ -81,7 +81,7 @@ public class GenerationCommandsTests : GenerationTestBase
     }
 
     [Fact]
-    public async Task Delete_DeletesGeneration()
+    public async Task Delete_DeletesEntity()
     {
         var q = new GenerationQueries(Context, Mapper);
         var cmd = new GenerationCommands(Context, q, Validator);
@@ -95,7 +95,7 @@ public class GenerationCommandsTests : GenerationTestBase
     }
 
     [Fact]
-    public async Task Delete_ReturnsNotFound_WhenIdDoesNotExist()
+    public async Task Delete_ReturnsNotFound_WhenEntityDoesNotExist()
     {
         var q = new GenerationQueries(Context, Mapper);
         var cmd = new GenerationCommands(Context, q, Validator);
