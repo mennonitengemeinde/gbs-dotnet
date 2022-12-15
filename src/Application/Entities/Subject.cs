@@ -7,4 +7,5 @@ public class Subject
 
     public List<Lesson> Lessons { get; set; } = new List<Lesson>();
     public List<Question> Questions { get; set; } = new List<Question>();
+    public List<Grade> Grades { get; set; } = new List<Grade>();
 }

@@ -3,6 +3,7 @@ using System;
 using Gbs.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Gbs.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20221215000843_AddStudentDetails")]
+    partial class AddStudentDetails
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -86,13 +89,7 @@ namespace Gbs.Infrastructure.Persistence.Migrations
                     b.Property<DateOnly>("Date")
                         .HasColumnType("date");
 
-                    b.Property<int>("GradeTypeId")
-                        .HasColumnType("integer");
-
                     b.Property<int>("Percent")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("StudentId")
                         .HasColumnType("integer");
 
                     b.Property<int>("SubjectId")
@@ -100,35 +97,9 @@ namespace Gbs.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GradeTypeId");
-
-                    b.HasIndex("StudentId");
-
                     b.HasIndex("SubjectId");
 
                     b.ToTable("Grades");
-                });
-
-            modelBuilder.Entity("Gbs.Application.Entities.GradeType", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("GenerationId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GenerationId");
-
-                    b.ToTable("GradeTypes");
                 });
 
             modelBuilder.Entity("Gbs.Application.Entities.Lesson", b =>
@@ -421,7 +392,7 @@ namespace Gbs.Infrastructure.Persistence.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<int>("GenerationId")
+                    b.Property<int?>("GenerationId")
                         .HasColumnType("integer");
 
                     b.Property<string>("LastName")
@@ -769,40 +740,13 @@ namespace Gbs.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Gbs.Application.Entities.Grade", b =>
                 {
-                    b.HasOne("Gbs.Application.Entities.GradeType", "GradeType")
-                        .WithMany("Grades")
-                        .HasForeignKey("GradeTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Gbs.Application.Entities.Student", "Student")
-                        .WithMany("Grades")
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Gbs.Application.Entities.Subject", "Subject")
                         .WithMany("Grades")
                         .HasForeignKey("SubjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("GradeType");
-
-                    b.Navigation("Student");
-
                     b.Navigation("Subject");
-                });
-
-            modelBuilder.Entity("Gbs.Application.Entities.GradeType", b =>
-                {
-                    b.HasOne("Gbs.Application.Entities.Generation", "Generation")
-                        .WithMany("GradeTypes")
-                        .HasForeignKey("GenerationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Generation");
                 });
 
             modelBuilder.Entity("Gbs.Application.Entities.Lesson", b =>
@@ -898,19 +842,15 @@ namespace Gbs.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Gbs.Application.Entities.Generation", "Generation")
+                    b.HasOne("Gbs.Application.Entities.Generation", null)
                         .WithMany("Students")
-                        .HasForeignKey("GenerationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("GenerationId");
 
                     b.HasOne("Gbs.Application.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId");
 
                     b.Navigation("Church");
-
-                    b.Navigation("Generation");
                 });
 
             modelBuilder.Entity("Gbs.Application.Entities.SubjectDocument", b =>
@@ -1008,16 +948,9 @@ namespace Gbs.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Gbs.Application.Entities.Generation", b =>
                 {
-                    b.Navigation("GradeTypes");
-
                     b.Navigation("Lessons");
 
                     b.Navigation("Students");
-                });
-
-            modelBuilder.Entity("Gbs.Application.Entities.GradeType", b =>
-                {
-                    b.Navigation("Grades");
                 });
 
             modelBuilder.Entity("Gbs.Application.Entities.LiveStream", b =>
@@ -1033,11 +966,6 @@ namespace Gbs.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("Gbs.Application.Entities.Role", b =>
                 {
                     b.Navigation("UserRoles");
-                });
-
-            modelBuilder.Entity("Gbs.Application.Entities.Student", b =>
-                {
-                    b.Navigation("Grades");
                 });
 
             modelBuilder.Entity("Gbs.Application.Entities.Subject", b =>

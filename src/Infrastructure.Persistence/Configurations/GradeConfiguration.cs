@@ -11,11 +11,20 @@ public class GradeConfiguration : IEntityTypeConfiguration<Grade>
 
         builder.Property(g => g.Percent)
             .IsRequired();
-
-        builder.Property(g => g.StudentId)
+        
+        builder.HasOne(g => g.GradeType)
+            .WithMany(gt => gt.Grades)
+            .HasForeignKey(g => g.GradeTypeId)
             .IsRequired();
 
-        builder.Property(g => g.SubjectId)
+        builder.HasOne(g => g.Student)
+            .WithMany(s => s.Grades)
+            .HasForeignKey(g => g.StudentId)
+            .IsRequired();
+
+        builder.HasOne(g => g.Subject)
+            .WithMany(g => g.Grades)
+            .HasForeignKey(g => g.SubjectId)
             .IsRequired();
     }
 }

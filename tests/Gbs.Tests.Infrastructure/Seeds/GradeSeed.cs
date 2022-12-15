@@ -1,5 +1,4 @@
 using Gbs.Application.Entities;
-using Gbs.Shared.Common.Enums;
 
 namespace Gbs.Tests.Infrastructure.Seeds;
 
@@ -14,7 +13,7 @@ public static class GradeSeed
                 Id = 1,
                 SubjectId = 1,
                 StudentId = 1,
-                GradeType = GradeType.Exam,
+                GradeTypeId = 1,
                 Date = new DateOnly(2021, 01, 01),
                 Percent = 90,
             },
@@ -23,7 +22,7 @@ public static class GradeSeed
                 Id = 2,
                 SubjectId = 1,
                 StudentId = 1,
-                GradeType = GradeType.Homework,
+                GradeTypeId = 1,
                 Date = new DateOnly(2021, 01, 01),
                 Percent = 80
             },
@@ -32,7 +31,7 @@ public static class GradeSeed
                 Id = 3,
                 SubjectId = 1,
                 StudentId = 1,
-                GradeType = GradeType.Service,
+                GradeTypeId = 1,
                 Date = new DateOnly(2021, 01, 01),
                 Percent = 70
             }
