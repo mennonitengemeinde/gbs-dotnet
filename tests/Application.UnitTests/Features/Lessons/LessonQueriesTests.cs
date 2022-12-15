@@ -40,6 +40,24 @@ public class LessonQueriesTests : LessonTestBase, IQueryTests
         Assert.True(lessons.Success);
         Assert.Empty(lessons.Data);
     }
+    
+    [Fact]
+    public async Task GetAll_ReturnsForbidden_WhenUserIsNotAdmin()
+    {
+        // Arrange
+        var mock = new Mock<IAuthenticatedUserService>();
+        mock.Setup(x => x.UserIsAdmin()).Returns(false);
+        Context.Lessons.RemoveRange(Context.Lessons);
+        await Context.SaveChangesAsync();
+        var q = new LessonQueries(Context, Mapper, mock.Object);
+
+        // Act
+        var lessons = await q.GetAll("all");
+
+        // Assert
+        Assert.False(lessons.Success);
+        Assert.Null(lessons.Data);
+    }
 
     [Fact]
     public async Task GetById_ReturnsRecord()

@@ -19,7 +19,7 @@ public class LessonQueries : ILessonQueries
 
     public async Task<Result<List<LessonResponse>>> GetAll(string? visibility)
     {
-        if (visibility == "private" && !_authenticatedUserService.UserIsAdmin())
+        if (visibility == "all" && !_authenticatedUserService.UserIsAdmin())
             return Result.Forbidden<List<LessonResponse>>();
 
         var lessons = visibility switch
