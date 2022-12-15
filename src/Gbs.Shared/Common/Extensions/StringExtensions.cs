@@ -7,7 +7,7 @@ public static class StringExtensions
         if (string.IsNullOrEmpty(str))
             return str;
         
-        var words = str.ToLower().Split(' ');
+        var words = str.Trim().ToLower().Split(' ');
         var capitalizedWords = words.Select(word => word.Substring(0, 1).ToUpper() + word.Substring(1)).ToList();
 
         return string.Join(" ", capitalizedWords);

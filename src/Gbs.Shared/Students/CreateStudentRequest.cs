@@ -55,7 +55,12 @@ public class CreateStudentRequestValidator : AbstractValidator<CreateStudentRequ
             .Length(3, 50).WithMessage("Country must be between 3 and 50 characters");
 
         RuleFor(x => x.PostalCode)
-            .Length(3, 10).WithMessage("Postal code must be between 3 and 10 characters");
+            .Must(x =>
+            {
+                if (string.IsNullOrEmpty(x))
+                    return true;
+                return x.Length is > 3 and < 10;
+            }).WithMessage("Postal code must be between 3 and 10 characters");
 
         RuleFor(x => x.MaritalStatus)
             .NotEmpty().WithMessage("Marital status is required");

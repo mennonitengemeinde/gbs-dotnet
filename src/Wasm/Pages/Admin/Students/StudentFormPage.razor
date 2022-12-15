@@ -11,7 +11,8 @@
 @if (!UiState.IsPageLoading)
 {
     <EditForm Model="_model" OnValidSubmit="HandleValidSubmit">
-        <DataAnnotationsValidator />
+        <FluentValidationValidator />
+        <ValidationSummary />
         <MudGrid Justify="Justify.Center" Class="tw-py-8">
             <MudItem xs="12" sm="8" md="5">
                 <MatFormCard Label="Student"
@@ -23,19 +24,23 @@
                     <MudTextField Label="First Name"
                                   @bind-Value="_model.FirstName"
                                   For="() => _model.FirstName"
+                                  Required
                                   OnlyValidateIfDirty="true" />
                     <MudTextField Label="Last Name"
                                   @bind-Value="_model.LastName"
+                                  Required
                                   For="() => _model.LastName" />
                     <MudDatePicker Label="Date of Birth"
                                    @bind-Date="_model.DateOfBirth"
+                                   Required
                                    For="() => _model.DateOfBirth" />
                     <MudTextField Label="Email"
                                   @bind-Value="_model.Email"
                                   For="() => _model.Email" />
                     <MudTextField Label="Phone"
                                   @bind-Value="_model.Phone"
-                                  For="() => _model.Phone" />
+                                  For="() => _model.Phone"
+                                  Mask="@(new PatternMask("000-000-0000"))" />
                     <MudField Label="Marital status" Variant="Variant.Text" InnerPadding="false">
                         <MudRadioGroup T="MaritalStatus" @bind-SelectedOption="@_model.MaritalStatus">
                             @foreach (var maritalStatus in Enum.GetValues(typeof(MaritalStatus)).Cast<MaritalStatus>())
@@ -44,12 +49,26 @@
                             }
                         </MudRadioGroup>
                     </MudField>
-                    <MudTextField Label="City"
-                                  @bind-Value="_model.City"
-                                  For="() => _model.City" />
                     <MudTextField Label="Address"
                                   @bind-Value="_model.Address"
                                   For="() => _model.Address" />
+                    <MudTextField Label="City"
+                                  @bind-Value="_model.City"
+                                  Required
+                                  For="() => _model.City" />
+                    <MudTextField Label="Province/State"
+                                  @bind-Value="_model.Province"
+                                  Required
+                                  For="() => _model.Province" />
+                    <MudTextField Label="Country"
+                                  @bind-Value="_model.Country"
+                                  Required
+                                  For="() => _model.Country" />
+
+                    <MudTextField Label="Postal Code"
+                                  @bind-Value="_model.PostalCode"
+                                  For="() => _model.PostalCode" />
+
                     <MudSelect Label="Generation"
                                AnchorOrigin="Origin.BottomCenter"
                                For="@(() => _model.GenerationId)"

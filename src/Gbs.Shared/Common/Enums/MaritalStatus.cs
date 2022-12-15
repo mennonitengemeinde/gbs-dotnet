@@ -2,7 +2,8 @@
 
 public enum MaritalStatus
 {
-    Married,
-    Single,
-    Widowed,
+    Married = 1,
+    Single = 2,
+    Widowed = 3,
+    Unknown = 4
 }

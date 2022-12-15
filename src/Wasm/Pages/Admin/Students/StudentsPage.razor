@@ -11,16 +11,46 @@
     {
         <MudText Typo="Typo.subtitle1">@StudentState.Data.FirstOrDefault()?.ChurchName</MudText>
     }
-    <MudButton StartIcon="@Icons.Filled.Add"
-               Color="Color.Primary"
-               Variant="Variant.Filled"
-               Href="/admin/students/create"
-               Class="tw-mt-4">
-        New
-    </MudButton>
+    <div class="tw-flex tw-justify-between tw-pt-4">
+        <MudButton StartIcon="@Icons.Filled.Add"
+                   Color="Color.Primary"
+                   Variant="Variant.Filled"
+                   Href="/admin/students/create">
+            New
+        </MudButton>
+        <MudIconButton Icon="@Icons.Filled.FilterList"
+                       Color="Color.Default"
+                       Variant="Variant.Filled"
+                       OnClick="() => _showFilter = !_showFilter" />
+    </div>
 </div>
 
-<MudTable Items="@StudentState.Data" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@StudentState.IsLoading" LoadingProgressColor="Color.Info">
+@if (_showFilter)
+{
+    <div class="tw-py-4 tw-flex">
+        <MudSelect Label="Church"
+                   AnchorOrigin="Origin.BottomCenter"
+                   @bind-Value="SelectedChurch"
+                   Class="tw-max-w-sm">
+            <MudSelectItem T="int" Value="0">All Churches</MudSelectItem>
+            @foreach (var item in ChurchState.Data)
+            {
+                <MudSelectItem T="int" Value="@item.Id">@item.Name</MudSelectItem>
+            }
+        </MudSelect>
+    </div>
+}
+else
+{
+    @if (SelectedChurch != 0)
+    {
+        <div class="tw-py-4 tw-flex">
+            <MudChip Size="Size.Small">@ChurchState.Data.FirstOrDefault(x => x.Id == SelectedChurch)?.Name</MudChip>
+        </div>
+    }
+}
+
+<MudTable Items="@FilteredStudents()" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@StudentState.IsLoading" LoadingProgressColor="Color.Info">
     <HeaderContent>
         <MudTh>Name</MudTh>
         @if (_userIsAdmin)
@@ -48,12 +78,35 @@
     [CascadingParameter]
     StudentState StudentState { get; set; } = null!;
 
+    [CascadingParameter]
+    ChurchState ChurchState { get; set; } = null!;
+
     bool _userIsAdmin;
+    bool _showFilter;
+    int _selectedChurch = 0;
+
+    private int SelectedChurch
+    {
+        get => _selectedChurch;
+        set
+        {
+            _selectedChurch = value;
+            _showFilter = false;
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
-        await StudentState.Fetch();
+        var tasks = new[] { StudentState.Fetch(), ChurchState.Fetch() };
+        await Task.WhenAll(tasks);
         _userIsAdmin = await AuthService.UserIsAdmin();
+    }
+
+    private List<StudentResponse> FilteredStudents()
+    {
+        return SelectedChurch == 0 
+            ? StudentState.Data 
+            : StudentState.Data.Where(x => x.ChurchId == SelectedChurch).ToList();
     }
 
 }
