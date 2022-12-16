@@ -1,0 +1,41 @@
+<MudPaper Width="400px" Height="100%" MinHeight="0" Class="tw-overflow-auto">
+    <MudTextField @bind-Value="Search"
+                  Label="Search"
+                  Variant="Variant.Outlined"
+                  Adornment="Adornment.End"
+                  AdornmentIcon="@Icons.Filled.Search"
+                  AdornmentColor="Color.Default"
+                  Class="tw-mx-2" />
+    <MudList Clickable="true" Class="tw-min-h-0">
+        @foreach (var student in Students)
+        {
+            <MudListItem Text="@($"{student.FirstName} {student.LastName}")" />
+        }
+        <MudListItem Text="Sent" Icon="@Icons.Material.Filled.Send" />
+        <MudListItem Text="Sent" Icon="@Icons.Material.Filled.Send" />
+        <MudListItem Text="Sent" Icon="@Icons.Material.Filled.Send" />
+        <MudListItem Text="Sent" Icon="@Icons.Material.Filled.Send" />
+        <MudListItem Text="Sent" Icon="@Icons.Material.Filled.Send" />
+        <MudListItem Text="Sent" Icon="@Icons.Material.Filled.Send" />
+        <MudListItem Text="Sent" Icon="@Icons.Material.Filled.Send" />
+        <MudListItem Text="Sent" Icon="@Icons.Material.Filled.Send" />
+        <MudListItem Text="Sent" Icon="@Icons.Material.Filled.Send" />
+        <MudListItem Text="Sent" Icon="@Icons.Material.Filled.Send" />
+        <MudListItem Text="Sent" Icon="@Icons.Material.Filled.Send" />
+        <MudListItem Text="Sent" Icon="@Icons.Material.Filled.Send" />
+        <MudListItem Text="Sent" Icon="@Icons.Material.Filled.Send" />
+        <MudDivider />
+        <MudListItem Text="Trash" />
+        <MudListItem Text="Spam" />
+    </MudList>
+</MudPaper>
+
+@code {
+
+    [Parameter]
+    [EditorRequired]
+    public List<StudentResponse> Students { get; set; } = null!;
+
+    string Search { get; set; }
+
+}

@@ -1,4 +1,5 @@
 @page "/admin/students"
+@using Gbs.Wasm.Pages.Admin.Students.Components
 @attribute [Authorize(Policy = Policies.RequireAdminsAndTeachers)]
 
 @inject IAuthService AuthService
@@ -50,28 +51,37 @@ else
     }
 }
 
-<MudTable Items="@FilteredStudents()" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@StudentState.IsLoading" LoadingProgressColor="Color.Info">
-    <HeaderContent>
-        <MudTh>Name</MudTh>
-        @if (_userIsAdmin)
-        {
-            <MudTh>Church</MudTh>
-        }
-        <MudTh></MudTh>
-    </HeaderContent>
-    <RowTemplate>
-        <MudTd DataLabel="Name">@context.FirstName @context.LastName</MudTd>
-        @if (_userIsAdmin)
-        {
-            <MudTd DataLabel="Church">@context.ChurchName</MudTd>
-        }
-        <MudTd Class="tw-text-end">
-            <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                           Size="Size.Small"
-                           Href="@($"admin/students/{context.Id}/edit")" />
-        </MudTd>
-    </RowTemplate>
-</MudTable>
+<div class="tw-flex-1 tw-flex tw-w-full tw-min-h-0">
+    <StudentList Students="StudentState.Data" />
+
+    <MudTable Items="@FilteredStudents()"
+              Hover="true" Breakpoint="Breakpoint.Sm"
+              Loading="@StudentState.IsLoading"
+              LoadingProgressColor="Color.Info"
+              Class="tw-w-full">
+        <HeaderContent>
+            <MudTh>Name</MudTh>
+            @if (_userIsAdmin)
+            {
+                <MudTh>Church</MudTh>
+            }
+            <MudTh></MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Name">@context.FirstName @context.LastName</MudTd>
+            @if (_userIsAdmin)
+            {
+                <MudTd DataLabel="Church">@context.ChurchName</MudTd>
+            }
+            <MudTd Class="tw-text-end">
+                <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                               Size="Size.Small"
+                               Href="@($"admin/students/{context.Id}/edit")" />
+            </MudTd>
+        </RowTemplate>
+    </MudTable>
+</div>
+
 
 @code {
 
@@ -83,7 +93,7 @@ else
 
     bool _userIsAdmin;
     bool _showFilter;
-    int _selectedChurch = 0;
+    int _selectedChurch;
 
     private int SelectedChurch
     {
@@ -104,8 +114,8 @@ else
 
     private List<StudentResponse> FilteredStudents()
     {
-        return SelectedChurch == 0 
-            ? StudentState.Data 
+        return SelectedChurch == 0
+            ? StudentState.Data
             : StudentState.Data.Where(x => x.ChurchId == SelectedChurch).ToList();
     }
 

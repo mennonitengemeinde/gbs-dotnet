@@ -1,4 +1,5 @@
 using Gbs.Application.Features.Churches.Interfaces;
+using Gbs.Application.Features.Students.Interfaces;
 using Gbs.Shared.Churches;
 
 namespace Gbs.Api.Controllers;
@@ -8,15 +9,20 @@ namespace Gbs.Api.Controllers;
 [Authorize(Policy = Policies.RequireAdmins)]
 public class ChurchesController : ControllerBase
 {
-    private readonly IChurchQueries _churchQueries;
     private readonly IChurchCommands _churchCommands;
+    private readonly IChurchQueries _churchQueries;
+    private readonly IStudentQueries _studentQueries;
 
-    public ChurchesController(IChurchQueries churchQueries, IChurchCommands churchCommands)
+    public ChurchesController(
+        IChurchQueries churchQueries,
+        IChurchCommands churchCommands,
+        IStudentQueries studentQueries)
     {
         _churchQueries = churchQueries;
         _churchCommands = churchCommands;
+        _studentQueries = studentQueries;
     }
-    
+
     [HttpGet]
     public async Task<ActionResult<Result<List<ChurchResponse>>>> GetChurches()
     {
