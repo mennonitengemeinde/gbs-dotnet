@@ -19,6 +19,7 @@ public class StudentResponse
     public MaritalStatus MaritalStatus { get; set; }
     public string? Email { get; set; }
     public string? Phone { get; set; }
+    public string HomeChurch { get; set; } = string.Empty;
     public EnrollmentState EnrollmentStatus { get; set; } = EnrollmentState.Active;
     public string? Testimony { get; set; }
     public bool AgreedToGbsConcept { get; set; } = false;

@@ -26,29 +26,22 @@
     </div>
 </div>
 
-@if (_showFilter)
+@if (_userIsAdmin)
 {
-    <div class="tw-py-4 tw-flex">
-        <MudSelect Label="Church"
-                   AnchorOrigin="Origin.BottomCenter"
-                   @bind-Value="SelectedChurch"
-                   Class="tw-max-w-sm">
-            <MudSelectItem T="int" Value="0">All Churches</MudSelectItem>
-            @foreach (var item in ChurchState.Data)
+    <div class="tw-flex">
+        <MudTabs Elevation="4"
+                 Rounded="true"
+                 Color="@Color.Default"
+                 @ref="_churchTabs"
+                 Class="tw-min-w-0 tw-my-4">
+            @foreach (var church in ChurchState.Data)
             {
-                <MudSelectItem T="int" Value="@item.Id">@item.Name</MudSelectItem>
+                <MudTabPanel Text="@church.Name"
+                             ID="@church.Name"
+                             OnClick="() => SelectedChurch = church.Id" />
             }
-        </MudSelect>
+        </MudTabs>
     </div>
-}
-else
-{
-    @if (SelectedChurch != 0)
-    {
-        <div class="tw-py-4 tw-flex">
-            <MudChip Size="Size.Small">@ChurchState.Data.FirstOrDefault(x => x.Id == SelectedChurch)?.Name</MudChip>
-        </div>
-    }
 }
 
 <div class="tw-flex-1 tw-flex tw-w-full tw-min-h-0">
@@ -94,6 +87,7 @@ else
     bool _userIsAdmin;
     bool _showFilter;
     int _selectedChurch;
+    private MudTabs _churchTabs = null!;
 
     private int SelectedChurch
     {
@@ -101,7 +95,7 @@ else
         set
         {
             _selectedChurch = value;
-            _showFilter = false;
+            _churchTabs.ActivatePanel(ChurchState.Data.FirstOrDefault(c => c.Id == value)?.Name ?? string.Empty);
         }
     }
 
@@ -110,7 +104,15 @@ else
         var tasks = new[] { StudentState.Fetch(), ChurchState.Fetch() };
         await Task.WhenAll(tasks);
         _userIsAdmin = await AuthService.UserIsAdmin();
+        SelectedChurch = await AuthService.GetUserChurchId();
+        StateHasChanged();
     }
+
+    // void OnTabChanged(string churchName)
+    // {
+    //     _churchTabs.ActivatePanel(churchName);
+    //     SelectedChurch = ChurchState.Data.FirstOrDefault(c => c.Name == churchName)?.Id ?? 0;
+    // }
 
     private List<StudentResponse> FilteredStudents()
     {

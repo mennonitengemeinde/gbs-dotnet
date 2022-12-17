@@ -1,33 +1,8 @@
-using System.ComponentModel.DataAnnotations;
-using Gbs.Shared.Common.Enums;
+namespace Gbs.Application.Features.Students;
 
-namespace Gbs.Shared.Students;
-
-public class CreateStudentRequest
+public class StudentValidator : AbstractValidator<Student>
 {
-    [Display(Name = "First Name")] public string FirstName { get; set; } = string.Empty;
-    [Display(Name = "Last Name")] public string LastName { get; set; } = string.Empty;
-    [Display(Name = "Date of Birth")] public DateTime? DateOfBirth { get; set; }
-    public string? Address { get; set; }
-    public string City { get; set; } = string.Empty;
-    [Display(Name = "Province/State")] public string Province { get; set; } = string.Empty;
-    public string Country { get; set; } = string.Empty;
-    public string? PostalCode { get; set; } = string.Empty;
-    [Display(Name = "Marital Status")] public MaritalStatus MaritalStatus { get; set; }
-    public string? Email { get; set; }
-    [Display(Name = "Country Code")] public string? PhoneCodeId { get; set; }
-    public string? Phone { get; set; }
-    public string HomeChurch { get; set; } = string.Empty;
-    [Display(Name = "Status")] public EnrollmentState Status { get; set; }
-    public string? Testimony { get; set; }
-    public bool AgreedToGbsConcept { get; set; } = false;
-    public int ChurchId { get; set; }
-    public int GenerationId { get; set; }
-}
-
-public class CreateStudentRequestValidator : AbstractValidator<CreateStudentRequest>
-{
-    public CreateStudentRequestValidator()
+    public StudentValidator()
     {
         RuleFor(x => x.FirstName)
             .NotEmpty().WithMessage("First name is required")
@@ -74,7 +49,7 @@ public class CreateStudentRequestValidator : AbstractValidator<CreateStudentRequ
             .EmailAddress()
             .Length(3, 100).WithMessage("Email must be between 3 and 100 characters");
 
-        RuleFor(x => x.Status)
+        RuleFor(x => x.EnrollmentStatus)
             .NotEmpty().WithMessage("Status is required");
 
         RuleFor(x => x.Phone)

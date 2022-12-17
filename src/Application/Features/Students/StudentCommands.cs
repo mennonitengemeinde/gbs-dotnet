@@ -10,22 +10,29 @@ public class StudentCommands : IStudentCommands
     private readonly IGbsDbContext _context;
     private readonly IIdentityQueries _identityQueries;
     private readonly IMapper _mapper;
+    private readonly IValidator<Student> _validator;
 
     public StudentCommands(
         IGbsDbContext context,
         IMapper mapper,
         IIdentityQueries identityQueries,
-        IAuthenticatedUserService authUserService)
+        IAuthenticatedUserService authUserService,
+        IValidator<Student> validator)
     {
         _context = context;
         _mapper = mapper;
         _identityQueries = identityQueries;
         _authUserService = authUserService;
+        _validator = validator;
     }
 
     public async Task<Result<StudentResponse>> Add(CreateStudentRequest request)
     {
         var student = _mapper.Map<Student>(request);
+
+        var valResult = await _validator.ValidateAsync(student);
+        if (!valResult.IsValid)
+            return Result.ValidationError<StudentResponse>(valResult);
 
         if (!_authUserService.UserIsAdmin())
         {
