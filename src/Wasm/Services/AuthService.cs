@@ -35,11 +35,19 @@ public class AuthApiService : IAuthService
     public async Task<List<string>> GetUserRoles()
     {
         var authState = await _authStateProvider.GetAuthenticationStateAsync();
-        var roles = authState.User.Claims
-            .Where(c => c.Type == ClaimTypes.Role)
+        return authState.User.Claims
+            .Where(c => c.Type == "role")
             .Select(c => c.Value)
             .ToList();
-        return roles;
+    }
+
+    public async Task<int> GetUserChurchId()
+    {
+        var authState = await _authStateProvider.GetAuthenticationStateAsync();
+        return authState.User.Claims
+            .Where(c => c.Type == "church_id")
+            .Select(c => int.Parse(c.Value))
+            .FirstOrDefault();
     }
 
     public async Task<bool> UserIsAdmin()

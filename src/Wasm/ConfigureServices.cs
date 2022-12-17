@@ -30,14 +30,14 @@ public static class ConfigureServices
         services.AddAuthorizationCore(options =>
         {
             options.AddPolicy(Policies.RequireAdmins,
-                policy => policy.RequireRole(Roles.SuperAdmin, Roles.Admin));
+                policy => policy.RequireClaim("role", Roles.SuperAdmin, Roles.Admin));
             options.AddPolicy(Policies.RequireAdminsAndSound,
-                policy => policy.RequireRole(Roles.SuperAdmin, Roles.Admin, Roles.Sound));
+                policy => policy.RequireClaim("role", Roles.SuperAdmin, Roles.Admin, Roles.Sound));
             options.AddPolicy(Policies.RequireAdminsAndTeachers,
-                policy => policy.RequireRole(Roles.SuperAdmin, Roles.Admin, Roles.Teacher, Roles.ChurchLeader,
+                policy => policy.RequireClaim("role", Roles.SuperAdmin, Roles.Admin, Roles.Teacher, Roles.ChurchLeader,
                     Roles.ChurchTeacher));
             options.AddPolicy(Policies.RequireAdminsSoundAndTeachers,
-                policy => policy.RequireRole(Roles.SuperAdmin, Roles.Admin, Roles.Sound, Roles.Teacher,
+                policy => policy.RequireClaim("role", Roles.SuperAdmin, Roles.Admin, Roles.Sound, Roles.Teacher,
                     Roles.ChurchLeader, Roles.ChurchTeacher));
         });
         services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();

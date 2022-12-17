@@ -9,5 +9,6 @@ public interface IAuthService
     Task<Result<List<RolesResponse>>> FetchRoles();
     Task<bool> IsUserAuthenticated();
     Task<List<string>> GetUserRoles();
+    Task<int> GetUserChurchId();
     Task<bool> UserIsAdmin();
 }

@@ -135,11 +135,12 @@ public class IdentityCommands : IIdentityCommands
         List<string> userRoles = (await _userManager.GetRolesAsync(user)).ToList();
         var claims = new List<Claim>
         {
-            new(ClaimTypes.NameIdentifier, user.Id),
-            new(ClaimTypes.Email, user.Email ?? string.Empty),
-            new(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
+            new("sub", user.Id),
+            new("email", user.Email ?? string.Empty),
+            new("name", $"{user.FirstName} {user.LastName}"),
+            new("church_id", user.ChurchId.ToString() ?? string.Empty),
         };
-        claims.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
+        claims.AddRange(userRoles.Select(role => new Claim("role", role)));
 
         var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8
             .GetBytes(_configuration.GetSection("AppSettings:Secret").Value ?? throw new InvalidOperationException()));

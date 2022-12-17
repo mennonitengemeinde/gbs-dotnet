@@ -78,21 +78,28 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
         var jsonBytes = ParseBase64WithoutPadding(payload);
         var keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonBytes);
 
-        keyValuePairs!.TryGetValue(ClaimTypes.Role, out object? roles);
+        keyValuePairs!.TryGetValue("role", out object? roles);
         if (roles != null)
         {
             if (roles.ToString()!.Trim().StartsWith("["))
             {
                 var parsedRoles = JsonSerializer.Deserialize<string[]>(roles.ToString()!);
 
-                claims.AddRange(parsedRoles!.Select(parsedRole => new Claim(ClaimTypes.Role, parsedRole)));
+                claims.AddRange(parsedRoles!.Select(parsedRole => new Claim("role", parsedRole)));
             }
             else
             {
-                claims.Add(new Claim(ClaimTypes.Role, roles.ToString()!));
+                claims.Add(new Claim("role", roles.ToString()!));
             }
 
-            keyValuePairs.Remove(ClaimTypes.Role);
+            keyValuePairs.Remove("role");
+        }
+        
+        keyValuePairs.TryGetValue("church_id", out var churchId);
+        if (churchId != null)
+        {
+            claims.Add(new Claim("church_id", churchId.ToString()!));
+            keyValuePairs.Remove("church_id");
         }
 
         claims.AddRange(keyValuePairs.Select(kvp => new Claim(kvp.Key, kvp.Value.ToString()!)));
