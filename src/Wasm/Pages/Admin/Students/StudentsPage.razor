@@ -1,6 +1,7 @@
 @page "/admin/students"
-@using Gbs.Wasm.Pages.Admin.Students.Components
+@page "/admin/students/{id?}"
 @attribute [Authorize(Policy = Policies.RequireAdminsAndTeachers)]
+@using Gbs.Wasm.Pages.Admin.Students.Components
 
 @inject IAuthService AuthService
 
@@ -22,97 +23,28 @@
     </div>
 </div>
 
-@if (_userIsAdmin)
-{
-    <div class="tw-flex">
-        <MudSelect Label="Price"
-                   T="int"
-                   Variant="Variant.Outlined"
-                   @bind-Value="SelectedChurch"
-                   AnchorOrigin="Origin.BottomCenter">
-            <MudSelectItem T="int" Value="@int.Parse("0")">All</MudSelectItem>
-            @foreach (var church in ChurchState.Data)
-            {
-                <MudSelectItem T="int" Value="@church.Id">@church.Name</MudSelectItem>
-            }
-        </MudSelect>
-    </div>
-}
+<AdminChurchFilter @bind-ChurchValue="SelectedChurch" />
 
-<div class="tw-flex-1 tw-flex tw-w-full tw-min-h-0">
-    <MudPaper Width="400px" Height="100%" MinHeight="0" Class="tw-overflow-auto">
-        <MudTextField @bind-Value="@SearchText"
-                      Label="Search"
-                      Variant="Variant.Outlined"
-                      Adornment="Adornment.End"
-                      AdornmentIcon="@Icons.Filled.Search"
-                      AdornmentColor="Color.Default"
-                      Clearable="true"
-                      Class="tw-mx-2" />
-        <MudList Clickable="true" Class="tw-min-h-0">
-            @foreach (var student in Students)
-            {
-                <MudListItem Text="@($"{student.FirstName} {student.LastName}")" />
-            }
-            <MudListItem Text="Sent" Icon="@Icons.Material.Filled.Send" />
-            <MudListItem Text="Sent" Icon="@Icons.Material.Filled.Send" />
-            <MudListItem Text="Sent" Icon="@Icons.Material.Filled.Send" />
-            <MudListItem Text="Sent" Icon="@Icons.Material.Filled.Send" />
-            <MudListItem Text="Sent" Icon="@Icons.Material.Filled.Send" />
-            <MudListItem Text="Sent" Icon="@Icons.Material.Filled.Send" />
-            <MudListItem Text="Sent" Icon="@Icons.Material.Filled.Send" />
-            <MudListItem Text="Sent" Icon="@Icons.Material.Filled.Send" />
-            <MudListItem Text="Sent" Icon="@Icons.Material.Filled.Send" />
-            <MudListItem Text="Sent" Icon="@Icons.Material.Filled.Send" />
-            <MudListItem Text="Sent" Icon="@Icons.Material.Filled.Send" />
-            <MudListItem Text="Sent" Icon="@Icons.Material.Filled.Send" />
-            <MudListItem Text="Sent" Icon="@Icons.Material.Filled.Send" />
-            <MudDivider />
-            <MudListItem Text="Trash" />
-            <MudListItem Text="Spam" />
-        </MudList>
-    </MudPaper>
+<div class="tw-flex-1 tw-flex tw-space-x-4 tw-w-full tw-min-h-0">
+    <StudentList Students="@Students" OnSearch="@HandleSearch" />
 
-    <MudTable Items="@Students"
-              Hover="true" Breakpoint="Breakpoint.Sm"
-              Loading="@StudentState.IsLoading"
-              LoadingProgressColor="Color.Info"
-              Class="tw-w-full">
-        <HeaderContent>
-            <MudTh>Name</MudTh>
-            @if (_userIsAdmin)
-            {
-                <MudTh>Church</MudTh>
-            }
-            <MudTh></MudTh>
-        </HeaderContent>
-        <RowTemplate>
-            <MudTd DataLabel="Name">@context.FirstName @context.LastName</MudTd>
-            @if (_userIsAdmin)
-            {
-                <MudTd DataLabel="Church">@context.ChurchName</MudTd>
-            }
-            <MudTd Class="tw-text-end">
-                <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                               Size="Size.Small"
-                               Href="@($"admin/students/{context.Id}/edit")" />
-            </MudTd>
-        </RowTemplate>
-    </MudTable>
+    @if (Id.HasValue)
+    {
+        <StudentDetail />
+    }
 </div>
 
 
 @code {
 
+    bool _userIsAdmin;
+    int _selectedChurch;
+
     [CascadingParameter]
     StudentState StudentState { get; set; } = null!;
 
-    [CascadingParameter]
-    ChurchState ChurchState { get; set; } = null!;
-
-    bool _userIsAdmin;
-    string _searchText = string.Empty;
-    int _selectedChurch;
+    [Parameter]
+    public int? Id { get; set; }
 
     List<StudentResponse> Students { get; set; } = new();
 
@@ -126,46 +58,35 @@
         }
     }
 
-    string SearchText
+    void HandleSearch(string searchText)
     {
-        get => _searchText;
-        set
-        {
-            _searchText = value;
-            if (value == _searchText) return;
-
-            if (_searchText == string.Empty)
-            {
-                Students = StudentState.Data;
-            }
-            else
-            {
-                OnFilter(SelectedChurch);
-            }
-        }
+        OnFilter(SelectedChurch, searchText);
     }
 
 
     protected override async Task OnInitializedAsync()
     {
-        var tasks = new[] { StudentState.Fetch(), ChurchState.Fetch() };
-        await Task.WhenAll(tasks);
+        await StudentState.Fetch();
         Students = StudentState.Data;
         _userIsAdmin = await AuthService.UserIsAdmin();
     }
 
-    void OnFilter(int churchId)
+    void OnFilter(int churchId, string searchText = "")
     {
         if (churchId == 0)
         {
-            Students = StudentState.Data.Where(x => x.FirstName.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
-                                                    x.LastName.Contains(SearchText, StringComparison.OrdinalIgnoreCase)).ToList();
+            Students = StudentState.Data
+                .Where(x => x.FirstName.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                            x.LastName.Contains(searchText, StringComparison.OrdinalIgnoreCase))
+                .ToList();
         }
         else
         {
-            Students = StudentState.Data.Where(x => x.ChurchId == churchId &&
-                                                    (x.FirstName.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
-                                                     x.LastName.Contains(SearchText, StringComparison.OrdinalIgnoreCase))).ToList();
+            Students = StudentState.Data
+                .Where(x => x.ChurchId == churchId &&
+                            (x.FirstName.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                             x.LastName.Contains(searchText, StringComparison.OrdinalIgnoreCase)))
+                .ToList();
         }
     }
 

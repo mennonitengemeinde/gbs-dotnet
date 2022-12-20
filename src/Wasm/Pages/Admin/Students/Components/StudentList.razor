@@ -1,11 +1,16 @@
-<MudPaper Width="400px" Height="100%" MinHeight="0" Class="tw-overflow-auto">
-    <MudTextField @bind-Value="Search"
+<MudPaper Width="400px" Height="100%" MinHeight="0" Class="tw-overflow-auto tw-pt-2">
+    <MudTextField TextChanged="@OnSearchChanged"
+                  Text="@SearchText"
+                  T="string"
                   Label="Search"
                   Variant="Variant.Outlined"
                   Adornment="Adornment.End"
                   AdornmentIcon="@Icons.Filled.Search"
                   AdornmentColor="Color.Default"
-                  Class="tw-mx-2" />
+                  Clearable="true"
+                  Immediate="true"
+                  Margin="Margin.Dense"
+                  Class="tw-mx-2"/>
     <MudList Clickable="true" Class="tw-min-h-0">
         @foreach (var student in Students)
         {
@@ -36,6 +41,15 @@
     [EditorRequired]
     public List<StudentResponse> Students { get; set; } = null!;
 
-    string Search { get; set; }
+    [Parameter]
+    public EventCallback<string> OnSearch { get; set; }
+
+    string SearchText { get; set; } = string.Empty;
+
+    private Task OnSearchChanged(string value)
+    {
+        SearchText = value;
+        return OnSearch.InvokeAsync(value);
+    }
 
 }
