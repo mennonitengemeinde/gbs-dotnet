@@ -1,7 +1,9 @@
-<MudPaper Width="400px" Height="100%" MinHeight="0" Class="tw-overflow-auto tw-pt-2">
+@inject NavigationManager NavigationManager
+
+<MudPaper Width="400px" Height="100%" MinHeight="0" Class="@($"tw-overflow-auto tw-pt-2 {@ClassCss}")">
     <MudTextField TextChanged="@OnSearchChanged"
-                  Text="@SearchText"
                   T="string"
+                  Text="@SearchText"
                   Label="Search"
                   Variant="Variant.Outlined"
                   Adornment="Adornment.End"
@@ -10,11 +12,11 @@
                   Clearable="true"
                   Immediate="true"
                   Margin="Margin.Dense"
-                  Class="tw-mx-2"/>
+                  Class="tw-mx-2" />
     <MudList Clickable="true" Class="tw-min-h-0">
         @foreach (var student in Students)
         {
-            <MudListItem Text="@($"{student.FirstName} {student.LastName}")" />
+            <MudListItem Text="@($"{student.FirstName} {student.LastName}")" OnClick="() => HandleClick(student.Id)" />
         }
         <MudListItem Text="Sent" Icon="@Icons.Material.Filled.Send" />
         <MudListItem Text="Sent" Icon="@Icons.Material.Filled.Send" />
@@ -42,6 +44,9 @@
     public List<StudentResponse> Students { get; set; } = null!;
 
     [Parameter]
+    public string ClassCss { get; set; } = string.Empty;
+
+    [Parameter]
     public EventCallback<string> OnSearch { get; set; }
 
     string SearchText { get; set; } = string.Empty;
@@ -50,6 +55,11 @@
     {
         SearchText = value;
         return OnSearch.InvokeAsync(value);
+    }
+
+    private void HandleClick(int value)
+    {
+        NavigationManager.NavigateTo($"admin/students/{value}");
     }
 
 }

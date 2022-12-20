@@ -1,9 +1,124 @@
-<MudPaper Width="100%">
-    <div class="tw-flex tw-justify-end">
-        <MudIconButton Icon="@Icons.Filled.Close" />
+<MudPaper Width="100%" Class="tw-p-6 tw-overflow-y-auto">
+    <div class="tw-flex tw-justify-end -tw-mt-3 -tw-mr-3">
+        <MudIconButton Icon="@Icons.Filled.Close" Href="admin/students" />
     </div>
+
+    @if (Student != null)
+    {
+        <MudGrid>
+            <MudItem xs="6">
+                <MudText Typo="Typo.subtitle2">First Name</MudText>
+                <MudText Typo="Typo.body1">@Student.FirstName</MudText>
+            </MudItem>
+            <MudItem xs="6">
+                <MudText Typo="Typo.subtitle2">Last Name</MudText>
+                <MudText Typo="Typo.body1">@Student.LastName</MudText>
+            </MudItem>
+
+            <MudItem xs="6">
+                <MudText Typo="Typo.subtitle2">Date of Birth</MudText>
+                <MudText Typo="Typo.body1">@Student.DateOfBirth.ToShortDateString()</MudText>
+            </MudItem>
+
+            <MudItem xs="6">
+                <MudText Typo="Typo.subtitle2">Marital Status</MudText>
+                <MudText Typo="Typo.body1">@Student.MaritalStatus</MudText>
+            </MudItem>
+
+            <MudItem xs="6">
+                <MudText Typo="Typo.subtitle2">Church</MudText>
+                <MudText Typo="Typo.body1">@Student.HomeChurch</MudText>
+            </MudItem>
+
+            <MudItem xs="6">
+                <MudText Typo="Typo.subtitle2">Status</MudText>
+                <MudText Typo="Typo.body1">@Student.EnrollmentStatus</MudText>
+            </MudItem>
+        </MudGrid>
+
+        <MudDivider DividerType="DividerType.Middle" Class="tw-my-6" />
+
+        <MudGrid>
+            <MudItem xs="8">
+                <MudText Typo="Typo.h5">Grades</MudText>
+            </MudItem>
+            <MudItem xs="4">
+                <MudButton Variant="Variant.Filled" Color="Color.Secondary" StartIcon="@Icons.Filled.Add">Add</MudButton>
+            </MudItem>
+            @foreach (var grade in Student.Grades.OrderBy(s => s.SubjectName))
+            {
+                
+            }
+            <MudItem xs="6">
+                <MudText Typo="Typo.subtitle2">Email</MudText>
+                <MudText Typo="Typo.body1">@Student.Email</MudText>
+            </MudItem>
+            <MudItem xs="6">
+                <MudText Typo="Typo.subtitle2">Phone</MudText>
+                <MudText Typo="Typo.body1">@Student.Phone</MudText>
+            </MudItem>
+        </MudGrid>
+
+        @if (Student.Email == null || Student.Phone == null)
+        {
+            <MudDivider DividerType="DividerType.Middle" Class="tw-my-6" />
+
+            <MudGrid>
+                <MudItem xs="12">
+                    <MudText Typo="Typo.h5">Contact</MudText>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudText Typo="Typo.subtitle2">Email</MudText>
+                    <MudText Typo="Typo.body1">@Student.Email</MudText>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudText Typo="Typo.subtitle2">Phone</MudText>
+                    <MudText Typo="Typo.body1">@Student.Phone</MudText>
+                </MudItem>
+            </MudGrid>
+        }
+
+        <MudDivider DividerType="DividerType.Middle" Class="tw-my-6" />
+
+        <MudGrid>
+            <MudItem xs="12">
+                <MudText Typo="Typo.h5">Address</MudText>
+            </MudItem>
+            @if (Student.Address != null)
+            {
+                <MudItem xs="12">
+                    <MudText Typo="Typo.subtitle2">Address</MudText>
+                    <MudText Typo="Typo.body1">@Student.Address</MudText>
+                </MudItem>
+            }
+            <MudItem xs="6">
+                <MudText Typo="Typo.subtitle2">City</MudText>
+                <MudText Typo="Typo.body1">@Student.City</MudText>
+            </MudItem>
+            <MudItem xs="6">
+                <MudText Typo="Typo.subtitle2">Province/State</MudText>
+                <MudText Typo="Typo.body1">@Student.Province</MudText>
+            </MudItem>
+
+            <MudItem xs="6">
+                <MudText Typo="Typo.subtitle2">Country</MudText>
+                <MudText Typo="Typo.body1">@Student.Country</MudText>
+            </MudItem>
+            @if (Student.PostalCode != null)
+            {
+                <MudItem xs="6">
+                    <MudText Typo="Typo.subtitle2">Postal code</MudText>
+                    <MudText Typo="Typo.body1">@Student.PostalCode</MudText>
+                </MudItem>
+            }
+        </MudGrid>
+    }
 </MudPaper>
 
 @code {
-    
+
+    [Parameter]
+    [EditorRequired]
+    public StudentResponse? Student { get; set; }
+
 }

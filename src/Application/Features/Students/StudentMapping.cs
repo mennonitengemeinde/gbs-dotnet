@@ -5,7 +5,8 @@ public class StudentMapping : Profile
     public StudentMapping()
     {
         CreateMap<Student, StudentResponse>()
-            .ForMember(dest => dest.ChurchName, opt => opt.MapFrom(src => src.Church.Name));
+            .ForMember(dest => dest.ChurchName, opt => opt.MapFrom(src => src.Church.Name))
+            .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"));
         CreateMap<Student, GenerationStudentResponse>()
             .ForMember(dest => dest.ChurchName, opt => opt.MapFrom(src => src.Church.Name));
         CreateMap<CreateStudentRequest, Student>()

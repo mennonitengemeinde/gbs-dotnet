@@ -1,5 +1,5 @@
 @page "/admin/students"
-@page "/admin/students/{id?}"
+@page "/admin/students/{id:int}"
 @attribute [Authorize(Policy = Policies.RequireAdminsAndTeachers)]
 @using Gbs.Wasm.Pages.Admin.Students.Components
 
@@ -8,12 +8,20 @@
 <PageTitle>Students - GBS</PageTitle>
 
 <div class="tw-py-4">
-    <MudText Typo="Typo.h4">Students</MudText>
+
+    @if (SelectedStudent != null)
+    {
+        <MudText Typo="Typo.h4">@SelectedStudent.FullName</MudText>
+    }
+    else
+    {
+        <MudText Typo="Typo.h4">Students</MudText>
+    }
     @if (!_userIsAdmin && StudentState.Data.Count > 0)
     {
         <MudText Typo="Typo.subtitle1">@StudentState.Data.FirstOrDefault()?.ChurchName</MudText>
     }
-    <div class="tw-flex tw-justify-between tw-pt-4">
+    <div class="tw-flex tw-justify-between tw-pt-4 @HideOnMobileDetail">
         <MudButton StartIcon="@Icons.Filled.Add"
                    Color="Color.Primary"
                    Variant="Variant.Filled"
@@ -23,14 +31,19 @@
     </div>
 </div>
 
-<AdminChurchFilter @bind-ChurchValue="SelectedChurch" />
+@if (_userIsAdmin)
+{
+    <div class="@HideOnMobileDetail">
+        <AdminChurchFilter @bind-ChurchValue="SelectedChurch" />
+    </div>
+}
 
-<div class="tw-flex-1 tw-flex tw-space-x-4 tw-w-full tw-min-h-0">
-    <StudentList Students="@Students" OnSearch="@HandleSearch" />
+<div class="tw-flex-1 tw-flex md:tw-space-x-4 tw-w-full tw-min-h-0">
+    <StudentList Students="@Students" OnSearch="@HandleSearch" ClassCss="@HideOnMobileDetail" />
 
     @if (Id.HasValue)
     {
-        <StudentDetail />
+        <StudentDetail Student="SelectedStudent" />
     }
 </div>
 
@@ -42,6 +55,9 @@
 
     [CascadingParameter]
     StudentState StudentState { get; set; } = null!;
+
+    [CascadingParameter]
+    UiState UiState { get; set; } = null!;
 
     [Parameter]
     public int? Id { get; set; }
@@ -57,12 +73,8 @@
             OnFilter(SelectedChurch);
         }
     }
-
-    void HandleSearch(string searchText)
-    {
-        OnFilter(SelectedChurch, searchText);
-    }
-
+    
+    StudentResponse? SelectedStudent { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -70,6 +82,21 @@
         Students = StudentState.Data;
         _userIsAdmin = await AuthService.UserIsAdmin();
     }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id.HasValue)
+        {
+            SelectedStudent = await StudentState.GetById(Id.Value);
+        }
+    }
+
+    void HandleSearch(string searchText)
+    {
+        OnFilter(SelectedChurch, searchText);
+    }
+
+    string HideOnMobileDetail => Id.HasValue ? "tw-hidden md:tw-block" : "";
 
     void OnFilter(int churchId, string searchText = "")
     {

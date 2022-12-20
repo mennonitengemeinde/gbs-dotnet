@@ -1,20 +1,17 @@
-@if (UserIsAdmin)
-{
-    <MudPaper Class="tw-flex tw-p-4 tw-mb-4">
-        <MudSelect Label="Church"
-                   T="int"
-                   Variant="Variant.Outlined"
-                   @bind-Value="@ChurchValue"
-                   Margin="Margin.Dense"
-                   AnchorOrigin="Origin.BottomCenter">
-            <MudSelectItem T="int" Value="0">All</MudSelectItem>
-            @foreach (var church in ChurchState.Data)
-            {
-                <MudSelectItem T="int" Value="@church.Id">@church.Name</MudSelectItem>
-            }
-        </MudSelect>
-    </MudPaper>
-}
+<MudPaper Class="tw-flex tw-p-4 tw-mb-4">
+    <MudSelect Label="Church"
+               T="int"
+               Variant="Variant.Outlined"
+               @bind-Value="@ChurchValue"
+               Margin="Margin.Dense"
+               AnchorOrigin="Origin.BottomCenter">
+        <MudSelectItem T="int" Value="0">All</MudSelectItem>
+        @foreach (var church in ChurchState.Data)
+        {
+            <MudSelectItem T="int" Value="@church.Id">@church.Name</MudSelectItem>
+        }
+    </MudSelect>
+</MudPaper>
 
 @code {
 
@@ -22,9 +19,6 @@
 
     [CascadingParameter]
     ChurchState ChurchState { get; set; } = null!;
-
-    [Parameter]
-    public bool UserIsAdmin { get; set; }
 
     [Parameter]
     public int ChurchValue
