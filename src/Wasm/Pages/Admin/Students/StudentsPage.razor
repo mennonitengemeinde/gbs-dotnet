@@ -19,35 +19,61 @@
                    Href="/admin/students/create">
             New
         </MudButton>
-        <MudIconButton Icon="@Icons.Filled.FilterList"
-                       Color="Color.Default"
-                       Variant="Variant.Filled"
-                       OnClick="() => _showFilter = !_showFilter" />
     </div>
 </div>
 
 @if (_userIsAdmin)
 {
     <div class="tw-flex">
-        <MudTabs Elevation="4"
-                 Rounded="true"
-                 Color="@Color.Default"
-                 @ref="_churchTabs"
-                 Class="tw-min-w-0 tw-my-4">
+        <MudSelect Label="Price"
+                   T="int"
+                   Variant="Variant.Outlined"
+                   @bind-Value="SelectedChurch"
+                   AnchorOrigin="Origin.BottomCenter">
+            <MudSelectItem T="int" Value="@int.Parse("0")">All</MudSelectItem>
             @foreach (var church in ChurchState.Data)
             {
-                <MudTabPanel Text="@church.Name"
-                             ID="@church.Name"
-                             OnClick="() => SelectedChurch = church.Id" />
+                <MudSelectItem T="int" Value="@church.Id">@church.Name</MudSelectItem>
             }
-        </MudTabs>
+        </MudSelect>
     </div>
 }
 
 <div class="tw-flex-1 tw-flex tw-w-full tw-min-h-0">
-    <StudentList Students="StudentState.Data" />
+    <MudPaper Width="400px" Height="100%" MinHeight="0" Class="tw-overflow-auto">
+        <MudTextField @bind-Value="@SearchText"
+                      Label="Search"
+                      Variant="Variant.Outlined"
+                      Adornment="Adornment.End"
+                      AdornmentIcon="@Icons.Filled.Search"
+                      AdornmentColor="Color.Default"
+                      Clearable="true"
+                      Class="tw-mx-2" />
+        <MudList Clickable="true" Class="tw-min-h-0">
+            @foreach (var student in Students)
+            {
+                <MudListItem Text="@($"{student.FirstName} {student.LastName}")" />
+            }
+            <MudListItem Text="Sent" Icon="@Icons.Material.Filled.Send" />
+            <MudListItem Text="Sent" Icon="@Icons.Material.Filled.Send" />
+            <MudListItem Text="Sent" Icon="@Icons.Material.Filled.Send" />
+            <MudListItem Text="Sent" Icon="@Icons.Material.Filled.Send" />
+            <MudListItem Text="Sent" Icon="@Icons.Material.Filled.Send" />
+            <MudListItem Text="Sent" Icon="@Icons.Material.Filled.Send" />
+            <MudListItem Text="Sent" Icon="@Icons.Material.Filled.Send" />
+            <MudListItem Text="Sent" Icon="@Icons.Material.Filled.Send" />
+            <MudListItem Text="Sent" Icon="@Icons.Material.Filled.Send" />
+            <MudListItem Text="Sent" Icon="@Icons.Material.Filled.Send" />
+            <MudListItem Text="Sent" Icon="@Icons.Material.Filled.Send" />
+            <MudListItem Text="Sent" Icon="@Icons.Material.Filled.Send" />
+            <MudListItem Text="Sent" Icon="@Icons.Material.Filled.Send" />
+            <MudDivider />
+            <MudListItem Text="Trash" />
+            <MudListItem Text="Spam" />
+        </MudList>
+    </MudPaper>
 
-    <MudTable Items="@FilteredStudents()"
+    <MudTable Items="@Students"
               Hover="true" Breakpoint="Breakpoint.Sm"
               Loading="@StudentState.IsLoading"
               LoadingProgressColor="Color.Info"
@@ -85,40 +111,62 @@
     ChurchState ChurchState { get; set; } = null!;
 
     bool _userIsAdmin;
-    bool _showFilter;
+    string _searchText = string.Empty;
     int _selectedChurch;
-    private MudTabs _churchTabs = null!;
 
-    private int SelectedChurch
+    List<StudentResponse> Students { get; set; } = new();
+
+    int SelectedChurch
     {
         get => _selectedChurch;
         set
         {
             _selectedChurch = value;
-            _churchTabs.ActivatePanel(ChurchState.Data.FirstOrDefault(c => c.Id == value)?.Name ?? string.Empty);
+            OnFilter(SelectedChurch);
         }
     }
+
+    string SearchText
+    {
+        get => _searchText;
+        set
+        {
+            _searchText = value;
+            if (value == _searchText) return;
+
+            if (_searchText == string.Empty)
+            {
+                Students = StudentState.Data;
+            }
+            else
+            {
+                OnFilter(SelectedChurch);
+            }
+        }
+    }
+
 
     protected override async Task OnInitializedAsync()
     {
         var tasks = new[] { StudentState.Fetch(), ChurchState.Fetch() };
         await Task.WhenAll(tasks);
+        Students = StudentState.Data;
         _userIsAdmin = await AuthService.UserIsAdmin();
-        SelectedChurch = await AuthService.GetUserChurchId();
-        StateHasChanged();
     }
 
-    // void OnTabChanged(string churchName)
-    // {
-    //     _churchTabs.ActivatePanel(churchName);
-    //     SelectedChurch = ChurchState.Data.FirstOrDefault(c => c.Name == churchName)?.Id ?? 0;
-    // }
-
-    private List<StudentResponse> FilteredStudents()
+    void OnFilter(int churchId)
     {
-        return SelectedChurch == 0
-            ? StudentState.Data
-            : StudentState.Data.Where(x => x.ChurchId == SelectedChurch).ToList();
+        if (churchId == 0)
+        {
+            Students = StudentState.Data.Where(x => x.FirstName.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
+                                                    x.LastName.Contains(SearchText, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+        else
+        {
+            Students = StudentState.Data.Where(x => x.ChurchId == churchId &&
+                                                    (x.FirstName.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
+                                                     x.LastName.Contains(SearchText, StringComparison.OrdinalIgnoreCase))).ToList();
+        }
     }
 
 }
