@@ -3,6 +3,7 @@ using Gbs.Application.Entities;
 using Gbs.Application.Features.Churches;
 using Gbs.Application.Features.Generations;
 using Gbs.Application.Features.Grades;
+using Gbs.Application.Features.GradeTypes;
 using Gbs.Application.Features.Identity;
 using Gbs.Application.Features.Lessons;
 using Gbs.Application.Features.Streams;
@@ -12,6 +13,7 @@ using Gbs.Application.Features.Teachers;
 using Gbs.Shared.Churches;
 using Gbs.Shared.Generations;
 using Gbs.Shared.Grades;
+using Gbs.Shared.GradeTypes;
 using Gbs.Shared.Identity;
 using Gbs.Shared.Lessons;
 using Gbs.Shared.Streams;
@@ -31,6 +33,7 @@ public class MappingTests
             config.AddProfile<ChurchMapping>();
             config.AddProfile<GenerationMapping>();
             config.AddProfile<GradeMapping>();
+            config.AddProfile<GradeTypeMapping>();
             config.AddProfile<IdentityMapping>();
             config.AddProfile<LessonMapping>();
             config.AddProfile<StreamMapping>();
@@ -52,6 +55,8 @@ public class MappingTests
     [InlineData(typeof(Student), typeof(GenerationStudentResponse))]
     [InlineData(typeof(Generation), typeof(GenerationResponse))]
     [InlineData(typeof(Grade), typeof(GradeResponse))]
+    [InlineData(typeof(GradeType), typeof(GradeTypeResponse))]
+    [InlineData(typeof(CreateGradeTypeRequest), typeof(GradeType))]
     [InlineData(typeof(Lesson), typeof(LessonResponse))]
     [InlineData(typeof(CreateLessonRequest), typeof(Lesson))]
     [InlineData(typeof(Lesson), typeof(SubjectLessonResponse))]
@@ -72,6 +77,7 @@ public class MappingTests
             config.AddProfile<ChurchMapping>();
             config.AddProfile<GenerationMapping>();
             config.AddProfile<GradeMapping>();
+            config.AddProfile<GradeTypeMapping>();
             config.AddProfile<IdentityMapping>();
             config.AddProfile<LessonMapping>();
             config.AddProfile<StreamMapping>();
