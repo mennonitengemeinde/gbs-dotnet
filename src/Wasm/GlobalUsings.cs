@@ -1,6 +1,8 @@
 ﻿// Global using directives
 
 global using System.Net.Http.Json;
+global using Fluxor;
+global using Gbs.Shared.Churches;
 global using Gbs.Shared.Common.Const;
 global using Gbs.Shared.Common.Wrapper;
 global using Gbs.Wasm.Common.Extensions;

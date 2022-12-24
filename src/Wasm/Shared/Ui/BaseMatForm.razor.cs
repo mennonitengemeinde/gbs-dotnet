@@ -11,7 +11,7 @@ public abstract class BaseMatForm : ComponentBase
 
     [Parameter] public int? Id { get; set; }
 
-    protected bool HasError(Error? err)
+    protected bool HasError(ApiError? err)
     {
         if (err != null)
         {

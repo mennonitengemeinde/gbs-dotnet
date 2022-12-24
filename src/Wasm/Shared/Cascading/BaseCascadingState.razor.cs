@@ -1,6 +1,6 @@
 ﻿using Blazored.LocalStorage;
+using Gbs.Wasm.Common.Models;
 using Microsoft.AspNetCore.Components.Authorization;
-using ErrorModel = Gbs.Wasm.Common.Models.Error;
 
 namespace Gbs.Wasm.Shared.Cascading;
 
@@ -8,7 +8,7 @@ public abstract class BaseCascadingState<T, TCreate, TIdType, TUpdate> : Compone
 {
     private List<T> _data = new();
 
-    private ErrorModel? _error;
+    private ApiError? _error;
     private bool _isLoading;
 
     private DateTime _lastUpdated = DateTime.MinValue;
@@ -32,7 +32,7 @@ public abstract class BaseCascadingState<T, TCreate, TIdType, TUpdate> : Compone
         }
     }
 
-    public ErrorModel? Error
+    public ApiError? Error
     {
         get => _error;
         private set
@@ -86,7 +86,7 @@ public abstract class BaseCascadingState<T, TCreate, TIdType, TUpdate> : Compone
 
     protected async Task SetError(string message, string[]? errors, int statusCode = 400)
     {
-        Error = new ErrorModel
+        Error = new ApiError
         {
             Errors = errors,
             Message = message,

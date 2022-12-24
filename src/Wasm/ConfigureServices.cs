@@ -1,4 +1,5 @@
 ﻿using Blazored.LocalStorage;
+using Gbs.Wasm.Services.Api;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor;
@@ -11,6 +12,13 @@ public static class ConfigureServices
     public static IServiceCollection AddWasmServices(this IServiceCollection services,
         IWebAssemblyHostEnvironment hostEnvironment)
     {
+        services.AddFluxor(options =>
+        {
+            options.ScanAssemblies(typeof(Program).Assembly);
+#if DEBUG
+            options.UseReduxDevTools();
+#endif
+        });
         services.AddBlazoredLocalStorage();
         services.AddMudServices(config =>
         {
@@ -25,6 +33,7 @@ public static class ConfigureServices
         services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(hostEnvironment.BaseAddress) });
         services.AddScoped<IUiService, UiService>();
         services.AddScoped<IAuthService, AuthApiService>();
+        services.AddScoped<ChurchService>();
 
         services.AddOptions();
         services.AddAuthorizationCore(options =>

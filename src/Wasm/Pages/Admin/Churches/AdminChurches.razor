@@ -1,5 +1,11 @@
 @page "/admin/churches"
+@using Gbs.Wasm.Store.ChurchUseCase.Actions
+@using ChurchState = Gbs.Wasm.Store.ChurchUseCase.ChurchState
 @attribute [Authorize(Policy = Policies.RequireAdmins)]
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+@inject IState<ChurchState> ChurchState
+@inject IDispatcher Dispatcher
 
 <PageTitle>Churches - GBS</PageTitle>
 
@@ -10,7 +16,7 @@
     </MudButton>
 </div>
 
-<MudTable Items="@ChurchState.Data" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@ChurchState.IsLoading" LoadingProgressColor="Color.Info">
+<MudTable Items="@ChurchState.Value.Churches" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@ChurchState.Value.IsLoading" LoadingProgressColor="Color.Info">
     <HeaderContent>
         <MudTh>Name</MudTh>
         <MudTh>Country</MudTh>
@@ -31,12 +37,14 @@
 
 @code {
 
-    [CascadingParameter]
-    public ChurchState ChurchState { get; set; } = null!;
+    // [CascadingParameter]
+    // public ChurchState ChurchState { get; set; } = null!;
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        await ChurchState.Fetch();
+        base.OnInitialized();
+        Dispatcher.Dispatch(new FetchChurchesAction());
+    // await ChurchState.Fetch();
     }
 
 }
