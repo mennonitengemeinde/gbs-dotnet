@@ -34,7 +34,7 @@
 @if (_userIsAdmin)
 {
     <div class="@HideOnMobileDetail">
-        <AdminChurchFilter @bind-ChurchValue="SelectedChurch" />
+        <AdminChurchFilter Churches="@ChurchState.Data" @bind-ChurchValue="SelectedChurch" />
     </div>
 }
 
@@ -52,6 +52,9 @@
 
     bool _userIsAdmin;
     int _selectedChurch;
+    
+    [CascadingParameter]
+    ChurchState ChurchState { get; set; } = null!;
 
     [CascadingParameter]
     StudentState StudentState { get; set; } = null!;
@@ -78,7 +81,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await StudentState.Fetch();
+        var tasks = new[] { StudentState.Fetch(), ChurchState.Fetch() };
+        await Task.WhenAll(tasks);
         Students = StudentState.Data;
         _userIsAdmin = await AuthService.UserIsAdmin();
     }

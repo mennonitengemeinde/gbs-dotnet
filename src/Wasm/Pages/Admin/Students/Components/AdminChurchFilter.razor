@@ -6,7 +6,7 @@
                Margin="Margin.Dense"
                AnchorOrigin="Origin.BottomCenter">
         <MudSelectItem T="int" Value="0">All</MudSelectItem>
-        @foreach (var church in ChurchState.Data)
+        @foreach (var church in Churches)
         {
             <MudSelectItem T="int" Value="@church.Id">@church.Name</MudSelectItem>
         }
@@ -17,8 +17,9 @@
 
     int _churchValue;
 
-    [CascadingParameter]
-    ChurchState ChurchState { get; set; } = null!;
+    [Parameter]
+    [EditorRequired]
+    public List<ChurchResponse> Churches { get; set; } = new();
 
     [Parameter]
     public int ChurchValue
@@ -34,10 +35,5 @@
 
     [Parameter]
     public EventCallback<int> ChurchValueChanged { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        await ChurchState.Fetch();
-    }
 
 }

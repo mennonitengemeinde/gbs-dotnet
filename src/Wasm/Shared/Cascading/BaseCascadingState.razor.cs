@@ -29,7 +29,6 @@ public abstract class BaseCascadingState<T, TCreate, TIdType, TUpdate> : Compone
         {
             _data = value;
             _lastUpdated = DateTimeService.UtcNow;
-            // StateHasChanged();
         }
     }
 
@@ -43,7 +42,6 @@ public abstract class BaseCascadingState<T, TCreate, TIdType, TUpdate> : Compone
                 && value?.StatusCode == _error?.StatusCode) return;
             _error = value;
         }
-        // StateHasChanged();
     }
 
     public bool IsLoading

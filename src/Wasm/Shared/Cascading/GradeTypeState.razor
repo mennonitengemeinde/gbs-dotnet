@@ -1,0 +1,17 @@
+﻿@inherits BaseCascadingState<GradeTypeResponse, CreateGradeTypeRequest, int, CreateGradeTypeRequest>
+
+<CascadingValue Value="this">
+    @ChildContent
+</CascadingValue>
+
+@code {
+
+    public override string BaseUrl => "api/gradetypes";
+
+    public async Task<GradeTypeResponse?> GetById(int id)
+    {
+        await Fetch();
+        return Data.FirstOrDefault(c => c.Id == id);
+    }
+
+}
