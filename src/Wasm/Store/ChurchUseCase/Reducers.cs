@@ -6,7 +6,7 @@ public static class Reducers
 {
     [ReducerMethod(typeof(FetchChurchesAction))]
     public static ChurchState ReduceFetchChurches(ChurchState state) =>
-        new(true, null, null);
+        new(true, state.Churches, null);
     
     [ReducerMethod]
     public static ChurchState ReduceFetchChurchesResultAction(ChurchState state, FetchChurchesResultAction action) =>
