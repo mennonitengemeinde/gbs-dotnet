@@ -1,14 +1,13 @@
 ﻿using Gbs.Wasm.Common.Models;
 using Gbs.Wasm.Services.Api;
-using Gbs.Wasm.Store.ChurchUseCase.Actions;
 
 namespace Gbs.Wasm.Store.ChurchUseCase;
 
-public class Effects
+public class ChurchEffects
 {
     private readonly ChurchService _churchService;
 
-    public Effects(ChurchService churchService)
+    public ChurchEffects(ChurchService churchService)
     {
         _churchService = churchService;
     }
@@ -19,13 +18,13 @@ public class Effects
         var result = await _churchService.GetAll();
         if (result.Success == false || result.Data == null)
         {
-            dispatcher.Dispatch(new FetchChurchesResultAction(
+            dispatcher.Dispatch(new FetchChurchesActionResult(
                 result.Data,
                 new ApiError { Message = result.Message, Errors = result.Errors, StatusCode = result.StatusCode }));
         }
         else
         {
-            dispatcher.Dispatch(new FetchChurchesResultAction(result.Data, null));
+            dispatcher.Dispatch(new FetchChurchesActionResult(result.Data, null));
         }
     }
 }

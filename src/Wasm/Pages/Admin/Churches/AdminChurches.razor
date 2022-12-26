@@ -1,5 +1,5 @@
 @page "/admin/churches"
-@using Gbs.Wasm.Store.ChurchUseCase.Actions
+@using Gbs.Wasm.Store.ChurchUseCase
 @using ChurchState = Gbs.Wasm.Store.ChurchUseCase.ChurchState
 @attribute [Authorize(Policy = Policies.RequireAdmins)]
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent

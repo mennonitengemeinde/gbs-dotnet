@@ -3,18 +3,9 @@
 namespace Gbs.Wasm.Store.ChurchUseCase;
 
 [FeatureState]
-public class ChurchState
+public record ChurchState(bool IsLoading, IEnumerable<ChurchResponse>? Churches, ApiError? Error)
 {
-    public IEnumerable<ChurchResponse> Churches { get; }
-    public bool IsLoading { get; }
-    public ApiError? Error { get; }
+    public static readonly ChurchState Empty = new(false, null, null);
 
-    private ChurchState() { }
-    
-    public ChurchState(bool isLoading, IEnumerable<ChurchResponse>? churches, ApiError? error)
-    {
-        IsLoading = isLoading;
-        Churches = churches ?? Array.Empty<ChurchResponse>();
-        Error = error;
-    }
+    private ChurchState() : this(IsLoading: false, Churches: Array.Empty<ChurchResponse>(), null) { }
 }
