@@ -25,6 +25,7 @@ public static class ConfigureServices
         services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(hostEnvironment.BaseAddress) });
         services.AddScoped<IUiService, UiService>();
         services.AddScoped<IAuthService, AuthApiService>();
+        services.AddScoped<IGradeService, GradeService>();
 
         services.AddOptions();
         services.AddAuthorizationCore(options =>

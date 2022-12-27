@@ -55,6 +55,7 @@ public class MappingTests
     [InlineData(typeof(Student), typeof(GenerationStudentResponse))]
     [InlineData(typeof(Generation), typeof(GenerationResponse))]
     [InlineData(typeof(Grade), typeof(GradeResponse))]
+    [InlineData(typeof(CreateGradeRequest), typeof(Grade))]
     [InlineData(typeof(GradeType), typeof(GradeTypeResponse))]
     [InlineData(typeof(CreateGradeTypeRequest), typeof(GradeType))]
     [InlineData(typeof(Lesson), typeof(LessonResponse))]

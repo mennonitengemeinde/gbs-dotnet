@@ -1,6 +1,4 @@
-﻿using Gbs.Wasm.Common.Models;
-
-namespace Gbs.Wasm.Shared.Ui;
+﻿namespace Gbs.Wasm.Shared.Ui;
 
 public abstract class BaseMatForm : ComponentBase
 {
@@ -11,7 +9,7 @@ public abstract class BaseMatForm : ComponentBase
 
     [Parameter] public int? Id { get; set; }
 
-    protected bool HasError(Error? err)
+    protected bool HasError(ServiceError? err)
     {
         if (err != null)
         {

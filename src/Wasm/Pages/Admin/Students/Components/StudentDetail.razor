@@ -43,20 +43,27 @@
                 <MudText Typo="Typo.h5">Grades</MudText>
             </MudItem>
             <MudItem xs="4">
-                <MudButton Variant="Variant.Filled" Color="Color.Secondary" StartIcon="@Icons.Filled.Add">Add</MudButton>
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Secondary"
+                           StartIcon="@Icons.Filled.Add"
+                           Href="@($"admin/students/{Student.Id}/grades/create")">
+                    Add
+                </MudButton>
             </MudItem>
-            @foreach (var grade in Student.Grades.OrderBy(s => s.SubjectName))
-            {
-                
-            }
-            <MudItem xs="6">
-                <MudText Typo="Typo.subtitle2">Email</MudText>
-                <MudText Typo="Typo.body1">@Student.Email</MudText>
-            </MudItem>
-            <MudItem xs="6">
-                <MudText Typo="Typo.subtitle2">Phone</MudText>
-                <MudText Typo="Typo.body1">@Student.Phone</MudText>
-            </MudItem>
+            <MudTable Items="Student.Grades.OrderBy(s => s.SubjectName)">
+                <HeaderContent>
+                    <MudTh>Subject</MudTh>
+                    <MudTh>Date</MudTh>
+                    <MudTh>Grade</MudTh>
+                    <MudTh>Percent</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Subject">@context.SubjectName</MudTd>
+                    <MudTd DataLabel="Date">@context.Date.ToShortDateString()</MudTd>
+                    <MudTd DataLabel="Grade Type">@context.GradeType</MudTd>
+                    <MudTd DataLabel="%">@context.Percent.ToString()</MudTd>
+                </RowTemplate>
+            </MudTable>
         </MudGrid>
 
         @if (Student.Email == null || Student.Phone == null)

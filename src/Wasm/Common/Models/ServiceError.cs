@@ -1,6 +1,6 @@
 namespace Gbs.Wasm.Common.Models;
 
-public class Error
+public class ServiceError
 {
     public string Message { get; set; } = string.Empty;
     public string[]? Errors { get; set; }
