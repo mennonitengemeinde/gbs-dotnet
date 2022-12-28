@@ -32,7 +32,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await StreamState.Fetch();
+        await StreamState.ForceFetch();
     }
 
     protected override void OnAfterRender(bool firstRender)

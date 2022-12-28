@@ -81,7 +81,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var tasks = new[] { StudentState.Fetch(), ChurchState.Fetch() };
+        var tasks = new[] { StudentState.ForceFetch(), ChurchState.Fetch() };
         await Task.WhenAll(tasks);
         Students = StudentState.Data;
         _userIsAdmin = await AuthService.UserIsAdmin();

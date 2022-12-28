@@ -93,6 +93,7 @@
         {
             ValidationErrors = GradeService.Error.Errors;
             GradeService.ClearError();
+            IsProcessing = false;
             return;
         }
 

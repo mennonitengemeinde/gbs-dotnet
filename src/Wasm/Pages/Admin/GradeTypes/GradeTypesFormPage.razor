@@ -1,0 +1,71 @@
+@page "/admin/grade-types/create"
+@inherits BaseMatForm
+@attribute [Authorize(Policy = Policies.RequireAdmins)]
+
+<PageTitle>Grade types Form - GBS</PageTitle>
+
+<EditForm Model="Model" OnValidSubmit="HandleValidSubmit">
+    <FluentValidationValidator />
+    <MudGrid Justify="Justify.Center" Class="tw-pt-8">
+        <MudItem xs="12" sm="8" md="5">
+            <MatFormCard Label="Grade types"
+                         IsEdit="@Id.HasValue"
+                         IsLoading="@GradeTypeState.IsLoading"
+                         IsProcessing="@IsProcessing"
+                         ValidationErrors="@ValidationErrors"
+                         ReturnUrl="/admin/generations">
+                <MudTextField Label="Name"
+                              @bind-Value="Model.Name"
+                              For="() => Model.Name" />
+                <div class="tw-flex tw-items-center">
+                    <MudSelect Label="Generation"
+                               AnchorOrigin="Origin.BottomCenter"
+                               Disabled="@GenerationState.IsLoading"
+                               For="@(() => Model.GenerationId)"
+                               @bind-Value="Model.GenerationId">
+                        <MudSelectItem Disabled="true" T="int" Value="0">Select Generation</MudSelectItem>
+                        @foreach (var item in GenerationState.Data)
+                        {
+                            <MudSelectItem T="int" Value="@item.Id">@item.Name</MudSelectItem>
+                        }
+                    </MudSelect>
+                    @if (GenerationState.IsLoading)
+                    {
+                        <MudProgressCircular Color="Color.Default" Indeterminate="true" Size="Size.Small" Class="tw-ml-4" />
+                    }
+                </div>
+            </MatFormCard>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+
+@code {
+
+    [CascadingParameter]
+    public GradeTypeState GradeTypeState { get; set; } = null!;
+    
+    [CascadingParameter]
+    public GenerationState GenerationState { get; set; } = null!;
+
+    CreateGradeTypeRequest Model { get; set; } = new();
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await GenerationState.Fetch();
+    }
+
+    async Task HandleValidSubmit()
+    {
+        IsProcessing = true;
+        await GradeTypeState.Create(Model);
+
+        if (HasError(GradeTypeState.Error))
+        {
+            GradeTypeState.ClearError();
+            return;
+        }
+
+        NavigationManager.NavigateTo("admin/grade-types");
+    }
+
+}
