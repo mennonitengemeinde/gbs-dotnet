@@ -1,7 +1,213 @@
 @page "/admin/import/students"
+@using MudBlazor.Extensions
 
-<h3>ImportStudentsPage</h3>
+<PageTitle>Import Students - GBS</PageTitle>
+
+<MudGrid Class="tw-pt-8">
+    <MudItem xs="12" sm="8" md="4" lg="3">
+        <MudCard>
+            <MudCardContent>
+                <MudFileUpload T="IBrowserFile" Accept=".csv" FilesChanged="UploadFile">
+                    <ButtonTemplate>
+                        <MudButton HtmlTag="label"
+                                   Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   StartIcon="@Icons.Filled.CloudUpload"
+                                   for="@context">
+                            Upload File
+                        </MudButton>
+                    </ButtonTemplate>
+                </MudFileUpload>
+                @if (_file != null)
+                {
+                    <MudText Typo="@Typo.h6">
+                        @_file.Name <code>@_file.Size bytes</code>
+                    </MudText>
+                }
+
+                <MudSelect Label="Generation"
+                           Disabled="_file == null"
+                           AnchorOrigin="Origin.BottomCenter"
+                           @bind-Value="GenerationId">
+                    <MudSelectItem Disabled="true" T="int" Value="0">Select Generation</MudSelectItem>
+                    @foreach (var item in GenerationState.Data)
+                    {
+                        <MudSelectItem T="int" Value="@item.Id">@item.Name</MudSelectItem>
+                    }
+                </MudSelect>
+
+                <MudSelect Label="Church"
+                           Disabled="_file == null"
+                           AnchorOrigin="Origin.BottomCenter"
+                           @bind-Value="ChurchId">
+                    <MudSelectItem Disabled="true" T="int" Value="0">Select Church</MudSelectItem>
+                    @foreach (var item in ChurchState.Data)
+                    {
+                        <MudSelectItem T="int" Value="@item.Id">@item.Name</MudSelectItem>
+                    }
+                </MudSelect>
+                
+                <div class="tw-flex tw-justify-evenly tw-w-full tw-pt-4">
+                    <MudButton Color="Color.Error" Variant="Variant.Filled" Disabled="DisableClear" OnClick="Clear">Clear</MudButton>
+                    <MudButton Color="Color.Primary" Variant="Variant.Filled" Disabled="DisableSave" OnClick="Save">Save</MudButton>
+                </div>
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+
+    <MudItem xs="12" sm="4" md="8" lg="9">
+        <MudTable Items="@_students" Hover="true" Breakpoint="Breakpoint.Sm">
+            <HeaderContent>
+                <MudTh>Name</MudTh>
+                <MudTh>Email</MudTh>
+                <MudTh>Phone</MudTh>
+                <MudTh>City</MudTh>
+                <MudTh>Province</MudTh>
+                <MudTh>Country</MudTh>
+                <MudTh>Home Church</MudTh>
+                <MudTh>Date Of Birth</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Name">@context.FirstName @context.LastName</MudTd>
+                <MudTd DataLabel="Email">@context.Email</MudTd>
+                <MudTd DataLabel="Phone">@context.Phone</MudTd>
+                <MudTd DataLabel="City">@context.City</MudTd>
+                <MudTd DataLabel="Province">@context.Province</MudTd>
+                <MudTd DataLabel="Country">@context.Country</MudTd>
+                <MudTd DataLabel="Home Church">@context.HomeChurch</MudTd>
+                <MudTd DataLabel="Date Of Birth">@context.DateOfBirth.ToIsoDateString()</MudTd>
+            </RowTemplate>
+        </MudTable>
+        
+        <MudText>Failed</MudText>
+        <MudTable Items="@FailedStudents" Hover="true" Breakpoint="Breakpoint.Sm">
+                    <HeaderContent>
+                        <MudTh>Name</MudTh>
+                        <MudTh>Email</MudTh>
+                        <MudTh>Phone</MudTh>
+                        <MudTh>City</MudTh>
+                        <MudTh>Province</MudTh>
+                        <MudTh>Country</MudTh>
+                        <MudTh>Home Church</MudTh>
+                        <MudTh>Date Of Birth</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Name">@context.FirstName @context.LastName</MudTd>
+                        <MudTd DataLabel="Email">@context.Email</MudTd>
+                        <MudTd DataLabel="Phone">@context.Phone</MudTd>
+                        <MudTd DataLabel="City">@context.City</MudTd>
+                        <MudTd DataLabel="Province">@context.Province</MudTd>
+                        <MudTd DataLabel="Country">@context.Country</MudTd>
+                        <MudTd DataLabel="Home Church">@context.HomeChurch</MudTd>
+                        <MudTd DataLabel="Date Of Birth">@context.DateOfBirth.ToIsoDateString()</MudTd>
+                    </RowTemplate>
+                </MudTable>
+    </MudItem>
+</MudGrid>
 
 @code {
+
+    IBrowserFile? _file;
+    List<CreateStudentRequest> _students = new();
+    int _generationId;
+
+    int GenerationId
+    {
+        get => _generationId;
+        set
+        {
+            _generationId = value;
+            foreach (var student in _students)
+            {
+                student.GenerationId = value;
+            }
+        }
+    }
+
+    int ChurchId { get; set; }
+    List<CreateStudentRequest> FailedStudents { get; set; } = new();
+
+    bool DisableSave => GenerationId == 0 || ChurchId == 0 || _file == null;
+    bool DisableClear => GenerationId == 0 && ChurchId == 0 && _file == null;
+
+    [CascadingParameter]
+    public ChurchState ChurchState { get; set; } = null!;
+
+    [CascadingParameter]
+    public GenerationState GenerationState { get; set; } = null!;
+    
+    [CascadingParameter]
+    public StudentState StudentState { get; set; } = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var tasks = new[] { ChurchState.Fetch(), GenerationState.Fetch() };
+        await Task.WhenAll(tasks);
+    }
+
+    private async Task UploadFile(IBrowserFile file)
+    {
+        _file = file;
+        _students.Clear();
+        var reader = await new StreamReader(file.OpenReadStream()).ReadToEndAsync();
+        var lines = reader.Split(Environment.NewLine);
+        for (var i = 0; i < lines.Count(); i++)
+        {
+            if (i <= 0 || lines[i].Length < 3) continue;
+
+            var fields = lines[i].Split(',');
+
+            var student = new CreateStudentRequest
+            {
+                LastName = fields[0],
+                FirstName = fields[1],
+                Email = fields[2] == string.Empty ? null : fields[2],
+                Phone = fields[3] == string.Empty ? null : fields[3],
+                City = fields[4],
+                Province = fields[5],
+                Country = fields[6],
+                HomeChurch = fields[7],
+                DateOfBirth = DateTime.Parse(fields[8]),
+                Status = EnrollmentState.Active,
+                MaritalStatus = MaritalStatus.Unknown,
+                AgreedToGbsConcept = true
+            };
+            _students.Add(student);
+        }
+    }
+    
+    private void Clear()
+    {
+        _file = null;
+        _students.Clear();
+        GenerationId = 0;
+        ChurchId = 0;
+    }
+    
+    private async Task Save()
+    {
+        foreach (var student in _students)
+        {
+            student.ChurchId = ChurchId;
+            await StudentState.Create(student);
+            if (StudentState.Error != null)
+            {
+                FailedStudents.Add(student);
+                StudentState.ClearError();
+                return;
+            }
+        }
+        if (FailedStudents.Count == 0)
+        {
+            _file = null;
+            _students.Clear();
+            GenerationId = 0;
+            ChurchId = 0;
+        }
+        else
+        {
+            _students.RemoveAll(x => !FailedStudents.Contains(x));
+        }
+    }
 
 }
