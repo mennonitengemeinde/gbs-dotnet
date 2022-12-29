@@ -2,6 +2,9 @@
 @page "/admin/streams/{Id:int}/edit"
 @inherits BaseMatForm
 @attribute [Authorize(Policy = Policies.RequireAdminsAndSound)]
+@implements IDisposable
+
+@inject IStreamService StreamService
 
 <PageTitle>Streams Form - GBS</PageTitle>
 
@@ -11,7 +14,7 @@
         <MudItem xs="12" sm="8" md="5">
             <MatFormCard Label="Stream"
                          IsEdit="@Id.HasValue"
-                         IsLoading="@StreamState.IsLoading"
+                         IsLoading="@StreamService.IsLoading"
                          IsProcessing="IsProcessing"
                          ValidationErrors="ValidationErrors"
                          ReturnUrl="/admin/streams">
@@ -57,23 +60,22 @@
     [CascadingParameter]
     TeacherState TeacherState { get; set; } = null!;
 
-    [CascadingParameter]
-    StreamState StreamState { get; set; } = null!;
-
     CreateStreamRequest _model = new();
 
 
     protected override async Task OnInitializedAsync()
     {
+        StreamService.OnChange += StateHasChanged;
+        
         var tasks = new[] { TeacherState.Fetch(), GenerationState.Fetch() };
         await Task.WhenAll(tasks);
 
         if (Id.HasValue)
         {
-            var stream = await StreamState.GetById(Id.Value);
+            var stream = await StreamService.GetById(Id.Value);
             if (stream == null)
             {
-                UiService.ShowErrorAlert("Stream not found");
+                await UiService.ShowErrorAlert("Stream not found");
                 NavigationManager.NavigateTo("/admin/streams");
                 return;
             }
@@ -94,16 +96,16 @@
         IsProcessing = true;
         if (Id.HasValue)
         {
-            await StreamState.Update(Id.Value, _model);
+            await StreamService.Update(Id.Value, _model);
         }
         else
         {
-            await StreamState.Create(_model);
+            await StreamService.Create(_model);
         }
 
-        if (HasError(StreamState.Error))
+        if (HasError(StreamService.Error))
         {
-            StreamState.ClearError();
+            StreamService.ClearError();
             return;
         }
 
@@ -119,6 +121,11 @@
             nameList.Add(TeacherState.Data.FirstOrDefault(t => t.Id == id)!.Name);
         }
         return string.Join(", ", nameList);
+    }
+
+    public void Dispose()
+    {
+        StreamService.OnChange -= StateHasChanged;
     }
 
 }

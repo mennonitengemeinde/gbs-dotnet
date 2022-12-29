@@ -9,5 +9,6 @@ global using Gbs.Wasm.Common.Interfaces;
 global using Gbs.Wasm.Common.Models;
 global using Gbs.Wasm.Services;
 global using Gbs.Wasm.Services.Api;
+global using Gbs.Wasm.Services.Interfaces;
 global using Gbs.Wasm.Shared;
 global using Microsoft.AspNetCore.Components;

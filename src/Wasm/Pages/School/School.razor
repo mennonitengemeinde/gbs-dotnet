@@ -4,19 +4,20 @@
 @implements IAsyncDisposable
 
 @inject NavigationManager NavigationManager
+@inject IStreamService StreamService
 
 <PageTitle>School - GBS</PageTitle>
 
 <WelcomeBanner />
 
-@if (StreamState.Data.Any(s => s.IsLive))
+@if (StreamService.Data.Any(s => s.IsLive))
 {
     <div class="tw-pt-8 tw-pb-2 tw-text-gray-600">
         <MudText Typo="Typo.h2" Class="tw-text-2xl tw-font-semibold">Live</MudText>
     </div>
 
     <MudGrid Class="tw-relative tw-pt-2">
-        @foreach (var liveStream in StreamState.Data.Where(s => s.IsLive))
+        @foreach (var liveStream in StreamService.Data.Where(s => s.IsLive))
         {
             <MudItem xs="12" md="6" xl="4">
                 <LiveStreamCard LiveStream="@liveStream" />
@@ -39,8 +40,8 @@
     [CascadingParameter]
     LessonState LessonState { get; set; } = null!;
 
-    [CascadingParameter]
-    StreamState StreamState { get; set; } = null!;
+    // [CascadingParameter]
+    // StreamState StreamState { get; set; } = null!;
 
     [CascadingParameter]
     UiState UiState { get; set; } = null!;
@@ -49,7 +50,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var tasks = new[] { LessonState.ForceFetch(), StreamState.ForceFetch() };
+        StreamService.OnChange += StateHasChanged;
+        var tasks = new[] { LessonState.ForceFetch(), StreamService.ForceFetch() };
 
         await Task.WhenAll(tasks);
 
@@ -68,15 +70,15 @@
 
         if (streams.Data != null)
         {
-            StreamState.Data = streams.Data;
+            StreamService.SetState(streams.Data, false, null);
         }
     }
 
     public async ValueTask DisposeAsync()
     {
-        if (_hubConnection != null)
+        StreamService.OnChange -= StateHasChanged;
+        if (_hubConnection is not null)
         {
-            await _hubConnection.StopAsync();
             await _hubConnection.DisposeAsync();
         }
     }

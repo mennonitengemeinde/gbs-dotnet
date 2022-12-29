@@ -3,6 +3,7 @@
 @attribute [Authorize(Policy = Policies.RequireAdminsSoundAndTeachers)]
 
 @inject NavigationManager NavigationManager
+@inject IStreamService StreamService
 
 <PageTitle>Live - GBS</PageTitle>
 
@@ -12,9 +13,6 @@
 }
 
 @code {
-
-    [CascadingParameter]
-    StreamState StreamState { get; set; } = null!;
 
     [CascadingParameter]
     UiState UiState { get; set; } = null!;
@@ -27,7 +25,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var liveStream = await StreamState.GetOnlyLiveById(Id);
+        var liveStream = await StreamService.GetOnlyLiveById(Id);
         if (liveStream == null)
         {
             NavigationManager.NavigateTo("school");

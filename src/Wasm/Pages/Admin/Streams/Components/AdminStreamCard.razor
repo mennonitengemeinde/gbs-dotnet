@@ -1,4 +1,5 @@
 ﻿@inject IUiService UiService
+@inject IStreamService StreamService
 
 <MudCard Elevation="1">
     <MudCardHeader>
@@ -38,9 +39,6 @@
 
 @code {
 
-    [CascadingParameter]
-    StreamState StreamState { get; set; } = null!;
-
     [Parameter]
     [EditorRequired]
     public StreamResponse LiveStream { get; set; } = null!;
@@ -50,9 +48,9 @@
 
     async Task ToggleLive()
     {
-        await StreamState.ToggleLive(LiveStream.Id);
-        if (StreamState.Error != null)
-            StreamState.ClearError();
+        await StreamService.ToggleLive(LiveStream.Id);
+        if (StreamService.Error != null)
+            StreamService.ClearError();
     }
 
     private async Task HandleDelete()

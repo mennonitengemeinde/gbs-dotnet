@@ -85,15 +85,10 @@ public abstract class BaseCascadingState<T, TCreate, TIdType, TUpdate> : Compone
 
     protected async Task SetError(string message, string[]? errors, int statusCode = 400)
     {
-        Error = new ServiceError
-        {
-            Errors = errors,
-            Message = message,
-            StatusCode = statusCode
-        };
+        Error = new ServiceError(message, errors, statusCode);
 
         if (_error != null)
-            UiService.ShowErrorAlert(_error.Message, _error.StatusCode);
+            await UiService.ShowErrorAlert(_error.Message, _error.StatusCode);
 
         if (statusCode == 401)
         {

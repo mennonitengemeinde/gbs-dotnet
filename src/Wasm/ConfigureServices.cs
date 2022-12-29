@@ -26,6 +26,7 @@ public static class ConfigureServices
         services.AddScoped<IUiService, UiService>();
         services.AddScoped<IAuthService, AuthApiService>();
         services.AddScoped<IGradeService, GradeService>();
+        services.AddScoped<IStreamService, StreamService>();
 
         services.AddOptions();
         services.AddAuthorizationCore(options =>

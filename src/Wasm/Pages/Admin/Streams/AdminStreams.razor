@@ -1,8 +1,10 @@
 ﻿@page "/admin/streams"
 @using Gbs.Wasm.Pages.Admin.Streams.Components
 @attribute [Authorize(Policy = Policies.RequireAdminsAndSound)]
+@implements IDisposable
 
 @inject IDialogService DialogService
+@inject IStreamService StreamService
 
 <PageTitle>Streams - GBS</PageTitle>
 
@@ -14,7 +16,7 @@
 </div>
 
 <MudGrid Justify="Justify.FlexStart">
-    @foreach (var liveStream in StreamState.Data)
+    @foreach (var liveStream in StreamService.Data)
     {
         <MudItem xs="12" sm="6" lg="4" xl="3">
             <AdminStreamCard LiveStream="@liveStream" OnDelete="HandleDelete" />
@@ -27,17 +29,18 @@
     [CascadingParameter]
     UiState UiState { get; set; } = null!;
 
-    [CascadingParameter]
-    StreamState StreamState { get; set; } = null!;
+    // [CascadingParameter]
+    // StreamState StreamState { get; set; } = null!;
 
     protected override async Task OnInitializedAsync()
     {
-        await StreamState.ForceFetch();
+        StreamService.OnChange += StateHasChanged;
+        await StreamService.ForceFetch();
     }
 
     protected override void OnAfterRender(bool firstRender)
     {
-        UiState.IsPageLoading = StreamState.IsLoading;
+        UiState.IsPageLoading = StreamService.IsLoading;
     }
 
     async Task HandleDelete(StreamResponse stream)
@@ -54,11 +57,16 @@
 
     async Task DeleteStream(StreamResponse stream)
     {
-        await StreamState.Delete(stream.Id);
-        if (StreamState.Error != null)
+        await StreamService.Delete(stream.Id);
+        if (StreamService.Error != null)
         {
-            StreamState.ClearError();
+            StreamService.ClearError();
         }
+    }
+
+    public void Dispose()
+    {
+        StreamService.OnChange -= StateHasChanged;
     }
 
 }
