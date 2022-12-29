@@ -44,8 +44,15 @@ public class ChurchQueriesTests : ChurchTestBase, IQueryTests
         Assert.Equal(1, result.Data.Id);
     }
 
-    public Task GetById_ReturnsNull_WhenNoRecord()
+    [Fact]
+    public async Task GetById_ReturnsNull_WhenNoRecord()
     {
-        throw new NotImplementedException();
+        // Arrange
+        var q = new ChurchQueries(Context, Mapper);
+        // Act
+        var result = await q.GetById(0);
+        // Assert
+        Assert.False(result.Success);
+        Assert.Null(result.Data);
     }
 }

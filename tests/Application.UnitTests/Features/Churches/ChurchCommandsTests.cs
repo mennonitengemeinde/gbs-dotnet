@@ -1,6 +1,5 @@
 ﻿using Gbs.Application.Features.Churches;
 using Gbs.Shared.Churches;
-// using Gbs.Application.Features.Churches.Validators;
 
 namespace Gbs.Tests.Application.UnitTests.Features.Churches;
 

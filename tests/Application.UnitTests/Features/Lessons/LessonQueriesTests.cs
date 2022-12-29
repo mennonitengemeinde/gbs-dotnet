@@ -38,7 +38,7 @@ public class LessonQueriesTests : LessonTestBase, IQueryTests
 
         // Assert
         Assert.True(lessons.Success);
-        Assert.Empty(lessons.Data);
+        Assert.Empty(lessons.Data!);
     }
     
     [Fact]
