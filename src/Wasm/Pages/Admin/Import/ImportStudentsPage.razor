@@ -7,6 +7,15 @@
     <MudItem xs="12" sm="8" md="4" lg="3">
         <MudCard>
             <MudCardContent>
+                <div class="tw-flex tw-justify-center tw-pb-4">
+                    <MudButton Variant="Variant.Outlined"
+                               StartIcon="@Icons.Filled.Download"
+                               HtmlTag="a"
+                               Href="/files/StudentsTemplate.csv"
+                               UserAttributes="@DownloadAttributes">
+                        Download Template
+                    </MudButton>
+                </div>
                 <MudFileUpload T="IBrowserFile" Accept=".csv" FilesChanged="UploadFile">
                     <ButtonTemplate>
                         <MudButton HtmlTag="label"
@@ -46,7 +55,7 @@
                         <MudSelectItem T="int" Value="@item.Id">@item.Name</MudSelectItem>
                     }
                 </MudSelect>
-                
+
                 <div class="tw-flex tw-justify-evenly tw-w-full tw-pt-4">
                     <MudButton Color="Color.Error" Variant="Variant.Filled" Disabled="DisableClear" OnClick="Clear">Clear</MudButton>
                     <MudButton Color="Color.Primary" Variant="Variant.Filled" Disabled="DisableSave" OnClick="Save">Save</MudButton>
@@ -78,40 +87,50 @@
                 <MudTd DataLabel="Date Of Birth">@context.DateOfBirth.ToIsoDateString()</MudTd>
             </RowTemplate>
         </MudTable>
-        
-        <MudText>Failed</MudText>
-        <MudTable Items="@FailedStudents" Hover="true" Breakpoint="Breakpoint.Sm">
-                    <HeaderContent>
-                        <MudTh>Name</MudTh>
-                        <MudTh>Email</MudTh>
-                        <MudTh>Phone</MudTh>
-                        <MudTh>City</MudTh>
-                        <MudTh>Province</MudTh>
-                        <MudTh>Country</MudTh>
-                        <MudTh>Home Church</MudTh>
-                        <MudTh>Date Of Birth</MudTh>
-                    </HeaderContent>
-                    <RowTemplate>
-                        <MudTd DataLabel="Name">@context.FirstName @context.LastName</MudTd>
-                        <MudTd DataLabel="Email">@context.Email</MudTd>
-                        <MudTd DataLabel="Phone">@context.Phone</MudTd>
-                        <MudTd DataLabel="City">@context.City</MudTd>
-                        <MudTd DataLabel="Province">@context.Province</MudTd>
-                        <MudTd DataLabel="Country">@context.Country</MudTd>
-                        <MudTd DataLabel="Home Church">@context.HomeChurch</MudTd>
-                        <MudTd DataLabel="Date Of Birth">@context.DateOfBirth.ToIsoDateString()</MudTd>
-                    </RowTemplate>
-                </MudTable>
+
+        @if (FailedStudents != null)
+        {   
+            <MudText Typo="Typo.h4" Class="tw-mt-4">Failed</MudText>
+            <MudTable Items="@FailedStudents" Hover="true" Breakpoint="Breakpoint.Sm">
+                <HeaderContent>
+                    <MudTh>Name</MudTh>
+                    <MudTh>Email</MudTh>
+                    <MudTh>Phone</MudTh>
+                    <MudTh>City</MudTh>
+                    <MudTh>Province</MudTh>
+                    <MudTh>Country</MudTh>
+                    <MudTh>Home Church</MudTh>
+                    <MudTh>Date Of Birth</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Name">@context.FirstName @context.LastName</MudTd>
+                    <MudTd DataLabel="Email">@context.Email</MudTd>
+                    <MudTd DataLabel="Phone">@context.Phone</MudTd>
+                    <MudTd DataLabel="City">@context.City</MudTd>
+                    <MudTd DataLabel="Province">@context.Province</MudTd>
+                    <MudTd DataLabel="Country">@context.Country</MudTd>
+                    <MudTd DataLabel="Home Church">@context.HomeChurch</MudTd>
+                    <MudTd DataLabel="Date Of Birth">@context.DateOfBirth.ToIsoDateString()</MudTd>
+                </RowTemplate>
+            </MudTable>
+        }
     </MudItem>
 </MudGrid>
 
 @code {
 
+    private static readonly Dictionary<string, object> DownloadAttributes = new()
+    {
+        { "download", "StudentsTemplate.csv" },
+        { "target", "_top" }
+    };
+
     IBrowserFile? _file;
     List<CreateStudentRequest> _students = new();
     int _generationId;
 
-    int GenerationId
+    int
+        GenerationId
     {
         get => _generationId;
         set
@@ -124,18 +143,23 @@
         }
     }
 
-    int ChurchId { get; set; }
-    List<CreateStudentRequest> FailedStudents { get; set; } = new();
+    int
+        ChurchId { get; set; }
 
-    bool DisableSave => GenerationId == 0 || ChurchId == 0 || _file == null;
-    bool DisableClear => GenerationId == 0 && ChurchId == 0 && _file == null;
+    List<CreateStudentRequest>? FailedStudents { get; set; }
+
+    bool DisableSave =>
+        GenerationId == 0 || ChurchId == 0 || _file == null;
+
+    bool DisableClear =>
+        GenerationId == 0 && ChurchId == 0 && _file == null;
 
     [CascadingParameter]
     public ChurchState ChurchState { get; set; } = null!;
 
     [CascadingParameter]
     public GenerationState GenerationState { get; set; } = null!;
-    
+
     [CascadingParameter]
     public StudentState StudentState { get; set; } = null!;
 
@@ -175,7 +199,7 @@
             _students.Add(student);
         }
     }
-    
+
     private void Clear()
     {
         _file = null;
@@ -183,7 +207,7 @@
         GenerationId = 0;
         ChurchId = 0;
     }
-    
+
     private async Task Save()
     {
         foreach (var student in _students)
@@ -192,12 +216,13 @@
             await StudentState.Create(student);
             if (StudentState.Error != null)
             {
+                FailedStudents ??= new List<CreateStudentRequest>();
                 FailedStudents.Add(student);
                 StudentState.ClearError();
                 return;
             }
         }
-        if (FailedStudents.Count == 0)
+        if (FailedStudents == null)
         {
             _file = null;
             _students.Clear();
