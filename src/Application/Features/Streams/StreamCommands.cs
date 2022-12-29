@@ -82,7 +82,7 @@ public class StreamCommands : IStreamCommands
     {
         var stream = await _context.Streams.FirstOrDefaultAsync(s => s.Id == streamId);
         if (stream == null)
-            return Result.BadRequest<bool>("Stream not found");
+            return Result.NotFound<bool>("Stream not found");
         _context.Streams.Remove(stream);
         await _context.SaveChangesAsync();
         return Result.Ok(true, "Stream deleted successfully");
