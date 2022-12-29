@@ -15,7 +15,7 @@ public class GradesController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Policy = Policies.RequireAdmins)]
+    [Authorize(Policy = Policies.RequireAdminsAndTeachers)]
     public async Task<ActionResult<Result<GradeResponse>>> AddGrade(CreateGradeRequest request)
     {
         var result = await _gradeCommands.Add(request);
@@ -23,7 +23,7 @@ public class GradesController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    [Authorize(Policy = Policies.RequireAdmins)]
+    [Authorize(Policy = Policies.RequireAdminsAndTeachers)]
     public async Task<ActionResult<Result<GradeResponse>>> UpdateGrade(int id, CreateGradeRequest request)
     {
         var result = await _gradeCommands.Update(id, request);
