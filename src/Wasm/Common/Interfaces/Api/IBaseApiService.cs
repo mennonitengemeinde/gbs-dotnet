@@ -1,4 +1,4 @@
-﻿namespace Gbs.Wasm.Services.Interfaces;
+﻿namespace Gbs.Wasm.Common.Interfaces.Api;
 
 public interface IBaseApiService<T>
 {
@@ -6,10 +6,10 @@ public interface IBaseApiService<T>
     DateTime LastUpdated { get; }
     ServiceError? Error { get; }
     bool IsLoading { get; }
-    event Action<ComponentBase, T, bool, bool> OnChange;
+    event Action<ComponentBase, List<T>?, bool, ServiceError?> OnChange;
     
     Task SetError(ComponentBase sender, ServiceError? error, bool notify);
     void SetLoading(ComponentBase sender, bool isLoading, bool notify);
-    Task SetState(ComponentBase sender, IEnumerable<T> data, bool isLoading, ServiceError? error);
+    Task SetState(ComponentBase sender, List<T> data, bool isLoading, ServiceError? error);
     void ClearError(ComponentBase sender);
 }

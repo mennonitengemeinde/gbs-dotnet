@@ -1,9 +1,12 @@
 @page "/admin/students"
 @page "/admin/students/{id:int}"
 @attribute [Authorize(Policy = Policies.RequireAdminsAndTeachers)]
+@implements IDisposable
+@implements Gbs.Wasm.Common.Interfaces.Api.INotifyStateChanged<StudentResponse>
 @using Gbs.Wasm.Pages.Admin.Students.Components
 
 @inject IAuthService AuthService
+@inject IStudentService StudentService
 
 <PageTitle>Students - GBS</PageTitle>
 
@@ -17,9 +20,9 @@
     {
         <MudText Typo="Typo.h4">Students</MudText>
     }
-    @if (!_userIsAdmin && StudentState.Data.Count > 0)
+    @if (!_userIsAdmin && StudentService.Data.Count > 0)
     {
-        <MudText Typo="Typo.subtitle1">@StudentState.Data.FirstOrDefault()?.ChurchName</MudText>
+        <MudText Typo="Typo.subtitle1">@StudentService.Data.FirstOrDefault()?.ChurchName</MudText>
     }
     <div class="tw-flex tw-justify-between tw-pt-4 @HideOnMobileDetail">
         <MudButton StartIcon="@Icons.Filled.Add"
@@ -57,9 +60,6 @@
     ChurchState ChurchState { get; set; } = null!;
 
     [CascadingParameter]
-    StudentState StudentState { get; set; } = null!;
-
-    [CascadingParameter]
     UiState UiState { get; set; } = null!;
 
     [Parameter]
@@ -81,9 +81,10 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var tasks = new[] { StudentState.ForceFetch(), ChurchState.Fetch() };
+        StudentService.OnChange += NotifyStateChanged;
+        var tasks = new[] { StudentService.ForceFetch(this), ChurchState.Fetch() };
         await Task.WhenAll(tasks);
-        Students = StudentState.Data;
+        Students = StudentService.Data;
         _userIsAdmin = await AuthService.UserIsAdmin();
     }
 
@@ -91,7 +92,7 @@
     {
         if (Id.HasValue)
         {
-            SelectedStudent = await StudentState.GetById(Id.Value);
+            SelectedStudent = await StudentService.GetById(this, Id.Value);
         }
     }
 
@@ -106,19 +107,29 @@
     {
         if (churchId == 0)
         {
-            Students = StudentState.Data
+            Students = StudentService.Data
                 .Where(x => x.FirstName.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
                             x.LastName.Contains(searchText, StringComparison.OrdinalIgnoreCase))
                 .ToList();
         }
         else
         {
-            Students = StudentState.Data
+            Students = StudentService.Data
                 .Where(x => x.ChurchId == churchId &&
                             (x.FirstName.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
                              x.LastName.Contains(searchText, StringComparison.OrdinalIgnoreCase)))
                 .ToList();
         }
+    }
+
+    public void Dispose()
+    {
+        StudentService.OnChange -= NotifyStateChanged;
+    }
+
+    public void NotifyStateChanged(ComponentBase sender, List<StudentResponse>? data, bool isLoading, ServiceError? error)
+    {
+        StateHasChanged();
     }
 
 }

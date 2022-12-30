@@ -1,7 +1,11 @@
 @page "/admin/import/students"
 @using MudBlazor.Extensions
+@implements IDisposable
+@implements Gbs.Wasm.Common.Interfaces.Api.INotifyStateChanged<StudentResponse>
 
 <PageTitle>Import Students - GBS</PageTitle>
+
+@inject IStudentService StudentService
 
 <MudGrid Class="tw-pt-8">
     <MudItem xs="12" sm="8" md="4" lg="3">
@@ -160,11 +164,9 @@
     [CascadingParameter]
     public GenerationState GenerationState { get; set; } = null!;
 
-    [CascadingParameter]
-    public StudentState StudentState { get; set; } = null!;
-
     protected override async Task OnInitializedAsync()
     {
+        StudentService.OnChange += NotifyStateChanged;
         var tasks = new[] { ChurchState.Fetch(), GenerationState.Fetch() };
         await Task.WhenAll(tasks);
     }
@@ -213,12 +215,12 @@
         foreach (var student in _students)
         {
             student.ChurchId = ChurchId;
-            await StudentState.Create(student);
-            if (StudentState.Error != null)
+            await StudentService.Create(this, student);
+            if (StudentService.Error != null)
             {
                 FailedStudents ??= new List<CreateStudentRequest>();
                 FailedStudents.Add(student);
-                StudentState.ClearError();
+                StudentService.ClearError(this);
                 return;
             }
         }
@@ -233,6 +235,16 @@
         {
             _students.RemoveAll(x => !FailedStudents.Contains(x));
         }
+    }
+
+    public void NotifyStateChanged(ComponentBase sender, List<StudentResponse>? data, bool isLoading, ServiceError? error)
+    {
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        StudentService.OnChange -= NotifyStateChanged;
     }
 
 }

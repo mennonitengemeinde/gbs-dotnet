@@ -48,9 +48,9 @@
 
     async Task ToggleLive()
     {
-        await StreamService.ToggleLive(LiveStream.Id);
+        await StreamService.ToggleLive(this, LiveStream.Id);
         if (StreamService.Error != null)
-            StreamService.ClearError();
+            StreamService.ClearError(this);
     }
 
     private async Task HandleDelete()

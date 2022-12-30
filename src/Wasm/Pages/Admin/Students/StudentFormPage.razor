@@ -3,8 +3,11 @@
 @using Gbs.Shared.Common.Extensions
 @inherits BaseMatForm
 @attribute [Authorize(Policy = Policies.RequireAdminsAndTeachers)]
+@implements IDisposable
+@implements Gbs.Wasm.Common.Interfaces.Api.INotifyStateChanged<StudentResponse>
 
 @inject IAuthService AuthService
+@inject IStudentService StudentService
 
 <PageTitle>Students Form - GBS</PageTitle>
 
@@ -17,7 +20,7 @@
             <MudItem xs="12" sm="8" md="5">
                 <MatFormCard Label="Student"
                              IsEdit="@Id.HasValue"
-                             IsLoading="@StudentState.IsLoading"
+                             IsLoading="@StudentService.IsLoading"
                              IsProcessing="@IsProcessing"
                              ValidationErrors="@ValidationErrors"
                              ReturnUrl="/admin/students">
@@ -118,9 +121,6 @@
 @code {
 
     [CascadingParameter]
-    StudentState StudentState { get; set; } = null!;
-
-    [CascadingParameter]
     GenerationState GenerationState { get; set; } = null!;
 
     [CascadingParameter]
@@ -134,6 +134,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        StudentService.OnChange += NotifyStateChanged;
         var tasks = new[] { GenerationState.Fetch(), ChurchState.Fetch() };
         _isAdmin = await AuthService.UserIsAdmin();
 
@@ -141,7 +142,7 @@
 
         if (Id.HasValue)
         {
-            var student = await StudentState.GetById(Id.Value);
+            var student = await StudentService.GetById(this, Id.Value);
             if (student == null)
             {
                 NavigationManager.NavigateTo("/admin/students");
@@ -176,17 +177,27 @@
         _model.LastName = _model.LastName.CapitalizeFirstLetterOfEachWord();
 
         if (Id.HasValue)
-            await StudentState.Update(Id.Value, _model);
+            await StudentService.Update(this, Id.Value, _model);
         else
-            await StudentState.Create(_model);
+            await StudentService.Create(this, _model);
 
-        if (HasError(StudentState.Error))
+        if (HasError(StudentService.Error))
         {
-            StudentState.ClearError();
+            StudentService.ClearError(this);
             return;
         }
 
         NavigationManager.NavigateTo("admin/students");
+    }
+
+    public void Dispose()
+    {
+        StudentService.OnChange -= NotifyStateChanged;
+    }
+
+    public void NotifyStateChanged(ComponentBase sender, List<StudentResponse>? data, bool isLoading, ServiceError? error)
+    {
+        StateHasChanged();
     }
 
 }

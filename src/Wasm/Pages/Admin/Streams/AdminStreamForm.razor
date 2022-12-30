@@ -3,6 +3,7 @@
 @inherits BaseMatForm
 @attribute [Authorize(Policy = Policies.RequireAdminsAndSound)]
 @implements IDisposable
+@implements Gbs.Wasm.Common.Interfaces.Api.INotifyStateChanged<StreamResponse>
 
 @inject IStreamService StreamService
 
@@ -65,14 +66,14 @@
 
     protected override async Task OnInitializedAsync()
     {
-        StreamService.OnChange += StateHasChanged;
+        StreamService.OnChange += NotifyStateChanged;
         
         var tasks = new[] { TeacherState.Fetch(), GenerationState.Fetch() };
         await Task.WhenAll(tasks);
 
         if (Id.HasValue)
         {
-            var stream = await StreamService.GetById(Id.Value);
+            var stream = await StreamService.GetById(this, Id.Value);
             if (stream == null)
             {
                 await UiService.ShowErrorAlert("Stream not found");
@@ -96,16 +97,16 @@
         IsProcessing = true;
         if (Id.HasValue)
         {
-            await StreamService.Update(Id.Value, _model);
+            await StreamService.Update(this, Id.Value, _model);
         }
         else
         {
-            await StreamService.Create(_model);
+            await StreamService.Create(this, _model);
         }
 
         if (HasError(StreamService.Error))
         {
-            StreamService.ClearError();
+            StreamService.ClearError(this);
             return;
         }
 
@@ -125,7 +126,12 @@
 
     public void Dispose()
     {
-        StreamService.OnChange -= StateHasChanged;
+        StreamService.OnChange -= NotifyStateChanged;
+    }
+
+    public void NotifyStateChanged(ComponentBase sender, List<StreamResponse>? data, bool isLoading, ServiceError? error)
+    {
+        StateHasChanged();
     }
 
 }

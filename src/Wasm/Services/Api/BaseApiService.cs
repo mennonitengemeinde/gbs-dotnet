@@ -11,7 +11,7 @@ public abstract class BaseApiService<T> : IBaseApiService<T>
     public DateTime LastUpdated { get; protected set; } = DateTime.MinValue;
     public ServiceError? Error { get; protected set; }
     public bool IsLoading { get; protected set; }
-    public event Action<ComponentBase, T, bool, bool>? OnChange;
+    public event Action<ComponentBase, List<T>?, bool, ServiceError?>? OnChange;
 
     protected BaseApiService(
         IDateTimeService dateTimeService,
@@ -21,9 +21,9 @@ public abstract class BaseApiService<T> : IBaseApiService<T>
         UiService = uiService;
     }
 
-    protected void NotifyStateChanged(ComponentBase sender, T data, bool isLoading, bool isError)
+    protected void NotifyStateChanged(ComponentBase sender, List<T>? data, bool isLoading, ServiceError? error)
     {
-        OnChange?.Invoke(sender, data, isLoading, isError);
+        OnChange?.Invoke(sender, data, isLoading, error);
     }
 
     public async Task SetError(ComponentBase sender, ServiceError? error = null, bool notify = true)
@@ -36,7 +36,7 @@ public abstract class BaseApiService<T> : IBaseApiService<T>
             await UiService.ShowErrorAlert(Error.Message, Error.StatusCode);
         
         if (notify)
-            NotifyStateChanged();
+            NotifyStateChanged(sender, null, IsLoading, error);
     }
 
     public void SetLoading(ComponentBase sender, bool isLoading, bool notify = true)
@@ -46,16 +46,16 @@ public abstract class BaseApiService<T> : IBaseApiService<T>
         IsLoading = isLoading;
         
         if (notify)
-            NotifyStateChanged();
+            NotifyStateChanged(sender, null, isLoading, null);
     }
 
-    public async Task SetState(ComponentBase sender, IEnumerable<T> data, bool isLoading = false, ServiceError? error = null)
+    public async Task SetState(ComponentBase sender, List<T> data, bool isLoading = false, ServiceError? error = null)
     {
-        Data = data.ToList();
-        await SetError(error, false);
+        Data = data;
+        await SetError(sender, error, false);
         IsLoading = isLoading;
         LastUpdated = DateTimeService.UtcNow;
-        NotifyStateChanged();
+        NotifyStateChanged(sender, data, isLoading, error);
     }
 
     public void ClearError(ComponentBase sender)
@@ -64,6 +64,6 @@ public abstract class BaseApiService<T> : IBaseApiService<T>
             return;
 
         Error = null;
-        NotifyStateChanged(sender, );
+        NotifyStateChanged(sender, null, IsLoading, null);
     }
 }

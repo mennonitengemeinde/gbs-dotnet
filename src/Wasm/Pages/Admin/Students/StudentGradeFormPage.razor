@@ -1,6 +1,7 @@
 ﻿@page "/admin/students/{Id:int}/grades/create"
 @attribute [Authorize(Policy = Policies.RequireAdmins)]
 @implements IDisposable
+@implements INotifyStateChanged<GradeResponse>
 
 @inject NavigationManager NavigationManager
 @inject IGradeService GradeService
@@ -71,12 +72,12 @@
 
     protected override async Task OnInitializedAsync()
     {
+        GradeService.OnChange += NotifyStateChanged;
         IsLoading = true;
         await Initialize();
         Model.Date = DateTime.Today;
         Model.StudentId = Id;
         IsLoading = false;
-        GradeService.OnChange += StateHasChanged;
     }
 
     async Task Initialize()
@@ -88,11 +89,11 @@
     async Task HandleValidSubmit()
     {
         IsProcessing = true;
-        await GradeService.Create(Model);
+        await GradeService.Create(this, Model);
         if (GradeService.Error != null)
         {
             ValidationErrors = GradeService.Error.Errors;
-            GradeService.ClearError();
+            GradeService.ClearError(this);
             IsProcessing = false;
             return;
         }
@@ -102,7 +103,12 @@
 
     public void Dispose()
     {
-        GradeService.OnChange -= StateHasChanged;
+        GradeService.OnChange -= NotifyStateChanged;
+    }
+
+    public void NotifyStateChanged(ComponentBase sender, List<GradeResponse>? data, bool isLoading, ServiceError? error)
+    {
+        StateHasChanged();
     }
 
 }
