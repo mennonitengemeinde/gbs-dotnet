@@ -1,9 +1,6 @@
 ﻿@page "/admin/lessons"
-@attribute [Authorize(Policy = Policies.RequireAdminsAndSound)]
 @using Gbs.Wasm.Pages.Admin.Lessons.Components
-@implements IDisposable
-
-@inject ILessonStore LessonStore
+@attribute [Authorize(Policy = Policies.RequireAdminsAndSound)]
 
 <PageTitle>Lessons - GBS</PageTitle>
 
@@ -16,41 +13,38 @@
 
 <MudHidden Breakpoint="Breakpoint.MdAndUp">
     <div class="tw-space-y-4">
-        <MobileLessonList Lessons="LessonStore.Data"
-                          IsLoading="LessonStore.IsLoading"
+        <MobileLessonList Lessons="LessonState.Data"
+                          IsLoading="LessonState.IsLoading"
                           MoveLessonDown="MoveLessonDown"
                           MoveLessonUp="MoveLessonUp" />
     </div>
 </MudHidden>
 
 <MudHidden Breakpoint="Breakpoint.SmAndDown">
-    <LessonsTable Lessons="LessonStore.Data"
-                  IsLoading="LessonStore.IsLoading"
+    <LessonsTable Lessons="@LessonState.Data"
+                  IsLoading="@LessonState.IsLoading"
                   MoveLessonDown="MoveLessonDown"
                   MoveLessonUp="MoveLessonUp" />
 </MudHidden>
 
 @code {
 
+    [CascadingParameter]
+    public LessonState LessonState { get; set; } = null!;
+
     protected override async Task OnInitializedAsync()
     {
-        await LessonStore.ForceFetch();
-        LessonStore.OnChange += StateHasChanged;
+        await LessonState.ForceFetch();
     }
 
-    private async Task MoveLessonUp(LessonDto lesson)
+    private async Task MoveLessonUp(LessonResponse lesson)
     {
-        await LessonStore.UpdateOrder(lesson.Id, lesson.Order - 1);
+        await LessonState.UpdateOrder(lesson.Id, lesson.Order - 1);
     }
 
-    private async Task MoveLessonDown(LessonDto lesson)
+    private async Task MoveLessonDown(LessonResponse lesson)
     {
-        await LessonStore.UpdateOrder(lesson.Id, lesson.Order + 1);
-    }
-
-    public void Dispose()
-    {
-        LessonStore.OnChange -= StateHasChanged;
+        await LessonState.UpdateOrder(lesson.Id, lesson.Order + 1);
     }
 
 }

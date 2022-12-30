@@ -1,10 +1,11 @@
-﻿<MudGrid Class="tw-relative tw-pt-2">
+﻿@using Gbs.Shared.Lessons
+<MudGrid Class="tw-relative tw-pt-2">
     @foreach (var lesson in Lessons.Where(s => s.IsVisible != Visibility.Private))
     {
         <MudItem xs="12" md="6" xl="4">
-            <MudCard Class="tw-h-44">
+            <MudCard Class="tw-h-36">
                 <MudCardContent Class="tw-flex">
-                    <a class="tw-flex-grow-0 tw-flex-shrink-0 tw-w-36 hover:tw-scale-90" href="@($"school/lessons/{lesson.Id}")">
+                    <a class="tw-flex-grow-0 tw-flex-shrink-0 tw-w-28 hover:tw-scale-90" href="@($"school/lessons/{lesson.Id}")">
                         <svg class="tw-w-full tw-h-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 318 318">
                             <g id="Ellipse_3" data-name="Ellipse 3" fill="#f3f3f3" stroke="#707070" stroke-width="1">
                                 <circle cx="159" cy="159" r="159" stroke="none" />
@@ -54,6 +55,6 @@
 @code {
 
     [Parameter, EditorRequired]
-    public List<LessonDto> Lessons { get; set; } = new();
+    public List<LessonResponse> Lessons { get; set; } = new();
 
 }

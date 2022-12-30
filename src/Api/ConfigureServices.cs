@@ -1,6 +1,7 @@
 ﻿using Gbs.Api.Services;
 using Gbs.Application.Common.Interfaces.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.IdentityModel.Tokens;
 
@@ -23,6 +24,12 @@ public static class ConfigureServices
 
         services.AddScoped<IAuthenticatedUserService, AuthenticatedUserService>();
 
+        services.Configure<IdentityOptions>(options =>
+        {
+            options.ClaimsIdentity.UserNameClaimType = "name";
+            options.ClaimsIdentity.UserIdClaimType = "sub";
+            options.ClaimsIdentity.RoleClaimType = "role";
+        });
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {

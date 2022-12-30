@@ -1,0 +1,203 @@
+@page "/admin/students/create"
+@page "/admin/students/{Id:int}/edit"
+@using Gbs.Shared.Common.Extensions
+@inherits BaseMatForm
+@attribute [Authorize(Policy = Policies.RequireAdminsAndTeachers)]
+@implements IDisposable
+@implements Gbs.Wasm.Common.Interfaces.Api.INotifyStateChanged<StudentResponse>
+
+@inject IAuthService AuthService
+@inject IStudentService StudentService
+
+<PageTitle>Students Form - GBS</PageTitle>
+
+@if (!UiState.IsPageLoading)
+{
+    <EditForm Model="_model" OnValidSubmit="HandleValidSubmit">
+        <FluentValidationValidator />
+        <ValidationSummary />
+        <MudGrid Justify="Justify.Center" Class="tw-py-8">
+            <MudItem xs="12" sm="8" md="5">
+                <MatFormCard Label="Student"
+                             IsEdit="@Id.HasValue"
+                             IsLoading="@StudentService.IsLoading"
+                             IsProcessing="@IsProcessing"
+                             ValidationErrors="@ValidationErrors"
+                             ReturnUrl="/admin/students">
+                    <MudTextField Label="First Name"
+                                  @bind-Value="_model.FirstName"
+                                  For="() => _model.FirstName"
+                                  Required
+                                  OnlyValidateIfDirty="true" />
+                    <MudTextField Label="Last Name"
+                                  @bind-Value="_model.LastName"
+                                  Required
+                                  For="() => _model.LastName" />
+                    <MudDatePicker Label="Date of Birth"
+                                   @bind-Date="_model.DateOfBirth"
+                                   Required
+                                   For="() => _model.DateOfBirth" />
+                    <MudTextField Label="Email"
+                                  @bind-Value="_model.Email"
+                                  For="() => _model.Email" />
+                    <MudTextField Label="Home Church"
+                                  @bind-Value="_model.HomeChurch"
+                                  For="() => _model.HomeChurch" />
+                    <MudTextField Label="Phone"
+                                  @bind-Value="_model.Phone"
+                                  For="() => _model.Phone"
+                                  Mask="@(new PatternMask("000-000-0000"))" />
+                    <MudField Label="Marital status" Variant="Variant.Text" InnerPadding="false">
+                        <MudRadioGroup T="MaritalStatus" @bind-SelectedOption="@_model.MaritalStatus">
+                            @foreach (var maritalStatus in Enum.GetValues(typeof(MaritalStatus)).Cast<MaritalStatus>())
+                            {
+                                <MudRadio T="MaritalStatus" Option="@maritalStatus">@maritalStatus.ToString()</MudRadio>
+                            }
+                        </MudRadioGroup>
+                    </MudField>
+                    <MudTextField Label="Address"
+                                  @bind-Value="_model.Address"
+                                  For="() => _model.Address" />
+                    <MudTextField Label="City"
+                                  @bind-Value="_model.City"
+                                  Required
+                                  For="() => _model.City" />
+                    <MudTextField Label="Province/State"
+                                  @bind-Value="_model.Province"
+                                  Required
+                                  For="() => _model.Province" />
+                    <MudTextField Label="Country"
+                                  @bind-Value="_model.Country"
+                                  Required
+                                  For="() => _model.Country" />
+
+                    <MudTextField Label="Postal Code"
+                                  @bind-Value="_model.PostalCode"
+                                  For="() => _model.PostalCode" />
+
+                    <MudSelect Label="Generation"
+                               AnchorOrigin="Origin.BottomCenter"
+                               For="@(() => _model.GenerationId)"
+                               @bind-Value="_model.GenerationId">
+                        <MudSelectItem Disabled="true" T="int" Value="0">Select Generation</MudSelectItem>
+                        @foreach (var item in GenerationState.Data)
+                        {
+                            <MudSelectItem T="int" Value="@item.Id">@item.Name</MudSelectItem>
+                        }
+                    </MudSelect>
+                    @if (_isAdmin)
+                    {
+                        <MudSelect Label="Church"
+                                   AnchorOrigin="Origin.BottomCenter"
+                                   For="@(() => _model.ChurchId)"
+                                   @bind-Value="_model.ChurchId">
+                            <MudSelectItem Disabled="true" T="int" Value="0">Select Church</MudSelectItem>
+                            @foreach (var item in ChurchState.Data)
+                            {
+                                <MudSelectItem T="int" Value="@item.Id">@item.Name</MudSelectItem>
+                            }
+                        </MudSelect>
+                    }
+
+                    <MudTextField T="string" Label="Testimony" Variant="Variant.Text" @bind-Value="_model.Testimony" Lines="5" />
+
+                    <MudField Label="Status" Variant="Variant.Text" InnerPadding="false">
+                        <MudRadioGroup T="EnrollmentState" @bind-SelectedOption="@_model.Status">
+                            @foreach (var status in Enum.GetValues(typeof(EnrollmentState)).Cast<EnrollmentState>())
+                            {
+                                <MudRadio T="EnrollmentState" Option="@status">@status.ToString()</MudRadio>
+                            }
+                        </MudRadioGroup>
+                    </MudField>
+
+                    <MudCheckBox @bind-Checked="@_model.AgreedToGbsConcept" Label="Agree to GBS Concept" Color="Color.Primary"></MudCheckBox>
+
+                </MatFormCard>
+            </MudItem>
+        </MudGrid>
+    </EditForm>
+}
+
+@code {
+
+    [CascadingParameter]
+    GenerationState GenerationState { get; set; } = null!;
+
+    [CascadingParameter]
+    ChurchState ChurchState { get; set; } = null!;
+
+    [CascadingParameter]
+    UiState UiState { get; set; } = null!;
+
+    bool _isAdmin;
+    CreateStudentRequest _model = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        StudentService.OnChange += NotifyStateChanged;
+        var tasks = new[] { GenerationState.Fetch(), ChurchState.Fetch() };
+        _isAdmin = await AuthService.UserIsAdmin();
+
+        await Task.WhenAll(tasks);
+
+        if (Id.HasValue)
+        {
+            var student = await StudentService.GetById(this, Id.Value);
+            if (student == null)
+            {
+                NavigationManager.NavigateTo("/admin/students");
+                return;
+            }
+
+            _model = new CreateStudentRequest
+            {
+                FirstName = student.FirstName,
+                LastName = student.LastName,
+                DateOfBirth = student.DateOfBirth,
+                MaritalStatus = student.MaritalStatus,
+                Address = student.Address,
+                City = student.City,
+                Province = student.Province,
+                Country = student.Country,
+                PostalCode = student.PostalCode,
+                Email = student.Email,
+                Phone = student.Phone,
+                ChurchId = student.ChurchId
+            };
+        }
+
+        _model.ChurchId = await AuthService.GetUserChurchId();
+        _model.Country = ChurchState.Data.FirstOrDefault(x => x.Id == _model.ChurchId)?.Country ?? "Canada";
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        IsProcessing = true;
+        _model.FirstName = _model.FirstName.CapitalizeFirstLetterOfEachWord();
+        _model.LastName = _model.LastName.CapitalizeFirstLetterOfEachWord();
+
+        if (Id.HasValue)
+            await StudentService.Update(this, Id.Value, _model);
+        else
+            await StudentService.Create(this, _model);
+
+        if (HasError(StudentService.Error))
+        {
+            StudentService.ClearError(this);
+            return;
+        }
+
+        NavigationManager.NavigateTo("admin/students");
+    }
+
+    public void Dispose()
+    {
+        StudentService.OnChange -= NotifyStateChanged;
+    }
+
+    public void NotifyStateChanged(ComponentBase sender, List<StudentResponse>? data, bool isLoading, ServiceError? error)
+    {
+        StateHasChanged();
+    }
+
+}

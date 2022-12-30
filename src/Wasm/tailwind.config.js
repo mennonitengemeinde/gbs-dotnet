@@ -5,5 +5,9 @@ module.exports = {
     theme: {
         extend: {},
     },
+    safelist: [
+        "tw-hidden",
+        "md:tw-block",
+    ],
     plugins: [],
 }

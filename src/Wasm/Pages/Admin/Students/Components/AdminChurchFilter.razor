@@ -1,0 +1,39 @@
+<MudPaper Class="tw-flex tw-p-4 tw-mb-4">
+    <MudSelect Label="Church"
+               T="int"
+               Variant="Variant.Outlined"
+               @bind-Value="@ChurchValue"
+               Margin="Margin.Dense"
+               AnchorOrigin="Origin.BottomCenter">
+        <MudSelectItem T="int" Value="0">All</MudSelectItem>
+        @foreach (var church in Churches)
+        {
+            <MudSelectItem T="int" Value="@church.Id">@church.Name</MudSelectItem>
+        }
+    </MudSelect>
+</MudPaper>
+
+@code {
+
+    int _churchValue;
+
+    [Parameter]
+    [EditorRequired]
+    public List<ChurchResponse> Churches { get; set; } = new();
+
+    [Parameter]
+    public int ChurchValue
+    {
+        get => _churchValue;
+        set
+        {
+            if (_churchValue == value) return;
+            _churchValue = value;
+            ChurchValueChanged.InvokeAsync(value);
+        }
+    }
+
+    [Parameter]
+    public EventCallback<int> ChurchValueChanged { get; set; }
+
+}

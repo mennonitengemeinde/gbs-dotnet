@@ -6,22 +6,34 @@
     <MudImage Src="img/P-GBS2-02.svg"></MudImage>
 </MudDrawerHeader>
 <MudNavMenu Class="py-3" Color="Color.Primary">
+    <MudListSubheader Class="tw-pb-2">
+        School
+    </MudListSubheader>
     <AuthorizeView Policy="@Policies.RequireAdminsSoundAndTeachers">
-        <MudNavLink Href="school" Icon="@Icons.Filled.School">School</MudNavLink>
+        <MudNavLink Href="school" Icon="@Icons.Filled.School">Home</MudNavLink>
     </AuthorizeView>
     <AuthorizeView Policy="@Policies.RequireAdminsAndTeachers">
         <MudNavLink Href="/admin/students" Icon="@Icons.Filled.People">Students</MudNavLink>
     </AuthorizeView>
     <AuthorizeView Policy="@Policies.RequireAdminsAndSound">
+        <MudListSubheader Class="tw-pb-2">
+            Admin
+        </MudListSubheader>
         <MudNavLink Href="/admin/lessons" Icon="@Icons.Filled.PlayLesson">Lessons</MudNavLink>
         <MudNavLink Href="/admin/streams" Icon="@Icons.Filled.LiveTv">Streams</MudNavLink>
         <MudNavLink Href="/admin/teachers" Icon="@Icons.Filled.Man">Teachers</MudNavLink>
     </AuthorizeView>
     <AuthorizeView Policy="@Policies.RequireAdmins">
+        <MudNavLink Href="/admin/grade-types" Icon="@Icons.Filled.Grade">Grade Types</MudNavLink>
         <MudNavLink Href="/admin/generations" Icon="@Icons.Filled.GroupWork">Generations</MudNavLink>
         <MudNavLink Href="/admin/subjects" Icon="@Icons.Filled.Subject">Subjects</MudNavLink>
         <MudNavLink Href="/admin/churches" Icon="@Icons.Filled.Church">Churches</MudNavLink>
         <MudNavLink Href="/admin/users" Icon="@Icons.Filled.PeopleAlt">Users</MudNavLink>
+        <MudNavGroup Icon="@Icons.Material.Filled.ImportExport" Title="Import">
+            <MudNavLink Href="/admin/import/students" Icon="@Icons.Material.Filled.People">
+                Students
+            </MudNavLink>
+        </MudNavGroup>
     </AuthorizeView>
 </MudNavMenu>
 

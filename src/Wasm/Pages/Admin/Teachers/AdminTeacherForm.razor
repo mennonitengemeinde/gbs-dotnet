@@ -1,47 +1,42 @@
 @page "/admin/teachers/create"
 @page "/admin/teachers/{Id:int}/edit"
+@inherits BaseMatForm
 @attribute [Authorize(Policy = Policies.RequireAdminsAndSound)]
-
-@inject NavigationManager NavigationManager
-@inject ITeacherStore TeacherStore
-@inject IUiService UiService
 
 <PageTitle>Teachers Form - GBS</PageTitle>
 
-<EditForm Model="_newTeacher" OnValidSubmit="HandleValidSubmit">
-    <DataAnnotationsValidator />
+<EditForm Model="_model" OnValidSubmit="HandleValidSubmit">
+    <FluentValidationValidator />
     <MudGrid Justify="Justify.Center" Class="tw-pt-8">
         <MudItem xs="12" sm="8" md="5">
             <MatFormCard Label="Teacher"
-                         IsEdit="@_isEdit"
-                         IsLoading="@TeacherStore.IsLoading"
-                         IsProcessing="@_isProcessing"
+                         IsEdit="@Id.HasValue"
+                         IsLoading="@TeacherState.IsLoading"
+                         IsProcessing="@IsProcessing"
+                         ValidationErrors="@ValidationErrors"
                          ReturnUrl="/admin/teachers">
                 <MudTextField Label="Name"
-                              @bind-Value="_newTeacher.Name"
-                              For="() => _newTeacher.Name" />
+                              @bind-Value="_model.Name"
+                              For="() => _model.Name" />
             </MatFormCard>
         </MudItem>
     </MudGrid>
 </EditForm>
 
 @code {
-    TeacherCreateDto _newTeacher = new();
-    bool _isProcessing;
-    bool _isEdit;
 
-    [Parameter]
-    public int? Id { get; set; }
+    TeacherState TeacherState { get; } = null!;
+
+    CreateTeacherRequest _model = new();
 
     protected override async Task OnInitializedAsync()
     {
-        if (Id != null)
+        if (Id.HasValue)
         {
-            _isEdit = true;
-            var teacher = await TeacherStore.GetById(Id.Value);
+            var teacher = await TeacherState.GetById(Id.Value);
             if (teacher != null)
             {
-                _newTeacher = new TeacherCreateDto
+                _model = new CreateTeacherRequest
                 {
                     Name = teacher.Name
                 };
@@ -51,24 +46,24 @@
 
     async Task HandleValidSubmit()
     {
-        _isProcessing = true;
-        if (_isEdit)
+        IsProcessing = true;
+
+        if (Id.HasValue)
         {
-            await TeacherStore.Update(Id!.Value, _newTeacher);
+            await TeacherState.Update(Id.Value, _model);
         }
         else
         {
-            await TeacherStore.Add(_newTeacher);
+            await TeacherState.Create(_model);
         }
 
-        if (!TeacherStore.HasError)
+        if (HasError(TeacherState.Error))
         {
-            _isProcessing = false;
-            UiService.ShowSuccessAlert(_isEdit ? "Teacher updated successfully" : "Teacher added successfully");
-            NavigationManager.NavigateTo("admin/teachers");
+            TeacherState.ClearError();
+            return;
         }
-        _isProcessing = false;
-        TeacherStore.ClearErrors();
+
+        NavigationManager.NavigateTo("admin/teachers");
     }
 
 }

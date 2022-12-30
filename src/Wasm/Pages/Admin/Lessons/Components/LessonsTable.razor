@@ -1,3 +1,4 @@
+@using Gbs.Shared.Lessons
 <MudTable Items="@Lessons" Hover="true" Loading="@IsLoading" LoadingProgressColor="Color.Info">
     <ColGroup>
         <col />
@@ -39,23 +40,23 @@
 
 @code {
     [Parameter, EditorRequired]
-    public List<LessonDto> Lessons { get; set; } = new();
+    public List<LessonResponse> Lessons { get; set; } = new();
     
     [Parameter, EditorRequired]
     public bool IsLoading { get; set; }
     
     [Parameter]
-    public EventCallback<LessonDto> MoveLessonDown { get; set; }
+    public EventCallback<LessonResponse> MoveLessonDown { get; set; }
     
     [Parameter]
-    public EventCallback<LessonDto> MoveLessonUp { get; set; }
+    public EventCallback<LessonResponse> MoveLessonUp { get; set; }
     
-    private async Task HandleMoveLessonDown(LessonDto lesson)
+    private async Task HandleMoveLessonDown(LessonResponse lesson)
     {
         await MoveLessonDown.InvokeAsync(lesson);
     }
     
-    private async Task HandleMoveLessonUp(LessonDto lesson)
+    private async Task HandleMoveLessonUp(LessonResponse lesson)
     {
         await MoveLessonUp.InvokeAsync(lesson);
     }

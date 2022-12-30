@@ -1,0 +1,135 @@
+@page "/admin/students"
+@page "/admin/students/{id:int}"
+@attribute [Authorize(Policy = Policies.RequireAdminsAndTeachers)]
+@implements IDisposable
+@implements Gbs.Wasm.Common.Interfaces.Api.INotifyStateChanged<StudentResponse>
+@using Gbs.Wasm.Pages.Admin.Students.Components
+
+@inject IAuthService AuthService
+@inject IStudentService StudentService
+
+<PageTitle>Students - GBS</PageTitle>
+
+<div class="tw-py-4">
+
+    @if (SelectedStudent != null)
+    {
+        <MudText Typo="Typo.h4">@SelectedStudent.FullName</MudText>
+    }
+    else
+    {
+        <MudText Typo="Typo.h4">Students</MudText>
+    }
+    @if (!_userIsAdmin && StudentService.Data.Count > 0)
+    {
+        <MudText Typo="Typo.subtitle1">@StudentService.Data.FirstOrDefault()?.ChurchName</MudText>
+    }
+    <div class="tw-flex tw-justify-between tw-pt-4 @HideOnMobileDetail">
+        <MudButton StartIcon="@Icons.Filled.Add"
+                   Color="Color.Primary"
+                   Variant="Variant.Filled"
+                   Href="/admin/students/create">
+            New
+        </MudButton>
+    </div>
+</div>
+
+@if (_userIsAdmin)
+{
+    <div class="@HideOnMobileDetail">
+        <AdminChurchFilter Churches="@ChurchState.Data" @bind-ChurchValue="SelectedChurch" />
+    </div>
+}
+
+<div class="tw-flex-1 tw-flex md:tw-space-x-4 tw-w-full tw-min-h-0">
+    <StudentList Students="@Students" OnSearch="@HandleSearch" ClassCss="@HideOnMobileDetail" />
+
+    @if (Id.HasValue)
+    {
+        <StudentDetail Student="SelectedStudent" />
+    }
+</div>
+
+
+@code {
+
+    bool _userIsAdmin;
+    int _selectedChurch;
+    
+    [CascadingParameter]
+    ChurchState ChurchState { get; set; } = null!;
+
+    [CascadingParameter]
+    UiState UiState { get; set; } = null!;
+
+    [Parameter]
+    public int? Id { get; set; }
+
+    List<StudentResponse> Students { get; set; } = new();
+
+    int SelectedChurch
+    {
+        get => _selectedChurch;
+        set
+        {
+            _selectedChurch = value;
+            OnFilter(SelectedChurch);
+        }
+    }
+    
+    StudentResponse? SelectedStudent { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        StudentService.OnChange += NotifyStateChanged;
+        var tasks = new[] { StudentService.ForceFetch(this), ChurchState.Fetch() };
+        await Task.WhenAll(tasks);
+        Students = StudentService.Data;
+        _userIsAdmin = await AuthService.UserIsAdmin();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id.HasValue)
+        {
+            SelectedStudent = await StudentService.GetById(this, Id.Value);
+        }
+    }
+
+    void HandleSearch(string searchText)
+    {
+        OnFilter(SelectedChurch, searchText);
+    }
+
+    string HideOnMobileDetail => Id.HasValue ? "tw-hidden md:tw-block" : "";
+
+    void OnFilter(int churchId, string searchText = "")
+    {
+        if (churchId == 0)
+        {
+            Students = StudentService.Data
+                .Where(x => x.FirstName.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                            x.LastName.Contains(searchText, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+        else
+        {
+            Students = StudentService.Data
+                .Where(x => x.ChurchId == churchId &&
+                            (x.FirstName.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                             x.LastName.Contains(searchText, StringComparison.OrdinalIgnoreCase)))
+                .ToList();
+        }
+    }
+
+    public void Dispose()
+    {
+        StudentService.OnChange -= NotifyStateChanged;
+    }
+
+    public void NotifyStateChanged(ComponentBase sender, List<StudentResponse>? data, bool isLoading, ServiceError? error)
+    {
+        StateHasChanged();
+    }
+
+}

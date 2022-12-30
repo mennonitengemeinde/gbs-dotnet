@@ -1,3 +1,5 @@
+using Gbs.Application.Entities;
+
 namespace Gbs.Infrastructure.Persistence.Configurations;
 
 public class LessonConfiguration : IEntityTypeConfiguration<Lesson>

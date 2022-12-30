@@ -1,3 +1,5 @@
+using Gbs.Application.Entities;
+
 namespace Gbs.Tests.Infrastructure.Seeds;
 
 public static class GenerationSeed

@@ -2,23 +2,23 @@
 @attribute [Authorize(Policy = Policies.RequireAdminsSoundAndTeachers)]
 @using Gbs.Wasm.Pages.School.Components
 @implements IAsyncDisposable
+@implements Gbs.Wasm.Common.Interfaces.Api.INotifyStateChanged<StreamResponse>
 
-@inject IStreamStore StreamStore
-@inject ILessonStore LessonStore
 @inject NavigationManager NavigationManager
+@inject IStreamService StreamService
 
 <PageTitle>School - GBS</PageTitle>
 
 <WelcomeBanner />
 
-@if (StreamStore.Data.Any(s => s.IsLive))
+@if (StreamService.Data.Any(s => s.IsLive))
 {
     <div class="tw-pt-8 tw-pb-2 tw-text-gray-600">
         <MudText Typo="Typo.h2" Class="tw-text-2xl tw-font-semibold">Live</MudText>
     </div>
 
     <MudGrid Class="tw-relative tw-pt-2">
-        @foreach (var liveStream in StreamStore.Data.Where(s => s.IsLive))
+        @foreach (var liveStream in StreamService.Data.Where(s => s.IsLive))
         {
             <MudItem xs="12" md="6" xl="4">
                 <LiveStreamCard LiveStream="@liveStream" />
@@ -27,62 +27,63 @@
     </MudGrid>
 }
 
-@if (LessonStore.Data.Count > 0)
+@if (LessonState.Data.Count > 0)
 {
     <div class="tw-pt-8 tw-pb-2 tw-text-gray-600">
         <MudText Typo="Typo.h2" Class="tw-text-2xl tw-font-semibold">Lessons</MudText>
     </div>
 
-    <LessonCardList Lessons="LessonStore.Data" />
+    <LessonCardList Lessons="LessonState.Data" />
 }
 
 @code {
-    [CascadingParameter] CascadingUiState UiState { get; set; } = null!;
+
+    [CascadingParameter]
+    LessonState LessonState { get; set; } = null!;
+
+    [CascadingParameter]
+    UiState UiState { get; set; } = null!;
 
     private HubConnection? _hubConnection;
 
     protected override async Task OnInitializedAsync()
     {
-        await Task.WhenAll(StreamStore.ForceFetch(), LessonStore.ForceFetch());
+        StreamService.OnChange += NotifyStateChanged;
+        var tasks = new[] { LessonState.ForceFetch(), StreamService.ForceFetch(this) };
+
+        await Task.WhenAll(tasks);
 
         _hubConnection = new HubConnectionBuilder()
             .WithUrl(NavigationManager.ToAbsoluteUri("/hubs/streamshub"))
             .Build();
 
-        _hubConnection.On<Result<List<StreamDto>>>("ReceiveStreams", OnReceiveStreams);
+        _hubConnection.On<Result<List<StreamResponse>>>("ReceiveStreams", OnReceiveStreams);
 
         await _hubConnection.StartAsync();
-        
-        LessonStore.OnChange += StateHasChanged;
-        StreamStore.OnChange += StateHasChanged;
     }
 
-    protected override void OnAfterRender(bool firstRender)
-    {
-        UiState.IsPageLoading = StreamStore.IsLoading;
-    }
-
-    private void OnReceiveStreams(Result<List<StreamDto>> streams)
+    private void OnReceiveStreams(Result<List<StreamResponse>> streams)
     {
         if (!streams.Success) return;
-        
+
         if (streams.Data != null)
         {
-            StreamStore.CacheData(streams.Data);
+            StreamService.SetState(this, streams.Data, false, null);
         }
     }
 
     public async ValueTask DisposeAsync()
     {
-        LessonStore.OnChange -= StateHasChanged;
-        StreamStore.OnChange -= StateHasChanged;
-        
-        if (_hubConnection != null)
+        StreamService.OnChange -= NotifyStateChanged;
+        if (_hubConnection is not null)
         {
-
-            await _hubConnection.StopAsync();
             await _hubConnection.DisposeAsync();
         }
+    }
+
+    public void NotifyStateChanged(ComponentBase sender, List<StreamResponse>? data, bool isLoading, ServiceError? error)
+    {
+        StateHasChanged();
     }
 
 }

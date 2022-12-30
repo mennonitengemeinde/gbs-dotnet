@@ -1,0 +1,114 @@
+﻿@page "/admin/students/{Id:int}/grades/create"
+@attribute [Authorize(Policy = Policies.RequireAdmins)]
+@implements IDisposable
+@implements INotifyStateChanged<GradeResponse>
+
+@inject NavigationManager NavigationManager
+@inject IGradeService GradeService
+
+<PageTitle>Student Grade Form - GBS</PageTitle>
+
+<EditForm Model="Model" OnValidSubmit="HandleValidSubmit">
+    <FluentValidationValidator />
+    <MudGrid Justify="Justify.Center" Class="tw-pt-8">
+        <MudItem xs="12" sm="8" md="5">
+            <MatFormCard Label="Student Grade"
+                         IsEdit="@false"
+                         IsLoading="@IsLoading"
+                         IsProcessing="@IsProcessing"
+                         ValidationErrors="@ValidationErrors"
+                         ReturnUrl="@($"/admin/students/{Id}")">
+                <MudDatePicker Label="Date"
+                               @bind-Date="Model.Date"
+                               For="@(() => Model.Date)" />
+                <MudSelect Label="Grade Type"
+                           AnchorOrigin="Origin.BottomCenter"
+                           For="@(() => Model.GradeTypeId)"
+                           @bind-Value="Model.GradeTypeId">
+                    <MudSelectItem Disabled="true" T="int" Value="0">Select Grade type</MudSelectItem>
+                    @foreach (var item in GradeTypeState.Data)
+                    {
+                        <MudSelectItem T="int" Value="@item.Id">@item.Name</MudSelectItem>
+                    }
+                </MudSelect>
+                <MudSelect Label="Subject"
+                           AnchorOrigin="Origin.BottomCenter"
+                           For="@(() => Model.SubjectId)"
+                           @bind-Value="Model.SubjectId">
+                    <MudSelectItem Disabled="true" T="int" Value="0">Select Subject</MudSelectItem>
+                    @foreach (var item in SubjectState.Data)
+                    {
+                        <MudSelectItem T="int" Value="@item.Id">@item.Name</MudSelectItem>
+                    }
+                </MudSelect>
+                <MudNumericField @bind-Value="Model.Percent"
+                                 Label="Percent"
+                                 Variant="Variant.Text"
+                                 Adornment="Adornment.End"
+                                 AdornmentIcon="@Icons.Material.Filled.Percent"
+                                 Min="0"
+                                 Max="100"
+                                 For="() => Model.Percent" />
+            </MatFormCard>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+
+@code {
+
+    [Parameter]
+    public int Id { get; set; }
+
+    [CascadingParameter]
+    public SubjectState SubjectState { get; set; } = null!;
+
+    [CascadingParameter]
+    public GradeTypeState GradeTypeState { get; set; } = null!;
+
+    bool IsLoading { get; set; }
+    bool IsProcessing { get; set; }
+    CreateGradeRequest Model { get; set; } = new();
+    string[]? ValidationErrors { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        GradeService.OnChange += NotifyStateChanged;
+        IsLoading = true;
+        await Initialize();
+        Model.Date = DateTime.Today;
+        Model.StudentId = Id;
+        IsLoading = false;
+    }
+
+    async Task Initialize()
+    {
+        var tasks = new[] { SubjectState.Fetch(), GradeTypeState.Fetch() };
+        await Task.WhenAll(tasks);
+    }
+
+    async Task HandleValidSubmit()
+    {
+        IsProcessing = true;
+        await GradeService.Create(this, Model);
+        if (GradeService.Error != null)
+        {
+            ValidationErrors = GradeService.Error.Errors;
+            GradeService.ClearError(this);
+            IsProcessing = false;
+            return;
+        }
+
+        NavigationManager.NavigateTo($"/admin/students/{Id}");
+    }
+
+    public void Dispose()
+    {
+        GradeService.OnChange -= NotifyStateChanged;
+    }
+
+    public void NotifyStateChanged(ComponentBase sender, List<GradeResponse>? data, bool isLoading, ServiceError? error)
+    {
+        StateHasChanged();
+    }
+
+}

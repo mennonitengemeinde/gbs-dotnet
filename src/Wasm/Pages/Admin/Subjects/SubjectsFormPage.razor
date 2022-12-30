@@ -1,10 +1,7 @@
 @page "/admin/subjects/create"
 @page "/admin/subjects/{Id:int}/edit"
+@inherits BaseMatForm
 @attribute [Authorize(Policy = Policies.RequireAdmins)]
-
-@inject NavigationManager NavigationManager
-@inject ISubjectStore SubjectStore
-@inject IUiService UiService
 
 <PageTitle>Subjects Form - GBS</PageTitle>
 
@@ -13,9 +10,10 @@
     <MudGrid Justify="Justify.Center" Class="tw-pt-8">
         <MudItem xs="12" sm="8" md="5">
             <MatFormCard Label="Subject"
-                         IsEdit="@_isEdit"
-                         IsLoading="@SubjectStore.IsLoading"
-                         IsProcessing="@_isProcessing"
+                         IsEdit="@Id.HasValue"
+                         IsLoading="@SubjectState.IsLoading"
+                         IsProcessing="@IsProcessing"
+                         ValidationErrors="ValidationErrors"
                          ReturnUrl="/admin/subjects">
                 <MudTextField Label="Name"
                               @bind-Value="_model.Name"
@@ -27,22 +25,20 @@
 </EditForm>
 
 @code {
-    SubjectCreateDto _model = new();
-    bool _isEdit;
-    bool _isProcessing;
 
-    [Parameter]
-    public int? Id { get; set; }
+    [CascadingParameter]
+    public SubjectState SubjectState { get; set; } = null!;
+
+    CreateSubjectRequest _model = new();
 
     protected override async Task OnInitializedAsync()
     {
         if (Id.HasValue)
         {
-            _isEdit = true;
-            var subject = await SubjectStore.GetById(Id.Value);
+            var subject = await SubjectState.GetById(Id.Value);
             if (subject != null)
             {
-                _model = new SubjectCreateDto
+                _model = new CreateSubjectRequest
                 {
                     Name = subject.Name
                 };
@@ -52,24 +48,23 @@
 
     async Task HandleValidSubmit()
     {
-        _isProcessing = true;
-        if (_isEdit)
+        IsProcessing = true;
+        if (Id.HasValue)
         {
-            await SubjectStore.Update(Id!.Value, _model);
+            await SubjectState.Update(Id.Value, _model);
         }
         else
         {
-            await SubjectStore.Add(_model);
+            await SubjectState.Create(_model);
         }
 
-        if (!SubjectStore.HasError)
+        if (HasError(SubjectState.Error))
         {
-            _isProcessing = false;
-            UiService.ShowSuccessAlert(_isEdit ? "Subject updated successfully" : "Subject added successfully");
-            NavigationManager.NavigateTo("admin/subjects");
+            SubjectState.ClearError();
+            return;
         }
-        _isProcessing = false;
-        SubjectStore.ClearErrors();
+
+        NavigationManager.NavigateTo("admin/subjects");
     }
 
 }

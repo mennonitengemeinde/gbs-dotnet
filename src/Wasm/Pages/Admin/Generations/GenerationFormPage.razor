@@ -1,0 +1,69 @@
+@page "/admin/generations/create"
+@page "/admin/generations/{Id:int}/edit"
+@inherits BaseMatForm
+@attribute [Authorize(Policy = Policies.RequireAdmins)]
+
+<PageTitle>Generations Form - GBS</PageTitle>
+
+<EditForm Model="_model" OnValidSubmit="HandleValidSubmit">
+    <FluentValidationValidator />
+    <MudGrid Justify="Justify.Center" Class="tw-pt-8">
+        <MudItem xs="12" sm="8" md="5">
+            <MatFormCard Label="Generation"
+                         IsEdit="@Id.HasValue"
+                         IsLoading="@GenerationState.IsLoading"
+                         IsProcessing="@IsProcessing"
+                         ValidationErrors="@ValidationErrors"
+                         ReturnUrl="/admin/generations">
+                <MudTextField Label="Name"
+                              @bind-Value="_model.Name"
+                              For="() => _model.Name" />
+            </MatFormCard>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+
+@code {
+
+    [CascadingParameter]
+    public GenerationState GenerationState { get; set; } = null!;
+
+    CreateGenerationRequest _model = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Id.HasValue)
+        {
+            var generation = await GenerationState.GetById(Id.Value);
+            if (generation != null)
+            {
+                _model = new CreateGenerationRequest
+                {
+                    Name = generation.Name
+                };
+            }
+        }
+    }
+
+    async Task HandleValidSubmit()
+    {
+        IsProcessing = true;
+        if (Id.HasValue)
+        {
+            await GenerationState.Update(Id.Value, _model);
+        }
+        else
+        {
+            await GenerationState.Create(_model);
+        }
+
+        if (HasError(GenerationState.Error))
+        {
+            GenerationState.ClearError();
+            return;
+        }
+
+        NavigationManager.NavigateTo("admin/generations");
+    }
+
+}

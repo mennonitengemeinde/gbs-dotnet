@@ -1,8 +1,7 @@
 ﻿@page "/school/lessons/{id:int}"
-@attribute [Authorize(Policy = Policies.RequireAdminsSoundAndTeachers)]
 @using Gbs.Wasm.Pages.School.Components
+@attribute [Authorize(Policy = Policies.RequireAdminsSoundAndTeachers)]
 
-@inject ILessonStore LessonStore
 @inject NavigationManager NavigationManager
 
 <PageTitle>Lesson - GBS</PageTitle>
@@ -13,19 +12,22 @@
 }
 
 @code {
-    
+
     [CascadingParameter]
-    CascadingUiState UiState { get; set; } = null!;
+    LessonState LessonState { get; set; } = null!;
+
+    [CascadingParameter]
+    UiState UiState { get; set; } = null!;
 
     [Parameter]
     public int Id { get; set; }
 
     [Parameter]
-    public LessonDto? Lesson { get; set; }
+    public LessonResponse? Lesson { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        var lesson = await LessonStore.GetById(Id);
+        var lesson = await LessonState.GetById(Id);
         if (lesson == null)
         {
             NavigationManager.NavigateTo("school");
@@ -34,11 +36,6 @@
         {
             Lesson = lesson;
         }
-    }
-
-    protected override void OnAfterRender(bool firstRender)
-    {
-            UiState.IsPageLoading = LessonStore.IsLoading;
     }
 
 }

@@ -7,9 +7,9 @@
 <MudDialogProvider />
 <MudSnackbarProvider />
 
-<MudLayout Class="tw-min-h-screen">
+<MudLayout Class="tw-min-h-screen tw-max-h-screen tw-flex">
     <MudAppBar Elevation="1">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@(e => DrawerToggle())" />
         <MudText Typo="Typo.h5" Class="ml-3">GBS</MudText>
         <MudSpacer />
         <AuthorizeView>
@@ -28,9 +28,9 @@
     <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
         <NavMenu />
     </MudDrawer>
-    <MudMainContent Class="tw-h-fill tw-pb-4">
+    <MudMainContent Class="tw-flex-1 tw-flex tw-pb-4 tw-overflow-x-auto">
         <InfinitLinearProgress />
-        <MudContainer MaxWidth="MaxWidth.ExtraLarge">
+        <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="tw-flex-1 tw-flex tw-flex-col">
             @Body
         </MudContainer>
     </MudMainContent>

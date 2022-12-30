@@ -1,4 +1,6 @@
-﻿namespace Gbs.Infrastructure.Persistence.Configurations;
+﻿using Gbs.Application.Entities;
+
+namespace Gbs.Infrastructure.Persistence.Configurations;
 
 public class LiveStreamTeacherConfiguration : IEntityTypeConfiguration<LiveStreamTeacher>
 {

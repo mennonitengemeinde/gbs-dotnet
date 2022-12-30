@@ -1,97 +1,89 @@
 @page "/admin/churches/create"
 @page "/admin/churches/{Id:int}/edit"
+@inherits BaseMatForm
 @attribute [Authorize(Policy = Policies.RequireAdmins)]
-
-@inject NavigationManager NavigationManager
-@inject IChurchStore ChurchStore
-@inject IUiService UiService
 
 <PageTitle>Churches Form - GBS</PageTitle>
 
 <EditForm Model="_model" OnValidSubmit="HandleValidSubmit">
-    <DataAnnotationsValidator/>
+    <FluentValidationValidator />
     <MudGrid Justify="Justify.Center" Class="tw-pt-8">
         <MudItem xs="12" sm="8" md="5">
             <MatFormCard Label="Church"
-                         IsEdit="@_isEdit"
-                         IsLoading="@ChurchStore.IsLoading"
-                         IsProcessing="@_isProcessing"
-                         ReturnUrl="/admin/churches">
+                         IsEdit="@Id.HasValue"
+                         IsLoading="@ChurchState.IsLoading"
+                         IsProcessing="@IsProcessing"
+                         ReturnUrl="/admin/churches"
+                         ValidationErrors="@ValidationErrors">
                 <MudTextField Label="Name"
                               @bind-Value="_model.Name"
                               Required="true"
-                              For="() => _model.Name"/>
+                              For="() => _model.Name" />
                 <MudTextField Label="Address"
                               @bind-Value="_model.Address"
-                              For="() => _model.Address"/>
+                              For="() => _model.Address" />
                 <MudTextField Label="City"
                               @bind-Value="_model.City"
-                              For="() => _model.City"/>
+                              For="() => _model.City" />
                 <MudTextField Label="State"
                               @bind-Value="_model.State"
-                              For="() => _model.State"/>
+                              For="() => _model.State" />
                 <MudTextField Label="Country"
                               @bind-Value="_model.Country"
                               Required="true"
-                              For="() => _model.Country"/>
+                              For="() => _model.Country" />
                 <MudTextField Label="PostalCode"
                               @bind-Value="_model.PostalCode"
-                              For="() => _model.PostalCode"/>
+                              For="() => _model.PostalCode" />
             </MatFormCard>
         </MudItem>
     </MudGrid>
 </EditForm>
 
 @code {
-    ChurchCreateDto _model = new ();
-    bool _isProcessing;
-    bool _isEdit;
 
-    [Parameter]
-    public int? Id { get; set; }
+    [CascadingParameter]
+    public ChurchState ChurchState { get; set; } = null!;
+
+    readonly CreateChurchRequest _model = new();
 
     protected override async Task OnInitializedAsync()
     {
-        if (Id != null)
+        if (Id.HasValue)
         {
-            _isEdit = true;
-            var church = await ChurchStore.GetById(Id.Value);
-            if (church != null)
+            var church = await ChurchState.GetById(Id.Value);
+            if (church == null)
             {
-                _model.Name = church.Name;
-                _model.Address = church.Address;
-                _model.City = church.City;
-                _model.State = church.State;
-                _model.PostalCode = church.PostalCode;
-                _model.Country = church.Country;
+                UiService.ShowErrorAlert("Church not found");
+                NavigationManager.NavigateTo("/admin/churches");
+                return;
             }
+
+            _model.Name = church.Name;
+            _model.Address = church.Address;
+            _model.City = church.City;
+            _model.State = church.State;
+            _model.PostalCode = church.PostalCode;
+            _model.Country = church.Country;
         }
     }
 
     async Task HandleValidSubmit()
     {
-        _isProcessing = true;
+        IsProcessing = true;
 
-        if (_isEdit)
-        {
-            await ChurchStore.Update(Id!.Value, _model);
-        }
+        if (Id.HasValue)
+            await ChurchState.Update(Id.Value, _model);
         else
+            await ChurchState.Create(_model);
+
+        if (HasError(ChurchState.Error))
         {
-            await ChurchStore.Add(_model);
+            ChurchState.ClearError();
+            return;
         }
 
-        if (!ChurchStore.HasError)
-        {
-            _isProcessing = false;
-            UiService.ShowSuccessAlert(_isEdit ? "Church updated successfully" : "Church added successfully");
-            NavigationManager.NavigateTo("admin/churches");
-        }
-        else
-        {
-            _isProcessing = false;
-            ChurchStore.ClearErrors();
-        }
+        NavigationManager.NavigateTo("admin/churches");
     }
 
 }

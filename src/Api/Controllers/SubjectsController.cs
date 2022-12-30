@@ -1,3 +1,6 @@
+using Gbs.Application.Features.Subjects.Interfaces;
+using Gbs.Shared.Subjects;
+
 namespace Gbs.Api.Controllers
 {
     [Route("api/[controller]")]
@@ -15,7 +18,7 @@ namespace Gbs.Api.Controllers
         
         [HttpGet]
         [Authorize(Policy = Policies.RequireAdminsSoundAndTeachers)]
-        public async Task<ActionResult<Result<List<SubjectDto>>>> GetSubjects()
+        public async Task<ActionResult<Result<List<SubjectResponse>>>> GetSubjects()
         {
             var result = await _subjectQueries.GetAll();
             return result.ToActionResult();
@@ -23,7 +26,7 @@ namespace Gbs.Api.Controllers
         
         [HttpGet("{id:int}")]
         [Authorize(Policy = Policies.RequireAdminsSoundAndTeachers)]
-        public async Task<ActionResult<Result<SubjectDto>>> GetSubject(int id)
+        public async Task<ActionResult<Result<SubjectResponse>>> GetSubject(int id)
         {
             var result = await _subjectQueries.GetById(id);
             return result.ToActionResult();
@@ -31,7 +34,7 @@ namespace Gbs.Api.Controllers
         
         [HttpPost]
         [Authorize(Policy = Policies.RequireAdmins)]
-        public async Task<ActionResult<Result<SubjectDto>>> AddSubject(SubjectCreateDto subjectCreateDto)
+        public async Task<ActionResult<Result<SubjectResponse>>> AddSubject(CreateSubjectRequest subjectCreateDto)
         {
             var result = await _subjectCommands.Add(subjectCreateDto);
             return result.ToActionResult();
@@ -39,7 +42,7 @@ namespace Gbs.Api.Controllers
         
         [HttpPut("{id:int}")]
         [Authorize(Policy = Policies.RequireAdmins)]
-        public async Task<ActionResult<Result<SubjectDto>>> UpdateSubject(int id, SubjectCreateDto subjectUpdateDto)
+        public async Task<ActionResult<Result<SubjectResponse>>> UpdateSubject(int id, CreateSubjectRequest subjectUpdateDto)
         {
             var result = await _subjectCommands.Update(id, subjectUpdateDto);
             return result.ToActionResult();

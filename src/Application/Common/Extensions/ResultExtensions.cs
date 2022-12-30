@@ -1,4 +1,3 @@
-using Gbs.Domain.Common.Wrapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,6 +18,8 @@ public static class ResultExtensions
                 return new BadRequestObjectResult(result);
             case 404:
                 return new NotFoundObjectResult(result);
+            case 422:
+                return new UnprocessableEntityObjectResult(result);
             case 500:
                 return new ObjectResult(result) { StatusCode = StatusCodes.Status500InternalServerError };
             default:

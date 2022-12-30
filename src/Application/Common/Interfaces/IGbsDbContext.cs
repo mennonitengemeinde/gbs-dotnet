@@ -7,7 +7,6 @@ public interface IGbsDbContext
 {
     DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
     DbSet<Generation> Generations { get; set; }
-    DbSet<Enrollment> Enrollments { get; set; }
     DbSet<Church> Churches { get; set; }
     DbSet<Student> Students { get; set; }
     DbSet<Teacher> Teachers { get; set; }
@@ -17,6 +16,7 @@ public interface IGbsDbContext
     DbSet<SubjectDocument> SubjectDocuments { get; set; }
     DbSet<Lesson> Lessons { get; set; }
     DbSet<Grade> Grades { get; set; }
+    DbSet<GradeType> GradeTypes { get; set; }
     DbSet<Question> Questions { get; set; }
     DbSet<Message> Messages { get; set; }
     DbSet<WatchList> WatchLists { get; set; }

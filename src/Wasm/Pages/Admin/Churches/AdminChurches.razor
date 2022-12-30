@@ -1,7 +1,5 @@
 @page "/admin/churches"
 @attribute [Authorize(Policy = Policies.RequireAdmins)]
-@implements IDisposable
-@inject IChurchStore ChurchStore
 
 <PageTitle>Churches - GBS</PageTitle>
 
@@ -12,7 +10,7 @@
     </MudButton>
 </div>
 
-<MudTable Items="@ChurchStore.Data" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@ChurchStore.IsLoading" LoadingProgressColor="Color.Info">
+<MudTable Items="@ChurchState.Data" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@ChurchState.IsLoading" LoadingProgressColor="Color.Info">
     <HeaderContent>
         <MudTh>Name</MudTh>
         <MudTh>Country</MudTh>
@@ -33,15 +31,12 @@
 
 @code {
 
+    [CascadingParameter]
+    public ChurchState ChurchState { get; set; } = null!;
+
     protected override async Task OnInitializedAsync()
     {
-        await ChurchStore.Fetch();
-        ChurchStore.OnChange += StateHasChanged;
-    }
-
-    public void Dispose()
-    {
-        ChurchStore.OnChange -= StateHasChanged;
+        await ChurchState.Fetch();
     }
 
 }

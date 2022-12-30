@@ -1,8 +1,5 @@
 ﻿@page "/admin/generations"
 @attribute [Authorize(Policy = Policies.RequireAdmins)]
-@implements IDisposable
-
-@inject IGenerationStore GenerationStore
 
 <PageTitle>Generations - GBS</PageTitle>
 
@@ -13,7 +10,7 @@
     </MudButton>
 </div>
 
-<MudTable Items="@GenerationStore.Data" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@GenerationStore.IsLoading" LoadingProgressColor="Color.Info">
+<MudTable Items="@GenerationState.Data" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@GenerationState.IsLoading" LoadingProgressColor="Color.Info">
     <HeaderContent>
         <MudTh>Name</MudTh>
         <MudTh></MudTh>
@@ -30,15 +27,12 @@
 
 @code {
 
+    [CascadingParameter]
+    public GenerationState GenerationState { get; set; } = null!;
+
     protected override async Task OnInitializedAsync()
     {
-        await GenerationStore.ForceFetch();
-        GenerationStore.OnChange += StateHasChanged;
+        await GenerationState.ForceFetch();
     }
-
-    public void Dispose()
-    {
-        GenerationStore.OnChange -= StateHasChanged;
-    }
-
+    
 }

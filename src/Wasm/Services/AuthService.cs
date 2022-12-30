@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using Gbs.Shared.Identity;
 using Microsoft.AspNetCore.Components.Authorization;
 
 namespace Gbs.Wasm.Services;
@@ -14,16 +15,16 @@ public class AuthApiService : IAuthService
         _authStateProvider = authStateProvider;
     }
 
-    public async Task<Result<string>> Login(LoginDto userLogin)
+    public async Task<Result<string>> Login(LoginRequest userLogin)
     {
         return await _http.PostAsJsonAsync("api/auth/login", userLogin)
             .EnsureSuccess<string>();
     }
 
-    public async Task<Result<List<RolesDto>>> FetchRoles()
+    public async Task<Result<List<RolesResponse>>> FetchRoles()
     {
         return await _http.GetAsync("api/auth/roles")
-            .EnsureSuccess<List<RolesDto>>();
+            .EnsureSuccess<List<RolesResponse>>();
     }
 
     public async Task<bool> IsUserAuthenticated()
@@ -34,11 +35,19 @@ public class AuthApiService : IAuthService
     public async Task<List<string>> GetUserRoles()
     {
         var authState = await _authStateProvider.GetAuthenticationStateAsync();
-        var roles = authState.User.Claims
-            .Where(c => c.Type == ClaimTypes.Role)
+        return authState.User.Claims
+            .Where(c => c.Type == "role")
             .Select(c => c.Value)
             .ToList();
-        return roles;
+    }
+
+    public async Task<int> GetUserChurchId()
+    {
+        var authState = await _authStateProvider.GetAuthenticationStateAsync();
+        return authState.User.Claims
+            .Where(c => c.Type == "church_id")
+            .Select(c => int.Parse(c.Value))
+            .FirstOrDefault();
     }
 
     public async Task<bool> UserIsAdmin()
