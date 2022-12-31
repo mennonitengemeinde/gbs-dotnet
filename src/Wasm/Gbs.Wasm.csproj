@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Gbs.Shared\Gbs.Shared.csproj" />
+    <ProjectReference Include="..\Shared\Gbs.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

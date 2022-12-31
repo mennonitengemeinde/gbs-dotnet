@@ -16,7 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Ui", "Ui", "{9FE0DBC8-EC9F-
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gbs.Tests.Infrastructure", "tests\Gbs.Tests.Infrastructure\Gbs.Tests.Infrastructure.csproj", "{63B6AF11-73EA-4996-AA66-D7A804EBC710}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gbs.Shared", "src\Gbs.Shared\Gbs.Shared.csproj", "{2860BDAE-A49F-43CE-B9FA-62A7950C33A9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gbs.Shared", "src\Shared\Gbs.Shared.csproj", "{2860BDAE-A49F-43CE-B9FA-62A7950C33A9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{3DDC7B26-558B-4DC3-9DA8-B36454BAEAB2}"
 EndProject

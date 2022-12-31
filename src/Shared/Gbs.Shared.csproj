@@ -4,8 +4,9 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <AssemblyName>Gbs.Shared</AssemblyName>
         <RootNamespace>Gbs.Shared</RootNamespace>
+        <PackageId>Gbs.Shared</PackageId>
+        <AssemblyName>Gbs.Shared</AssemblyName>
     </PropertyGroup>
 
     <ItemGroup>
