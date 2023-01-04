@@ -6,6 +6,7 @@ global using Gbs.Shared.Common.Wrapper;
 global using Gbs.Shared.Grades;
 global using Gbs.Shared.Streams;
 global using Gbs.Shared.Students;
+global using Gbs.Shared.Subjects;
 global using Gbs.Wasm.Common.Extensions;
 global using Gbs.Wasm.Common.Interfaces;
 global using Gbs.Wasm.Common.Interfaces.Api;

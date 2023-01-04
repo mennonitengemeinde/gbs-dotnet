@@ -3,6 +3,8 @@
 @inherits BaseMatForm
 @attribute [Authorize(Policy = Policies.RequireAdminsAndSound)]
 
+@inject ISubjectService SubjectService
+
 <PageTitle>Lessons Form - GBS</PageTitle>
 
 <EditForm Model="_model" OnValidSubmit="HandleValidSubmit">
@@ -47,12 +49,12 @@
                                For="@(() => _model.SubjectId)"
                                @bind-Value="_model.SubjectId">
                         @* <MudSelectItem Disabled="true" T="int?" Value="0">Select Subject</MudSelectItem> *@
-                        @foreach (var item in SubjectState.Data)
+                        @foreach (var item in SubjectService.Data)
                         {
                             <MudSelectItem T="int?" Value="@item.Id">@item.Name</MudSelectItem>
                         }
                     </MudSelect>
-                    @if (SubjectState.IsLoading)
+                    @if (SubjectService.IsLoading)
                     {
                         <MudProgressCircular Color="Color.Default" Indeterminate="true" Size="Size.Small" Class="tw-ml-4 tw-mb-1" />
                     }
@@ -69,7 +71,7 @@
                             <MudSelectItem T="int" Value="@item.Id">@item.Name</MudSelectItem>
                         }
                     </MudSelect>
-                    @if (SubjectState.IsLoading)
+                    @if (SubjectService.IsLoading)
                     {
                         <MudProgressCircular Color="Color.Default" Indeterminate="true" Size="Size.Small" Class="tw-ml-4 tw-mb-1" />
                     }
@@ -94,16 +96,13 @@
     public GenerationState GenerationState { get; set; } = null!;
 
     [CascadingParameter]
-    public SubjectState SubjectState { get; set; } = null!;
-
-    [CascadingParameter]
     public TeacherState TeacherState { get; set; } = null!;
 
     private CreateLessonRequest _model = new();
 
     protected override async Task OnInitializedAsync()
     {
-        await Task.WhenAll(SubjectState.Fetch(), SubjectState.Fetch(), SubjectState.Fetch());
+        await Task.WhenAll(SubjectService.Fetch(this), LessonState.Fetch(), GenerationState.Fetch(), TeacherState.Fetch());
 
         if (Id.HasValue)
         {

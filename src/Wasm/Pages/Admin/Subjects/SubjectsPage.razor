@@ -2,16 +2,18 @@
 @attribute [Authorize(Policy = Policies.RequireAdmins)]
 @inherits BaseMatForm
 
+@inject ISubjectService SubjectService
+
 <PageTitle>Subjects - GBS</PageTitle>
 
 <div class="tw-py-4 tw-space-y-4">
     <MudText Typo="Typo.h4">Subjects</MudText>
-    <MudButton StartIcon="@Icons.Filled.Add" Color="Color.Primary" Variant="Variant.Filled" Href="/admin/subjects/create">
+    <MudButton StartIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Variant="Variant.Filled" Href="/admin/subjects/create">
         New
     </MudButton>
 </div>
 
-<MudTable Items="@SubjectState.Data" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@SubjectState.IsLoading" LoadingProgressColor="Color.Info">
+<MudTable Items="@SubjectService.Data" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@SubjectService.IsLoading" LoadingProgressColor="Color.Info">
     <HeaderContent>
         <MudTh>Name</MudTh>
         <MudTh>Actions</MudTh>
@@ -28,12 +30,9 @@
 
 @code {
 
-    [CascadingParameter]
-    public SubjectState SubjectState { get; set; } = null!;
-
     protected override async Task OnInitializedAsync()
     {
-        await SubjectState.ForceFetch();
+        await SubjectService.ForceFetch(this);
     }
 
 }

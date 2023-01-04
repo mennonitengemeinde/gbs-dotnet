@@ -27,11 +27,11 @@
             </MudText>
         </MudCardContent>
         <MudCardActions Class="tw-justify-end">
-            <MudIconButton Icon="@Icons.Filled.ArrowDownward"
+            <MudIconButton Icon="@Icons.Material.Filled.ArrowDownward"
                            Color="Color.Primary"
                            Disabled="@(lesson == Lessons.Last())"
                            OnClick="() => HandleMoveLessonDown(lesson)" />
-            <MudIconButton Icon="@Icons.Filled.ArrowUpward"
+            <MudIconButton Icon="@Icons.Material.Filled.ArrowUpward"
                            Color="Color.Primary"
                            Disabled="@(lesson.Order <= 1)"
                            OnClick="() => HandleMoveLessonUp(lesson)" />

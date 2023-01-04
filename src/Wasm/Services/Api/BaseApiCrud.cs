@@ -11,10 +11,11 @@ public abstract class BaseApiCrud<T, TCreate, TUpdate, TId> : BaseApiService<T>,
     }
 
     public abstract string BaseUrl { get; }
+    public int CacheTime => 5;
 
-    public async Task Fetch(ComponentBase sender, int minutes = 5)
+    public async Task Fetch(ComponentBase sender)
     {
-        if (DateTimeService.UtcNow - LastUpdated > TimeSpan.FromMinutes(minutes) || Data.Count == 0)
+        if (DateTimeService.UtcNow - LastUpdated > TimeSpan.FromMinutes(CacheTime) || Data.Count == 0)
             await ForceFetch(sender);
     }
 

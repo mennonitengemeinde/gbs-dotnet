@@ -1,6 +1,6 @@
 <MudPaper Width="100%" Class="tw-p-6 tw-overflow-y-auto">
     <div class="tw-flex tw-justify-end -tw-mt-3 -tw-mr-3">
-        <MudIconButton Icon="@Icons.Filled.Close" Href="admin/students" />
+        <MudIconButton Icon="@Icons.Material.Filled.Close" Href="admin/students" />
     </div>
 
     @if (Student != null)
@@ -45,25 +45,38 @@
             <MudItem xs="4" Class="tw-flex tw-justify-end">
                 <MudButton Variant="Variant.Filled"
                            Color="Color.Secondary"
-                           StartIcon="@Icons.Filled.Add"
+                           StartIcon="@Icons.Material.Filled.Add"
                            Href="@($"admin/students/{Student.Id}/grades/create")">
                     Add
                 </MudButton>
             </MudItem>
             @if (Student.Grades.Any())
             {
-                <MudTable Items="Student.Grades.OrderBy(s => s.SubjectName)" Class="tw-w-full">
+                <MudTable Items="Subjects.Where(s => Student.Grades.Any(g => g.SubjectId == s.Id))"
+                          Dense="true"
+                          Class="tw-w-full">
                     <HeaderContent>
                         <MudTh>Subject</MudTh>
-                        <MudTh>Date</MudTh>
-                        <MudTh>Grade</MudTh>
-                        <MudTh>Percent</MudTh>
+                        @foreach (var gradeType in GradeTypes)
+                        {
+                            <MudTh>@gradeType.Name</MudTh>
+                        }
                     </HeaderContent>
                     <RowTemplate>
-                        <MudTd DataLabel="Subject">@context.SubjectName</MudTd>
-                        <MudTd DataLabel="Date">@context.Date.ToShortDateString()</MudTd>
-                        <MudTd DataLabel="Grade Type">@context.GradeType</MudTd>
-                        <MudTd DataLabel="%">@context.Percent.ToString()%</MudTd>
+                        <MudTd DataLabel="Subject">@context.Name</MudTd>
+                        @foreach(var gradeType in GradeTypes)
+                        {
+                            @if (Student.Grades.Any(g => g.SubjectName == context.Name && g.GradeType == gradeType.Name))
+                            {
+                                <MudTd DataLabel="@gradeType.Name">
+                                    @Student.Grades.First(g => g.SubjectName == context.Name && g.GradeType == gradeType.Name).Percent%
+                                </MudTd>
+                            }
+                            else
+                            {
+                                <MudTd DataLabel="@gradeType.Name"></MudTd>
+                            }
+                        }
                     </RowTemplate>
                 </MudTable>
             }
@@ -130,6 +143,14 @@
     [Parameter]
     [EditorRequired]
     public StudentResponse? Student { get; set; }
+    
+    [Parameter]
+    [EditorRequired]
+    public List<GradeTypeResponse> GradeTypes { get; set; } = new();
+    
+    [Parameter]
+    [EditorRequired]
+    public List<SubjectResponse> Subjects { get; set; } = new();
 
 }
 

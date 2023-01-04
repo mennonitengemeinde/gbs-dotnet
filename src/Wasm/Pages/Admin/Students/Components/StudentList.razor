@@ -7,16 +7,16 @@
                   Label="Search"
                   Variant="Variant.Outlined"
                   Adornment="Adornment.End"
-                  AdornmentIcon="@Icons.Filled.Search"
+                  AdornmentIcon="@Icons.Material.Filled.Search"
                   AdornmentColor="Color.Default"
                   Clearable="true"
                   Immediate="true"
                   Margin="Margin.Dense"
                   Class="tw-mx-2" />
-    <MudList Clickable="true" Class="tw-min-h-0">
+    <MudList Clickable="true" Class="tw-min-h-0" SelectedValue="SelectedValue" SelectedValueChanged="HandleClick">
         @foreach (var student in Students)
         {
-            <MudListItem Text="@($"{student.FirstName} {student.LastName}")" OnClick="() => HandleClick(student.Id)" />
+            <MudListItem Text="@($"{student.FirstName} {student.LastName}")" Value="student.Id" />
         }
     </MudList>
 </MudPaper>
@@ -29,6 +29,12 @@
 
     [Parameter]
     public string ClassCss { get; set; } = string.Empty;
+    
+    [Parameter]
+    public int? SelectedValue { get; set; }
+    
+    [Parameter]
+    public EventCallback<int> SelectedValueChanged { get; set; }
 
     [Parameter]
     public EventCallback<string> OnSearch { get; set; }
@@ -41,9 +47,9 @@
         return OnSearch.InvokeAsync(value);
     }
 
-    private void HandleClick(int value)
+    private async Task HandleClick(object value)
     {
-        NavigationManager.NavigateTo($"admin/students/{value}");
+        await SelectedValueChanged.InvokeAsync((int)value);
     }
 
 }

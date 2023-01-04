@@ -54,7 +54,7 @@
             var church = await ChurchState.GetById(Id.Value);
             if (church == null)
             {
-                UiService.ShowErrorAlert("Church not found");
+                await UiService.ShowErrorAlert("Church not found");
                 NavigationManager.NavigateTo("/admin/churches");
                 return;
             }

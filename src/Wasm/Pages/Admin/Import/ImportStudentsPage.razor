@@ -1,7 +1,7 @@
 @page "/admin/import/students"
 @using MudBlazor.Extensions
 @implements IDisposable
-@implements Gbs.Wasm.Common.Interfaces.Api.INotifyStateChanged<StudentResponse>
+@implements INotifyStateChanged<StudentResponse>
 
 <PageTitle>Import Students - GBS</PageTitle>
 
@@ -13,7 +13,7 @@
             <MudCardContent>
                 <div class="tw-flex tw-justify-center tw-pb-4">
                     <MudButton Variant="Variant.Outlined"
-                               StartIcon="@Icons.Filled.Download"
+                               StartIcon="@Icons.Material.Filled.Download"
                                HtmlTag="a"
                                Href="/files/StudentsTemplate.csv"
                                UserAttributes="@DownloadAttributes">
@@ -25,7 +25,7 @@
                         <MudButton HtmlTag="label"
                                    Variant="Variant.Filled"
                                    Color="Color.Primary"
-                                   StartIcon="@Icons.Filled.CloudUpload"
+                                   StartIcon="@Icons.Material.Filled.CloudUpload"
                                    for="@context">
                             Upload File
                         </MudButton>

@@ -20,12 +20,12 @@
         <MudTd DataLabel="Order">@context.Order</MudTd>
         <MudTd DataLabel="Visibility">@context.IsVisible</MudTd>
         <MudTd Class="tw-text-end">
-            <MudIconButton Icon="@Icons.Filled.ArrowDownward"
+            <MudIconButton Icon="@Icons.Material.Filled.ArrowDownward"
                            Size="Size.Small"
                            Color="Color.Primary"
                            Disabled="@(context == Lessons.Last())"
                            OnClick="() => HandleMoveLessonDown(context)" />
-            <MudIconButton Icon="@Icons.Filled.ArrowUpward"
+            <MudIconButton Icon="@Icons.Material.Filled.ArrowUpward"
                            Size="Size.Small"
                            Color="Color.Primary"
                            Disabled="@(context.Order <= 1)"

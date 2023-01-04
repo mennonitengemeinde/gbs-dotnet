@@ -13,7 +13,7 @@ public class GradeTypeQueries : IGradeTypeQueries
         _context = context;
         _mapper = mapper;
     }
-    
+
     public async Task<Result<List<GradeTypeResponse>>> GetAll()
     {
         var gradeTypes = await _context.GradeTypes
@@ -27,6 +27,8 @@ public class GradeTypeQueries : IGradeTypeQueries
         var gradeType = await _context.GradeTypes
             .ProjectTo<GradeTypeResponse>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(x => x.Id == id);
-        return Result.Ok(gradeType);
+        return gradeType == null
+            ? Result.NotFound<GradeTypeResponse>("Grade type not found")
+            : Result.Ok(gradeType);
     }
 }

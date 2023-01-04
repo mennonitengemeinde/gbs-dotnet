@@ -20,7 +20,7 @@ public class LessonQueriesTests : LessonTestBase, IQueryTests
 
         // Assert
         Assert.True(lessons.Success);
-        Assert.Equal(3, lessons.Data.Count);
+        Assert.Equal(3, lessons.Data?.Count);
     }
 
     [Fact]
@@ -72,7 +72,7 @@ public class LessonQueriesTests : LessonTestBase, IQueryTests
 
         // Assert
         Assert.True(lesson.Success);
-        Assert.Equal(1, lesson.Data.Id);
+        Assert.Equal(1, lesson.Data?.Id);
     }
 
     [Fact]
@@ -104,7 +104,7 @@ public class LessonQueriesTests : LessonTestBase, IQueryTests
 
         // Assert
         Assert.True(lesson.Success);
-        Assert.Equal(5, lesson.Data.Id);
+        Assert.Equal(5, lesson.Data?.Id);
     }
 
     [Fact]
@@ -136,7 +136,7 @@ public class LessonQueriesTests : LessonTestBase, IQueryTests
 
         // Assert
         Assert.True(lessons.Success);
-        Assert.Equal(4, lessons.Data.Count);
+        Assert.Equal(4, lessons.Data?.Count);
     }
 
     [Fact]
@@ -152,6 +152,6 @@ public class LessonQueriesTests : LessonTestBase, IQueryTests
 
         // Assert
         Assert.True(lessons.Success);
-        Assert.Equal(5, lessons.Data.Count);
+        Assert.Equal(5, lessons.Data?.Count);
     }
 }

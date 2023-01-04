@@ -3,6 +3,8 @@
 @inherits BaseMatForm
 @attribute [Authorize(Policy = Policies.RequireAdmins)]
 
+@inject ISubjectService SubjectService
+
 <PageTitle>Subjects Form - GBS</PageTitle>
 
 <EditForm Model="_model" OnValidSubmit="HandleValidSubmit">
@@ -11,7 +13,7 @@
         <MudItem xs="12" sm="8" md="5">
             <MatFormCard Label="Subject"
                          IsEdit="@Id.HasValue"
-                         IsLoading="@SubjectState.IsLoading"
+                         IsLoading="@SubjectService.IsLoading"
                          IsProcessing="@IsProcessing"
                          ValidationErrors="ValidationErrors"
                          ReturnUrl="/admin/subjects">
@@ -26,16 +28,13 @@
 
 @code {
 
-    [CascadingParameter]
-    public SubjectState SubjectState { get; set; } = null!;
-
     CreateSubjectRequest _model = new();
 
     protected override async Task OnInitializedAsync()
     {
         if (Id.HasValue)
         {
-            var subject = await SubjectState.GetById(Id.Value);
+            var subject = await SubjectService.GetById(this, Id.Value);
             if (subject != null)
             {
                 _model = new CreateSubjectRequest
@@ -51,16 +50,16 @@
         IsProcessing = true;
         if (Id.HasValue)
         {
-            await SubjectState.Update(Id.Value, _model);
+            await SubjectService.Update(this, Id.Value, _model);
         }
         else
         {
-            await SubjectState.Create(_model);
+            await SubjectService.Create(this, _model);
         }
 
-        if (HasError(SubjectState.Error))
+        if (HasError(SubjectService.Error))
         {
-            SubjectState.ClearError();
+            SubjectService.ClearError(this);
             return;
         }
 

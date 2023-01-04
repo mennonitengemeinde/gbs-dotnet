@@ -5,6 +5,7 @@
 
 @inject NavigationManager NavigationManager
 @inject IGradeService GradeService
+@inject ISubjectService SubjectService
 
 <PageTitle>Student Grade Form - GBS</PageTitle>
 
@@ -36,7 +37,7 @@
                            For="@(() => Model.SubjectId)"
                            @bind-Value="Model.SubjectId">
                     <MudSelectItem Disabled="true" T="int" Value="0">Select Subject</MudSelectItem>
-                    @foreach (var item in SubjectState.Data)
+                    @foreach (var item in SubjectService.Data)
                     {
                         <MudSelectItem T="int" Value="@item.Id">@item.Name</MudSelectItem>
                     }
@@ -60,9 +61,6 @@
     public int Id { get; set; }
 
     [CascadingParameter]
-    public SubjectState SubjectState { get; set; } = null!;
-
-    [CascadingParameter]
     public GradeTypeState GradeTypeState { get; set; } = null!;
 
     bool IsLoading { get; set; }
@@ -82,7 +80,7 @@
 
     async Task Initialize()
     {
-        var tasks = new[] { SubjectState.Fetch(), GradeTypeState.Fetch() };
+        var tasks = new[] { SubjectService.Fetch(this), GradeTypeState.Fetch() };
         await Task.WhenAll(tasks);
     }
 

@@ -64,7 +64,7 @@
         var result = await AuthService.Login(_loginDto);
         if (result.Success == false)
         {
-            UiService.ShowErrorAlert(result.Message, result.StatusCode);
+            await UiService.ShowErrorAlert(result.Message, result.StatusCode);
             _isProcessing = false;
             return;
         }

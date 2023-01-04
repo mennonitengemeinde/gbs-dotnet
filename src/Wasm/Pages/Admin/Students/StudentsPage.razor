@@ -2,10 +2,12 @@
 @page "/admin/students/{id:int}"
 @attribute [Authorize(Policy = Policies.RequireAdminsAndTeachers)]
 @implements IDisposable
-@implements Gbs.Wasm.Common.Interfaces.Api.INotifyStateChanged<StudentResponse>
+@implements INotifyStateChanged<StudentResponse>
 @using Gbs.Wasm.Pages.Admin.Students.Components
 
+@inject NavigationManager NavigationManager
 @inject IAuthService AuthService
+@inject ISubjectService SubjectService
 @inject IStudentService StudentService
 
 <PageTitle>Students - GBS</PageTitle>
@@ -25,7 +27,7 @@
         <MudText Typo="Typo.subtitle1">@StudentService.Data.FirstOrDefault()?.ChurchName</MudText>
     }
     <div class="tw-flex tw-justify-between tw-pt-4 @HideOnMobileDetail">
-        <MudButton StartIcon="@Icons.Filled.Add"
+        <MudButton StartIcon="@Icons.Material.Filled.Add"
                    Color="Color.Primary"
                    Variant="Variant.Filled"
                    Href="/admin/students/create">
@@ -42,11 +44,11 @@
 }
 
 <div class="tw-flex-1 tw-flex md:tw-space-x-4 tw-w-full tw-min-h-0">
-    <StudentList Students="@Students" OnSearch="@HandleSearch" ClassCss="@HideOnMobileDetail" />
+    <StudentList Students="@Students" OnSearch="@HandleSearch" ClassCss="@HideOnMobileDetail" SelectedValue="SelectedStudentId" SelectedValueChanged="HandleStudentSelect" />
 
     @if (Id.HasValue)
     {
-        <StudentDetail Student="SelectedStudent" />
+        <StudentDetail Student="SelectedStudent" GradeTypes="GradeTypeState.Data" Subjects="SubjectService.Data" />
     }
 </div>
 
@@ -58,6 +60,9 @@
     
     [CascadingParameter]
     ChurchState ChurchState { get; set; } = null!;
+    
+    [CascadingParameter]
+    GradeTypeState GradeTypeState { get; set; } = null!;
 
     [CascadingParameter]
     UiState UiState { get; set; } = null!;
@@ -78,11 +83,13 @@
     }
     
     StudentResponse? SelectedStudent { get; set; }
+    
+    int? SelectedStudentId { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         StudentService.OnChange += NotifyStateChanged;
-        var tasks = new[] { StudentService.ForceFetch(this), ChurchState.Fetch() };
+        var tasks = new[] { StudentService.ForceFetch(this), ChurchState.Fetch(), SubjectService.Fetch(this), GradeTypeState.Fetch() };
         await Task.WhenAll(tasks);
         Students = StudentService.Data;
         _userIsAdmin = await AuthService.UserIsAdmin();
@@ -93,12 +100,28 @@
         if (Id.HasValue)
         {
             SelectedStudent = await StudentService.GetById(this, Id.Value);
+            SelectedStudentId = Id;
         }
     }
 
     void HandleSearch(string searchText)
     {
         OnFilter(SelectedChurch, searchText);
+    }
+    
+    void HandleStudentSelect(int value)
+    {
+        if (value == 0)
+        {
+            SelectedStudentId = null;
+            NavigationManager.NavigateTo("/admin/students");
+            
+        }
+        else
+        {
+            SelectedStudentId = value;
+            NavigationManager.NavigateTo($"/admin/students/{value}");
+        }
     }
 
     string HideOnMobileDetail => Id.HasValue ? "tw-hidden md:tw-block" : "";

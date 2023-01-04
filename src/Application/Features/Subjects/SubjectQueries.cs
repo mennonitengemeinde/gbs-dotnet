@@ -16,6 +16,7 @@ public class SubjectQueries : ISubjectQueries
     public async Task<Result<List<SubjectResponse>>> GetAll()
     {
         var subjects = await _context.Subjects
+            .OrderBy(x => x.Name)
             .ProjectTo<SubjectResponse>(_mapper.ConfigurationProvider)
             .ToListAsync();
         return Result.Ok(subjects);
