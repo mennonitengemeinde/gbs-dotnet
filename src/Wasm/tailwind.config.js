@@ -9,5 +9,5 @@ module.exports = {
         "tw-hidden",
         "md:tw-block",
     ],
-    plugins: [],
+    plugins: [require('@rvxlab/tailwind-plugin-ios-full-height')],
 }
