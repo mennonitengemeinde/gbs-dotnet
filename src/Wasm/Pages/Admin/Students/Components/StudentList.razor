@@ -16,7 +16,7 @@
     <MudList Clickable="true" Class="tw-min-h-0" SelectedValue="SelectedValue" SelectedValueChanged="HandleClick">
         @foreach (var student in Students)
         {
-            <MudListItem Text="@($"{student.FirstName} {student.LastName}")" Value="student.Id" />
+            <MudListItem @key="student.Id" Text="@($"{student.FirstName} {student.LastName}")" Value="student.Id" />
         }
     </MudList>
 </MudPaper>
