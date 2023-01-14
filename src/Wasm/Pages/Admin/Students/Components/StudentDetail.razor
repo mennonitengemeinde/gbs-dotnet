@@ -135,6 +135,15 @@
                 </MudItem>
             }
         </MudGrid>
+        
+        <div class="tw-flex tw-py-4">
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Warning"
+                       StartIcon="@Icons.Material.Filled.Edit"
+                       Href="@($"/admin/students/{Student.Id}/edit")">
+                Edit
+            </MudButton>
+        </div>
     }
 </MudPaper>
 

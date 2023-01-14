@@ -65,6 +65,11 @@ public class StudentCommands : IStudentCommands
         student.MaritalStatus = request.MaritalStatus;
         student.Email = request.Email;
         student.Phone = request.Phone;
+        student.Testimony = request.Testimony;
+        student.EnrollmentStatus = request.Status;
+        student.GenerationId = request.GenerationId;
+        student.HomeChurch = request.HomeChurch;
+        student.AgreedToGbsConcept = request.AgreedToGbsConcept;
 
         if (_authUserService.UserIsAdmin()) student.ChurchId = request.ChurchId;
 

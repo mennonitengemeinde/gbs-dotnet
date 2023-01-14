@@ -12,45 +12,54 @@
 
 <PageTitle>Students - GBS</PageTitle>
 
-<div class="tw-py-4">
-
-    @if (SelectedStudent != null)
-    {
-        <MudText Typo="Typo.h4">@SelectedStudent.FullName</MudText>
-    }
-    else
-    {
-        <MudText Typo="Typo.h4">Students</MudText>
-    }
-    @if (!_userIsAdmin && StudentService.Data.Count > 0)
-    {
-        <MudText Typo="Typo.subtitle1">@StudentService.Data.FirstOrDefault()?.ChurchName</MudText>
-    }
-    <div class="tw-flex tw-justify-between tw-pt-4 @HideOnMobileDetail">
-        <MudButton StartIcon="@Icons.Material.Filled.Add"
-                   Color="Color.Primary"
-                   Variant="Variant.Filled"
-                   Href="/admin/students/create">
-            New
-        </MudButton>
-    </div>
-</div>
-
-@if (_userIsAdmin)
+@if (@StudentService.IsLoading)
 {
-    <div class="@HideOnMobileDetail">
-        <AdminChurchFilter Churches="@ChurchState.Data" @bind-ChurchValue="SelectedChurch" />
+    <MudOverlay Visible="true" DarkBackground="true" Absolute="true">
+        <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
+    </MudOverlay>
+}
+else
+{   
+    <div class="tw-py-4">
+        @if (SelectedStudent != null)
+        {
+            <MudText Typo="Typo.h4">@SelectedStudent.FullName</MudText>
+        }
+        else
+        {
+            <MudText Typo="Typo.h4">Students</MudText>
+        }
+        @if (!_userIsAdmin && StudentService.Data.Count > 0)
+        {
+            <MudText Typo="Typo.subtitle1">@StudentService.Data.FirstOrDefault()?.ChurchName</MudText>
+        }
+        <div class="tw-flex tw-justify-between tw-pt-4 @HideOnMobileDetail">
+            <MudButton StartIcon="@Icons.Material.Filled.Add"
+                       Color="Color.Primary"
+                       Variant="Variant.Filled"
+                       Href="/admin/students/create">
+                New
+            </MudButton>
+        </div>
+    </div>
+
+    @if (_userIsAdmin)
+    {
+        <div class="@HideOnMobileDetail">
+            <AdminChurchFilter Churches="@ChurchState.Data" @bind-ChurchValue="SelectedChurch" />
+        </div>
+    }
+
+    <div class="tw-flex-1 tw-flex md:tw-space-x-4 tw-w-full tw-min-h-0">
+        <StudentList Students="@Students" OnSearch="@HandleSearch" ClassCss="@HideOnMobileDetail" SelectedValue="SelectedStudentId" SelectedValueChanged="HandleStudentSelect" />
+
+        @if (Id.HasValue)
+        {
+            <StudentDetail Student="SelectedStudent" GradeTypes="GradeTypeState.Data" Subjects="SubjectService.Data" />
+        }
     </div>
 }
 
-<div class="tw-flex-1 tw-flex md:tw-space-x-4 tw-w-full tw-min-h-0">
-    <StudentList Students="@Students" OnSearch="@HandleSearch" ClassCss="@HideOnMobileDetail" SelectedValue="SelectedStudentId" SelectedValueChanged="HandleStudentSelect" />
-
-    @if (Id.HasValue)
-    {
-        <StudentDetail Student="SelectedStudent" GradeTypes="GradeTypeState.Data" Subjects="SubjectService.Data" />
-    }
-</div>
 
 
 @code {
