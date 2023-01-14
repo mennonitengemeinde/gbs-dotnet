@@ -15,6 +15,7 @@ public interface IGbsDbContext
     DbSet<Subject> Subjects { get; set; }
     DbSet<SubjectDocument> SubjectDocuments { get; set; }
     DbSet<Lesson> Lessons { get; set; }
+    DbSet<LessonWatched> LessonsWatched { get; set; }
     DbSet<Grade> Grades { get; set; }
     DbSet<GradeType> GradeTypes { get; set; }
     DbSet<Question> Questions { get; set; }

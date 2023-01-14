@@ -28,6 +28,7 @@ public class IdentityMapping : Profile
             .ForMember(dest => dest.TwoFactorEnabled, opt => opt.Ignore())
             .ForMember(dest => dest.LockoutEnd, opt => opt.Ignore())
             .ForMember(dest => dest.LockoutEnabled, opt => opt.Ignore())
-            .ForMember(dest => dest.AccessFailedCount, opt => opt.Ignore());
+            .ForMember(dest => dest.AccessFailedCount, opt => opt.Ignore())
+            .ForMember(dest => dest.LessonsWatched, opt => opt.Ignore());
     }
 }

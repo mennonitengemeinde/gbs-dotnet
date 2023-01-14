@@ -9,6 +9,14 @@
 @if (Lesson != null)
 {
     <LiveVideoPlayer Url="@Lesson.VideoUrl" Title="@Lesson.Name" GenerationName="@Lesson.SubjectName" />
+    
+    <div class="tw-flex tw-justify-end tw-py-4">
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Default"
+                   EndIcon="@Icons.Material.Outlined.Circle">
+            Complete
+        </MudButton>
+    </div>
 }
 
 @code {
@@ -36,6 +44,12 @@
         {
             Lesson = lesson;
         }
+    }
+    
+    void HandleCompleteLesson(bool complete)
+    {
+        
+        UiState.ShowSnackbar("Lesson completed", Severity.Success);
     }
 
 }

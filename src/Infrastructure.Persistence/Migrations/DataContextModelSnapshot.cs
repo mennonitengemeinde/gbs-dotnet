@@ -17,7 +17,7 @@ namespace Gbs.Infrastructure.Persistence.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.0")
+                .HasAnnotation("ProductVersion", "7.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -170,6 +170,24 @@ namespace Gbs.Infrastructure.Persistence.Migrations
                     b.HasIndex("TeacherId");
 
                     b.ToTable("Lessons");
+                });
+
+            modelBuilder.Entity("Gbs.Application.Entities.LessonWatched", b =>
+                {
+                    b.Property<int>("LessonId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("WatchedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("LessonId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("LessonsWatched");
                 });
 
             modelBuilder.Entity("Gbs.Application.Entities.LiveStream", b =>
@@ -834,6 +852,25 @@ namespace Gbs.Infrastructure.Persistence.Migrations
                     b.Navigation("Teacher");
                 });
 
+            modelBuilder.Entity("Gbs.Application.Entities.LessonWatched", b =>
+                {
+                    b.HasOne("Gbs.Application.Entities.Lesson", "Lesson")
+                        .WithMany("UsersWatched")
+                        .HasForeignKey("LessonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Gbs.Application.Entities.User", "User")
+                        .WithMany("LessonsWatched")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Lesson");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Gbs.Application.Entities.LiveStream", b =>
                 {
                     b.HasOne("Gbs.Application.Entities.Generation", "Generation")
@@ -1024,6 +1061,11 @@ namespace Gbs.Infrastructure.Persistence.Migrations
                     b.Navigation("Grades");
                 });
 
+            modelBuilder.Entity("Gbs.Application.Entities.Lesson", b =>
+                {
+                    b.Navigation("UsersWatched");
+                });
+
             modelBuilder.Entity("Gbs.Application.Entities.LiveStream", b =>
                 {
                     b.Navigation("StreamTeachers");
@@ -1060,6 +1102,8 @@ namespace Gbs.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Gbs.Application.Entities.User", b =>
                 {
+                    b.Navigation("LessonsWatched");
+
                     b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618

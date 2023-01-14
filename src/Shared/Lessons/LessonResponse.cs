@@ -15,4 +15,5 @@ public class LessonResponse
     public string? SubjectName { get; set; } = string.Empty;
     public int TeacherId { get; set; }
     public string TeacherName { get; set; } = string.Empty;
+    public bool HasWatched { get; set; }
 }

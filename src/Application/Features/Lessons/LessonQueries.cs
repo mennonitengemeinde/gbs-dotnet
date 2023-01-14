@@ -24,15 +24,15 @@ public class LessonQueries : ILessonQueries
 
         var lessons = visibility switch
         {
-            "all" => await _context.Lessons.ProjectTo<LessonResponse>(_mapper.ConfigurationProvider)
+            "all" => await _context.Lessons.ProjectTo<LessonResponse>(_mapper.ConfigurationProvider, new {currentUserId = _authenticatedUserService.GetUserId()})
                 .OrderBy(l => l.Order)
                 .ToListAsync(),
             "hidden" => await _context.Lessons.Where(l => l.IsVisible != Visibility.Private)
-                .ProjectTo<LessonResponse>(_mapper.ConfigurationProvider)
+                .ProjectTo<LessonResponse>(_mapper.ConfigurationProvider, new {currentUserId = _authenticatedUserService.GetUserId()})
                 .OrderBy(l => l.Order)
                 .ToListAsync(),
             _ => await _context.Lessons.Where(l => l.IsVisible == Visibility.Visible)
-                .ProjectTo<LessonResponse>(_mapper.ConfigurationProvider)
+                .ProjectTo<LessonResponse>(_mapper.ConfigurationProvider, new {currentUserId = _authenticatedUserService.GetUserId()})
                 .OrderBy(l => l.Order)
                 .ToListAsync()
         };
@@ -44,7 +44,7 @@ public class LessonQueries : ILessonQueries
     {
         var lesson = await _context.Lessons
             .Where(l => l.Id == id && l.IsVisible != Visibility.Private)
-            .ProjectTo<LessonResponse>(_mapper.ConfigurationProvider)
+            .ProjectTo<LessonResponse>(_mapper.ConfigurationProvider, new {currentUserId = _authenticatedUserService.GetUserId()})
             .FirstOrDefaultAsync();
         return lesson == null
             ? Result.NotFound<LessonResponse>("Lesson not found")

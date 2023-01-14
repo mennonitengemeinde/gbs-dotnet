@@ -63,4 +63,12 @@ public class LessonsController : ControllerBase
         var result = await _lessonCommands.UpdateOrder(id, order);
         return result.ToActionResult();
     }
+    
+    [HttpPut("{id:int}/watched")]
+    [Authorize(Policy = Policies.RequireAdminsSoundAndTeachers)]
+    public async Task<ActionResult<Result<LessonResponse>>> UpdateWatched(int id, [FromBody] bool watched)
+    {
+        var result = await _lessonCommands.UpdateWatched(id, watched);
+        return result.ToActionResult();
+    }
 }
