@@ -2,10 +2,12 @@
 @attribute [Authorize(Policy = Policies.RequireAdminsSoundAndTeachers)]
 @using Gbs.Wasm.Pages.School.Components
 @implements IAsyncDisposable
-@implements Gbs.Wasm.Common.Interfaces.Api.INotifyStateChanged<StreamResponse>
+@implements INotifyStateChanged<StreamResponse>
+@implements INotifyStateChanged<LessonResponse>
 
 @inject NavigationManager NavigationManager
 @inject IStreamService StreamService
+@inject ILessonService LessonService
 
 <PageTitle>School - GBS</PageTitle>
 
@@ -27,7 +29,7 @@
     </MudGrid>
 }
 
-@if (LessonState.Data.Count > 0)
+@if (LessonService.Data.Count > 0)
 {
     <div class="tw-pt-8 tw-pb-2 tw-text-gray-600">
         <MudText Typo="Typo.h2" Class="tw-text-2xl tw-font-semibold">Lessons</MudText>
@@ -35,18 +37,15 @@
     
     <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="md:tw-p-4">
         <MudTabPanel Text="Not Completed">
-            <LessonCardList Lessons="LessonState.Data.Where(l => !l.HasWatched).ToList()" />
+            <LessonCardList Lessons="LessonService.Data.Where(l => !l.HasWatched).ToList()" />
         </MudTabPanel>
         <MudTabPanel Text="Completed">
-            <LessonCardList Lessons="LessonState.Data.Where(l => l.HasWatched).ToList()" />
+            <LessonCardList Lessons="LessonService.Data.Where(l => l.HasWatched).ToList()" />
         </MudTabPanel>
     </MudTabs>
 }
 
 @code {
-
-    [CascadingParameter]
-    LessonState LessonState { get; set; } = null!;
 
     [CascadingParameter]
     UiState UiState { get; set; } = null!;
@@ -56,7 +55,9 @@
     protected override async Task OnInitializedAsync()
     {
         StreamService.OnChange += NotifyStateChanged;
-        var tasks = new[] { LessonState.ForceFetch(), StreamService.ForceFetch(this) };
+        LessonService.OnChange += NotifyStateChanged;
+        
+        var tasks = new[] { LessonService.ForceFetch(this), StreamService.ForceFetch(this) };
 
         await Task.WhenAll(tasks);
 
@@ -82,6 +83,7 @@
     public async ValueTask DisposeAsync()
     {
         StreamService.OnChange -= NotifyStateChanged;
+        LessonService.OnChange -= NotifyStateChanged;
         if (_hubConnection is not null)
         {
             await _hubConnection.DisposeAsync();
@@ -89,6 +91,11 @@
     }
 
     public void NotifyStateChanged(ComponentBase sender, List<StreamResponse>? data, bool isLoading, ServiceError? error)
+    {
+        StateHasChanged();
+    }
+
+    public void NotifyStateChanged(ComponentBase sender, List<LessonResponse>? data, bool isLoading, ServiceError? error)
     {
         StateHasChanged();
     }

@@ -2,8 +2,11 @@
 @page "/admin/lessons/{Id:int}/edit"
 @inherits BaseMatForm
 @attribute [Authorize(Policy = Policies.RequireAdminsAndSound)]
+@implements IDisposable
+@implements INotifyStateChanged<LessonResponse>
 
 @inject ISubjectService SubjectService
+@inject ILessonService LessonService
 
 <PageTitle>Lessons Form - GBS</PageTitle>
 
@@ -13,7 +16,7 @@
         <MudItem xs="12" sm="8" md="5">
             <MatFormCard Label="Lesson"
                          IsEdit="@Id.HasValue"
-                         IsLoading="@LessonState.IsLoading"
+                         IsLoading="@LessonService.IsLoading"
                          ReturnUrl="/admin/lessons"
                          ValidationErrors="ValidationErrors"
                          IsProcessing="false">
@@ -90,9 +93,6 @@
 @code {
 
     [CascadingParameter]
-    public LessonState LessonState { get; set; } = null!;
-
-    [CascadingParameter]
     public GenerationState GenerationState { get; set; } = null!;
 
     [CascadingParameter]
@@ -102,11 +102,13 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await Task.WhenAll(SubjectService.Fetch(this), LessonState.Fetch(), GenerationState.Fetch(), TeacherState.Fetch());
+        LessonService.OnChange += NotifyStateChanged;
+        
+        await Task.WhenAll(SubjectService.Fetch(this), LessonService.Fetch(this), GenerationState.Fetch(), TeacherState.Fetch());
 
         if (Id.HasValue)
         {
-            var lesson = await LessonState.GetById(Id.Value);
+            var lesson = await LessonService.GetById(this, Id.Value);
             if (lesson != null)
                 _model = new CreateLessonRequest
                 {
@@ -125,20 +127,30 @@
         IsProcessing = true;
         if (Id.HasValue)
         {
-            await LessonState.Update(Id!.Value, _model);
+            await LessonService.Update(this, Id!.Value, _model);
         }
         else
         {
-            await LessonState.Create(_model);
+            await LessonService.Create(this, _model);
         }
 
-        if (HasError(LessonState.Error))
+        if (HasError(LessonService.Error))
         {
-            LessonState.ClearError();
+            LessonService.ClearError(this);
             return;
         }
 
         NavigationManager.NavigateTo("admin/lessons");
+    }
+
+    public void NotifyStateChanged(ComponentBase sender, List<LessonResponse>? data, bool isLoading, ServiceError? error)
+    {
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        LessonService.OnChange -= NotifyStateChanged;
     }
 
 }

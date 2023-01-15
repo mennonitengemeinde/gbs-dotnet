@@ -1,6 +1,10 @@
 ﻿@page "/admin/lessons"
 @using Gbs.Wasm.Pages.Admin.Lessons.Components
 @attribute [Authorize(Policy = Policies.RequireAdminsAndSound)]
+@implements IDisposable
+@implements INotifyStateChanged<LessonResponse>
+
+@inject ILessonService LessonService
 
 <PageTitle>Lessons - GBS</PageTitle>
 
@@ -13,38 +17,46 @@
 
 <MudHidden Breakpoint="Breakpoint.MdAndUp">
     <div class="tw-space-y-4">
-        <MobileLessonList Lessons="LessonState.Data"
-                          IsLoading="LessonState.IsLoading"
+        <MobileLessonList Lessons="LessonService.Data"
+                          IsLoading="LessonService.IsLoading"
                           MoveLessonDown="MoveLessonDown"
                           MoveLessonUp="MoveLessonUp" />
     </div>
 </MudHidden>
 
 <MudHidden Breakpoint="Breakpoint.SmAndDown">
-    <LessonsTable Lessons="@LessonState.Data"
-                  IsLoading="@LessonState.IsLoading"
+    <LessonsTable Lessons="@LessonService.Data"
+                  IsLoading="@LessonService.IsLoading"
                   MoveLessonDown="MoveLessonDown"
                   MoveLessonUp="MoveLessonUp" />
 </MudHidden>
 
 @code {
 
-    [CascadingParameter]
-    public LessonState LessonState { get; set; } = null!;
-
     protected override async Task OnInitializedAsync()
     {
-        await LessonState.ForceFetch();
+        LessonService.OnChange += NotifyStateChanged;
+        await LessonService.ForceFetch(this);
     }
 
     private async Task MoveLessonUp(LessonResponse lesson)
     {
-        await LessonState.UpdateOrder(lesson.Id, lesson.Order - 1);
+        await LessonService.UpdateOrder(this, lesson.Id, lesson.Order - 1);
     }
 
     private async Task MoveLessonDown(LessonResponse lesson)
     {
-        await LessonState.UpdateOrder(lesson.Id, lesson.Order + 1);
+        await LessonService.UpdateOrder(this, lesson.Id, lesson.Order + 1);
+    }
+
+    public void NotifyStateChanged(ComponentBase sender, List<LessonResponse>? data, bool isLoading, ServiceError? error)
+    {
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        LessonService.OnChange -= NotifyStateChanged;
     }
 
 }
