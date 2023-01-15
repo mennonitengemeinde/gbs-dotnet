@@ -1,28 +1,29 @@
 ﻿@page "/school/lessons/{id:int}"
 @using Gbs.Wasm.Pages.School.Components
 @attribute [Authorize(Policy = Policies.RequireAdminsSoundAndTeachers)]
+@implements IDisposable
+@implements INotifyStateChanged<LessonResponse>
 
 @inject NavigationManager NavigationManager
+@inject ILessonService LessonService
 
 <PageTitle>Lesson - GBS</PageTitle>
 
 @if (Lesson != null)
 {
     <LiveVideoPlayer Url="@Lesson.VideoUrl" Title="@Lesson.Name" GenerationName="@Lesson.SubjectName" />
-    
+
     <div class="tw-flex tw-justify-end tw-py-4">
         <MudButton Variant="Variant.Filled"
-                   Color="Color.Default"
-                   EndIcon="@Icons.Material.Outlined.Circle">
+                   Color="@(Lesson.HasWatched ? Color.Success : Color.Default)"
+                   EndIcon="@(Lesson.HasWatched ? Icons.Material.Outlined.CheckCircle : Icons.Material.Outlined.Circle)"
+                   OnClick="HandleCompleteLesson">
             Complete
         </MudButton>
     </div>
 }
 
 @code {
-
-    [CascadingParameter]
-    LessonState LessonState { get; set; } = null!;
 
     [CascadingParameter]
     UiState UiState { get; set; } = null!;
@@ -35,7 +36,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var lesson = await LessonState.GetById(Id);
+        LessonService.OnChange += NotifyStateChanged;
+        var lesson = await LessonService.GetById(this, Id);
         if (lesson == null)
         {
             NavigationManager.NavigateTo("school");
@@ -45,11 +47,23 @@
             Lesson = lesson;
         }
     }
-    
-    void HandleCompleteLesson(bool complete)
+
+    async Task HandleCompleteLesson()
     {
-        
-        UiState.ShowSnackbar("Lesson completed", Severity.Success);
+        if (Lesson != null)
+            await LessonService.UpdateWatched(this, Lesson.Id, !Lesson.HasWatched);
+        Lesson = await LessonService.GetById(this, Id);
+    }
+
+    public void Dispose()
+    {
+        LessonService.OnChange -= NotifyStateChanged;
+    }
+
+    public void NotifyStateChanged(ComponentBase sender, List<LessonResponse>? data, bool isLoading, ServiceError? error)
+    {
+        Console.WriteLine("NotifyStateChanged");
+        StateHasChanged();
     }
 
 }
