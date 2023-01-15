@@ -22,6 +22,7 @@ public class DataContext :
     public DbSet<Subject> Subjects { get; set; } = null!;
     public DbSet<SubjectDocument> SubjectDocuments { get; set; } = null!;
     public DbSet<Lesson> Lessons { get; set; } = null!;
+    public DbSet<LessonWatched> LessonsWatched { get; set; } = null!;
     public DbSet<Grade> Grades { get; set; } = null!;
     public DbSet<GradeType> GradeTypes { get; set; } = null!;
     public DbSet<Question> Questions { get; set; } = null!;

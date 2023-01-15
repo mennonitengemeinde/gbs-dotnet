@@ -18,4 +18,6 @@ public class Lesson
 
     public int TeacherId { get; set; }
     public Teacher Teacher { get; set; } = null!;
+
+    public ICollection<LessonWatched> UsersWatched { get; set; } = null!;
 }

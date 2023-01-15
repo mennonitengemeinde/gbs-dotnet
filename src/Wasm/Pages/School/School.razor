@@ -32,8 +32,15 @@
     <div class="tw-pt-8 tw-pb-2 tw-text-gray-600">
         <MudText Typo="Typo.h2" Class="tw-text-2xl tw-font-semibold">Lessons</MudText>
     </div>
-
-    <LessonCardList Lessons="LessonState.Data" />
+    
+    <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="md:tw-p-4">
+        <MudTabPanel Text="Not Completed">
+            <LessonCardList Lessons="LessonState.Data.Where(l => !l.HasWatched).ToList()" />
+        </MudTabPanel>
+        <MudTabPanel Text="Completed">
+            <LessonCardList Lessons="LessonState.Data.Where(l => l.HasWatched).ToList()" />
+        </MudTabPanel>
+    </MudTabs>
 }
 
 @code {

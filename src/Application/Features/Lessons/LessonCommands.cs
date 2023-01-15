@@ -1,4 +1,5 @@
-﻿using Gbs.Application.Features.Lessons.Interfaces;
+﻿using Gbs.Application.Common.Interfaces.Services;
+using Gbs.Application.Features.Lessons.Interfaces;
 
 namespace Gbs.Application.Features.Lessons;
 
@@ -7,15 +8,18 @@ public class LessonCommands : ILessonCommands
     private readonly IGbsDbContext _context;
     private readonly IMapper _mapper;
     private readonly IValidator<Lesson> _validator;
+    private readonly IAuthenticatedUserService _authenticatedUserService;
 
     public LessonCommands(
         IGbsDbContext context, 
         IMapper mapper,
-        IValidator<Lesson> validator)
+        IValidator<Lesson> validator,
+        IAuthenticatedUserService authenticatedUserService)
     {
         _context = context;
         _mapper = mapper;
         _validator = validator;
+        _authenticatedUserService = authenticatedUserService;
     }
 
     public async Task<Result<LessonResponse>> Add(CreateLessonRequest request)
@@ -93,6 +97,43 @@ public class LessonCommands : ILessonCommands
 
         lesson.Order = request;
         _context.Lessons.Update(lesson);
+        await _context.SaveChangesAsync();
+        return Result.Ok(_mapper.Map<LessonResponse>(lesson));
+    }
+
+    public async Task<Result<LessonResponse>> UpdateWatched(int id, bool request)
+    {
+        var lesson = await _context.Lessons.FindAsync(id);
+        if (lesson == null)
+            return Result.NotFound<LessonResponse>("Lesson not found");
+
+        var watched = await _context.LessonsWatched.FirstOrDefaultAsync(x => x.LessonId == id && x.UserId == _authenticatedUserService.GetUserId());
+        if (watched == null)
+        {
+            if (request == false)
+                return Result.Ok(_mapper.Map<LessonResponse>(lesson));
+            
+            watched = new LessonWatched
+            {
+                LessonId = id,
+                UserId = _authenticatedUserService.GetUserId(),
+                WatchedAt = DateTime.UtcNow
+            };
+            await _context.LessonsWatched.AddAsync(watched);
+        }
+        else
+        {
+            if (request == false)
+            {
+                _context.LessonsWatched.Remove(watched);
+            }
+            else
+            {
+                watched.WatchedAt = DateTime.UtcNow;
+                _context.LessonsWatched.Update(watched);
+            }
+        }
+        
         await _context.SaveChangesAsync();
         return Result.Ok(_mapper.Map<LessonResponse>(lesson));
     }

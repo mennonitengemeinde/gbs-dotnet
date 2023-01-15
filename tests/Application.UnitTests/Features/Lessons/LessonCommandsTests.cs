@@ -1,6 +1,8 @@
-﻿using Gbs.Application.Features.Lessons;
+﻿using Gbs.Application.Common.Interfaces.Services;
+using Gbs.Application.Features.Lessons;
 using Gbs.Shared.Common.Enums;
 using Gbs.Shared.Lessons;
+using Moq;
 
 namespace Gbs.Tests.Application.UnitTests.Features.Lessons;
 
@@ -10,7 +12,9 @@ public class LessonCommandsTests : LessonTestBase, ICommandTests
     public async Task Add_AddsNewEntity()
     {
         // Arrange
-        var cmd = new LessonCommands(Context, Mapper, Validator);
+        var authedUserService = new Mock<IAuthenticatedUserService>();
+        authedUserService.Setup(x => x.GetUserId()).Returns("superAdmin");
+        var cmd = new LessonCommands(Context, Mapper, Validator, AuthenticatedUserService);
         var lesson = new CreateLessonRequest
             { Name = "Test Lesson", IsVisible = Visibility.Visible, GenerationId = 1, TeacherId = 1 };
         // Act
@@ -29,7 +33,7 @@ public class LessonCommandsTests : LessonTestBase, ICommandTests
     public async Task Add_ReturnValidationError_WhenEntityAlreadyExists()
     {
         // Arrange
-        var cmd = new LessonCommands(Context, Mapper, Validator);
+        var cmd = new LessonCommands(Context, Mapper, Validator, AuthenticatedUserService);
         var lesson = new CreateLessonRequest
             { Name = "Lesson 1", IsVisible = Visibility.Visible, GenerationId = 1, TeacherId = 1 };
         // Act
@@ -45,7 +49,7 @@ public class LessonCommandsTests : LessonTestBase, ICommandTests
     public async Task Update_UpdatesEntity()
     {
         // Arrange
-        var cmd = new LessonCommands(Context, Mapper, Validator);
+        var cmd = new LessonCommands(Context, Mapper, Validator, AuthenticatedUserService);
         var lesson = new CreateLessonRequest
             { Name = "Test Lesson", IsVisible = Visibility.Visible, GenerationId = 1, TeacherId = 1 };
         // Act
@@ -64,7 +68,7 @@ public class LessonCommandsTests : LessonTestBase, ICommandTests
     public async Task Update_ReturnsNotFound_WhenEntityDoesNotExist()
     {
         // Arrange
-        var cmd = new LessonCommands(Context, Mapper, Validator);
+        var cmd = new LessonCommands(Context, Mapper, Validator, AuthenticatedUserService);
         var lesson = new CreateLessonRequest
             { Name = "Test Lesson", IsVisible = Visibility.Visible, GenerationId = 1, TeacherId = 1 };
 
@@ -81,7 +85,7 @@ public class LessonCommandsTests : LessonTestBase, ICommandTests
     public async Task Update_ReturnValidationError_WhenEntityAlreadyExists()
     {
         // Arrange
-        var cmd = new LessonCommands(Context, Mapper, Validator);
+        var cmd = new LessonCommands(Context, Mapper, Validator, AuthenticatedUserService);
         var lesson = new CreateLessonRequest
             { Name = "Lesson 2", IsVisible = Visibility.Visible, GenerationId = 1, TeacherId = 1 };
         // Act
@@ -97,7 +101,7 @@ public class LessonCommandsTests : LessonTestBase, ICommandTests
     public async Task Delete_DeletesEntity()
     {
         // Arrange
-        var cmd = new LessonCommands(Context, Mapper, Validator);
+        var cmd = new LessonCommands(Context, Mapper, Validator, AuthenticatedUserService);
         // Act
         var result = await cmd.Delete(1);
         var ctxCount = Context.Lessons.Count();
@@ -111,7 +115,7 @@ public class LessonCommandsTests : LessonTestBase, ICommandTests
     public async Task Delete_ReturnsNotFound_WhenEntityDoesNotExist()
     {
         // Arrange
-        var cmd = new LessonCommands(Context, Mapper, Validator);
+        var cmd = new LessonCommands(Context, Mapper, Validator, AuthenticatedUserService);
         // Act
         var result = await cmd.Delete(6);
         // Assert
@@ -123,7 +127,7 @@ public class LessonCommandsTests : LessonTestBase, ICommandTests
     public async Task Add_AddsLesson_WhenItsTheFirstLesson()
     {
         // Arrange
-        var cmd = new LessonCommands(Context, Mapper, Validator);
+        var cmd = new LessonCommands(Context, Mapper, Validator, AuthenticatedUserService);
         var lesson = new CreateLessonRequest
             { Name = "Test Lesson", IsVisible = Visibility.Visible, GenerationId = 2, TeacherId = 1 };
         var lessons = await Context.Lessons.ToListAsync();
@@ -144,7 +148,7 @@ public class LessonCommandsTests : LessonTestBase, ICommandTests
     public async Task UpdateOrder_UpdatesOrder()
     {
         // Arrange
-        var cmd = new LessonCommands(Context, Mapper, Validator);
+        var cmd = new LessonCommands(Context, Mapper, Validator, AuthenticatedUserService);
         // Act
         var result = await cmd.UpdateOrder(1, 2);
         var ctxCount = Context.Lessons.Count();
@@ -161,7 +165,7 @@ public class LessonCommandsTests : LessonTestBase, ICommandTests
     public async Task UpdateOrder_ReturnsNotFound_WhenEntityDoesNotExist()
     {
         // Arrange
-        var cmd = new LessonCommands(Context, Mapper, Validator);
+        var cmd = new LessonCommands(Context, Mapper, Validator, AuthenticatedUserService);
         // Act
         var result = await cmd.UpdateOrder(6, 2);
         // Assert
@@ -173,7 +177,7 @@ public class LessonCommandsTests : LessonTestBase, ICommandTests
     public async Task UpdateOrder_Returns_WhenOrderIsTheSame()
     {
         // Arrange
-        var cmd = new LessonCommands(Context, Mapper, Validator);
+        var cmd = new LessonCommands(Context, Mapper, Validator, AuthenticatedUserService);
         // Act
         var result = await cmd.UpdateOrder(1, 1);
         // Assert

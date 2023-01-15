@@ -17,4 +17,5 @@ public class User : IdentityUser
     public Church? Church { get; set; }
     
     public ICollection<UserRole> UserRoles { get; set; } = null!;
+    public ICollection<LessonWatched> LessonsWatched { get; set; } = null!;
 }
