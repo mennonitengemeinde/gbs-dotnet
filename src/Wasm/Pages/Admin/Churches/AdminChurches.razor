@@ -36,7 +36,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await ChurchState.Fetch();
+        await ChurchState.ForceFetch();
     }
 
 }

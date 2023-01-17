@@ -14,7 +14,7 @@ public class CreateGradeRequestValidator : AbstractValidator<CreateGradeRequest>
     public CreateGradeRequestValidator()
     {
         RuleFor(x => x.Date).NotEmpty();
-        RuleFor(x => x.Percent).Must(x => x is > 0 and < 100).NotEmpty();
+        RuleFor(x => x.Percent).Must(x => x is > 0 and <= 100).NotEmpty();
         RuleFor(x => x.GradeTypeId).NotEmpty();
         RuleFor(x => x.StudentId).NotEmpty();
         RuleFor(x => x.SubjectId).NotEmpty();

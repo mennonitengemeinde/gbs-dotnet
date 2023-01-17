@@ -29,5 +29,10 @@
 
     [CascadingParameter]
     public GradeTypeState GradeTypeState { get; set; } = null!;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await GradeTypeState.ForceFetch();
+    }
 
 }

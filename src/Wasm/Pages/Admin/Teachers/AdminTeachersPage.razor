@@ -32,7 +32,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await TeacherState.Fetch();
+        await TeacherState.ForceFetch();
     }
 
 }

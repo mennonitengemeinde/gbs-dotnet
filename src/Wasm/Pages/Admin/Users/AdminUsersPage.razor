@@ -77,8 +77,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await UserState.Fetch();
-        await ChurchState.Fetch();
+        var tasks = new[] { UserState.ForceFetch(), ChurchState.Fetch() };
+        await Task.WhenAll(tasks);
         var roles = await AuthService.FetchRoles();
         if (roles.Data != null)
         {

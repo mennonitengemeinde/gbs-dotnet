@@ -46,7 +46,8 @@ public abstract class BaseApiCrud<T, TCreate, TUpdate, TId> : BaseApiService<T>,
             return;
         }
 
-        await ForceFetch(sender);
+        SetLoading(sender, false);
+        // await ForceFetch(sender);
     }
 
     public async Task Update(ComponentBase sender, TId id, TUpdate request)
@@ -59,8 +60,9 @@ public abstract class BaseApiCrud<T, TCreate, TUpdate, TId> : BaseApiService<T>,
             await HandleError(sender, result);
             return;
         }
+        SetLoading(sender, false);
 
-        await ForceFetch(sender);
+        // await ForceFetch(sender);
     }
 
     public async Task Delete(ComponentBase sender, TId id)
@@ -73,8 +75,9 @@ public abstract class BaseApiCrud<T, TCreate, TUpdate, TId> : BaseApiService<T>,
             await HandleError(sender, result);
             return;
         }
+        SetLoading(sender, false);
 
-        await ForceFetch(sender);
+        // await ForceFetch(sender);
     }
     
     protected async Task HandleError(ComponentBase sender, Result result)
