@@ -1,5 +1,5 @@
 ﻿@page "/admin/students/{Id:int}/grades/create"
-@attribute [Authorize(Policy = Policies.RequireAdmins)]
+@attribute [Authorize(Policy = Policies.RequireAdminsAndTeachers)]
 @implements IDisposable
 @implements INotifyStateChanged<GradeResponse>
 
