@@ -1,6 +1,6 @@
 ﻿using Gbs.Application.Common.Interfaces.Services;
 using Gbs.Application.Features.Lessons;
-using Moq;
+using NSubstitute;
 
 namespace Gbs.Tests.Application.UnitTests.Features.Lessons;
 
@@ -9,9 +9,9 @@ public class LessonTestBase : GbsTestBase
     protected LessonTestBase()
     {
         Validator = new LessonValidator(Context);
-        var authedUserService = new Mock<IAuthenticatedUserService>();
-        authedUserService.Setup(x => x.GetUserId()).Returns("superAdmin");
-        AuthenticatedUserService = authedUserService.Object;
+        var authedUserService = Substitute.For<IAuthenticatedUserService>();
+        authedUserService.GetUserId().Returns("superAdmin");
+        AuthenticatedUserService = authedUserService;
     }
 
     protected LessonValidator Validator { get; }

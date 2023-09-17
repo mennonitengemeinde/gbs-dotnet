@@ -1,7 +1,7 @@
 using Gbs.Application.Common.Interfaces.Services;
 using Gbs.Application.Features.Lessons;
 using Gbs.Tests.Application.UnitTests.Common;
-using Moq;
+using NSubstitute;
 
 namespace Gbs.Tests.Application.UnitTests.Features.Lessons;
 
@@ -11,9 +11,9 @@ public class LessonQueriesTests : LessonTestBase, IQueryTests
     public async Task GetAll_ReturnsAllRecords()
     {
         // Arrange
-        var mock = new Mock<IAuthenticatedUserService>();
-        mock.Setup(x => x.UserIsAdmin()).Returns(false);
-        var q = new LessonQueries(Context, Mapper, mock.Object);
+        var authenticatedUserService = Substitute.For<IAuthenticatedUserService>();
+        authenticatedUserService.UserIsAdmin().Returns(false);
+        var q = new LessonQueries(Context, Mapper, authenticatedUserService);
 
         // Act
         var lessons = await q.GetAll(null);
@@ -27,11 +27,11 @@ public class LessonQueriesTests : LessonTestBase, IQueryTests
     public async Task GetAll_ReturnsEmptyList_WhenNoRecords()
     {
         // Arrange
-        var mock = new Mock<IAuthenticatedUserService>();
-        mock.Setup(x => x.UserIsAdmin()).Returns(false);
+        var authenticatedUserService = Substitute.For<IAuthenticatedUserService>();
+        authenticatedUserService.UserIsAdmin().Returns(false);
         Context.Lessons.RemoveRange(Context.Lessons);
         await Context.SaveChangesAsync();
-        var q = new LessonQueries(Context, Mapper, mock.Object);
+        var q = new LessonQueries(Context, Mapper, authenticatedUserService);
 
         // Act
         var lessons = await q.GetAll(null);
@@ -40,16 +40,16 @@ public class LessonQueriesTests : LessonTestBase, IQueryTests
         Assert.True(lessons.Success);
         Assert.Empty(lessons.Data!);
     }
-    
+
     [Fact]
     public async Task GetAll_ReturnsForbidden_WhenUserIsNotAdmin()
     {
         // Arrange
-        var mock = new Mock<IAuthenticatedUserService>();
-        mock.Setup(x => x.UserIsAdmin()).Returns(false);
+        var authenticatedUserService = Substitute.For<IAuthenticatedUserService>();
+        authenticatedUserService.UserIsAdmin().Returns(false);
         Context.Lessons.RemoveRange(Context.Lessons);
         await Context.SaveChangesAsync();
-        var q = new LessonQueries(Context, Mapper, mock.Object);
+        var q = new LessonQueries(Context, Mapper, authenticatedUserService);
 
         // Act
         var lessons = await q.GetAll("all");
@@ -63,9 +63,9 @@ public class LessonQueriesTests : LessonTestBase, IQueryTests
     public async Task GetById_ReturnsRecord()
     {
         // Arrange
-        var mock = new Mock<IAuthenticatedUserService>();
-        mock.Setup(x => x.UserIsAdmin()).Returns(false);
-        var q = new LessonQueries(Context, Mapper, mock.Object);
+        var authenticatedUserService = Substitute.For<IAuthenticatedUserService>();
+        authenticatedUserService.UserIsAdmin().Returns(false);
+        var q = new LessonQueries(Context, Mapper, authenticatedUserService);
 
         // Act
         var lesson = await q.GetById(1);
@@ -79,9 +79,9 @@ public class LessonQueriesTests : LessonTestBase, IQueryTests
     public async Task GetById_ReturnsNull_WhenNoRecord()
     {
         // Arrange
-        var mock = new Mock<IAuthenticatedUserService>();
-        mock.Setup(x => x.UserIsAdmin()).Returns(false);
-        var q = new LessonQueries(Context, Mapper, mock.Object);
+        var authenticatedUserService = Substitute.For<IAuthenticatedUserService>();
+        authenticatedUserService.UserIsAdmin().Returns(false);
+        var q = new LessonQueries(Context, Mapper, authenticatedUserService);
 
         // Act
         var lesson = await q.GetById(99);
@@ -95,9 +95,9 @@ public class LessonQueriesTests : LessonTestBase, IQueryTests
     public async Task GetById_ReturnsRecord_WhenRecordIsHidden()
     {
         // Arrange
-        var mock = new Mock<IAuthenticatedUserService>();
-        mock.Setup(x => x.UserIsAdmin()).Returns(false);
-        var q = new LessonQueries(Context, Mapper, mock.Object);
+        var authenticatedUserService = Substitute.For<IAuthenticatedUserService>();
+        authenticatedUserService.UserIsAdmin().Returns(false);
+        var q = new LessonQueries(Context, Mapper, authenticatedUserService);
 
         // Act
         var lesson = await q.GetById(5);
@@ -111,9 +111,9 @@ public class LessonQueriesTests : LessonTestBase, IQueryTests
     public async Task GetById_ReturnsNull_WhenRecordIsPrivate()
     {
         // Arrange
-        var mock = new Mock<IAuthenticatedUserService>();
-        mock.Setup(x => x.UserIsAdmin()).Returns(false);
-        var q = new LessonQueries(Context, Mapper, mock.Object);
+        var authenticatedUserService = Substitute.For<IAuthenticatedUserService>();
+        authenticatedUserService.UserIsAdmin().Returns(false);
+        var q = new LessonQueries(Context, Mapper, authenticatedUserService);
 
         // Act
         var lesson = await q.GetById(4);
@@ -127,9 +127,9 @@ public class LessonQueriesTests : LessonTestBase, IQueryTests
     public async Task GetAll_ReturnsAllRecordsIncludeHidden()
     {
         // Arrange
-        var mock = new Mock<IAuthenticatedUserService>();
-        mock.Setup(x => x.UserIsAdmin()).Returns(false);
-        var q = new LessonQueries(Context, Mapper, mock.Object);
+        var authenticatedUserService = Substitute.For<IAuthenticatedUserService>();
+        authenticatedUserService.UserIsAdmin().Returns(false);
+        var q = new LessonQueries(Context, Mapper, authenticatedUserService);
 
         // Act
         var lessons = await q.GetAll("hidden");
@@ -143,9 +143,9 @@ public class LessonQueriesTests : LessonTestBase, IQueryTests
     public async Task GetAll_ReturnsAllRecordsIncludePrivate()
     {
         // Arrange
-        var mock = new Mock<IAuthenticatedUserService>();
-        mock.Setup(x => x.UserIsAdmin()).Returns(true);
-        var q = new LessonQueries(Context, Mapper, mock.Object);
+        var authenticatedUserService = Substitute.For<IAuthenticatedUserService>();
+        authenticatedUserService.UserIsAdmin().Returns(true);
+        var q = new LessonQueries(Context, Mapper, authenticatedUserService);
 
         // Act
         var lessons = await q.GetAll("all");

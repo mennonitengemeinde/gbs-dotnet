@@ -2,7 +2,7 @@
 using Gbs.Application.Features.Lessons;
 using Gbs.Shared.Common.Enums;
 using Gbs.Shared.Lessons;
-using Moq;
+using NSubstitute;
 
 namespace Gbs.Tests.Application.UnitTests.Features.Lessons;
 
@@ -12,11 +12,11 @@ public class LessonCommandsTests : LessonTestBase, ICommandTests
     public async Task Add_AddsNewEntity()
     {
         // Arrange
-        var authedUserService = new Mock<IAuthenticatedUserService>();
-        authedUserService.Setup(x => x.GetUserId()).Returns("superAdmin");
+        var authedUserService = Substitute.For<IAuthenticatedUserService>();
+        authedUserService.GetUserId().Returns("superAdmin");
         var cmd = new LessonCommands(Context, Mapper, Validator, AuthenticatedUserService);
         var lesson = new CreateLessonRequest
-            { Name = "Test Lesson", IsVisible = Visibility.Visible, GenerationId = 1, TeacherId = 1 };
+        { Name = "Test Lesson", IsVisible = Visibility.Visible, GenerationId = 1, TeacherId = 1 };
         // Act
         var result = await cmd.Add(lesson);
         var ctxCount = Context.Lessons.Count();
@@ -35,7 +35,7 @@ public class LessonCommandsTests : LessonTestBase, ICommandTests
         // Arrange
         var cmd = new LessonCommands(Context, Mapper, Validator, AuthenticatedUserService);
         var lesson = new CreateLessonRequest
-            { Name = "Lesson 1", IsVisible = Visibility.Visible, GenerationId = 1, TeacherId = 1 };
+        { Name = "Lesson 1", IsVisible = Visibility.Visible, GenerationId = 1, TeacherId = 1 };
         // Act
         var result = await cmd.Add(lesson);
         // Assert
@@ -51,7 +51,7 @@ public class LessonCommandsTests : LessonTestBase, ICommandTests
         // Arrange
         var cmd = new LessonCommands(Context, Mapper, Validator, AuthenticatedUserService);
         var lesson = new CreateLessonRequest
-            { Name = "Test Lesson", IsVisible = Visibility.Visible, GenerationId = 1, TeacherId = 1 };
+        { Name = "Test Lesson", IsVisible = Visibility.Visible, GenerationId = 1, TeacherId = 1 };
         // Act
         var result = await cmd.Update(1, lesson);
         var ctxCount = Context.Lessons.Count();
@@ -70,7 +70,7 @@ public class LessonCommandsTests : LessonTestBase, ICommandTests
         // Arrange
         var cmd = new LessonCommands(Context, Mapper, Validator, AuthenticatedUserService);
         var lesson = new CreateLessonRequest
-            { Name = "Test Lesson", IsVisible = Visibility.Visible, GenerationId = 1, TeacherId = 1 };
+        { Name = "Test Lesson", IsVisible = Visibility.Visible, GenerationId = 1, TeacherId = 1 };
 
         // Act
         var result = await cmd.Update(6, lesson);
@@ -87,7 +87,7 @@ public class LessonCommandsTests : LessonTestBase, ICommandTests
         // Arrange
         var cmd = new LessonCommands(Context, Mapper, Validator, AuthenticatedUserService);
         var lesson = new CreateLessonRequest
-            { Name = "Lesson 2", IsVisible = Visibility.Visible, GenerationId = 1, TeacherId = 1 };
+        { Name = "Lesson 2", IsVisible = Visibility.Visible, GenerationId = 1, TeacherId = 1 };
         // Act
         var result = await cmd.Update(1, lesson);
         // Assert
@@ -129,7 +129,7 @@ public class LessonCommandsTests : LessonTestBase, ICommandTests
         // Arrange
         var cmd = new LessonCommands(Context, Mapper, Validator, AuthenticatedUserService);
         var lesson = new CreateLessonRequest
-            { Name = "Test Lesson", IsVisible = Visibility.Visible, GenerationId = 2, TeacherId = 1 };
+        { Name = "Test Lesson", IsVisible = Visibility.Visible, GenerationId = 2, TeacherId = 1 };
         var lessons = await Context.Lessons.ToListAsync();
         Context.Lessons.RemoveRange(lessons);
         // Act
@@ -143,7 +143,7 @@ public class LessonCommandsTests : LessonTestBase, ICommandTests
         Assert.Equal(1, result.Data.Order);
         Assert.Equal(1, ctxCount);
     }
-    
+
     [Fact]
     public async Task UpdateOrder_UpdatesOrder()
     {
@@ -160,7 +160,7 @@ public class LessonCommandsTests : LessonTestBase, ICommandTests
         Assert.Equal(1, Context.Lessons.FirstOrDefault(x => x.Id == 2)?.Order);
         Assert.Equal(5, ctxCount);
     }
-    
+
     [Fact]
     public async Task UpdateOrder_ReturnsNotFound_WhenEntityDoesNotExist()
     {
@@ -172,7 +172,7 @@ public class LessonCommandsTests : LessonTestBase, ICommandTests
         Assert.False(result.Success);
         Assert.Equal(404, result.StatusCode);
     }
-    
+
     [Fact]
     public async Task UpdateOrder_Returns_WhenOrderIsTheSame()
     {
