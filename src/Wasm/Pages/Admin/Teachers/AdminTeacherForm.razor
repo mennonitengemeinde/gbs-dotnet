@@ -24,8 +24,8 @@
 </EditForm>
 
 @code {
-
-    TeacherState TeacherState { get; } = null!;
+    [CascadingParameter]
+    TeacherState TeacherState { get; set; } = null!;
 
     CreateTeacherRequest _model = new();
 
