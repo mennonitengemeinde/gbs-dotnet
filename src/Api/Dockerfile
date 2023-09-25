@@ -6,9 +6,10 @@ EXPOSE 80
 EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
-RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
+RUN curl -sL https://deb.nodesource.com/setup_18.x | bash - && \
     apt-get install -y nodejs build-essential
 WORKDIR /src
+COPY ["Directory.Packages.props", ""]
 COPY ["src/Shared/Gbs.Shared.csproj", "Shared/"]
 COPY ["src/Application/Gbs.Application.csproj", "Application/"]
 COPY ["src/Infrastructure.Persistence/Gbs.Infrastructure.Persistence.csproj", "Infrastructure.Persistence/"]
