@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using Gbs.Shared.Identity;
 using Microsoft.AspNetCore.Components.Authorization;
 

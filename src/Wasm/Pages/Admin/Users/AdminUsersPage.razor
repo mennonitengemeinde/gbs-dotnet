@@ -57,7 +57,7 @@
         <MudTd DataLabel="Active">
             <MudSwitch T="bool"
                        Checked="@context.IsActive"
-                       CheckedChanged="@((e) => HandleActiveChange(e, context.Id))" />
+                       CheckedChanged="@((bool e) => HandleActiveChange(e, context.Id))" />
         </MudTd>
     </RowTemplate>
 </MudTable>
