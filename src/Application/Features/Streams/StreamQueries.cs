@@ -2,21 +2,12 @@ using Gbs.Application.Features.Streams.Interfaces;
 
 namespace Gbs.Application.Features.Streams;
 
-public class StreamQueries : IStreamQueries
+public class StreamQueries(IGbsDbContext context, IMapper mapper) : IStreamQueries
 {
-    private readonly IGbsDbContext _context;
-    private readonly IMapper _mapper;
-
-    public StreamQueries(IGbsDbContext context, IMapper mapper)
-    {
-        _context = context;
-        _mapper = mapper;
-    }
-
     public async Task<Result<List<StreamResponse>>> GetAllStreams()
     {
-        var streams = await _context.Streams
-            .ProjectTo<StreamResponse>(_mapper.ConfigurationProvider)
+        var streams = await context.Streams
+            .ProjectTo<StreamResponse>(mapper.ConfigurationProvider)
             .ToListAsync();
 
         return Result.Ok(streams);
@@ -24,9 +15,9 @@ public class StreamQueries : IStreamQueries
 
     public async Task<Result<StreamResponse>> GetStreamById(int id, bool liveOnly = false)
     {
-        var liveStream = await _context.Streams
+        var liveStream = await context.Streams
             .Where(s => s.Id == id)
-            .ProjectTo<StreamResponse>(_mapper.ConfigurationProvider)
+            .ProjectTo<StreamResponse>(mapper.ConfigurationProvider)
             .FirstOrDefaultAsync();
 
         return liveStream == null
