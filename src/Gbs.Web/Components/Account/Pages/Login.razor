@@ -1,70 +1,67 @@
-﻿@page "/Account/Login"
+﻿@page "/account/login"
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Identity
 @using Gbs.Application.Entities
 @using System.ComponentModel.DataAnnotations
+@layout AuthLayout
 
 @inject SignInManager<User> SignInManager
 @inject ILogger<Login> Logger
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
 
-<PageTitle>Log in</PageTitle>
+<PageTitle>Login - GBS</PageTitle>
 
-<h1>Log in</h1>
-<div class="row">
-    <div class="col-md-4">
-        <section>
-            <StatusMessage Message="@errorMessage"/>
-            <EditForm Model="Input" method="post" OnValidSubmit="LoginUser" FormName="login">
-                <DataAnnotationsValidator/>
-                <h2>Use a local account to log in.</h2>
-                <hr/>
-                <ValidationSummary class="text-danger" role="alert"/>
-                <div class="form-floating mb-3">
-                    <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com"/>
-                    <label for="email" class="form-label">Email</label>
-                    <ValidationMessage For="() => Input.Email" class="text-danger"/>
-                </div>
-                <div class="form-floating mb-3">
-                    <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password"/>
-                    <label for="password" class="form-label">Password</label>
-                    <ValidationMessage For="() => Input.Password" class="text-danger"/>
-                </div>
-                <div class="checkbox mb-3">
-                    <label class="form-label">
-                        <InputCheckbox @bind-Value="Input.RememberMe" class="darker-border-checkbox form-check-input"/>
-                        Remember me
-                    </label>
-                </div>
-                <div>
-                    <button type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
-                </div>
-                <div>
-                    <p>
-                        <a href="Account/ForgotPassword">Forgot your password?</a>
-                    </p>
-                    <p>
-                        <a href="@(NavigationManager.GetUriWithQueryParameters("Account/Register", new Dictionary<string, object?> { ["ReturnUrl"] = ReturnUrl }))">Register as a new user</a>
-                    </p>
-                    <p>
-                        <a href="Account/ResendEmailConfirmation">Resend email confirmation</a>
-                    </p>
-                </div>
-            </EditForm>
-        </section>
-    </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to log in.</h3>
-            <hr/>
-            <ExternalLoginPicker/>
-        </section>
-    </div>
-</div>
+<EditForm Model="@Input" OnValidSubmit="LoginUser">
+    <DataAnnotationsValidator/>
+    <MudGrid Justify="Justify.Center" Class="tw-pt-12">
+        <MudItem xs="12" sm="8" md="5" lg="4">
+            <MudCard Class="tw-relative tw-p-4">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h4">Login</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudTabs Elevation="0" Rounded="true" PanelClass="pa-6" @bind-ActivePanelIndex="_activeIndex" Centered="true">
+                        <MudTabPanel Text="Login" OnClick="@(() => NavigationManager.NavigateTo("login"))">
+                        </MudTabPanel>
+                        <MudTabPanel Text="Register" OnClick="@(() => NavigationManager.NavigateTo("register"))">
+                        </MudTabPanel>
+                    </MudTabs>
+
+                    <MudFocusTrap DefaultFocus="DefaultFocus.FirstChild" Class="tw-space-y-2">
+                        <MudTextField Label="Email"
+                                      name="@Input.Email"
+                                      Variant="Variant.Outlined"
+                                      InputType="InputType.Email"
+                                      @bind-Value="Input.Email"
+                                      For="() => Input.Email"/>
+                        <MudTextField Label="Password"
+                                      name="Input.Password"
+                                      InputType="InputType.Password"
+                                      @bind-Value="Input.Password"
+                                      For="() => Input.Password"/>
+                    </MudFocusTrap>
+                </MudCardContent>
+                <MudCardActions Class="tw-flex tw-justify-end tw-space-x-2">
+                    <MudButton Variant="Variant.Text" Href="/">Cancel</MudButton>
+                    <MudButton ButtonType="ButtonType.Submit"
+                               Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               StartIcon="@Icons.Material.Filled.Login">
+                        <MudText>Login</MudText>
+                    </MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+
+</EditForm>
 
 @code {
     private string? errorMessage;
+    private int _activeIndex;
 
     [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
 
@@ -74,6 +71,15 @@
 
     protected override async Task OnInitializedAsync()
     {
+        if (NavigationManager.Uri.Contains("login"))
+        {
+            _activeIndex = 0;
+        }
+        else if (NavigationManager.Uri.Contains("register"))
+        {
+            _activeIndex = 1;
+        }
+
         if (HttpMethods.IsGet(HttpContext.Request.Method))
         {
             // Clear the existing external cookie to ensure a clean login process

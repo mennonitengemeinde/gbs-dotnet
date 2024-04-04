@@ -8,12 +8,21 @@ using Gbs.Web.Components.Account;
 using Gbs.Web.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
+using MudBlazor;
+using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddApplicationServices();
 builder.Services.AddPersistenceServices(builder.Configuration);
 
+builder.Services.AddMudServices(config =>
+{
+    config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.TopRight;
+    config.SnackbarConfiguration.PreventDuplicates = false;
+    config.SnackbarConfiguration.HideTransitionDuration = 300;
+    config.SnackbarConfiguration.ShowTransitionDuration = 300;
+});
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();

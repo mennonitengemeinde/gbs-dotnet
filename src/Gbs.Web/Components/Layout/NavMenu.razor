@@ -1,92 +1,100 @@
-﻿@implements IDisposable
+﻿@using Gbs.Shared.Common.Const
+@* @implements IDisposable *@
 
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavigationManager
 
-<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">Gbs.Web</a>
-    </div>
-</div>
+<MudDrawerHeader>
+    <MudImage Src="img/P-GBS2-02.svg"></MudImage>
+</MudDrawerHeader>
+<MudNavMenu Class="py-3" Color="Color.Primary">
+    <MudListSubheader Class="tw-pb-2">
+        School
+    </MudListSubheader>
+    <AuthorizeView Policy="@Policies.RequireAdminsSoundAndTeachers">
+        <MudNavLink Href="school" Icon="@Icons.Material.Filled.School">Home</MudNavLink>
+    </AuthorizeView>
+    <AuthorizeView Policy="@Policies.RequireAdminsAndTeachers">
+        <MudNavLink Href="/admin/students" Icon="@Icons.Material.Filled.People">Students</MudNavLink>
+    </AuthorizeView>
+    <AuthorizeView Policy="@Policies.RequireAdminsAndSound">
+        <MudListSubheader Class="tw-pb-2">
+            Admin
+        </MudListSubheader>
+        <MudNavLink Href="/admin/lessons" Icon="@Icons.Material.Filled.PlayLesson">Lessons</MudNavLink>
+        <MudNavLink Href="/admin/streams" Icon="@Icons.Material.Filled.LiveTv">Streams</MudNavLink>
+        <MudNavLink Href="/admin/teachers" Icon="@Icons.Material.Filled.Man">Teachers</MudNavLink>
+    </AuthorizeView>
+    <AuthorizeView Policy="@Policies.RequireAdmins">
+        <MudNavLink Href="/admin/grade-types" Icon="@Icons.Material.Filled.Grade">Grade Types</MudNavLink>
+        <MudNavLink Href="/admin/generations" Icon="@Icons.Material.Filled.GroupWork">Generations</MudNavLink>
+        <MudNavLink Href="/admin/subjects" Icon="@Icons.Material.Filled.Subject">Subjects</MudNavLink>
+        <MudNavLink Href="/admin/churches" Icon="@Icons.Material.Filled.Church">Churches</MudNavLink>
+        <MudNavLink Href="/admin/users" Icon="@Icons.Material.Filled.PeopleAlt">Users</MudNavLink>
+        <MudNavGroup Icon="@Icons.Material.Filled.ImportExport" Title="Import">
+            <MudNavLink Href="/admin/import/students" Icon="@Icons.Material.Filled.People">
+                Students
+            </MudNavLink>
+        </MudNavGroup>
+    </AuthorizeView>
+</MudNavMenu>
 
-<input type="checkbox" title="Navigation menu" class="navbar-toggler"/>
+@* <AuthorizeView> *@
+@*     <Authorized> *@
+@*         <div class="nav-item px-3"> *@
+@*             <NavLink class="nav-link" href="Account/Manage"> *@
+@*                 <span class="bi bi-person-fill-nav-menu" aria-hidden="true"></span> @context.User.Identity?.Name *@
+@*             </NavLink> *@
+@*         </div> *@
+@*         <div class="nav-item px-3"> *@
+@*             <form action="Account/Logout" method="post"> *@
+@*                 <AntiforgeryToken/> *@
+@*                 <input type="hidden" name="ReturnUrl" value="@currentUrl"/> *@
+@*                 <button type="submit" class="nav-link"> *@
+@*                     <span class="bi bi-arrow-bar-left-nav-menu" aria-hidden="true"></span> Logout *@
+@*                 </button> *@
+@*             </form> *@
+@*         </div> *@
+@*     </Authorized> *@
+@*     <NotAuthorized> *@
+@*         <div class="nav-item px-3"> *@
+@*             <NavLink class="nav-link" href="Account/Register"> *@
+@*                 <span class="bi bi-person-nav-menu" aria-hidden="true"></span> Register *@
+@*             </NavLink> *@
+@*         </div> *@
+@*         <div class="nav-item px-3"> *@
+@*             <NavLink class="nav-link" href="Account/Login"> *@
+@*                 <span class="bi bi-person-badge-nav-menu" aria-hidden="true"></span> Login *@
+@*             </NavLink> *@
+@*         </div> *@
+@*     </NotAuthorized> *@
+@* </AuthorizeView> *@
 
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="auth">
-                <span class="bi bi-lock-nav-menu" aria-hidden="true"></span> Auth Required
-            </NavLink>
-        </div>
-
-        <AuthorizeView>
-            <Authorized>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="Account/Manage">
-                        <span class="bi bi-person-fill-nav-menu" aria-hidden="true"></span> @context.User.Identity?.Name
-                    </NavLink>
-                </div>
-                <div class="nav-item px-3">
-                    <form action="Account/Logout" method="post">
-                        <AntiforgeryToken/>
-                        <input type="hidden" name="ReturnUrl" value="@currentUrl"/>
-                        <button type="submit" class="nav-link">
-                            <span class="bi bi-arrow-bar-left-nav-menu" aria-hidden="true"></span> Logout
-                        </button>
-                    </form>
-                </div>
-            </Authorized>
-            <NotAuthorized>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="Account/Register">
-                        <span class="bi bi-person-nav-menu" aria-hidden="true"></span> Register
-                    </NavLink>
-                </div>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="Account/Login">
-                        <span class="bi bi-person-badge-nav-menu" aria-hidden="true"></span> Login
-                    </NavLink>
-                </div>
-            </NotAuthorized>
-        </AuthorizeView>
-    </nav>
-</div>
 
 @code {
-    private string? currentUrl;
+    // private string? currentUrl;
+    @* *@
+    @*     protected override void OnInitialized() *@
+    @*     { *@
+    @*         currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri); *@
+    @*         NavigationManager.LocationChanged += OnLocationChanged; *@
+    @* } *@
 
-    protected override void OnInitialized()
+    private async Task Logout()
     {
-        currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
-        NavigationManager.LocationChanged += OnLocationChanged;
+        // await LocalStorage.RemoveItemAsync("authToken");
+        await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        NavigationManager.NavigateTo("");
     }
-
-    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
-    {
-        currentUrl = NavigationManager.ToBaseRelativePath(e.Location);
-        StateHasChanged();
-    }
-
-    public void Dispose()
-    {
-        NavigationManager.LocationChanged -= OnLocationChanged;
-    }
+    // private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    // {
+    //     currentUrl = NavigationManager.ToBaseRelativePath(e.Location);
+    //     StateHasChanged();
+    // }
+    //
+    // public void Dispose()
+    // {
+    //     NavigationManager.LocationChanged -= OnLocationChanged;
+    // }
 
 }
