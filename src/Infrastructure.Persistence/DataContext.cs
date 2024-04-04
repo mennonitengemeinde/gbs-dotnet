@@ -7,10 +7,17 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Gbs.Infrastructure.Persistence;
 
+// public class DataContext :
+//     IdentityDbContext<User, Role, string, IdentityUserClaim<string>, UserRole, IdentityUserLogin<string>,
+//         IdentityRoleClaim<string>, IdentityUserToken<string>>, IDataProtectionKeyContext, IGbsDbContext
 public class DataContext :
     IdentityDbContext<User, Role, string, IdentityUserClaim<string>, UserRole, IdentityUserLogin<string>,
         IdentityRoleClaim<string>, IdentityUserToken<string>>, IDataProtectionKeyContext, IGbsDbContext
 {
+    public DataContext(DbContextOptions<DataContext> options) : base(options)
+    {
+    }
+
     public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = null!;
 
     public DbSet<Generation> Generations { get; set; } = null!;
@@ -29,12 +36,10 @@ public class DataContext :
     public DbSet<Message> Messages { get; set; } = null!;
     public DbSet<WatchList> WatchLists { get; set; } = null!;
 
-    public DataContext(DbContextOptions<DataContext> options) : base(options) { }
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        
+
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
 }

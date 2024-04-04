@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>aspnet-Gbs.Web-9A901128-E404-4C26-B56B-DB23FB4693B5</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore"/>
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Application\Gbs.Application.csproj"/>
+        <ProjectReference Include="..\Infrastructure.Persistence\Gbs.Infrastructure.Persistence.csproj"/>
+    </ItemGroup>
+
+</Project>

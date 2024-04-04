@@ -1,6 +1,8 @@
 ﻿using Gbs.Application.Common.Interfaces;
 using Gbs.Application.Entities;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -22,13 +24,22 @@ public static class ConfigureServices
                 b => b.MigrationsAssembly("Gbs.Infrastructure.Persistence"));
         });
 
-        services.AddDefaultIdentity<User>()
+        services.AddIdentityCore<User>(options => options.SignIn.RequireConfirmedAccount = true)
+            .AddEntityFrameworkStores<DataContext>()
             .AddRoles<Role>()
-            .AddEntityFrameworkStores<DataContext>();
+            .AddRoleManager<RoleManager<Role>>()
+            .AddRoleStore<RoleStore<Role, DataContext>>()
+            .AddSignInManager()
+            .AddDefaultTokenProviders();
+
+        // used in net 7
+        // services.AddDefaultIdentity<User>()
+        //     .AddRoles<Role>()
+        //     .AddEntityFrameworkStores<DataContext>();
 
         services.AddDataProtection()
             .PersistKeysToDbContext<DataContext>();
-        
+
         return services;
     }
 }
