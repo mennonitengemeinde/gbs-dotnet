@@ -1,43 +1,141 @@
-﻿@using Gbs.Shared.Common.Const
-@* @implements IDisposable *@
+﻿@* @implements IDisposable *@
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavigationManager
 
-<MudDrawerHeader>
-    <MudImage Src="img/P-GBS2-02.svg"></MudImage>
-</MudDrawerHeader>
-<MudNavMenu Class="py-3" Color="Color.Primary">
-    <MudListSubheader Class="tw-pb-2">
-        School
-    </MudListSubheader>
-    <AuthorizeView Policy="@Policies.RequireAdminsSoundAndTeachers">
-        <MudNavLink Href="school" Icon="@Icons.Material.Filled.School">Home</MudNavLink>
-    </AuthorizeView>
-    <AuthorizeView Policy="@Policies.RequireAdminsAndTeachers">
-        <MudNavLink Href="/admin/students" Icon="@Icons.Material.Filled.People">Students</MudNavLink>
-    </AuthorizeView>
-    <AuthorizeView Policy="@Policies.RequireAdminsAndSound">
-        <MudListSubheader Class="tw-pb-2">
-            Admin
-        </MudListSubheader>
-        <MudNavLink Href="/admin/lessons" Icon="@Icons.Material.Filled.PlayLesson">Lessons</MudNavLink>
-        <MudNavLink Href="/admin/streams" Icon="@Icons.Material.Filled.LiveTv">Streams</MudNavLink>
-        <MudNavLink Href="/admin/teachers" Icon="@Icons.Material.Filled.Man">Teachers</MudNavLink>
-    </AuthorizeView>
-    <AuthorizeView Policy="@Policies.RequireAdmins">
-        <MudNavLink Href="/admin/grade-types" Icon="@Icons.Material.Filled.Grade">Grade Types</MudNavLink>
-        <MudNavLink Href="/admin/generations" Icon="@Icons.Material.Filled.GroupWork">Generations</MudNavLink>
-        <MudNavLink Href="/admin/subjects" Icon="@Icons.Material.Filled.Subject">Subjects</MudNavLink>
-        <MudNavLink Href="/admin/churches" Icon="@Icons.Material.Filled.Church">Churches</MudNavLink>
-        <MudNavLink Href="/admin/users" Icon="@Icons.Material.Filled.PeopleAlt">Users</MudNavLink>
-        <MudNavGroup Icon="@Icons.Material.Filled.ImportExport" Title="Import">
-            <MudNavLink Href="/admin/import/students" Icon="@Icons.Material.Filled.People">
+<div class="drawer-side shadow-2xl">
+    <label for="my-drawer-2" aria-label="close sidebar" class="drawer-overlay"></label>
+    <ul class="menu p-4 w-64 min-h-full bg-base-200 text-base-content">
+        <!-- Sidebar content here -->
+        <img src="/img/P-GBS2-02.svg" alt="Gbs logo" class="mx-8">
+        <h2 class="menu-title">School</h2>
+        <li>
+            <NavLink ActiveClass="active" href="/school">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20">
+                    <path fill="currentColor" fill-rule="evenodd" d="M9.664 1.319a.75.75 0 0 1 .672 0a41.059 41.059 0 0 1 8.198 5.424a.75.75 0 0 1-.254 1.285a31.372 31.372 0 0 0-7.86 3.83a.75.75 0 0 1-.84 0a31.508 31.508 0 0 0-2.08-1.287V9.394c0-.244.116-.463.302-.592a35.504 35.504 0 0 1 3.305-2.033a.75.75 0 0 0-.714-1.319a37 37 0 0 0-3.446 2.12A2.216 2.216 0 0 0 6 9.393v.38a31.293 31.293 0 0 0-4.28-1.746a.75.75 0 0 1-.254-1.285a41.059 41.059 0 0 1 8.198-5.424M6 11.459a29.848 29.848 0 0 0-2.455-1.158a41.029 41.029 0 0 0-.39 3.114a.75.75 0 0 0 .419.74c.528.256 1.046.53 1.554.82c-.21.324-.455.63-.739.914a.75.75 0 1 0 1.06 1.06c.37-.369.69-.77.96-1.193a26.61 26.61 0 0 1 3.095 2.348a.75.75 0 0 0 .992 0a26.547 26.547 0 0 1 5.93-3.95a.75.75 0 0 0 .42-.739a41.053 41.053 0 0 0-.39-3.114a29.925 29.925 0 0 0-5.199 2.801a2.25 2.25 0 0 1-2.514 0c-.41-.275-.826-.541-1.25-.797a6.985 6.985 0 0 1-1.084 3.45a26.503 26.503 0 0 0-1.281-.78A5.487 5.487 0 0 0 6 12z" clip-rule="evenodd"/>
+                </svg>
+                Home
+            </NavLink>
+        </li>
+        <li>
+            <a>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20">
+                    <path fill="currentColor" d="M7 8a3 3 0 1 0 0-6a3 3 0 0 0 0 6m7.5 1a2.5 2.5 0 1 0 0-5a2.5 2.5 0 0 0 0 5M1.615 16.428a1.224 1.224 0 0 1-.569-1.175a6.002 6.002 0 0 1 11.908 0c.058.467-.172.92-.57 1.174A9.953 9.953 0 0 1 7 18a9.953 9.953 0 0 1-5.385-1.572M14.5 16h-.106c.07-.297.088-.611.048-.933a7.47 7.47 0 0 0-1.588-3.755a4.502 4.502 0 0 1 5.874 2.636a.818.818 0 0 1-.36.98A7.465 7.465 0 0 1 14.5 16"/>
+                </svg>
                 Students
-            </MudNavLink>
-        </MudNavGroup>
-    </AuthorizeView>
-</MudNavMenu>
+            </a>
+        </li>
+        <h2 class="menu-title">Admin</h2>
+        <li>
+            <a>
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 20 20">
+                    <path fill="currentColor" fill-rule="evenodd" d="M10 2c-1.716 0-3.408.106-5.07.31A2.213 2.213 0 0 0 3 4.517V17.25a.75.75 0 0 0 1.075.676L10 15.082l5.926 2.844A.75.75 0 0 0 17 17.25V4.517c0-1.103-.806-2.068-1.93-2.207A41.403 41.403 0 0 0 10 2" clip-rule="evenodd"/>
+                </svg>
+                Lessons
+            </a>
+        </li>
+        <li>
+            <a>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M21 3H3c-1.11 0-2 .89-2 2v12a2 2 0 0 0 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5a2 2 0 0 0-2-2m0 14H3V5h18zm-5-6l-7 4V7z"/>
+                </svg>
+                Streams
+            </a>
+        </li>
+        <li>
+            <a>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 256 256">
+                    <path fill="currentColor" d="M216 40H40a16 16 0 0 0-16 16v144a16 16 0 0 0 16 16h13.39a8 8 0 0 0 7.23-4.57a48 48 0 0 1 86.76 0a8 8 0 0 0 7.23 4.57H216a16 16 0 0 0 16-16V56a16 16 0 0 0-16-16M104 168a32 32 0 1 1 32-32a32 32 0 0 1-32 32m112 32h-56.57a63.93 63.93 0 0 0-13.16-16H192a8 8 0 0 0 8-8V80a8 8 0 0 0-8-8H64a8 8 0 0 0-8 8v96a8 8 0 0 0 6 7.75A63.72 63.72 0 0 0 48.57 200H40V56h176Z"/>
+                </svg>
+                Teachers
+            </a>
+        </li>
+        <li>
+            <a>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2L9.19 8.63L2 9.24l5.46 4.73L5.82 21z"/>
+                </svg>
+                Grade Types
+            </a>
+        </li>
+        <li>
+            <a>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M8 16q.825 0 1.413-.587T10 14q0-.825-.587-1.412T8 12q-.825 0-1.412.588T6 14q0 .825.588 1.413T8 16m8 0q.825 0 1.413-.587T18 14q0-.825-.587-1.412T16 12q-.825 0-1.412.588T14 14q0 .825.588 1.413T16 16m-4-6q.825 0 1.413-.587T14 8q0-.825-.587-1.412T12 6q-.825 0-1.412.588T10 8q0 .825.588 1.413T12 10m0 12q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22"/>
+                </svg>
+                Generations
+            </a>
+        </li>
+        <li>
+            <a>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M4 19v-2h10v2zm0-4v-2h16v2zm0-4V9h16v2zm0-4V5h16v2z"/>
+                </svg>
+                Subjects
+            </a>
+        </li>
+        <li>
+            <a>
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M2 22v-8l4-1.775V9l5-2.5V5H9V3h2V1h2v2h2v2h-2v1.5L18 9v3.225L22 14v8h-8v-3q0-.825-.587-1.412T12 17q-.825 0-1.412.588T10 19v3zm10-8.5q.625 0 1.063-.437T13.5 12q0-.625-.437-1.062T12 10.5q-.625 0-1.062.438T10.5 12q0 .625.438 1.063T12 13.5"/>
+                </svg>
+                Churches
+            </a>
+        </li>
+        <li>
+            <a>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20">
+                    <path fill="currentColor" d="M7 8a3 3 0 1 0 0-6a3 3 0 0 0 0 6m7.5 1a2.5 2.5 0 1 0 0-5a2.5 2.5 0 0 0 0 5M1.615 16.428a1.224 1.224 0 0 1-.569-1.175a6.002 6.002 0 0 1 11.908 0c.058.467-.172.92-.57 1.174A9.953 9.953 0 0 1 7 18a9.953 9.953 0 0 1-5.385-1.572M14.5 16h-.106c.07-.297.088-.611.048-.933a7.47 7.47 0 0 0-1.588-3.755a4.502 4.502 0 0 1 5.874 2.636a.818.818 0 0 1-.36.98A7.465 7.465 0 0 1 14.5 16"/>
+                </svg>
+                Users
+            </a>
+        </li>
+        <li>
+            <a>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 32 32">
+                    <path fill="currentColor" d="M28 24v4H4v-4H2v4l.008-.005A1.998 1.998 0 0 0 4 30h24a2 2 0 0 0 2-2v-4zm-.4-9.4L24 18.2V4h-2v14.2l-3.6-3.6L17 16l6 6l6-6zM9 4l-6 6l1.4 1.4L8 7.8V22h2V7.8l3.6 3.6L15 10z"/>
+                </svg>
+                Import
+            </a>
+        </li>
+    </ul>
+
+</div>
+
+@* <MudDrawerHeader> *@
+@*     <MudImage Src="img/P-GBS2-02.svg"></MudImage> *@
+@* </MudDrawerHeader> *@
+@* <MudNavMenu Class="py-3" Color="Color.Primary"> *@
+@*     <MudListSubheader Class="tw-pb-2"> *@
+@*         School *@
+@*     </MudListSubheader> *@
+@*     <AuthorizeView Policy="@Policies.RequireAdminsSoundAndTeachers"> *@
+@*         <MudNavLink Href="school" Icon="@Icons.Material.Filled.School">Home</MudNavLink> *@
+@*     </AuthorizeView> *@
+@*     <AuthorizeView Policy="@Policies.RequireAdminsAndTeachers"> *@
+@*         <MudNavLink Href="/admin/students" Icon="@Icons.Material.Filled.People">Students</MudNavLink> *@
+@*     </AuthorizeView> *@
+@*     <AuthorizeView Policy="@Policies.RequireAdminsAndSound"> *@
+@*         <MudListSubheader Class="tw-pb-2"> *@
+@*             Admin *@
+@*         </MudListSubheader> *@
+@*         <MudNavLink Href="/admin/lessons" Icon="@Icons.Material.Filled.PlayLesson">Lessons</MudNavLink> *@
+@*         <MudNavLink Href="/admin/streams" Icon="@Icons.Material.Filled.LiveTv">Streams</MudNavLink> *@
+@*         <MudNavLink Href="/admin/teachers" Icon="@Icons.Material.Filled.Man">Teachers</MudNavLink> *@
+@*     </AuthorizeView> *@
+@*     <AuthorizeView Policy="@Policies.RequireAdmins"> *@
+@*         <MudNavLink Href="/admin/grade-types" Icon="@Icons.Material.Filled.Grade">Grade Types</MudNavLink> *@
+@*         <MudNavLink Href="/admin/generations" Icon="@Icons.Material.Filled.GroupWork">Generations</MudNavLink> *@
+@*         <MudNavLink Href="/admin/subjects" Icon="@Icons.Material.Filled.Subject">Subjects</MudNavLink> *@
+@*         <MudNavLink Href="/admin/churches" Icon="@Icons.Material.Filled.Church">Churches</MudNavLink> *@
+@*         <MudNavLink Href="/admin/users" Icon="@Icons.Material.Filled.PeopleAlt">Users</MudNavLink> *@
+@*         <MudNavGroup Icon="@Icons.Material.Filled.ImportExport" Title="Import"> *@
+@*             <MudNavLink Href="/admin/import/students" Icon="@Icons.Material.Filled.People"> *@
+@*                 Students *@
+@*             </MudNavLink> *@
+@*         </MudNavGroup> *@
+@*     </AuthorizeView> *@
+@* </MudNavMenu> *@
 
 @* <AuthorizeView> *@
 @*     <Authorized> *@

@@ -1,47 +1,51 @@
 ﻿@inherits LayoutComponentBase
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
-
-<GbsThemeProvider/>
-<MudDialogProvider/>
-<MudSnackbarProvider/>
-
-<MudLayout Class="tw-min-h-screen tw-min-h-screen-ios tw-max-h-screen tw-h-screen-ios tw-flex">
-    <MudAppBar Elevation="1">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@(e => DrawerToggle())"/>
-        <MudText Typo="Typo.h5" Class="ml-3">GBS</MudText>
-        <MudSpacer/>
-        <AuthorizeView>
-            <Authorized>
-                <MudButton StartIcon="@Icons.Material.Filled.Logout" OnClick="Logout" Color="Color.Inherit">
-                    Logout
-                </MudButton>
-            </Authorized>
-            <NotAuthorized>
-                <MudButton StartIcon="@Icons.Material.Filled.Login" Href="/account/login" Color="Color.Inherit">
-                    Login
-                </MudButton>
-            </NotAuthorized>
-        </AuthorizeView>
-    </MudAppBar>
-    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
-        <NavMenu/>
-    </MudDrawer>
-    <MudMainContent Class="tw-flex-1 tw-flex tw-pb-4 tw-overflow-x-auto">
-        <InfinitLinearProgress/>
-        <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="tw-flex-1 tw-flex tw-flex-col">
-            @Body
-        </MudContainer>
-    </MudMainContent>
-</MudLayout>
+<div class="drawer lg:drawer-open">
+    <input id="my-drawer-2" type="checkbox" class="drawer-toggle"/>
+    <div class="drawer-content flex flex-col">
+        <div class="navbar bg-neutral text-neutral-content shadow-lg">
+            <div class="flex-none lg:hidden">
+                <label for="my-drawer-2" class="btn btn-square btn-ghost">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-5 h-5 stroke-current">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </label>
+            </div>
+            <div class="flex-1">
+                <span class="px-2 text-xl">GBS</span>
+            </div>
+            <div class="flex-none">
+                <AuthorizeView>
+                    <Authorized>
+                        <button @onclick="Logout" class="btn btn-ghost">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 20 20">
+                                <g fill="currentColor" fill-rule="evenodd" clip-rule="evenodd">
+                                    <path d="M17 4.25A2.25 2.25 0 0 0 14.75 2h-5.5A2.25 2.25 0 0 0 7 4.25v2a.75.75 0 0 0 1.5 0v-2a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 .75.75v11.5a.75.75 0 0 1-.75.75h-5.5a.75.75 0 0 1-.75-.75v-2a.75.75 0 0 0-1.5 0v2A2.25 2.25 0 0 0 9.25 18h5.5A2.25 2.25 0 0 0 17 15.75z"/><path d="M14 10a.75.75 0 0 0-.75-.75H3.704l1.048-.943a.75.75 0 1 0-1.004-1.114l-2.5 2.25a.75.75 0 0 0 0 1.114l2.5 2.25a.75.75 0 1 0 1.004-1.114l-1.048-.943h9.546A.75.75 0 0 0 14 10"/>
+                                </g>
+                            </svg>
+                            Logout
+                        </button>
+                    </Authorized>
+                    <NotAuthorized>
+                        <a href="/account/login" class="btn btn-ghost">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 20 20">
+                                <g fill="currentColor" fill-rule="evenodd" clip-rule="evenodd">
+                                    <path d="M17 4.25A2.25 2.25 0 0 0 14.75 2h-5.5A2.25 2.25 0 0 0 7 4.25v2a.75.75 0 0 0 1.5 0v-2a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 .75.75v11.5a.75.75 0 0 1-.75.75h-5.5a.75.75 0 0 1-.75-.75v-2a.75.75 0 0 0-1.5 0v2A2.25 2.25 0 0 0 9.25 18h5.5A2.25 2.25 0 0 0 17 15.75z"/><path d="M1 10a.75.75 0 0 1 .75-.75h9.546l-1.048-.943a.75.75 0 1 1 1.004-1.114l2.5 2.25a.75.75 0 0 1 0 1.114l-2.5 2.25a.75.75 0 1 1-1.004-1.114l1.048-.943H1.75A.75.75 0 0 1 1 10"/>
+                                </g>
+                            </svg>
+                            Login
+                        </a>
+                    </NotAuthorized>
+                </AuthorizeView>
+            </div>
+        </div>
+        @Body
+    </div>
+    <NavMenu/>
+</div>
 
 @code {
-    private bool _drawerOpen = true;
-
-    void DrawerToggle()
-    {
-        _drawerOpen = !_drawerOpen;
-    }
 
     private async Task Logout()
     {
