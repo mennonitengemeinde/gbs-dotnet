@@ -1,4 +1,5 @@
 const defaultTheme = require('tailwindcss/defaultTheme')
+const colors = require('tailwindcss/colors')
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -15,7 +16,7 @@ module.exports = {
         themes: [
             {
                 gbstheme: {
-                    "primary": "#07114E",
+                    "primary": colors.indigo["600"],
                     "secondary": "#BD9A45",
                     "accent": "#8A7F60",
                     "neutral": "#5A6872",

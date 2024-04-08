@@ -11,58 +11,54 @@
 
 <PageTitle>Log in - GBS</PageTitle>
 
-
 <div class="flex justify-center py-4">
-    <section class="card bg-base-200">
-        <div class="card-body">
-            <h1 class="text-3xl">Log in</h1>
-            <StatusMessage Message="@errorMessage"/>
-            <EditForm Model="Input" method="post" OnValidSubmit="LoginUser" FormName="login">
-                <DataAnnotationsValidator/>
-                <h2 class="text-xl">Use your account to log in.</h2>
-                <div class="divider"></div>
-                <ValidationSummary class="text-error" role="alert"/>
-                <label class="form-control w-full max-w-xs">
-                    <div class="label">
-                        <span class="label-text">Email</span>
-                    </div>
-                    <InputText @bind-Value="Input.Email" class="input input-bordered w-full max-w-xs" autocomplete="email" aria-required="true" placeholder="name@example.com"/>
-                    <div class="label">
-                        <ValidationMessage For="() => Input.Email" class="label-text-alt text-danger"/>
-                    </div>
+    <AccountCard Title="Log in">
+        <StatusMessage Message="@errorMessage"/>
+        <EditForm Model="Input" method="post" OnValidSubmit="LoginUser" FormName="login">
+            <DataAnnotationsValidator/>
+            <h2 class="text-xl">Use your account to log in.</h2>
+            <div class="divider"></div>
+            <ValidationSummary class="text-error" role="alert"/>
+            <label class="form-control w-full max-w-xs">
+                <div class="label">
+                    <span class="label-text">Email</span>
+                </div>
+                <InputText @bind-Value="Input.Email" class="input input-bordered w-full max-w-xs" autocomplete="email" aria-required="true" placeholder="name@example.com"/>
+                <div class="label">
+                    <ValidationMessage For="() => Input.Email" class="label-text-alt text-danger"/>
+                </div>
+            </label>
+            <label class="form-control w-full max-w-xs">
+                <div class="label">
+                    <span class="label-text">Password</span>
+                </div>
+                <InputText type="password" @bind-Value="Input.Password" class="input input-bordered w-full max-w-xs" autocomplete="current-password" aria-required="true" placeholder="password"/>
+                <div class="label">
+                    <ValidationMessage For="() => Input.Password" class="label-text-alt text-danger"/>
+                </div>
+            </label>
+            <div class="form-control">
+                <label class="label cursor-pointer justify-start space-x-2">
+                    <InputCheckbox @bind-Value="Input.RememberMe" class="checkbox"/>
+                    <span class="label-text">Remember me</span>
                 </label>
-                <label class="form-control w-full max-w-xs">
-                    <div class="label">
-                        <span class="label-text">Password</span>
-                    </div>
-                    <InputText type="password" @bind-Value="Input.Password" class="input input-bordered w-full max-w-xs" autocomplete="current-password" aria-required="true" placeholder="password"/>
-                    <div class="label">
-                        <ValidationMessage For="() => Input.Password" class="label-text-alt text-danger"/>
-                    </div>
-                </label>
-                <div class="form-control">
-                    <label class="label cursor-pointer justify-start space-x-2">
-                        <InputCheckbox @bind-Value="Input.RememberMe" class="checkbox"/>
-                        <span class="label-text">Remember me</span>
-                    </label>
-                </div>
-                <div class="py-2">
-                    <button type="submit" class="btn btn-wide btn-primary">Log in</button>
-                </div>
-                <div>
-                    @* <p> *@
-                    @*     <a href="Account/ForgotPassword">Forgot your password?</a> *@
-                    @* </p> *@
-                    <p>
-                        <a class="btn btn-link" href="@(NavigationManager.GetUriWithQueryParameters("account/register", new Dictionary<string, object?> { ["ReturnUrl"] = ReturnUrl }))">Register as a new user</a>
-                    </p>
-                    @*     <p> *@
-                    @*         <a href="Account/ResendEmailConfirmation">Resend email confirmation</a> *@
-                    @*     </p> *@
-                </div>
-            </EditForm>
-        </div>
-    </section>
+            </div>
+            <div class="py-2">
+                <button type="submit" class="btn btn-wide btn-primary">Log in</button>
+            </div>
+            <div>
+                @* <p> *@
+                @*     <a href="Account/ForgotPassword">Forgot your password?</a> *@
+                @* </p> *@
+                <p>
+                    <a class="btn btn-link" href="@(NavigationManager.GetUriWithQueryParameters("account/register", new Dictionary<string, object?> { ["ReturnUrl"] = ReturnUrl }))">Register as a new user</a>
+                </p>
+                @*     <p> *@
+                @*         <a href="Account/ResendEmailConfirmation">Resend email confirmation</a> *@
+                @*     </p> *@
+            </div>
+        </EditForm>
+    </AccountCard>
 </div>
 @* <div class="row"> *@
 @*     <div class="col-md-4"> *@

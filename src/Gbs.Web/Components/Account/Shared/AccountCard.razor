@@ -1,0 +1,14 @@
+<div class="card bg-base-200 shadow-lg">
+    <div class="card-body">
+        @if (Title != null)
+        {
+            <h1 class="text-3xl">@Title</h1>
+        }
+        @ChildContent
+    </div>
+</div>
+
+@code {
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+}

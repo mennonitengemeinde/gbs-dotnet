@@ -17,71 +17,68 @@
 <PageTitle>Register</PageTitle>
 
 <div class="flex justify-center py-4">
-    <section class="card bg-base-200">
-        <div class="card-body">
-            <h1 class="text-3xl">Register</h1>
-            <StatusMessage Message="@Message"/>
-            <EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
-                <DataAnnotationsValidator/>
-                <h2 class="text-xl">Create a new account.</h2>
-                <div class="divider"></div>
-                <ValidationSummary class="text-error" role="alert"/>
-                <label class="form-control w-full max-w-xs">
-                    <div class="label">
-                        <span class="label-text">First Name</span>
-                    </div>
-                    <InputText @bind-Value="Input.FirstName" class="input input-bordered w-full max-w-xs" autocomplete="first-name" aria-required="true" placeholder="First name"/>
-                    <div class="label">
-                        <ValidationMessage For="() => Input.FirstName" class="label-text-alt text-danger"/>
-                    </div>
-                </label>
-                <label class="form-control w-full max-w-xs">
-                    <div class="label">
-                        <span class="label-text">Last Name</span>
-                    </div>
-                    <InputText @bind-Value="Input.LastName" class="input input-bordered w-full max-w-xs" autocomplete="last-name" aria-required="true" placeholder="Last name"/>
-                    <div class="label">
-                        <ValidationMessage For="() => Input.LastName" class="label-text-alt text-danger"/>
-                    </div>
-                </label>
-                <label class="form-control w-full max-w-xs">
-                    <div class="label">
-                        <span class="label-text">Email</span>
-                    </div>
-                    <InputText @bind-Value="Input.Email" class="input input-bordered w-full max-w-xs" autocomplete="email" aria-required="true" placeholder="name@example.com"/>
-                    <div class="label">
-                        <ValidationMessage For="() => Input.Email" class="label-text-alt text-danger"/>
-                    </div>
-                </label>
-                <label class="form-control w-full max-w-xs">
-                    <div class="label">
-                        <span class="label-text">Password</span>
-                    </div>
-                    <InputText type="password" @bind-Value="Input.Password" class="input input-bordered w-full max-w-xs" autocomplete="new-password" aria-required="true" placeholder="password"/>
-                    <div class="label">
-                        <ValidationMessage For="() => Input.Password" class="label-text-alt text-danger"/>
-                    </div>
-                </label>
-                <label class="form-control w-full max-w-xs">
-                    <div class="label">
-                        <span class="label-text">Confirm Password</span>
-                    </div>
-                    <InputText type="password" @bind-Value="Input.ConfirmPassword" class="input input-bordered w-full max-w-xs" autocomplete="new-password" aria-required="true" placeholder="password"/>
-                    <div class="label">
-                        <ValidationMessage For="() => Input.ConfirmPassword" class="label-text-alt text-danger"/>
-                    </div>
-                </label>
-                <div class="py-2">
-                    <button type="submit" class="btn btn-wide btn-primary">Register</button>
+    <AccountCard Title="Register">
+        <StatusMessage Message="@Message"/>
+        <EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
+            <DataAnnotationsValidator/>
+            <h2 class="text-xl">Create a new account.</h2>
+            <div class="divider"></div>
+            <ValidationSummary class="text-error" role="alert"/>
+            <label class="form-control w-full max-w-xs">
+                <div class="label">
+                    <span class="label-text">First Name</span>
                 </div>
-                <div>
-                    <p>
-                        <a class="btn btn-link" href="account/login">Login with an account</a>
-                    </p>
+                <InputText @bind-Value="Input.FirstName" class="input input-bordered w-full max-w-xs" autocomplete="first-name" aria-required="true" placeholder="First name"/>
+                <div class="label">
+                    <ValidationMessage For="() => Input.FirstName" class="label-text-alt text-danger"/>
                 </div>
-            </EditForm>
-        </div>
-    </section>
+            </label>
+            <label class="form-control w-full max-w-xs">
+                <div class="label">
+                    <span class="label-text">Last Name</span>
+                </div>
+                <InputText @bind-Value="Input.LastName" class="input input-bordered w-full max-w-xs" autocomplete="last-name" aria-required="true" placeholder="Last name"/>
+                <div class="label">
+                    <ValidationMessage For="() => Input.LastName" class="label-text-alt text-danger"/>
+                </div>
+            </label>
+            <label class="form-control w-full max-w-xs">
+                <div class="label">
+                    <span class="label-text">Email</span>
+                </div>
+                <InputText @bind-Value="Input.Email" class="input input-bordered w-full max-w-xs" autocomplete="email" aria-required="true" placeholder="name@example.com"/>
+                <div class="label">
+                    <ValidationMessage For="() => Input.Email" class="label-text-alt text-danger"/>
+                </div>
+            </label>
+            <label class="form-control w-full max-w-xs">
+                <div class="label">
+                    <span class="label-text">Password</span>
+                </div>
+                <InputText type="password" @bind-Value="Input.Password" class="input input-bordered w-full max-w-xs" autocomplete="new-password" aria-required="true" placeholder="password"/>
+                <div class="label">
+                    <ValidationMessage For="() => Input.Password" class="label-text-alt text-danger"/>
+                </div>
+            </label>
+            <label class="form-control w-full max-w-xs">
+                <div class="label">
+                    <span class="label-text">Confirm Password</span>
+                </div>
+                <InputText type="password" @bind-Value="Input.ConfirmPassword" class="input input-bordered w-full max-w-xs" autocomplete="new-password" aria-required="true" placeholder="password"/>
+                <div class="label">
+                    <ValidationMessage For="() => Input.ConfirmPassword" class="label-text-alt text-danger"/>
+                </div>
+            </label>
+            <div class="py-2">
+                <button type="submit" class="btn btn-wide btn-primary">Register</button>
+            </div>
+            <div>
+                <p>
+                    <a class="btn btn-link" href="account/login">Login with an account</a>
+                </p>
+            </div>
+        </EditForm>
+    </AccountCard>
 </div>
 
 @* <div class="col-md-6 col-md-offset-2"> *@
