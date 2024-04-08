@@ -1,0 +1,27 @@
+@using System.Linq.Expressions
+@inherits InputBase<string>
+
+<label class="form-control w-full max-w-xs">
+    <div class="label">
+        <span class="label-text">@Label</span>
+    </div>
+    <input id="@Id" name="@Name" @bind="@CurrentValue" class="input input-bordered w-full max-w-xs" @attributes="AdditionalAttributes"/>
+    <div class="label text-danger">
+        <ValidationMessage For="@ValidationFor" class="label-text-alt"/>
+    </div>
+</label>
+
+@code {
+    [Parameter] [EditorRequired] public Expression<Func<string>> ValidationFor { get; set; } = default!;
+    [Parameter] [EditorRequired] public string Name { get; set; } = "";
+    [Parameter] public string? Id { get; set; }
+    [Parameter] public string? Label { get; set; }
+
+    protected override bool TryParseValueFromString(string? value, out string result, out string? validationErrorMessage)
+    {
+        result = value ?? string.Empty;
+        validationErrorMessage = null;
+        return true;
+    }
+
+}
