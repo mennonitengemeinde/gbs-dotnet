@@ -4,7 +4,7 @@ using Gbs.Infrastructure.Persistence;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
+// builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
 
 builder.Services.AddApplicationServices();
 builder.Services.AddPersistenceServices(builder.Configuration);
@@ -25,7 +25,7 @@ else
     app.UseHsts();
 }
 
-app.UseSerilogRequestLogging();
+// app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
 

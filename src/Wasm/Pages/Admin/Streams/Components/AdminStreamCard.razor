@@ -10,15 +10,15 @@
         <CardHeaderActions>
             <MudIconButton Color="Color.Error"
                            OnClick="ToggleLive"
-                           Icon="@(LiveStream.IsLive ? Icons.Material.Filled.Circle : Icons.Material.Outlined.Circle)" />
+                           Icon="@(LiveStream.IsLive ? Icons.Material.Filled.Circle : Icons.Material.Outlined.Circle)"/>
         </CardHeaderActions>
     </MudCardHeader>
     <MudCardContent>
         <MudText Typo="Typo.body1" Class="tw-font-semibold">Speakers:</MudText>
-        <MudList Dense="true">
+        <MudList Dense="true" T="TeacherResponse">
             @foreach (var teacher in LiveStream.Teachers)
             {
-                <MudListItem Text="@teacher.Name" Icon="@Icons.Material.Filled.Mic" ExpandLessIcon="true" />
+                <MudListItem Text="@teacher.Name" Icon="@Icons.Material.Filled.Mic" ExpandLessIcon="true"/>
             }
         </MudList>
     </MudCardContent>
@@ -39,12 +39,9 @@
 
 @code {
 
-    [Parameter]
-    [EditorRequired]
-    public StreamResponse LiveStream { get; set; } = null!;
+    [Parameter] [EditorRequired] public StreamResponse LiveStream { get; set; } = null!;
 
-    [Parameter]
-    public EventCallback<StreamResponse> OnDelete { get; set; }
+    [Parameter] public EventCallback<StreamResponse> OnDelete { get; set; }
 
     async Task ToggleLive()
     {

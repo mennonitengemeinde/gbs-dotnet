@@ -2,7 +2,8 @@
     <MudSelect Label="Church"
                T="int"
                Variant="Variant.Outlined"
-               @bind-Value="@ChurchValue"
+               Value="@ChurchValue"
+               ValueChanged="@ChurchValueChanged"
                Margin="Margin.Dense"
                AnchorOrigin="Origin.BottomCenter">
         <MudSelectItem T="int" Value="0">All</MudSelectItem>
@@ -15,25 +16,10 @@
 
 @code {
 
-    int _churchValue;
+    [Parameter] [EditorRequired] public List<ChurchResponse> Churches { get; set; } = new();
 
-    [Parameter]
-    [EditorRequired]
-    public List<ChurchResponse> Churches { get; set; } = new();
+    [Parameter] public int ChurchValue { get; set; }
 
-    [Parameter]
-    public int ChurchValue
-    {
-        get => _churchValue;
-        set
-        {
-            if (_churchValue == value) return;
-            _churchValue = value;
-            ChurchValueChanged.InvokeAsync(value);
-        }
-    }
-
-    [Parameter]
-    public EventCallback<int> ChurchValueChanged { get; set; }
+    [Parameter] public EventCallback<int> ChurchValueChanged { get; set; }
 
 }

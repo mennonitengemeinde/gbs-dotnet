@@ -1,13 +1,14 @@
 ﻿<div class="tw-h-2 tw-mb-4">
     @if (UiState.IsPageLoading)
     {
-        <MudProgressLinear Color="Color.Secondary" Indeterminate="true" />
+        <p>test</p>
+        <MudProgressLinear Color="Color.Secondary" Indeterminate="true"/>
     }
 </div>
 
 @code {
 
-    [CascadingParameter]
-    UiState UiState { get; set; } = null!;
+    [CascadingParameter] UiState UiState { get; set; } = null!;
 
 }
+

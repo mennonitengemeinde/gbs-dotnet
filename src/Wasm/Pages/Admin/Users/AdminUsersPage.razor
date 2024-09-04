@@ -56,21 +56,19 @@
         </MudTd>
         <MudTd DataLabel="Active">
             <MudSwitch T="bool"
-                       Checked="@context.IsActive"
-                       CheckedChanged="@((bool e) => HandleActiveChange(e, context.Id))" />
+                       Value="@context.IsActive"
+                       ValueChanged="@((bool e) => HandleActiveChange(e, context.Id))"/>
         </MudTd>
     </RowTemplate>
 </MudTable>
 
 @code {
-    [CascadingParameter]
-    private UserState UserState { get; set; } = null!;
-    
-    [CascadingParameter]
-    private ChurchState ChurchState { get; set; } = null!;
-    
+    [CascadingParameter] private UserState UserState { get; set; } = null!;
+
+    [CascadingParameter] private ChurchState ChurchState { get; set; } = null!;
+
     UpdateUserChurchRequest _updateChurchDto = new();
-    
+
     List<LocalUserDto> _users { get; set; } = new();
     List<string> _roles { get; set; } = new();
     string ChurchProcessing { get; set; } = string.Empty;
@@ -84,6 +82,7 @@
         {
             _roles = roles.Data.Select(r => r.Name).ToList();
         }
+
         _users = UserState.Data.Select(u => new LocalUserDto(u)).ToList();
     }
 
@@ -101,6 +100,7 @@
             ChurchProcessing = string.Empty;
             return;
         }
+
         _updateChurchDto.ChurchId = value.Value;
         await UserState.UpdateChurch(user.Id, _updateChurchDto);
         ChurchProcessing = string.Empty;
@@ -118,6 +118,7 @@
             localUser.Roles = roles;
             return;
         }
+
         localUser.Roles = roles;
         localUser.RoleChanged = true;
     }

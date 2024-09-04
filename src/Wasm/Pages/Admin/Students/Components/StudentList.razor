@@ -1,43 +1,41 @@
 @inject NavigationManager NavigationManager
 
-<MudPaper Width="400px" Height="100%" MinHeight="0" Class="@($"tw-overflow-auto tw-pt-2 {@ClassCss}")">
-    <MudTextField TextChanged="@OnSearchChanged"
-                  T="string"
-                  Text="@SearchText"
-                  Label="Search"
-                  Variant="Variant.Outlined"
-                  Adornment="Adornment.End"
-                  AdornmentIcon="@Icons.Material.Filled.Search"
-                  AdornmentColor="Color.Default"
-                  Clearable="true"
-                  Immediate="true"
-                  Margin="Margin.Dense"
-                  Class="tw-mx-2" />
-    <MudList Clickable="true" Class="tw-min-h-0" SelectedValue="SelectedValue" SelectedValueChanged="HandleClick">
+<MudPaper Width="400px" Height="100%" MinHeight="0" Class="@($"tw-overflow-auto tw-pt-2 {ClassCss}")">
+    <MudTextField
+        TextChanged="@OnSearchChanged"
+        T="string"
+        Text="@SearchText"
+        Label="Search"
+        Variant="Variant.Outlined"
+        Adornment="Adornment.End"
+        AdornmentIcon="@Icons.Material.Filled.Search"
+        AdornmentColor="Color.Default"
+        Clearable="true"
+        Immediate="true"
+        Margin="Margin.Dense"
+        Class="tw-mx-2"/>
+    <MudList T="int"
+             Class="tw-min-h-0"
+             SelectedValue="SelectedValue"
+             SelectedValueChanged="SelectedValueChanged">
         @foreach (var student in Students)
         {
-            <MudListItem @key="student.Id" Text="@($"{student.FirstName} {student.LastName}")" Value="student.Id" />
+            <MudListItem @key="student.Id" Text="@($"{student.FirstName} {student.LastName}")" Value="student.Id"/>
         }
     </MudList>
 </MudPaper>
 
 @code {
 
-    [Parameter]
-    [EditorRequired]
-    public List<StudentResponse> Students { get; set; } = null!;
+    [Parameter] [EditorRequired] public List<StudentResponse> Students { get; set; } = null!;
 
-    [Parameter]
-    public string ClassCss { get; set; } = string.Empty;
-    
-    [Parameter]
-    public int? SelectedValue { get; set; }
-    
-    [Parameter]
-    public EventCallback<int> SelectedValueChanged { get; set; }
+    [Parameter] public string ClassCss { get; set; } = string.Empty;
 
-    [Parameter]
-    public EventCallback<string> OnSearch { get; set; }
+    [Parameter] public int SelectedValue { get; set; }
+
+    [Parameter] public EventCallback<int> SelectedValueChanged { get; set; }
+
+    [Parameter] public EventCallback<string> OnSearch { get; set; }
 
     string SearchText { get; set; } = string.Empty;
 
@@ -45,11 +43,6 @@
     {
         SearchText = value;
         return OnSearch.InvokeAsync(value);
-    }
-
-    private async Task HandleClick(object value)
-    {
-        await SelectedValueChanged.InvokeAsync((int)value);
     }
 
 }

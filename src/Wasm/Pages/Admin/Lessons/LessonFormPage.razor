@@ -11,7 +11,7 @@
 <PageTitle>Lessons Form - GBS</PageTitle>
 
 <EditForm Model="_model" OnValidSubmit="HandleValidSubmit">
-    <DataAnnotationsValidator />
+    <DataAnnotationsValidator/>
     <MudGrid Justify="Justify.Center" Class="tw-pt-8">
         <MudItem xs="12" sm="8" md="5">
             <MatFormCard Label="Lesson"
@@ -23,11 +23,11 @@
                 <MudTextField Label="Name"
                               @bind-Value="_model.Name"
                               For="() => _model.Name"
-                              OnlyValidateIfDirty="true" />
+                              OnlyValidateIfDirty="true"/>
                 <MudTextField Label="Video Url"
                               @bind-Value="_model.VideoUrl"
                               For="() => _model.VideoUrl"
-                              OnlyValidateIfDirty="true" />
+                              OnlyValidateIfDirty="true"/>
                 <div class="tw-flex tw-items-center">
                     <MudSelect Label="Generation"
                                AnchorOrigin="Origin.BottomCenter"
@@ -42,7 +42,7 @@
                     </MudSelect>
                     @if (GenerationState.IsLoading)
                     {
-                        <MudProgressCircular Color="Color.Default" Indeterminate="true" Size="Size.Small" Class="tw-ml-4" />
+                        <MudProgressCircular Color="Color.Default" Indeterminate="true" Size="Size.Small" Class="tw-ml-4"/>
                     }
                 </div>
                 <div class="tw-flex tw-items-end">
@@ -59,7 +59,7 @@
                     </MudSelect>
                     @if (SubjectService.IsLoading)
                     {
-                        <MudProgressCircular Color="Color.Default" Indeterminate="true" Size="Size.Small" Class="tw-ml-4 tw-mb-1" />
+                        <MudProgressCircular Color="Color.Default" Indeterminate="true" Size="Size.Small" Class="tw-ml-4 tw-mb-1"/>
                     }
                 </div>
                 <div class="tw-flex tw-items-end">
@@ -76,13 +76,13 @@
                     </MudSelect>
                     @if (SubjectService.IsLoading)
                     {
-                        <MudProgressCircular Color="Color.Default" Indeterminate="true" Size="Size.Small" Class="tw-ml-4 tw-mb-1" />
+                        <MudProgressCircular Color="Color.Default" Indeterminate="true" Size="Size.Small" Class="tw-ml-4 tw-mb-1"/>
                     }
                 </div>
-                <MudRadioGroup T="Visibility" @bind-SelectedOption="@_model.IsVisible">
+                <MudRadioGroup T="Visibility" @bind-Value="@_model.IsVisible">
                     @foreach (var item in Enum.GetValues(typeof(Visibility)).Cast<Visibility>())
                     {
-                        <MudRadio T="Visibility" Color="Color.Primary" Option="@item">@item.ToString()</MudRadio>
+                        <MudRadio T="Visibility" Color="Color.Primary" Value="@item">@item.ToString()</MudRadio>
                     }
                 </MudRadioGroup>
             </MatFormCard>
@@ -92,18 +92,16 @@
 
 @code {
 
-    [CascadingParameter]
-    public GenerationState GenerationState { get; set; } = null!;
+    [CascadingParameter] public GenerationState GenerationState { get; set; } = null!;
 
-    [CascadingParameter]
-    public TeacherState TeacherState { get; set; } = null!;
+    [CascadingParameter] public TeacherState TeacherState { get; set; } = null!;
 
     private CreateLessonRequest _model = new();
 
     protected override async Task OnInitializedAsync()
     {
         LessonService.OnChange += NotifyStateChanged;
-        
+
         await Task.WhenAll(SubjectService.Fetch(this), LessonService.Fetch(this), GenerationState.Fetch(), TeacherState.Fetch());
 
         if (Id.HasValue)

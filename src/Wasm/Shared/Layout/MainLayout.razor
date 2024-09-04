@@ -3,15 +3,16 @@
 @inject ILocalStorageService LocalStorage
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
-<GbsThemeProvider />
-<MudDialogProvider />
-<MudSnackbarProvider />
+<GbsThemeProvider/>
+<MudPopoverProvider/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
 
 <MudLayout Class="tw-min-h-screen tw-min-h-screen-ios tw-max-h-screen tw-h-screen-ios tw-flex">
     <MudAppBar Elevation="1">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@(e => DrawerToggle())" />
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@(e => DrawerToggle())"/>
         <MudText Typo="Typo.h5" Class="ml-3">GBS</MudText>
-        <MudSpacer />
+        <MudSpacer/>
         <AuthorizeView>
             <Authorized>
                 <MudButton StartIcon="@Icons.Material.Filled.Logout" OnClick="Logout" Color="Color.Inherit">
@@ -26,11 +27,11 @@
         </AuthorizeView>
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
-        <NavMenu />
+        <NavMenu/>
     </MudDrawer>
-    <MudMainContent Class="tw-flex-1 tw-flex tw-pb-4 tw-overflow-x-auto">
-        <InfinitLinearProgress />
-        <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="tw-flex-1 tw-flex tw-flex-col">
+    <MudMainContent Class="tw-flex-1 tw-flex tw-flex-col tw-pb-4 tw-overflow-x-auto">
+        <InfinitLinearProgress/>
+        <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="tw-flex-1 tw-flex tw-flex-col tw-relative">
             @Body
         </MudContainer>
     </MudMainContent>

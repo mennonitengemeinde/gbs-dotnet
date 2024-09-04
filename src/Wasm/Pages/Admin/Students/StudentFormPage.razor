@@ -14,8 +14,8 @@
 @if (!UiState.IsPageLoading)
 {
     <EditForm Model="_model" OnValidSubmit="HandleValidSubmit">
-        <FluentValidationValidator />
-        <ValidationSummary />
+        <FluentValidationValidator/>
+        <ValidationSummary/>
         <MudGrid Justify="Justify.Center" Class="tw-py-8">
             <MudItem xs="12" sm="8" md="5">
                 <MatFormCard Label="Student"
@@ -28,52 +28,52 @@
                                   @bind-Value="_model.FirstName"
                                   For="() => _model.FirstName"
                                   Required
-                                  OnlyValidateIfDirty="true" />
+                                  OnlyValidateIfDirty="true"/>
                     <MudTextField Label="Last Name"
                                   @bind-Value="_model.LastName"
                                   Required
-                                  For="() => _model.LastName" />
+                                  For="() => _model.LastName"/>
                     <MudDatePicker Label="Date of Birth"
                                    @bind-Date="_model.DateOfBirth"
                                    Required
-                                   For="() => _model.DateOfBirth" />
+                                   For="() => _model.DateOfBirth"/>
                     <MudTextField Label="Email"
                                   @bind-Value="_model.Email"
-                                  For="() => _model.Email" />
+                                  For="() => _model.Email"/>
                     <MudTextField Label="Home Church"
                                   @bind-Value="_model.HomeChurch"
-                                  For="() => _model.HomeChurch" />
+                                  For="() => _model.HomeChurch"/>
                     <MudTextField Label="Phone"
                                   @bind-Value="_model.Phone"
                                   For="() => _model.Phone"
-                                  Mask="@(new PatternMask("000-000-0000"))" />
+                                  Mask="@(new PatternMask("000-000-0000"))"/>
                     <MudField Label="Marital status" Variant="Variant.Text" InnerPadding="false">
-                        <MudRadioGroup T="MaritalStatus" @bind-SelectedOption="@_model.MaritalStatus">
+                        <MudRadioGroup T="MaritalStatus" @bind-Value="@_model.MaritalStatus">
                             @foreach (var maritalStatus in Enum.GetValues(typeof(MaritalStatus)).Cast<MaritalStatus>())
                             {
-                                <MudRadio T="MaritalStatus" Option="@maritalStatus">@maritalStatus.ToString()</MudRadio>
+                                <MudRadio T="MaritalStatus" Value="@maritalStatus">@maritalStatus.ToString()</MudRadio>
                             }
                         </MudRadioGroup>
                     </MudField>
                     <MudTextField Label="Address"
                                   @bind-Value="_model.Address"
-                                  For="() => _model.Address" />
+                                  For="() => _model.Address"/>
                     <MudTextField Label="City"
                                   @bind-Value="_model.City"
                                   Required
-                                  For="() => _model.City" />
+                                  For="() => _model.City"/>
                     <MudTextField Label="Province/State"
                                   @bind-Value="_model.Province"
                                   Required
-                                  For="() => _model.Province" />
+                                  For="() => _model.Province"/>
                     <MudTextField Label="Country"
                                   @bind-Value="_model.Country"
                                   Required
-                                  For="() => _model.Country" />
+                                  For="() => _model.Country"/>
 
                     <MudTextField Label="Postal Code"
                                   @bind-Value="_model.PostalCode"
-                                  For="() => _model.PostalCode" />
+                                  For="() => _model.PostalCode"/>
 
                     <MudSelect Label="Generation"
                                AnchorOrigin="Origin.BottomCenter"
@@ -99,18 +99,18 @@
                         </MudSelect>
                     }
 
-                    <MudTextField T="string" Label="Testimony" Variant="Variant.Text" @bind-Value="_model.Testimony" Lines="5" />
+                    <MudTextField T="string" Label="Testimony" Variant="Variant.Text" @bind-Value="_model.Testimony" Lines="5"/>
 
                     <MudField Label="Status" Variant="Variant.Text" InnerPadding="false">
-                        <MudRadioGroup T="EnrollmentState" @bind-SelectedOption="@_model.Status">
+                        <MudRadioGroup T="EnrollmentState" @bind-Value="@_model.Status">
                             @foreach (var status in Enum.GetValues(typeof(EnrollmentState)).Cast<EnrollmentState>())
                             {
-                                <MudRadio T="EnrollmentState" Option="@status">@status.ToString()</MudRadio>
+                                <MudRadio T="EnrollmentState" Value="@status">@status.ToString()</MudRadio>
                             }
                         </MudRadioGroup>
                     </MudField>
 
-                    <MudCheckBox @bind-Checked="@_model.AgreedToGbsConcept" Label="Agree to GBS Concept" Color="Color.Primary"></MudCheckBox>
+                    <MudCheckBox @bind-Value="@_model.AgreedToGbsConcept" Label="Agree to GBS Concept" Color="Color.Primary"></MudCheckBox>
 
                 </MatFormCard>
             </MudItem>
@@ -120,14 +120,11 @@
 
 @code {
 
-    [CascadingParameter]
-    GenerationState GenerationState { get; set; } = null!;
+    [CascadingParameter] GenerationState GenerationState { get; set; } = null!;
 
-    [CascadingParameter]
-    ChurchState ChurchState { get; set; } = null!;
+    [CascadingParameter] ChurchState ChurchState { get; set; } = null!;
 
-    [CascadingParameter]
-    UiState UiState { get; set; } = null!;
+    [CascadingParameter] UiState UiState { get; set; } = null!;
 
     bool _isAdmin;
     CreateStudentRequest _model = new();

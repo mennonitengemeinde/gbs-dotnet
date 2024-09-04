@@ -10,7 +10,7 @@
 <PageTitle>Streams Form - GBS</PageTitle>
 
 <EditForm Model="_model" OnValidSubmit="HandleValidSubmit">
-    <FluentValidationValidator />
+    <FluentValidationValidator/>
     <MudGrid Justify="Justify.Center" Class="tw-pt-8">
         <MudItem xs="12" sm="8" md="5">
             <MatFormCard Label="Stream"
@@ -21,10 +21,10 @@
                          ReturnUrl="/admin/streams">
                 <MudTextField Label="Title"
                               @bind-Value="_model.Title"
-                              For="() => _model.Title" />
+                              For="() => _model.Title"/>
                 <MudTextField Label="Url"
                               @bind-Value="_model.Url"
-                              For="() => _model.Url" />
+                              For="() => _model.Url"/>
                 <MudSelect Label="Generation"
                            AnchorOrigin="Origin.BottomCenter"
                            For="@(() => _model.GenerationId)"
@@ -45,9 +45,10 @@
                         <MudSelectItem T="int" Value="@item.Id">@item.Name</MudSelectItem>
                     }
                 </MudSelect>
-                <MudSwitch Label="Live"
-                           Color="Color.Primary"
-                           @bind-Checked="_model.IsLive" />
+                <MudSwitch
+                    Label="Live"
+                    Color="Color.Primary"
+                    @bind-Value="_model.IsLive"/>
             </MatFormCard>
         </MudItem>
     </MudGrid>
@@ -55,11 +56,9 @@
 
 @code {
 
-    [CascadingParameter]
-    GenerationState GenerationState { get; set; } = null!;
+    [CascadingParameter] GenerationState GenerationState { get; set; } = null!;
 
-    [CascadingParameter]
-    TeacherState TeacherState { get; set; } = null!;
+    [CascadingParameter] TeacherState TeacherState { get; set; } = null!;
 
     CreateStreamRequest _model = new();
 
@@ -67,7 +66,7 @@
     protected override async Task OnInitializedAsync()
     {
         StreamService.OnChange += NotifyStateChanged;
-        
+
         var tasks = new[] { TeacherState.Fetch(), GenerationState.Fetch() };
         await Task.WhenAll(tasks);
 
@@ -121,6 +120,7 @@
             int.TryParse(value, out var id);
             nameList.Add(TeacherState.Data.FirstOrDefault(t => t.Id == id)!.Name);
         }
+
         return string.Join(", ", nameList);
     }
 

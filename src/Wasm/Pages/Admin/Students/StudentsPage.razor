@@ -12,14 +12,15 @@
 
 <PageTitle>Students - GBS</PageTitle>
 
-@if (@StudentService.IsLoading)
+@* @if (@StudentService.IsLoading) *@
+@* { *@
+@*     <MudOverlay Visible="true" DarkBackground="false" Absolute="true"> *@
+@*         <MudProgressCircular Color="Color.Secondary" Indeterminate="true"/> *@
+@*     </MudOverlay> *@
+@* } *@
+@* else *@
+@if (UiState.IsPageLoading == false)
 {
-    <MudOverlay Visible="true" DarkBackground="true" Absolute="true">
-        <MudProgressCircular Color="Color.Secondary" Indeterminate="true" />
-    </MudOverlay>
-}
-else
-{   
     <div class="tw-py-4">
         @if (SelectedStudent != null)
         {
@@ -46,38 +47,37 @@ else
     @if (_userIsAdmin)
     {
         <div class="@HideOnMobileDetail">
-            <AdminChurchFilter Churches="@ChurchState.Data" @bind-ChurchValue="SelectedChurch" />
+            <AdminChurchFilter Churches="@ChurchState.Data" @bind-ChurchValue="SelectedChurch"/>
         </div>
     }
 
     <div class="tw-flex-1 tw-flex md:tw-space-x-4 tw-w-full tw-min-h-0">
-        <StudentList Students="@Students" OnSearch="@HandleSearch" ClassCss="@HideOnMobileDetail" SelectedValue="SelectedStudentId" SelectedValueChanged="HandleStudentSelect" />
+        <StudentList Students="@Students"
+                     OnSearch="@HandleSearch"
+                     SelectedValue="SelectedStudentId"
+                     SelectedValueChanged="@OnStudentSelect"
+                     ClassCss="@HideOnMobileDetail"/>
 
         @if (Id.HasValue)
         {
-            <StudentDetail Student="SelectedStudent" GradeTypes="GradeTypeState.Data" Subjects="SubjectService.Data" />
+            <StudentDetail Student="SelectedStudent" GradeTypes="GradeTypeState.Data" Subjects="SubjectService.Data"/>
         }
     </div>
 }
-
 
 
 @code {
 
     bool _userIsAdmin;
     int _selectedChurch;
-    
-    [CascadingParameter]
-    ChurchState ChurchState { get; set; } = null!;
-    
-    [CascadingParameter]
-    GradeTypeState GradeTypeState { get; set; } = null!;
 
-    [CascadingParameter]
-    UiState UiState { get; set; } = null!;
+    [CascadingParameter] ChurchState ChurchState { get; set; } = null!;
 
-    [Parameter]
-    public int? Id { get; set; }
+    [CascadingParameter] GradeTypeState GradeTypeState { get; set; } = null!;
+
+    [CascadingParameter] UiState UiState { get; set; } = null!;
+
+    [Parameter] public int? Id { get; set; }
 
     List<StudentResponse> Students { get; set; } = new();
 
@@ -90,41 +90,55 @@ else
             OnFilter(SelectedChurch);
         }
     }
-    
+
     StudentResponse? SelectedStudent { get; set; }
-    
-    int? SelectedStudentId { get; set; }
+
+    int SelectedStudentId { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         StudentService.OnChange += NotifyStateChanged;
-        var tasks = new[] { StudentService.ForceFetch(this), ChurchState.Fetch(), SubjectService.Fetch(this), GradeTypeState.Fetch() };
-        await Task.WhenAll(tasks);
-        Students = StudentService.Data;
-        _userIsAdmin = await AuthService.UserIsAdmin();
+        await LoadData();
     }
 
     protected override async Task OnParametersSetAsync()
     {
+        UiState.IsPageLoading = true;
         if (Id.HasValue)
         {
             SelectedStudent = await StudentService.GetById(this, Id.Value);
-            SelectedStudentId = Id;
+            SelectedStudentId = Id.Value;
         }
+        else
+        {
+            SelectedStudent = null;
+            SelectedStudentId = 0;
+        }
+
+        UiState.IsPageLoading = false;
+    }
+
+    async Task LoadData()
+    {
+        UiState.IsPageLoading = true;
+        var tasks = new[] { StudentService.ForceFetch(this), ChurchState.Fetch(), SubjectService.Fetch(this), GradeTypeState.Fetch() };
+        await Task.WhenAll(tasks);
+        Students = StudentService.Data;
+        _userIsAdmin = await AuthService.UserIsAdmin();
+        // UiState.IsPageLoading = false;
     }
 
     void HandleSearch(string searchText)
     {
         OnFilter(SelectedChurch, searchText);
     }
-    
-    void HandleStudentSelect(int value)
+
+    void OnStudentSelect(int value)
     {
         if (value == 0)
         {
-            SelectedStudentId = null;
+            SelectedStudentId = 0;
             NavigationManager.NavigateTo("/admin/students");
-            
         }
         else
         {
@@ -137,6 +151,7 @@ else
 
     void OnFilter(int churchId, string searchText = "")
     {
+        UiState.IsPageLoading = true;
         if (churchId == 0)
         {
             Students = StudentService.Data
@@ -152,6 +167,8 @@ else
                              x.LastName.Contains(searchText, StringComparison.OrdinalIgnoreCase)))
                 .ToList();
         }
+
+        UiState.IsPageLoading = false;
     }
 
     public void Dispose()

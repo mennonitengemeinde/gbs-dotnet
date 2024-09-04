@@ -11,7 +11,7 @@
 
 <PageTitle>School - GBS</PageTitle>
 
-<WelcomeBanner />
+<WelcomeBanner/>
 
 @if (StreamService.Data.Any(s => s.IsLive))
 {
@@ -23,7 +23,7 @@
         @foreach (var liveStream in StreamService.Data.Where(s => s.IsLive))
         {
             <MudItem xs="12" md="6" xl="4">
-                <LiveStreamCard LiveStream="@liveStream" />
+                <LiveStreamCard LiveStream="@liveStream"/>
             </MudItem>
         }
     </MudGrid>
@@ -34,29 +34,29 @@
     <div class="tw-pt-8 tw-pb-2 tw-text-gray-600">
         <MudText Typo="Typo.h2" Class="tw-text-2xl tw-font-semibold">Lessons</MudText>
     </div>
-    
-    <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="md:tw-p-4">
+
+    <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="tw-min-h-0 tw-overflow-y-auto md:tw-p-4">
         <MudTabPanel Text="Not Completed">
-            <LessonCardList Lessons="LessonService.Data.Where(l => !l.HasWatched).ToList()" />
+            <LessonCardList Lessons="LessonService.Data.Where(l => !l.HasWatched).ToList()"/>
         </MudTabPanel>
         <MudTabPanel Text="Completed">
-            <LessonCardList Lessons="LessonService.Data.Where(l => l.HasWatched).ToList()" />
+            <LessonCardList Lessons="LessonService.Data.Where(l => l.HasWatched).ToList()"/>
         </MudTabPanel>
     </MudTabs>
 }
 
 @code {
 
-    [CascadingParameter]
-    UiState UiState { get; set; } = null!;
+    [CascadingParameter] UiState UiState { get; set; } = null!;
 
     private HubConnection? _hubConnection;
 
     protected override async Task OnInitializedAsync()
     {
+        UiState.IsPageLoading = true;
         StreamService.OnChange += NotifyStateChanged;
         LessonService.OnChange += NotifyStateChanged;
-        
+
         var tasks = new[] { LessonService.ForceFetch(this), StreamService.ForceFetch(this) };
 
         await Task.WhenAll(tasks);
@@ -68,6 +68,7 @@
         _hubConnection.On<Result<List<StreamResponse>>>("ReceiveStreams", OnReceiveStreams);
 
         await _hubConnection.StartAsync();
+        UiState.IsPageLoading = false;
     }
 
     private void OnReceiveStreams(Result<List<StreamResponse>> streams)

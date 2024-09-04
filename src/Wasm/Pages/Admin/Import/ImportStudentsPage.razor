@@ -21,15 +21,14 @@
                     </MudButton>
                 </div>
                 <MudFileUpload T="IBrowserFile" Accept=".csv" FilesChanged="UploadFile">
-                    <ButtonTemplate>
-                        <MudButton HtmlTag="label"
-                                   Variant="Variant.Filled"
-                                   Color="Color.Primary"
-                                   StartIcon="@Icons.Material.Filled.CloudUpload"
-                                   for="@context">
+                    <ActivatorContent>
+                        <MudButton
+                            Variant="Variant.Filled"
+                            Color="Color.Primary"
+                            StartIcon="@Icons.Material.Filled.CloudUpload">
                             Upload File
                         </MudButton>
-                    </ButtonTemplate>
+                    </ActivatorContent>
                 </MudFileUpload>
                 @if (_file != null)
                 {
@@ -93,7 +92,7 @@
         </MudTable>
 
         @if (FailedStudents != null)
-        {   
+        {
             <MudText Typo="Typo.h4" Class="tw-mt-4">Failed</MudText>
             <MudTable Items="@FailedStudents" Hover="true" Breakpoint="Breakpoint.Sm">
                 <HeaderContent>
@@ -158,11 +157,9 @@
     bool DisableClear =>
         GenerationId == 0 && ChurchId == 0 && _file == null;
 
-    [CascadingParameter]
-    public ChurchState ChurchState { get; set; } = null!;
+    [CascadingParameter] public ChurchState ChurchState { get; set; } = null!;
 
-    [CascadingParameter]
-    public GenerationState GenerationState { get; set; } = null!;
+    [CascadingParameter] public GenerationState GenerationState { get; set; } = null!;
 
     protected override async Task OnInitializedAsync()
     {
@@ -224,6 +221,7 @@
                 return;
             }
         }
+
         if (FailedStudents == null)
         {
             _file = null;
